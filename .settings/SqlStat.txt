@@ -1,0 +1,20 @@
+create table new_employees(employee_id  number primary key,
+first_name  varchar2(15),
+hire_date date,
+dept_id number,
+dept_name varchar2(100),
+foreign key(dept_id,dept_name) references dept(id,name));
+**************************************************************
+CREATE INDEX mail ON employee (mail);
+**************************************************************
+insert into employee(employee_id,first_name,mail,location_id)
+values(70,'Amr Magdy','amr.seddek@gmail',1900);
+**************************************************************
+delete from employee where first_name = 'amr' OR mail = 'amr.seddek@gmail';
+********************************************************************
+update employee set employee_id = 99  where mail = 'ahmed.kh@gmail';
+********************************************************************
+SELECT *
+FROM   employee WHERE  first_name = 'Amr Magdy' AND mail = 'ahmed.kh@gmail';
+***********************************************************************
+DROP TABLE table_name;

@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="gsp">
+    <CLASSES>
+      <root url="jar://C:/../../libs/java/gsp.jar!/" />
+      <root url="jar://C:/../../libs/java/jline-2.10.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
