@@ -8,56 +8,62 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-
 package user_interface;
 
-import gudusoft.gsqlparser.ESqlStatementType;
 import operators.Operator;
-import query_planner.Plan;
 import query_planner.PlanFactory;
 import adipe.translate.TranslationException;
 import gudusoft.gsqlparser.EDbVendor;
+import gudusoft.gsqlparser.ESqlStatementType;
 import gudusoft.gsqlparser.TGSqlParser;
 import transcations.DBBufferManager;
-import transcations.DBTransaction;
 import transcations.DBTransactionManager;
 
 public class Parser {
-    /**
-     * @uml.property  name="sqlparser"
-     * @uml.associationEnd  multiplicity="(1 1)"
-     */
-    TGSqlParser sqlparser;
-    /**
-     * @uml.property  name="planFactory"
-     * @uml.associationEnd  multiplicity="(1 1)"
-     */
-    PlanFactory planFactory;
-    public Parser(){
-        sqlparser = new TGSqlParser(EDbVendor.dbvoracle);
-        planFactory = new PlanFactory();
-        DBBufferManager bufferManager = new DBBufferManager();
-        DBTransactionManager.init(bufferManager);
-    }
+	/**
+	 * @uml.property name="sqlparser"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	TGSqlParser sqlparser;
+	/**
+	 * @uml.property name="planFactory"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	PlanFactory planFactory;
 
-    public void parseSQL(String strSQL) throws TranslationException {
-        sqlparser.sqltext = strSQL;
-        int ret = sqlparser.parse();
-        if (ret == 0){
-            for(int i=0;i<sqlparser.sqlstatements.size();i++){
-                Operator plan = planFactory.makePlan(sqlparser.sqlstatements.get(i));
-                System.out.println("plan ready");
-                if (plan == null){
-                    return;
-                }
-                DBTransactionManager.run(plan);
-                /*if(sqlparser.sqlstatements.get(i).sqlstatementtype == ESqlStatementType.sstselect)
-                    plan.print();
-                else
-                    System.out.println(plan.execute());*/
-            }
-        }else{
-            System.out.println(sqlparser.getErrormessage());
-        }
-    }
+	public Parser() {
+		sqlparser = new TGSqlParser(EDbVendor.dbvoracle);
+		planFactory = new PlanFactory();
+		DBBufferManager bufferManager = new DBBufferManager();
+		DBTransactionManager.init(bufferManager);
+	}
+
+	public void parseSQL(String strSQL) throws TranslationException {
+		sqlparser.sqltext = strSQL;
+		int ret = sqlparser.parse();
+		if (ret == 0) {
+			for (int i = 0; i < sqlparser.sqlstatements.size(); i++) {
+				Operator plan = planFactory.makePlan(sqlparser.sqlstatements.get(i));
+				System.out.println("Parser (parseSQL): " + "plan ready -- " + plan);
+				if (plan == null) {
+					return;
+				}
+				
+				DBTransactionManager.run(plan);
+
+				if (sqlparser.sqlstatements.get(i).sqlstatementtype != ESqlStatementType.sstselect) {
+					System.out.println(plan.execute());
+				}
+			}
+		} else {
+			System.out.println(sqlparser.getErrormessage());
+		}
+	}
+	
+	public static void main(String args[]) {
+		TGSqlParser sqlParser = new TGSqlParser(EDbVendor.dbvoracle);
+		sqlParser.setSqltext("alter table p add a integer");
+		
+		System.out.println(sqlParser.parse());
+	}
 }

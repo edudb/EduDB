@@ -8,7 +8,6 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-
 package data_structures.linearHashTable;
 
 import dataTypes.DataType;
@@ -22,49 +21,50 @@ import java.util.Random;
 import java.util.Set;
 
 /**
- * @author  mohamed
+ * @author mohamed
  */
 public class LinearHashTable implements Map<DataType, DataType> {
 
 	/**
-     * @uml.property  name="loadFactor"
-     */
+	 * @uml.property name="loadFactor"
+	 */
 	private float loadFactor;
 	/**
-     * @uml.property  name="bucketSize"
-     */
+	 * @uml.property name="bucketSize"
+	 */
 	private int bucketSize;
 	/**
-     * @uml.property  name="size"
-     */
+	 * @uml.property name="size"
+	 */
 	private int size;
 	/**
-     * @uml.property  name="digits"
-     */
+	 * @uml.property name="digits"
+	 */
 	private int digits;
 	/**
-     * @uml.property  name="hashSeed"
-     */
+	 * @uml.property name="hashSeed"
+	 */
 	private int hashSeed;
 	/**
-     * @uml.property  name="numberOfItems"
-     */
+	 * @uml.property name="numberOfItems"
+	 */
 	private int numberOfItems;
 	/**
-     * @uml.property  name="buckets"
-     * @uml.associationEnd  multiplicity="(0 -1)" inverse="this$0:data_structures.linearHashTable.LinearHashTable$Bucket"
-     */
+	 * @uml.property name="buckets"
+	 * @uml.associationEnd multiplicity="(0 -1)" inverse=
+	 *                     "this$0:data_structures.linearHashTable.LinearHashTable$Bucket"
+	 */
 	private ArrayList<Bucket> buckets;
 
 	public LinearHashTable(float loadFactor, int bucketSize) {
 		this.loadFactor = loadFactor;
 		this.bucketSize = bucketSize;
-        buckets = new ArrayList<>();
-        init();
-    }
+		buckets = new ArrayList<>();
+		init();
+	}
 
 	private void init() {
-        size = 0;
+		size = 0;
 		digits = 1;
 		Bucket bucket = new Bucket(bucketSize);
 		buckets.add(bucket);
@@ -88,12 +88,12 @@ public class LinearHashTable implements Map<DataType, DataType> {
 	}
 
 	private LHTEntry getEntry(Object key) {
-		if (key instanceof DataType){
-			int b = getBucket((DataType)key);
+		if (key instanceof DataType) {
+			int b = getBucket((DataType) key);
 			Bucket bucket = buckets.get(b);
 			LHTEntry entry;
-            entry = bucket.getEntry(key);
-            return entry;
+			entry = bucket.getEntry(key);
+			return entry;
 		}
 		return null;
 	}
@@ -110,13 +110,13 @@ public class LinearHashTable implements Map<DataType, DataType> {
 		return null == entry ? null : entry.getValue();
 	}
 
-	public int getBucket(DataType key){
+	public int getBucket(DataType key) {
 		int hash = hash(key);
-		int bits = hash & ((int)Math.pow(2, digits)-1);
-		if(bits <= size){
+		int bits = hash & ((int) Math.pow(2, digits) - 1);
+		if (bits <= size) {
 			return bits;
-		}else{
-			bits = bits - (int)Math.pow(2, (digits-1));
+		} else {
+			bits = bits - (int) Math.pow(2, (digits - 1));
 			return bits;
 		}
 	}
@@ -128,7 +128,7 @@ public class LinearHashTable implements Map<DataType, DataType> {
 		int hash = hash(key);
 		bucket.put(key, value, hash);
 		numberOfItems++;
-		if(numberOfItems / ((size+1) * bucketSize) >= loadFactor){
+		if (numberOfItems / ((size + 1) * bucketSize) >= loadFactor) {
 			resize();
 		}
 		return null;
@@ -138,24 +138,24 @@ public class LinearHashTable implements Map<DataType, DataType> {
 		size++;
 		Bucket b = new Bucket(bucketSize);
 		buckets.add(b);
-		if(size == (int)Math.pow(2, digits)){
+		if (size == (int) Math.pow(2, digits)) {
 			digits++;
 		}
-        int index = size - (int)Math.pow(2,digits-1);
-        Bucket bucket = buckets.get(index);
-        bucket.scan();
+		int index = size - (int) Math.pow(2, digits - 1);
+		Bucket bucket = buckets.get(index);
+		bucket.scan();
 	}
 
-    public void downSize(){
+	public void downSize() {
 
-    }
+	}
 
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
 
-    final int hash(Object k) {
+	final int hash(Object k) {
 		int h = hashSeed;
 		h ^= k.hashCode();
 		h ^= (h >>> 20) ^ (h >>> 12);
@@ -164,9 +164,9 @@ public class LinearHashTable implements Map<DataType, DataType> {
 
 	@Override
 	public DataType remove(Object key) {
-		int b = getBucket((DataType)key);
+		int b = getBucket((DataType) key);
 		Bucket bucket = buckets.get(b);
-		LHTEntry entry = bucket.remove((DataType)key);
+		LHTEntry entry = bucket.remove((DataType) key);
 		numberOfItems--;
 		return entry.value;
 	}
@@ -200,15 +200,15 @@ public class LinearHashTable implements Map<DataType, DataType> {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	/**
-     * @author   mohamed
-     */
+	 * @author mohamed
+	 */
 	class Bucket {
 		/**
-         * @uml.property  name="entries"
-         * @uml.associationEnd  multiplicity="(0 -1)"
-         */
+		 * @uml.property name="entries"
+		 * @uml.associationEnd multiplicity="(0 -1)"
+		 */
 		LHTEntry[] entries;
 		int lastItem;
 		LinkedList<LHTEntry> overflow;
@@ -217,44 +217,44 @@ public class LinearHashTable implements Map<DataType, DataType> {
 			entries = new LHTEntry[bucketSize];
 			lastItem = 0;
 		}
-		
+
 		public LHTEntry remove(DataType key) {
 			LHTEntry r = null;
 			for (int i = 0; i < lastItem; i++) {
-				if(entries[i].getKey().equals(key)){
+				if (entries[i].getKey().equals(key)) {
 					r = entries[i];
-					for (int j = i; j < lastItem-1; j++) {
-						entries[j] = entries[j+1];
+					for (int j = i; j < lastItem - 1; j++) {
+						entries[j] = entries[j + 1];
 					}
-					if(overflow != null){
-						if(! overflow.isEmpty()){
-							LHTEntry entry =overflow.removeFirst();
-							entries[entries.length-1] = entry;
-                            lastItem++;
+					if (overflow != null) {
+						if (!overflow.isEmpty()) {
+							LHTEntry entry = overflow.removeFirst();
+							entries[entries.length - 1] = entry;
+							lastItem++;
 						}
 					}
 					lastItem--;
 					return r;
 				}
 			}
-            if(overflow != null){
-                Iterator<LHTEntry> itr = overflow.iterator();
-                while(itr.hasNext()) {
-                    LHTEntry element = itr.next();
-                    if ((element.getKey()).equals(key)){
-                        r = element;
-                        itr.remove();
-                        break;
-                    }
-                }
-            }
+			if (overflow != null) {
+				Iterator<LHTEntry> itr = overflow.iterator();
+				while (itr.hasNext()) {
+					LHTEntry element = itr.next();
+					if ((element.getKey()).equals(key)) {
+						r = element;
+						itr.remove();
+						break;
+					}
+				}
+			}
 			return r;
 		}
 
 		public LHTEntry getEntry(Object key) {
 			for (int i = 0; i < lastItem; i++) {
 				DataType dataKey = (DataType) key;
-				if(entries[i].getKey().equals(dataKey)){
+				if (entries[i].getKey().equals(dataKey)) {
 					return entries[i];
 				}
 			}
@@ -262,87 +262,87 @@ public class LinearHashTable implements Map<DataType, DataType> {
 		}
 
 		public void put(DataType key, DataType value, int hash) {
-			if(lastItem == entries.length){
+			if (lastItem == entries.length) {
 				overflow.add(new LHTEntry(key, value, hash));
-			}else{
+			} else {
 				entries[lastItem++] = new LHTEntry(key, value, hash);
-				if(lastItem == entries.length){
+				if (lastItem == entries.length) {
 					overflow = new LinkedList<>();
 				}
 			}
 		}
 
-        public void scan() {
-            for (int i=0; i< lastItem; i++){
-                int bits = entries[i].hash & ((int)Math.pow(2, digits)-1);
-                if(bits > (int)Math.pow(2, digits-1)-1){
-                    LHTEntry entry = entries[i];
-                    remove(entries[i].key);
-                    numberOfItems--;
-                    LinearHashTable.this.put(entry.getKey(),entry.getValue());
-                    i--;
-                }
-            }
-            if (overflow != null){
-                Iterator<LHTEntry> itr = overflow.iterator();
-                while(itr.hasNext()) {
-                    LHTEntry element;
-                    element = itr.next();
-                    int bits = element.hash & ((int)Math.pow(2, digits)-1);
-                    if(bits > (int)Math.pow(2, digits-1)-1){
-                        itr.remove();
-                        numberOfItems--;
-                        LinearHashTable.this.put(element.getKey(),element.getValue());
-                    }
-                }
-            }
-        }
-    }
-	
+		public void scan() {
+			for (int i = 0; i < lastItem; i++) {
+				int bits = entries[i].hash & ((int) Math.pow(2, digits) - 1);
+				if (bits > (int) Math.pow(2, digits - 1) - 1) {
+					LHTEntry entry = entries[i];
+					remove(entries[i].key);
+					numberOfItems--;
+					LinearHashTable.this.put(entry.getKey(), entry.getValue());
+					i--;
+				}
+			}
+			if (overflow != null) {
+				Iterator<LHTEntry> itr = overflow.iterator();
+				while (itr.hasNext()) {
+					LHTEntry element;
+					element = itr.next();
+					int bits = element.hash & ((int) Math.pow(2, digits) - 1);
+					if (bits > (int) Math.pow(2, digits - 1) - 1) {
+						itr.remove();
+						numberOfItems--;
+						LinearHashTable.this.put(element.getKey(), element.getValue());
+					}
+				}
+			}
+		}
+	}
+
 	/**
-     * @author   mohamed
-     */
-	class LHTEntry implements Entry<DataType, DataType>{
+	 * @author mohamed
+	 */
+	class LHTEntry implements Entry<DataType, DataType> {
 		/**
-         * @uml.property  name="key"
-         * @uml.associationEnd  
-         */
+		 * @uml.property name="key"
+		 * @uml.associationEnd
+		 */
 		private DataType key;
 		/**
-         * @uml.property  name="value"
-         * @uml.associationEnd  
-         */
+		 * @uml.property name="value"
+		 * @uml.associationEnd
+		 */
 		private DataType value;
-        private int hash;
+		private int hash;
 
 		public LHTEntry(DataType key, DataType value, int hash) {
 			this.key = key;
 			this.value = value;
-            this.hash = hash;
+			this.hash = hash;
 		}
 
 		/**
-         * @return
-         * @uml.property  name="value"
-         */
-		public DataType getValue(){
+		 * @return
+		 * @uml.property name="value"
+		 */
+		public DataType getValue() {
 			return value;
 		}
 
 		/**
-         * @return
-         * @uml.property  name="key"
-         */
+		 * @return
+		 * @uml.property name="key"
+		 */
 		@Override
 		public DataType getKey() {
 			return key;
 		}
 
 		/**
-         * @param value
-         * @return
-         * @uml.property  name="value"
-         */
+		 * @param value
+		 * @return
+		 * @uml.property name="value"
+		 */
 		@Override
 		public DataType setValue(DataType value) {
 			DataType old = this.value;
@@ -350,8 +350,5 @@ public class LinearHashTable implements Map<DataType, DataType> {
 			return old;
 		}
 	}
-	
+
 }
-
-
-

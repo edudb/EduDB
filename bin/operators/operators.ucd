@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<editmodel:ClassDiagramEditModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:editmodel="editmodel.xmi" xmlns:options="options.xmi" size="1707,1780" id="operators" metadata="uml2-1.0" initialized="true" zoom="0.75" scrolledY="573" tag="10" key="32303037303533312D313020656475646232">
+  <children xsi:type="editmodel:ClassEditModel" name="MathUtil" location="862,1433" size="129,68" id="operators/MathUtil" runTimeClassModel="evaluateCond(LdataTypes.DataType;LdataTypes.DataType;C)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="106,18">
+      <children xsi:type="editmodel:MethodEditModel" name="evaluateCond" id="operators/MathUtil#evaluateCond(LdataTypes.DataType;LdataTypes.DataType;C)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="Parser" location="688,1425" size="105,99" id="user_interface/Parser" runTimeClassModel="parseSQL(Ljava.lang.String;),Parser()">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="82,36">
+      <children xsi:type="editmodel:MethodEditModel" name="Parser" id="user_interface/Parser#Parser()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="parseSQL" id="user_interface/Parser#parseSQL(Ljava.lang.String;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="Main" location="1094,1426" size="101,81" id="user_interface/Main" runTimeClassModel="main([Ljava.lang.String;)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="57,18">
+      <children xsi:type="editmodel:MethodEditModel" name="main" id="user_interface/Main#main([Ljava.lang.String;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="DBRecord" location="862,1165" size="116,171" id="DBStructure/DBRecord" runTimeClassModel="getValue(I),evaluate(Ljava.util.ArrayList;),DBRecord([Ljava.lang.String;Ljava.lang.String;),project(Loperators.SelectColumns;),toString(),DBRecord(Lgudusoft.gsqlparser.nodes.TResultColumnList;Ljava.lang.String;)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="83,108">
+      <children xsi:type="editmodel:MethodEditModel" name="DBRecord" id="DBStructure/DBRecord#DBRecord([Ljava.lang.String;Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="DBRecord" id="DBStructure/DBRecord#DBRecord(Lgudusoft.gsqlparser.nodes.TResultColumnList;Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="evaluate" id="DBStructure/DBRecord#evaluate(Ljava.util.ArrayList;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getValue" id="DBStructure/DBRecord#getValue(I)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="project" id="DBStructure/DBRecord#project(Loperators.SelectColumns;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="toString" id="DBStructure/DBRecord#toString()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="FileManager" location="486,1165" size="136,207" id="FileUtils/FileManager" runTimeClassModel="readFile(Ljava.lang.String;),addToFile(Ljava.lang.String;Ljava.lang.String;),getTable(Ljava.lang.String;),FileManager(),getSchema(),createTable(Ljava.lang.String;),writeToFile(Ljava.lang.String;Ljava.lang.String;),init()">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="96,144">
+      <children xsi:type="editmodel:MethodEditModel" name="FileManager" id="FileUtils/FileManager#FileManager()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="addToFile" id="FileUtils/FileManager#addToFile(Ljava.lang.String;Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="createTable" id="FileUtils/FileManager#createTable(Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getSchema" id="FileUtils/FileManager#getSchema()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getTable" id="FileUtils/FileManager#getTable(Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="init" id="FileUtils/FileManager#init()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="readFile" id="FileUtils/FileManager#readFile(Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="writeToFile" id="FileUtils/FileManager#writeToFile(Ljava.lang.String;Ljava.lang.String;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="DataManager" location="470,1433" size="143,99" id="DBStructure/DataManager" runTimeClassModel="addTable(LDBStructure.DBTable;),getTable(Ljava.lang.String;)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="80,36">
+      <children xsi:type="editmodel:MethodEditModel" name="addTable" id="DBStructure/DataManager#addTable(LDBStructure.DBTable;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getTable" id="DBStructure/DataManager#getTable(Ljava.lang.String;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="DBTable" location="1229,1165" size="141,117" id="DBStructure/DBTable" runTimeClassModel="getData(),getPrimaryIndex(),DBTable(Ljava.lang.String;)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="118,54">
+      <children xsi:type="editmodel:MethodEditModel" name="DBTable" id="DBStructure/DBTable#DBTable(Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getData" id="DBStructure/DBTable#getData()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getPrimaryIndex" id="DBStructure/DBTable#getPrimaryIndex()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="Translator" location="1028,1165" size="151,117" id="relational_algebra/Translator" runTimeClassModel="main([Ljava.lang.String;),translate(Ljava.lang.String;),extractOperations(Ljava.lang.String;)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="128,54">
+      <children xsi:type="editmodel:MethodEditModel" name="extractOperations" id="relational_algebra/Translator#extractOperations(Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="main" id="relational_algebra/Translator#main([Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="translate" id="relational_algebra/Translator#translate(Ljava.lang.String;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="Schema" location="672,1165" size="140,171" id="statistics/Schema">
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="117,108">
+      <children xsi:type="editmodel:MethodEditModel" name="AddTable" id="statistics/Schema#AddTable(Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="chekTableExists" id="statistics/Schema#chekTableExists(Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getColumns" id="statistics/Schema#getColumns(Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getCount" id="statistics/Schema#getCount(Ljava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getSchema" id="statistics/Schema#getSchema()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="initSchema" id="statistics/Schema#initSchema()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:InterfaceEditModel" targetConnections="//@children.11/@sourceConnections.0 //@children.12/@sourceConnections.0" name="Planer" location="326,50" size="106,94" id="query_planner/Planer" runTimeClassModel="makePlan(Lgudusoft.gsqlparser.TCustomSqlStatement;)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="83,18">
+      <children xsi:type="editmodel:MethodEditModel" name="makePlan" location="2,66" id="query_planner/Planer#makePlan(Lgudusoft.gsqlparser.TCustomSqlStatement;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="InsertPlanner" location="388,194" size="144,81" id="query_planner/InsertPlanner" runTimeClassModel="makePlan(Lgudusoft.gsqlparser.TCustomSqlStatement;)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="83,18">
+      <children xsi:type="editmodel:MethodEditModel" name="makePlan" id="query_planner/InsertPlanner#makePlan(Lgudusoft.gsqlparser.TCustomSqlStatement;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" autoLocated="true" id="query_planner/Planer&lt;-query_planner/InsertPlanner" source="//@children.10" target="//@children.12/@sourceConnections.0" targetEnd="//@children.10/@sourceConnections.0/@children.1" sourceEnd="//@children.10/@sourceConnections.0/@children.0" connectionRouterKind="GeneralizationManhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="72,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="26,94"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="PlanFactory" location="50,194" size="131,99" id="query_planner/PlanFactory" runTimeClassModel="makePlan(Lgudusoft.gsqlparser.TCustomSqlStatement;),setPlanar(Lgudusoft.gsqlparser.TCustomSqlStatement;)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="83,36">
+      <children xsi:type="editmodel:MethodEditModel" name="makePlan" id="query_planner/PlanFactory#makePlan(Lgudusoft.gsqlparser.TCustomSqlStatement;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="setPlanar" id="query_planner/PlanFactory#setPlanar(Lgudusoft.gsqlparser.TCustomSqlStatement;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="query_planner/PlanFactory-Soyatec::Import->query_planner/Planer*query_planner/PlanFactory-Soyatec::Implement->query_planner/Planer*query_planner/PlanFactory->query_planner/Planer" source="//@children.11" target="//@children.9" targetEnd="//@children.11/@sourceConnections.0/@children.2" label="//@children.11/@sourceConnections.0/@children.0" sourceEnd="//@children.11/@sourceConnections.0/@children.1" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:WireLabelEditModel" name="«Implement, Import»" size="113,13" anchorKind="MiddlePart"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="131,13" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,76"/>
+    </sourceConnections>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" autoLocated="true" id="query_planner/Planer&lt;-query_planner/PlanFactory" source="//@children.11" target="//@children.12/@sourceConnections.0" targetEnd="//@children.11/@sourceConnections.1/@children.1" sourceEnd="//@children.11/@sourceConnections.1/@children.0" connectionRouterKind="GeneralizationManhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="65,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="0,79"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="SelectPlanner" location="211,194" size="147,81" id="query_planner/SelectPlanner" runTimeClassModel="makePlan(Lgudusoft.gsqlparser.TCustomSqlStatement;)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="83,18">
+      <children xsi:type="editmodel:MethodEditModel" name="makePlan" id="query_planner/SelectPlanner#makePlan(Lgudusoft.gsqlparser.TCustomSqlStatement;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" targetConnections="//@children.10/@sourceConnections.0 //@children.13/@sourceConnections.0 //@children.11/@sourceConnections.1" autoLocated="true" id="query_planner/Planer&lt;-query_planner/SelectPlanner" source="//@children.12" target="//@children.9" targetEnd="//@children.12/@sourceConnections.0/@children.1" sourceEnd="//@children.12/@sourceConnections.0/@children.0" connectionRouterKind="GeneralizationManhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="73,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="53,94" anchorKind="FixedAtEdge"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="CreateTablePlanner" location="562,194" size="190,81" id="query_planner/CreateTablePlanner" runTimeClassModel="makePlan(Lgudusoft.gsqlparser.TCustomSqlStatement;)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="83,18">
+      <children xsi:type="editmodel:MethodEditModel" name="makePlan" id="query_planner/CreateTablePlanner#makePlan(Lgudusoft.gsqlparser.TCustomSqlStatement;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" autoLocated="true" id="query_planner/Planer&lt;-query_planner/CreateTablePlanner" source="//@children.13" target="//@children.12/@sourceConnections.0" targetEnd="//@children.13/@sourceConnections.0/@children.1" sourceEnd="//@children.13/@sourceConnections.0/@children.0" connectionRouterKind="GeneralizationManhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="95,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="52,94"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="CreateOperator" location="423,731" size="160,158" id="operators/CreateOperator" runTimeClassModel="giveParameter(Loperators.DBParameter;),CreateOperator(Lgudusoft.gsqlparser.stmt.TCreateTableSqlStatement;),print(),numOfParameters(),getChildren(),execute()">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="128,108">
+      <children xsi:type="editmodel:MethodEditModel" name="CreateOperator" id="operators/CreateOperator#CreateOperator(Lgudusoft.gsqlparser.stmt.TCreateTableSqlStatement;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="execute" id="operators/CreateOperator#execute()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getChildren" id="operators/CreateOperator#getChildren()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="giveParameter" id="operators/CreateOperator#giveParameter(Loperators.DBParameter;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="numOfParameters" id="operators/CreateOperator#numOfParameters()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="print" id="operators/CreateOperator#print()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" targetConnections="//@children.27/@sourceConnections.0 //@children.28/@sourceConnections.0 //@children.20/@sourceConnections.0 //@children.23/@sourceConnections.0 //@children.29/@sourceConnections.0" autoLocated="true" id="operators/Operator&lt;-operators/CreateOperator" source="//@children.14" target="//@children.22" targetEnd="//@children.14/@sourceConnections.0/@children.1" sourceEnd="//@children.14/@sourceConnections.0/@children.0" connectionRouterKind="GeneralizationManhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="80,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="66,117" anchorKind="FixedAtEdge"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="DBColumn" location="181,492" size="151,189" id="DBStructure/DBColumn" runTimeClassModel="print(),toString(),equals(Ljava.lang.Object;),numOfParameters(),order,tableName,DBColumn(ILjava.lang.String;)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="118,36">
+      <children xsi:type="editmodel:AttributeEditModel" name="order" id="DBStructure/DBColumn#order"/>
+      <children xsi:type="editmodel:AttributeEditModel" name="tableName" id="DBStructure/DBColumn#tableName"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="128,90">
+      <children xsi:type="editmodel:MethodEditModel" name="DBColumn" id="DBStructure/DBColumn#DBColumn(ILjava.lang.String;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="equals" id="DBStructure/DBColumn#equals(Ljava.lang.Object;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="numOfParameters" id="DBStructure/DBColumn#numOfParameters()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="print" id="DBStructure/DBColumn#print()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="toString" id="DBStructure/DBColumn#toString()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" autoLocated="true" id="operators/DBParameter&lt;-DBStructure/DBColumn" source="//@children.15" target="//@children.22/@sourceConnections.0" targetEnd="//@children.15/@sourceConnections.0/@children.1" sourceEnd="//@children.15/@sourceConnections.0/@children.0" connectionRouterKind="GeneralizationManhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="75,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:InterfaceEditModel" targetConnections="//@children.22/@sourceConnections.0" name="DBParameter" location="400,343" size="151,99" id="operators/DBParameter" runTimeClassModel="print(),numOfParameters()">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="128,36">
+      <children xsi:type="editmodel:MethodEditModel" name="numOfParameters" id="operators/DBParameter#numOfParameters()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="print" id="operators/DBParameter#print()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="AndCondition" location="231,957" size="151,158" id="operators/AndCondition" runTimeClassModel="print(),giveParameter(Loperators.DBCond;),toString(),evaluate(LDBStructure.DBRecord;),numOfParameters(),getChildren()">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="128,108">
+      <children xsi:type="editmodel:MethodEditModel" name="evaluate" id="operators/AndCondition#evaluate(LDBStructure.DBRecord;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getChildren" id="operators/AndCondition#getChildren()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="giveParameter" id="operators/AndCondition#giveParameter(Loperators.DBCond;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="numOfParameters" id="operators/AndCondition#numOfParameters()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="print" id="operators/AndCondition#print()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="toString" id="operators/AndCondition#toString()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" targetConnections="//@children.24/@sourceConnections.0" autoLocated="true" id="operators/DBMulCondition&lt;-operators/AndCondition" source="//@children.17" target="//@children.18" targetEnd="//@children.17/@sourceConnections.0/@children.1" sourceEnd="//@children.17/@sourceConnections.0/@children.0" connectionRouterKind="GeneralizationManhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="75,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="81,99" anchorKind="FixedAtEdge"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:InterfaceEditModel" targetConnections="//@children.17/@sourceConnections.0" name="DBMulCondition" location="50,731" size="162,99" id="operators/DBMulCondition" runTimeClassModel="giveParameter(Loperators.DBCond;),getChildren()">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="109,36">
+      <children xsi:type="editmodel:MethodEditModel" name="getChildren" id="operators/DBMulCondition#getChildren()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="giveParameter" id="operators/DBMulCondition#giveParameter(Loperators.DBCond;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" targetConnections="//@children.21/@sourceConnections.0" autoLocated="true" id="operators/DBCond&lt;-operators/DBMulCondition" source="//@children.18" target="//@children.19" targetEnd="//@children.18/@sourceConnections.0/@children.1" sourceEnd="//@children.18/@sourceConnections.0/@children.0" connectionRouterKind="GeneralizationManhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="81,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="50,81" anchorKind="FixedAtEdge"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:InterfaceEditModel" targetConnections="//@children.18/@sourceConnections.0" name="DBCond" location="50,492" size="101,81" id="operators/DBCond" runTimeClassModel="evaluate(LDBStructure.DBRecord;)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="78,18">
+      <children xsi:type="editmodel:MethodEditModel" name="evaluate" id="operators/DBCond#evaluate(LDBStructure.DBRecord;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" autoLocated="true" id="operators/DBParameter&lt;-operators/DBCond" source="//@children.19" target="//@children.22/@sourceConnections.0" targetEnd="//@children.19/@sourceConnections.0/@children.1" sourceEnd="//@children.19/@sourceConnections.0/@children.0" connectionRouterKind="GeneralizationManhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="50,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="JoinOperator" location="1213,731" size="151,158" id="operators/JoinOperator" runTimeClassModel="giveParameter(Loperators.DBParameter;),print(),toString(),numOfParameters(),getChildren(),execute()">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="128,108">
+      <children xsi:type="editmodel:MethodEditModel" name="execute" id="operators/JoinOperator#execute()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getChildren" id="operators/JoinOperator#getChildren()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="giveParameter" id="operators/JoinOperator#giveParameter(Loperators.DBParameter;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="numOfParameters" id="operators/JoinOperator#numOfParameters()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="print" id="operators/JoinOperator#print()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="toString" id="operators/JoinOperator#toString()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" autoLocated="true" id="operators/Operator&lt;-operators/JoinOperator" source="//@children.20" target="//@children.14/@sourceConnections.0" targetEnd="//@children.20/@sourceConnections.0/@children.1" sourceEnd="//@children.20/@sourceConnections.0/@children.0" connectionRouterKind="GeneralizationManhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="75,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="DBCondition" location="242,731" size="151,158" id="operators/DBCondition" runTimeClassModel="op,DBCondition(LDBStructure.DBColumn;Loperators.DBParameter;C),print(),toString(),evaluate(LDBStructure.DBRecord;),numOfParameters()">
+    <children xsi:type="editmodel:CompartmentEditModel" size="64,18">
+      <children xsi:type="editmodel:AttributeEditModel" name="op" id="operators/DBCondition#op"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="128,90">
+      <children xsi:type="editmodel:MethodEditModel" name="DBCondition" id="operators/DBCondition#DBCondition(LDBStructure.DBColumn;Loperators.DBParameter;C)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="evaluate" id="operators/DBCondition#evaluate(LDBStructure.DBRecord;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="numOfParameters" id="operators/DBCondition#numOfParameters()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="print" id="operators/DBCondition#print()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="toString" id="operators/DBCondition#toString()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" autoLocated="true" id="operators/DBCond&lt;-operators/DBCondition" source="//@children.21" target="//@children.18/@sourceConnections.0" targetEnd="//@children.21/@sourceConnections.0/@children.1" sourceEnd="//@children.21/@sourceConnections.0/@children.0" connectionRouterKind="GeneralizationManhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="75,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:InterfaceEditModel" targetConnections="//@children.14/@sourceConnections.0" name="Operator" location="923,492" size="132,117" id="operators/Operator" runTimeClassModel="giveParameter(Loperators.DBParameter;),getChildren(),execute()">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="109,54">
+      <children xsi:type="editmodel:MethodEditModel" name="execute" id="operators/Operator#execute()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getChildren" id="operators/Operator#getChildren()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="giveParameter" id="operators/Operator#giveParameter(Loperators.DBParameter;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" targetConnections="//@children.19/@sourceConnections.0 //@children.26/@sourceConnections.0 //@children.25/@sourceConnections.0 //@children.15/@sourceConnections.0" autoLocated="true" id="operators/DBParameter&lt;-operators/Operator" source="//@children.22" target="//@children.16" targetEnd="//@children.22/@sourceConnections.0/@children.1" sourceEnd="//@children.22/@sourceConnections.0/@children.0" connectionRouterKind="GeneralizationManhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="66,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="75,99" anchorKind="FixedAtEdge"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="RelationOperator" location="1011,731" size="172,176" id="operators/RelationOperator" runTimeClassModel="giveParameter(Loperators.DBParameter;),print(),toString(),numOfParameters(),getChildren(),execute(),tableName">
+    <children xsi:type="editmodel:CompartmentEditModel" size="118,18">
+      <children xsi:type="editmodel:AttributeEditModel" name="tableName" id="operators/RelationOperator#tableName"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="128,108">
+      <children xsi:type="editmodel:MethodEditModel" name="execute" id="operators/RelationOperator#execute()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getChildren" id="operators/RelationOperator#getChildren()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="giveParameter" id="operators/RelationOperator#giveParameter(Loperators.DBParameter;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="numOfParameters" id="operators/RelationOperator#numOfParameters()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="print" id="operators/RelationOperator#print()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="toString" id="operators/RelationOperator#toString()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" autoLocated="true" id="operators/Operator&lt;-operators/RelationOperator" source="//@children.23" target="//@children.14/@sourceConnections.0" targetEnd="//@children.23/@sourceConnections.0/@children.1" sourceEnd="//@children.23/@sourceConnections.0/@children.0" connectionRouterKind="GeneralizationManhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="86,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="OrCondition" location="50,957" size="151,158" id="operators/OrCondition" runTimeClassModel="print(),giveParameter(Loperators.DBCond;),toString(),evaluate(LDBStructure.DBRecord;),numOfParameters(),getChildren()">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="128,108">
+      <children xsi:type="editmodel:MethodEditModel" name="evaluate" id="operators/OrCondition#evaluate(LDBStructure.DBRecord;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getChildren" id="operators/OrCondition#getChildren()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="giveParameter" id="operators/OrCondition#giveParameter(Loperators.DBCond;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="numOfParameters" id="operators/OrCondition#numOfParameters()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="print" id="operators/OrCondition#print()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="toString" id="operators/OrCondition#toString()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" autoLocated="true" id="operators/DBMulCondition&lt;-operators/OrCondition" source="//@children.24" target="//@children.17/@sourceConnections.0" targetEnd="//@children.24/@sourceConnections.0/@children.1" sourceEnd="//@children.24/@sourceConnections.0/@children.0" connectionRouterKind="GeneralizationManhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="75,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="SelectColumns" location="362,492" size="153,158" id="operators/SelectColumns" runTimeClassModel="union(Loperators.SelectColumns;),print(),toString(),SelectColumns(Ljava.util.ArrayList;),getColumns(),numOfParameters()">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="128,108">
+      <children xsi:type="editmodel:MethodEditModel" name="SelectColumns" id="operators/SelectColumns#SelectColumns(Ljava.util.ArrayList;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getColumns" id="operators/SelectColumns#getColumns()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="numOfParameters" id="operators/SelectColumns#numOfParameters()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="print" id="operators/SelectColumns#print()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="toString" id="operators/SelectColumns#toString()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="union" id="operators/SelectColumns#union(Loperators.SelectColumns;)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" autoLocated="true" id="operators/DBParameter&lt;-operators/SelectColumns" source="//@children.25" target="//@children.22/@sourceConnections.0" targetEnd="//@children.25/@sourceConnections.0/@children.1" sourceEnd="//@children.25/@sourceConnections.0/@children.0" connectionRouterKind="GeneralizationManhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="76,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:InterfaceEditModel" name="DBConst" location="545,492" size="105,56" id="DBStructure/DBConst" runTimeClassModel="">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" autoLocated="true" id="operators/DBParameter&lt;-DBStructure/DBConst" source="//@children.26" target="//@children.22/@sourceConnections.0" targetEnd="//@children.26/@sourceConnections.0/@children.1" sourceEnd="//@children.26/@sourceConnections.0/@children.0" connectionRouterKind="GeneralizationManhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="52,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="FilterOperator" location="613,731" size="151,176" id="operators/FilterOperator" runTimeClassModel="giveParameter(Loperators.DBParameter;),print(),toString(),numOfParameters(),getChildren(),execute(),FilterOperator()">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="128,126">
+      <children xsi:type="editmodel:MethodEditModel" name="FilterOperator" id="operators/FilterOperator#FilterOperator()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="execute" id="operators/FilterOperator#execute()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getChildren" id="operators/FilterOperator#getChildren()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="giveParameter" id="operators/FilterOperator#giveParameter(Loperators.DBParameter;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="numOfParameters" id="operators/FilterOperator#numOfParameters()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="print" id="operators/FilterOperator#print()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="toString" id="operators/FilterOperator#toString()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" autoLocated="true" id="operators/Operator&lt;-operators/FilterOperator" source="//@children.27" target="//@children.14/@sourceConnections.0" targetEnd="//@children.27/@sourceConnections.0/@children.1" sourceEnd="//@children.27/@sourceConnections.0/@children.0" connectionRouterKind="GeneralizationManhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="75,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="InsertOperator" location="1394,731" size="154,158" id="operators/InsertOperator" runTimeClassModel="giveParameter(Loperators.DBParameter;),print(),InsertOperator(Lgudusoft.gsqlparser.TCustomSqlStatement;),numOfParameters(),getChildren(),execute()">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="128,108">
+      <children xsi:type="editmodel:MethodEditModel" name="InsertOperator" id="operators/InsertOperator#InsertOperator(Lgudusoft.gsqlparser.TCustomSqlStatement;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="execute" id="operators/InsertOperator#execute()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="getChildren" id="operators/InsertOperator#getChildren()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="giveParameter" id="operators/InsertOperator#giveParameter(Loperators.DBParameter;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="numOfParameters" id="operators/InsertOperator#numOfParameters()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="print" id="operators/InsertOperator#print()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" autoLocated="true" id="operators/Operator&lt;-operators/InsertOperator" source="//@children.28" target="//@children.14/@sourceConnections.0" targetEnd="//@children.28/@sourceConnections.0/@children.1" sourceEnd="//@children.28/@sourceConnections.0/@children.0" connectionRouterKind="GeneralizationManhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="77,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="ProjectionOperator" location="794,731" size="187,68" id="operators/ProjectionOperator" runTimeClassModel="ProjectionOperator(Lcore.CellAddressFactory;Lcore.Relation;[I)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="132,18">
+      <children xsi:type="editmodel:MethodEditModel" name="ProjectionOperator" id="operators/ProjectionOperator#ProjectionOperator(Lcore.CellAddressFactory;Lcore.Relation;[I)"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" autoLocated="true" id="operators/Operator&lt;-operators/ProjectionOperator" source="//@children.29" target="//@children.14/@sourceConnections.0" targetEnd="//@children.29/@sourceConnections.0/@children.1" sourceEnd="//@children.29/@sourceConnections.0/@children.0" connectionRouterKind="GeneralizationManhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="93,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="65,117"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="SelectResult" location="244,1296" size="192,86" id="operators/SelectResult" runTimeClassModel="print(),data">
+    <children xsi:type="editmodel:CompartmentEditModel" size="169,18">
+      <children xsi:type="editmodel:AttributeEditModel" name="data" id="operators/SelectResult#data"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="55,18">
+      <children xsi:type="editmodel:MethodEditModel" name="print" id="operators/SelectResult#print()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" targetConnections="//@children.32/@sourceConnections.0" autoLocated="true" id="operators/DBResult&lt;-operators/SelectResult" source="//@children.30" target="//@children.31" targetEnd="//@children.30/@sourceConnections.0/@children.1" sourceEnd="//@children.30/@sourceConnections.0/@children.0" connectionRouterKind="GeneralizationManhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="96,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="55,81" anchorKind="FixedAtEdge"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:InterfaceEditModel" targetConnections="//@children.30/@sourceConnections.0" name="DBResult" location="181,1165" size="110,81" id="operators/DBResult" runTimeClassModel="print()">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="55,18">
+      <children xsi:type="editmodel:MethodEditModel" name="print" id="operators/DBResult#print()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="DBBTreeIterator" location="50,1296" size="164,315" id="data_structures.BPlusTree/DBBTreeIterator" runTimeClassModel="hasNext(),project(Loperators.SelectColumns;),toString(),nextIndex(),next(),previous(),previousIndex(),remove(),set(Ljava.lang.Object;),add(Ljava.lang.Object;),DBBTreeIterator(Ldata_structures.BPlusTree.BTree;),filter(Loperators.DBCond;),print(),hasPrevious()">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="115,252">
+      <children xsi:type="editmodel:MethodEditModel" name="DBBTreeIterator" id="data_structures.BPlusTree/DBBTreeIterator#DBBTreeIterator(Ldata_structures.BPlusTree.BTree;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="add" id="data_structures.BPlusTree/DBBTreeIterator#add(Ljava.lang.Object;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="filter" id="data_structures.BPlusTree/DBBTreeIterator#filter(Loperators.DBCond;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="hasNext" id="data_structures.BPlusTree/DBBTreeIterator#hasNext()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="hasPrevious" id="data_structures.BPlusTree/DBBTreeIterator#hasPrevious()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="next" id="data_structures.BPlusTree/DBBTreeIterator#next()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="nextIndex" id="data_structures.BPlusTree/DBBTreeIterator#nextIndex()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="previous" id="data_structures.BPlusTree/DBBTreeIterator#previous()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="previousIndex" id="data_structures.BPlusTree/DBBTreeIterator#previousIndex()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="print" id="data_structures.BPlusTree/DBBTreeIterator#print()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="project" id="data_structures.BPlusTree/DBBTreeIterator#project(Loperators.SelectColumns;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="remove" id="data_structures.BPlusTree/DBBTreeIterator#remove()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="set" id="data_structures.BPlusTree/DBBTreeIterator#set(Ljava.lang.Object;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="toString" id="data_structures.BPlusTree/DBBTreeIterator#toString()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" autoLocated="true" id="operators/DBResult&lt;-data_structures.BPlusTree/DBBTreeIterator" source="//@children.32" target="//@children.30/@sourceConnections.0" targetEnd="//@children.32/@sourceConnections.0/@children.1" sourceEnd="//@children.32/@sourceConnections.0/@children.0" connectionRouterKind="GeneralizationManhattan">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="82,0" anchorKind="FixedAtEdge" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:ClassEditModel" name="DB_Int" location="1528,1185" size="151,243" id="dataTypes/DB_Type$DB_Int">
+    <children xsi:type="editmodel:CompartmentEditModel" size="82,18">
+      <children xsi:type="editmodel:AttributeEditModel" name="number" id="dataTypes/DB_Type$DB_Int#number"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="128,162">
+      <children xsi:type="editmodel:MethodEditModel" name="DB_Int" id="dataTypes/DB_Type$DB_Int#DB_Int(C)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="DB_Int" id="dataTypes/DB_Type$DB_Int#DB_Int(I)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="compareTo" id="dataTypes/DB_Type$DB_Int#compareTo(Ljava.lang.Object;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="diff" id="dataTypes/DB_Type$DB_Int#diff(LdataTypes.DataType;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="equals" id="dataTypes/DB_Type$DB_Int#equals(Ljava.lang.Object;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="hashCode" id="dataTypes/DB_Type$DB_Int#hashCode()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="numOfParameters" id="dataTypes/DB_Type$DB_Int#numOfParameters()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="print" id="dataTypes/DB_Type$DB_Int#print()"/>
+      <children xsi:type="editmodel:MethodEditModel" name="toString" id="dataTypes/DB_Type$DB_Int#toString()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel"/>
+    <sourceConnections xsi:type="editmodel:GeneralizationEditModel" autoLocated="true" id="dataTypes/DataType&lt;-dataTypes/DB_Type$DB_Int" source="//@children.33" target="//@children.34" targetEnd="//@children.33/@sourceConnections.0/@children.1" sourceEnd="//@children.33/@sourceConnections.0/@children.0" connectionRouterKind="Manual">
+      <children xsi:type="editmodel:AssociationEndEditModel" location="75,0" attachSource="true"/>
+      <children xsi:type="editmodel:AssociationEndEditModel" location="56,130"/>
+    </sourceConnections>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <children xsi:type="editmodel:InterfaceEditModel" targetConnections="//@children.33/@sourceConnections.0" name="DataType" location="1547,1005" size="113,130" id="dataTypes/DataType" runTimeClassModel="compareTo(Ljava.lang.Object;),toString(),diff(LdataTypes.DataType;)">
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <children xsi:type="editmodel:CompartmentEditModel" size="90,54">
+      <children xsi:type="editmodel:MethodEditModel" name="compareTo" id="dataTypes/DataType#compareTo(Ljava.lang.Object;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="diff" id="dataTypes/DataType#diff(LdataTypes.DataType;)"/>
+      <children xsi:type="editmodel:MethodEditModel" name="toString" id="dataTypes/DataType#toString()"/>
+    </children>
+    <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
+    <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+  </children>
+  <diagramOptions xsi:type="options:ClassDiagramOptions" properties="wireOptions=1;Product=eUML2" autoName="false"/>
+  <boardSetting snapToGeometry="true" gridEnabled="true" gridSpacing="15,15" gridOrigin="0,0" rulerUnit="pixel" gridVisibility="false">
+    <leftRuler/>
+    <topRuler/>
+  </boardSetting>
+  <classDiagramPreferences xsi:type="editmodel:UMLClassDiagramPreference" showPopupBars="true" showConnectionHandles="true" attributeSorter="Natural" methodSorter="Natural" showClassStereotype="true" showPackageStereotype="true" showDependencyStereotype="true" showInterfaceStereotype="true" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
+</editmodel:ClassDiagramEditModel>

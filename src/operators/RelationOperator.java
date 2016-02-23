@@ -8,7 +8,6 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-
 package operators;
 
 import DBStructure.DBTable;
@@ -18,61 +17,61 @@ import transcations.Page;
 /**
  * Created by mohamed on 4/13/14.
  */
-public class RelationOperator implements Operator{
+public class RelationOperator implements Operator {
 
-    /**
-     * @uml.property  name="tableName"
-     */
-    private String tableName;
+	/**
+	 * @uml.property name="tableName"
+	 */
+	private String tableName;
 
-    /**
-     * @param  tableName
-     * @uml.property  name="tableName"
-     */
-    public void setTableName(String tableName) {
-        this.tableName = tableName;
-    }
+	/**
+	 * @param tableName
+	 * @uml.property name="tableName"
+	 */
+	public void setTableName(String tableName) {
+		this.tableName = tableName;
+	}
 
-    @Override
-    public DBResult execute() {
-        DBTable table = DataManager.getTable(tableName);
-        return table.getData();
-    }
+	@Override
+	public DBResult execute() {
+		DBTable table = DataManager.getTable(tableName);
+		return table.getData();
+	}
 
-    @Override
-    public void print() {
-        System.out.print(execute());
-    }
-    
-    @Override
-    public String toString(){
-        return "table(" + tableName+ ")";
-    }
-    
-    @Override
-    public int numOfParameters() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
+	@Override
+	public void print() {
+		System.out.print(execute());
+	}
 
-    @Override
-    public DBParameter[] getChildren() {
-        return new DBParameter[] {};
-    }
+	@Override
+	public String toString() {
+		return "table(" + tableName + ")";
+	}
 
-    @Override
-    public void giveParameter(DBParameter par) {
-        // TODO Auto-generated method stub
-        
-    }
+	@Override
+	public int numOfParameters() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
-    @Override
-    public void runStep(Page page) {
+	@Override
+	public DBParameter[] getChildren() {
+		return new DBParameter[] {};
+	}
 
-    }
+	@Override
+	public void giveParameter(DBParameter par) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public Page getPage() {
-        return null;
-    }
+	}
+
+	@Override
+	public void runStep(Page page) {
+
+	}
+
+	@Override
+	public Page getPage() {
+		return null;
+	}
 }

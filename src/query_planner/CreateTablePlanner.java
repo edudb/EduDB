@@ -8,7 +8,6 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-
 package query_planner;
 
 import gudusoft.gsqlparser.TCustomSqlStatement;
@@ -25,17 +24,16 @@ import statistics.Schema;
  */
 public class CreateTablePlanner implements Planer {
 
-
-    @Override
-    public Operator makePlan(TCustomSqlStatement tCustomSqlStatement) {
-        TCreateTableSqlStatement statement = (TCreateTableSqlStatement) tCustomSqlStatement;
-        Operator operator = null;
-        if(!Schema.chekTableExists(statement.getTableName().toString())){
-            operator = new CreateOperator(statement);
-        }else {
-            System.out.println("table already exists");
-        }
-        return operator;
-    }
+	@Override
+	public Operator makePlan(TCustomSqlStatement tCustomSqlStatement) {
+		TCreateTableSqlStatement statement = (TCreateTableSqlStatement) tCustomSqlStatement;
+		Operator operator = null;
+		if (!Schema.chekTableExists(statement.getTableName().toString())) {
+			operator = new CreateOperator(statement);
+		} else {
+			System.out.println("CreateTablePlanner (makePlan): " + "table already exists");
+		}
+		return operator;
+	}
 
 }
