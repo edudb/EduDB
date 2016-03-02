@@ -30,7 +30,7 @@ public class InsertPlanner implements Planer {
         TInsertSqlStatement statement = (TInsertSqlStatement) tCustomSqlStatement;
         //TODO read column list
         TMultiTargetList values = statement.getValues();
-        System.out.println(values.toString());
+        System.out.println("InsertPlanner (makePlan): " + values.toString());
         Operator insert = new InsertOperator(tCustomSqlStatement);
         return insert;
     }

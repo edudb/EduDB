@@ -8,7 +8,6 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-
 package query_planner;
 
 import gudusoft.gsqlparser.TCustomSqlStatement;
@@ -18,17 +17,17 @@ import relational_algebra.Translator;
 
 public class SelectPlanner implements Planer {
 
-    @Override
-    public Operator makePlan(TCustomSqlStatement tCustomSqlStatement) {
-        TSelectSqlStatement statement = (TSelectSqlStatement) tCustomSqlStatement;
-        Operator plan = null;
-        // TODO  add a tree of operators
-        try{
-            plan = Translator.translate(statement.toString());
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+	@Override
+	public Operator makePlan(TCustomSqlStatement tCustomSqlStatement) {
+		TSelectSqlStatement statement = (TSelectSqlStatement) tCustomSqlStatement;
+		Operator plan = null;
+		// TODO add a tree of operators
+		try {
+			plan = Translator.translate(statement.toString());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-        return plan;
-    }
+		return plan;
+	}
 }
