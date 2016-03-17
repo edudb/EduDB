@@ -59,11 +59,4 @@ public class Parser {
 			System.out.println(sqlparser.getErrormessage());
 		}
 	}
-	
-	public static void main(String args[]) {
-		TGSqlParser sqlParser = new TGSqlParser(EDbVendor.dbvoracle);
-		sqlParser.setSqltext("alter table p add a integer");
-		
-		System.out.println(sqlParser.parse());
-	}
 }

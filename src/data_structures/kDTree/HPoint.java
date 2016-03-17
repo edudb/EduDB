@@ -29,9 +29,6 @@ package data_structures.kDTree;
 
 import dataTypes.DataType;
 
-/**
- * @author  mohamed
- */
 class HPoint {
 
     /**

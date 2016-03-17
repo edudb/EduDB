@@ -25,9 +25,6 @@
  */
 package data_structures.kDTree;
 
-/**
- * @author  mohamed
- */
 class PriorityQueue implements java.io.Serializable {
 
     /**

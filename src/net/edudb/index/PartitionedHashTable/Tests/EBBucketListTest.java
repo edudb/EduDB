@@ -1,4 +1,4 @@
-package net.edudb.DataStructures.EBPartitionedHashTable.Tests;
+package net.edudb.index.PartitionedHashTable.Tests;
 
 import static org.junit.Assert.*;
 
@@ -6,8 +6,8 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-import net.edudb.DataStructures.EBPartitionedHashTable.EBBucketList;
-import net.edudb.DataStructures.EBPartitionedHashTable.EBIndex;
+import net.edudb.index.PartitionedHashTable.EBBucketList;
+import net.edudb.index.PartitionedHashTable.EBIndex;
 
 /**
  * 

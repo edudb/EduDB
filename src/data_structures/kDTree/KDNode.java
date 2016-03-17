@@ -28,10 +28,6 @@ package data_structures.kDTree;
 import java.util.Vector;
 
 // K-D Tree node class
-
-/**
- * @author  mohamed
- */
 class KDNode {
 
     // these are seen by kDTree

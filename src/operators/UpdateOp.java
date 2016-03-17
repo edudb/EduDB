@@ -8,7 +8,6 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-
 package operators;
 
 import DBStructure.DBRecord;
@@ -20,85 +19,84 @@ import transcations.Step;
 
 import java.util.ArrayList;
 
+public class UpdateOp implements Operator {
 
-public class UpdateOp implements Operator{
+	private String tableName;
+	private ArrayList<DBAssignment> assignments;
+	private DBCond condition;
+	private Page page;
+	private int state;
 
-    private  String tableName;
-    private ArrayList<DBAssignment> assignments;
-    private DBCond condition;
-    private Page page;
-    private int state;
+	public UpdateOp(String tableName, ArrayList<DBAssignment> assignments, DBCondition condition) {
+		this.tableName = tableName;
+		this.assignments = assignments;
+		this.condition = condition;
+	}
 
-    public UpdateOp(String tableName, ArrayList<DBAssignment> assignments, DBCondition condition) {
-        this.tableName = tableName;
-        this.assignments = assignments;
-        this.condition = condition;
-    }
+	@Override
+	public DBResult execute() {
+		FilterOperator filterOperator = new FilterOperator();
+		RelationOperator relationOperator = new RelationOperator();
+		relationOperator.setTableName(tableName);
+		filterOperator.giveParameter(relationOperator);
+		filterOperator.giveParameter(condition);
+		DBBTreeIterator resultIterator = (DBBTreeIterator) filterOperator.execute();
+		DBRecord record = (DBRecord) resultIterator.first();
+		do {
+			record.update(assignments);
+			record = (DBRecord) resultIterator.next();
+		} while (record != null);
+		resultIterator.write();
+		return resultIterator;
+	}
 
-    @Override
-    public DBResult execute() {
-        FilterOperator filterOperator = new FilterOperator();
-        RelationOperator relationOperator = new RelationOperator();
-        relationOperator.setTableName(tableName);
-        filterOperator.giveParameter(relationOperator);
-        filterOperator.giveParameter(condition);
-        DBBTreeIterator resultIterator = (DBBTreeIterator) filterOperator.execute();
-        DBRecord record = (DBRecord) resultIterator.first();
-        do{
-            record.update(assignments);
-            record = (DBRecord) resultIterator.next();
-        }while (record != null);
-        resultIterator.write();
-        return resultIterator;
-    }
+	@Override
+	public DBParameter[] getChildren() {
+		return new DBParameter[0];
+	}
 
-    @Override
-    public DBParameter[] getChildren() {
-        return new DBParameter[0];
-    }
+	@Override
+	public void giveParameter(DBParameter par) {
 
-    @Override
-    public void giveParameter(DBParameter par) {
+	}
 
-    }
+	@Override
+	public void print() {
 
-    @Override
-    public void print() {
+	}
 
-    }
+	@Override
+	public int numOfParameters() {
+		return 0;
+	}
 
-    @Override
-    public int numOfParameters() {
-        return 0;
-    }
+	public ArrayList<Step> getSteps() {
+		ArrayList<Step> out = new ArrayList<>();
+		PageRead read = new PageRead(this, tableName, true);
+		out.add(read);
 
-    public ArrayList<Step> getSteps() {
-        ArrayList<Step> out = new ArrayList<>();
-        PageRead read = new PageRead(this, tableName, true);
-        out.add(read);
+		PageWrite write = new PageWrite(this);
 
-        PageWrite write = new PageWrite(this);
+		out.add(write);
+		return out;
+	}
 
-        out.add(write);
-        return out;
-    }
+	public void runStep(Page page) {
+		this.page = page;
+		System.out.println("run");
+		System.out.println(page);
+		FilterOperator filterOperator = new FilterOperator();
+		filterOperator.giveParameter(page.getData());
+		filterOperator.giveParameter(condition);
+		DBIterator iterator = (DBIterator) filterOperator.execute();
+		DBRecord record = (DBRecord) iterator.first();
+		do {
+			record.update(assignments);
+			record = (DBRecord) iterator.next();
+		} while (record != null);
+	}
 
-    public void runStep(Page page){
-        this.page = page;
-        System.out.println("run");
-        System.out.println(page);
-        FilterOperator filterOperator = new FilterOperator();
-        filterOperator.giveParameter(page.getData());
-        filterOperator.giveParameter(condition);
-        DBIterator iterator = (DBIterator) filterOperator.execute();
-        DBRecord record = (DBRecord) iterator.first();
-        do{
-            record.update(assignments);
-            record = (DBRecord) iterator.next();
-        }while (record != null);
-}
-
-    public Page getPage() {
-        return page;
-    }
+	public Page getPage() {
+		return page;
+	}
 }

@@ -11,6 +11,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package query_planner;
 
 import DBStructure.DBColumn;
+import adipe.translate.sql.Expression;
 import dataTypes.DB_Type;
 import gudusoft.gsqlparser.EExpressionType;
 import gudusoft.gsqlparser.TCustomSqlStatement;
@@ -34,16 +35,27 @@ public class UpdatePlanner implements Planer {
 			TParseTreeNode assignment = statement.getResultColumnList().elementAt(i);
 			DBAssignment assignment1 = new DBAssignment(assignment.getStartToken().toString(),
 					assignment.getEndToken().toString(), tableName);
+			
+			System.out.println("UpdatePlanner (makePlan): " + assignment.getStartToken().toString());
+			System.out.println("UpdatePlanner (makePlan): " + assignment.getEndToken().toString());
+			
 			assignments.add(assignment1);
 		}
 
 		// extract conditions
+		System.out.println("UpdatePlanner (makePlan): " + statement.getWhereClause().getCondition().toString());
+		
 		TExpression expression = statement.getWhereClause().getCondition();
+		
+		System.out.println("UpdatePlanner (makePlan): " + " Type -- " + expression.getExpressionType());
+		
 		if (expression.getExpressionType() == EExpressionType.simple_comparison_t) {
 			String leftString = expression.getLeftOperand().toString();
+			System.out.println("UpdatePlanner (makePlan): " + leftString);
 			DBColumn column1 = new DBColumn(leftString, tableName);
 			TExpression right = expression.getRightOperand();
 			String rightString = right.toString();
+			System.out.println("UpdatePlanner (makePlan): " + rightString);
 			if (right.getExpressionType() == EExpressionType.simple_constant_t) {
 				DB_Type.DB_Int constant = new DB_Type.DB_Int(rightString);
 				DBCondition condition = new DBCondition(column1, constant,
@@ -57,6 +69,8 @@ public class UpdatePlanner implements Planer {
 				UpdateOp update = new UpdateOp(tableName, assignments, condition);
 				return update;
 			}
+		} else {
+			System.out.println("UpdatePlanner (makePlan): " + null);
 		}
 		return null;
 	}

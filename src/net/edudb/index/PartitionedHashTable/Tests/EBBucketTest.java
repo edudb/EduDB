@@ -1,9 +1,9 @@
-package net.edudb.DataStructures.EBPartitionedHashTable.Tests;
+package net.edudb.index.PartitionedHashTable.Tests;
 
 import org.junit.Test;
 
-import net.edudb.DataStructures.EBPartitionedHashTable.EBBucket;
-import net.edudb.DataStructures.EBPartitionedHashTable.EBIndex;
+import net.edudb.index.PartitionedHashTable.EBBucket;
+import net.edudb.index.PartitionedHashTable.EBIndex;
 
 import static org.junit.Assert.*;
 

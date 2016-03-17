@@ -8,7 +8,6 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-
 package operators;
 
 import transcations.Page;
@@ -16,65 +15,66 @@ import transcations.Page;
 /**
  * Created by mohamed on 4/13/14.
  */
-public class JoinOperator implements Operator{
-    /**
-     * @uml.property  name="table1"
-     * @uml.associationEnd  
-     */
-    DBParameter table1;
-    /**
-     * @uml.property  name="table2"
-     * @uml.associationEnd  
-     */
-    DBParameter table2;
-    
-    @Override
-    public DBResult execute() {
-        DBResult dbResult1 = ((Operator) table1).execute();
-        DBResult dbResult2 = ((Operator) table2).execute();
-        ProductIterator iter = new ProductIterator();
-        iter.giveIterator(dbResult1);
-        iter.giveIterator(dbResult2);
-        iter.finish();
-        return iter;
-    }
+public class JoinOperator implements Operator {
+	/**
+	 * @uml.property name="table1"
+	 * @uml.associationEnd
+	 */
+	DBParameter table1;
+	/**
+	 * @uml.property name="table2"
+	 * @uml.associationEnd
+	 */
+	DBParameter table2;
 
-    @Override
-    public void print() {
-        System.out.print(execute());
-    }
+	@Override
+	public DBResult execute() {
+		DBResult dbResult1 = ((Operator) table1).execute();
+		DBResult dbResult2 = ((Operator) table2).execute();
+		ProductIterator iter = new ProductIterator();
+		iter.giveIterator(dbResult1);
+		iter.giveIterator(dbResult2);
+		iter.finish();
+		return iter;
+	}
 
-    @Override
-    public String toString(){
-        return "join";
-    }
-    @Override
-    public int numOfParameters() {
-        return 2;
-    }
+	@Override
+	public void print() {
+		System.out.print(execute());
+	}
 
-    @Override
-    public DBParameter[] getChildren() {
-        return new DBParameter[] {table1, table2};
-    }
+	@Override
+	public String toString() {
+		return "join";
+	}
 
-    @Override
-    public void giveParameter(DBParameter par) {
-        if (table1 ==null){
-            table1 = par;
-        }else{
-            table2 = par;
-        }
-        
-    }
+	@Override
+	public int numOfParameters() {
+		return 2;
+	}
 
-    @Override
-    public void runStep(Page page) {
+	@Override
+	public DBParameter[] getChildren() {
+		return new DBParameter[] { table1, table2 };
+	}
 
-    }
+	@Override
+	public void giveParameter(DBParameter par) {
+		if (table1 == null) {
+			table1 = par;
+		} else {
+			table2 = par;
+		}
 
-    @Override
-    public Page getPage() {
-        return null;
-    }
+	}
+
+	@Override
+	public void runStep(Page page) {
+
+	}
+
+	@Override
+	public Page getPage() {
+		return null;
+	}
 }

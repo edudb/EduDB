@@ -8,29 +8,27 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-
 package transcations;
-
 
 import operators.DBResult;
 
 import java.util.ArrayList;
 import java.util.Vector;
 
-public class DBTransaction implements Runnable{
+public class DBTransaction implements Runnable {
 
-    private ArrayList<Step> vSteps;
-    private long ID;
+	private ArrayList<Step> vSteps;
+	private long ID;
 
-    public void init(ArrayList<Step> vSteps){
-        this.vSteps = vSteps;
-    }
+	public void init(ArrayList<Step> vSteps) {
+		this.vSteps = vSteps;
+	}
 
-    @Override
-    public void run() {
-        for (int i=0; i<vSteps.size(); i++){
-            Step step = vSteps.get(i);
-            step.execute();
-        }
-    }
+	@Override
+	public void run() {
+		for (int i = 0; i < vSteps.size(); i++) {
+			Step step = vSteps.get(i);
+			step.execute();
+		}
+	}
 }

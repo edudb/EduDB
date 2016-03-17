@@ -30,9 +30,6 @@ package data_structures.kDTree;
 
 import dataTypes.DB_Type;
 
-/**
- * @author  mohamed
- */
 class HRect {
 
     /**

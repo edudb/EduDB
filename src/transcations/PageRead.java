@@ -12,27 +12,27 @@ package transcations;
 
 import operators.Operator;
 
-public class PageRead extends Step{
-    private Operator operator;
-    private String tableName;
-    private boolean bModify;
+public class PageRead extends Step {
+	private Operator operator;
+	private String tableName;
+	private boolean bModify;
 
-    public PageRead(Operator operator, String tableName) {
-        this.operator = operator;
-    }
+	public PageRead(Operator operator, String tableName) {
+		this.operator = operator;
+	}
 
-    public PageRead(Operator operator, String tableName, boolean bModify) {
-        this.operator = operator;
-        this.tableName = tableName;
-        this.bModify = bModify;
-    }
+	public PageRead(Operator operator, String tableName, boolean bModify) {
+		this.operator = operator;
+		this.tableName = tableName;
+		this.bModify = bModify;
+	}
 
-    @Override
-    public void execute() {
-        PageID pageID = PageUtil.getPageID(tableName);
-        DBBufferManager bufferManager = DBTransactionManager.getBufferManager();
+	@Override
+	public void execute() {
+		PageID pageID = PageUtil.getPageID(tableName);
+		DBBufferManager bufferManager = DBTransactionManager.getBufferManager();
 
-        Page read = bufferManager.read(pageID, bModify);
-        operator.runStep(read);
-    }
+		Page read = bufferManager.read(pageID, bModify);
+		operator.runStep(read);
+	}
 }

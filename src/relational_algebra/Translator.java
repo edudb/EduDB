@@ -44,14 +44,19 @@ public class Translator {
 	public static Operator translate(String sqlQuery) {
 		// TODO translate algebra to plan
 		try {
-//			SqlParser.SelectStatementEofContext queryTree = Queries.getQueryTree(sqlQuery);
+			// SqlParser.SelectStatementEofContext queryTree =
+			// Queries.getQueryTree(sqlQuery);
 
-//			Map<String, ArrayList<String>> schema = new HashMap<String, ArrayList<String>>();
-//			schema.put("p", new ArrayList<String>(Arrays.asList("a", "b", "p")));
-//			schema.put("l", new ArrayList<String>(Arrays.asList("a")));
-//			schema.put("xy", new ArrayList<String>(Arrays.asList("x", "y")));
-//			schema.put("r4", new ArrayList<String>(Arrays.asList("ra", "rb", "rc", "rd")));
-//			schema.put("t", new ArrayList<String>(Arrays.asList("t2", "t3")));
+			// Map<String, ArrayList<String>> schema = new HashMap<String,
+			// ArrayList<String>>();
+			// schema.put("p", new ArrayList<String>(Arrays.asList("a", "b",
+			// "p")));
+			// schema.put("l", new ArrayList<String>(Arrays.asList("a")));
+			// schema.put("xy", new ArrayList<String>(Arrays.asList("x", "y")));
+			// schema.put("r4", new ArrayList<String>(Arrays.asList("ra", "rb",
+			// "rc", "rd")));
+			// schema.put("t", new ArrayList<String>(Arrays.asList("t2",
+			// "t3")));
 
 			// Term ra = Queries.getRaOf(Schema.getSchema(), sqlQuery);
 			Term ra = Queries.getRaOf(adipe.translate.ra.Schema.create(Schema.getSchema()), sqlQuery);
@@ -351,20 +356,26 @@ public class Translator {
 	// }
 	//
 	// }
-	
-	public static void main(String[] args) {
-		String s[] = {"select * from persons", "select * from persons where age>31 OR age=32", "select age from persons where age>12",
-				"select age from persons where age>12 group by age order by age asc", "select number from persons group by number",
-				"select count(age), count(number) from persons", "select age,id from persons, places where age = 32",
-				"select p1.age, p2.id from persons p1 inner join places p2 on p1.age > p2.id"
-				
-				};
+
+	public static void main(String[] args) throws Exception {
+		String s[] = { "select * from persons", 
+				"select age from persons",
+				"select * from persons where age>31 OR age=32",
+				"select age from persons where age>12",
+				"select age from persons where age>12 order by age desc",
+				"select number from persons group by number", 
+				"select count(age), count(number) from persons",
+				"select age,id from persons, places where age = 32",
+				"select birth from persons inner join places on age = id",
+				"select * from persons where exists (select id from places where id=30)",
+				"select age from persons, places where number=id",
+				"select age from persons, places where age=5", 
+				"select id from persons, places, test" };
 		Term ra2;
 		try {
 			for (int i = 0; i < s.length; i++) {
 				ra2 = Queries.getRaOf(adipe.translate.ra.Schema.create(Schema.getSchema()), s[i]);
 				System.out.format("*** SQL query:\n\t%s --> %s\n", s[i], ra2);
-//		        System.out.format("*** Translated to relational algebra:\n\t%s\n", ra2);
 			}
 		} catch (ParseCancellationException e) {
 			// TODO Auto-generated catch block
