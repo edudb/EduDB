@@ -3,7 +3,7 @@ package net.edudb.statement;
 import gudusoft.gsqlparser.TCustomSqlStatement;
 import gudusoft.gsqlparser.stmt.TUpdateSqlStatement;
 
-public class SQLUpdateStatement extends SQLStatement {
+public class SQLUpdateStatement implements SQLStatement {
 	
 	private TUpdateSqlStatement statement;
 	

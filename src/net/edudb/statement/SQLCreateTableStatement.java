@@ -3,7 +3,7 @@ package net.edudb.statement;
 import gudusoft.gsqlparser.TCustomSqlStatement;
 import gudusoft.gsqlparser.stmt.TCreateTableSqlStatement;
 
-public class SQLCreateTableStatement extends SQLStatement {
+public class SQLCreateTableStatement implements SQLStatement {
 	
 	private TCreateTableSqlStatement statement;
 

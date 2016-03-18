@@ -1,6 +1,6 @@
 package net.edudb.statement;
 
-public abstract class SQLStatement {
+public interface SQLStatement {
 
 	public abstract SQLStatementType statementType();
 	
