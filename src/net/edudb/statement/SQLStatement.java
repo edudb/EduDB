@@ -1,16 +1,11 @@
 package net.edudb.statement;
 
-import gudusoft.gsqlparser.TCustomSqlStatement;
-
 public abstract class SQLStatement {
-	
-//	protected TCustomSqlStatement tCustomSqlStatement;
-//	
-//	public SQLStatement(TCustomSqlStatement tCustomSqlStatement); {
-//		this.tCustomSqlStatement = tCustomSqlStatement;
-//	}
 
 	public abstract SQLStatementType statementType();
+	
+	public abstract String toString();
+	
 //	{
 //		switch (tCustomSqlStatement.sqlstatementtype) {
 //		case sstcreatetable:

@@ -11,16 +11,22 @@ public class SQLCreateTableStatement extends SQLStatement {
 		this.statement = (TCreateTableSqlStatement) tCustomSqlStatement;
 	}
 	
-	public SQLStatementType statementType() {
-		return SQLStatementType.SQLCreateTableStatement;
-	}
-	
 	public String getTableName() {
 		return statement.getTableName().toString();
 	}
 	
 	public String getColumnListString() {
 		return statement.getColumnList().toString();
+	}
+	
+	@Override
+	public SQLStatementType statementType() {
+		return SQLStatementType.SQLCreateTableStatement;
+	}
+
+	@Override
+	public String toString() {
+		return statement.toString();
 	}
 
 }

@@ -17,6 +17,7 @@ import gudusoft.gsqlparser.nodes.TObjectNameList;
 import gudusoft.gsqlparser.stmt.TInsertSqlStatement;
 import net.edudb.operator.InsertOperator;
 import net.edudb.operator.Operator;
+import net.edudb.statement.SQLStatement;
 
 import java.util.ArrayList;
 
@@ -25,11 +26,11 @@ import java.util.ArrayList;
  */
 public class InsertPlan implements Plan {
     @Override
-    public Operator makePlan(TCustomSqlStatement tCustomSqlStatement) {
-        TInsertSqlStatement statement = (TInsertSqlStatement) tCustomSqlStatement;
+    public Operator makePlan(SQLStatement sqlStatement) {
+//        TInsertSqlStatement statement = (TInsertSqlStatement) tCustomSqlStatement;
         //TODO read column list
-        TMultiTargetList values = statement.getValues();
-        System.out.println("InsertPlanner (makePlan): " + values.toString());
+//        TMultiTargetList values = statement.getValues();
+//        System.out.println("InsertPlanner (makePlan): " + values.toString());
         Operator insert = new InsertOperator(tCustomSqlStatement);
         return insert;
     }
