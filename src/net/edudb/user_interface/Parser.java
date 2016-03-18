@@ -15,7 +15,9 @@ import gudusoft.gsqlparser.EDbVendor;
 import gudusoft.gsqlparser.ESqlStatementType;
 import gudusoft.gsqlparser.TGSqlParser;
 import net.edudb.operator.Operator;
-import net.edudb.query_planner.PlanFactory;
+import net.edudb.plan.PlanFactory;
+import net.edudb.statement.SQLStatement;
+import net.edudb.statement.SQLStatementFactory;
 import net.edudb.transcation.DBBufferManager;
 import net.edudb.transcation.DBTransactionManager;
 
@@ -43,8 +45,8 @@ public class Parser {
 		int ret = sqlparser.parse();
 		if (ret == 0) {
 			for (int i = 0; i < sqlparser.sqlstatements.size(); i++) {
-				Operator plan = planFactory.makePlan(sqlparser.sqlstatements.get(i));
-				System.out.println("Parser (parseSQL): " + "plan ready -- " + plan);
+				Operator plan = planFactory.makePlan(SQLStatementFactory.getSQLStatement(sqlparser.sqlstatements.get(i)));
+//				System.out.println("Parser (parseSQL): " + "plan ready -- " + plan);
 				if (plan == null) {
 					return;
 				}

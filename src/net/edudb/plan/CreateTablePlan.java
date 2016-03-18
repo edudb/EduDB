@@ -8,29 +8,44 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+package net.edudb.plan;
 
-package net.edudb.query_planner;
-
-import gudusoft.gsqlparser.TCustomSqlStatement;
-import gudusoft.gsqlparser.nodes.TMultiTargetList;
-import gudusoft.gsqlparser.nodes.TObjectNameList;
-import gudusoft.gsqlparser.stmt.TInsertSqlStatement;
-import net.edudb.operator.InsertOperator;
+//import gudusoft.gsqlparser.TCustomSqlStatement;
+//import gudusoft.gsqlparser.stmt.TCreateTableSqlStatement;
+import net.edudb.operator.CreateOperator;
 import net.edudb.operator.Operator;
+import net.edudb.statement.SQLCreateTableStatement;
+import net.edudb.statement.SQLStatement;
+import net.edudb.statistics.Schema;
 
-import java.util.ArrayList;
+//import java.util.ArrayList;
+
+//CREATE TABLE table_name
+//(
+//column_name1 data_type(size),
+//column_name2 data_type(size),
+//column_name3 data_type(size),
+//....
+//);
 
 /**
- * Created by mohamed on 4/9/14.
+ * Created by mohamed on 4/1/14.
  */
-public class InsertPlanner implements Planer {
-    @Override
-    public Operator makePlan(TCustomSqlStatement tCustomSqlStatement) {
-        TInsertSqlStatement statement = (TInsertSqlStatement) tCustomSqlStatement;
-        //TODO read column list
-        TMultiTargetList values = statement.getValues();
-        System.out.println("InsertPlanner (makePlan): " + values.toString());
-        Operator insert = new InsertOperator(tCustomSqlStatement);
-        return insert;
-    }
+public class CreateTablePlan implements Plan {
+
+	@Override
+	public Operator makePlan(SQLStatement sqlStatement) {
+//		TCreateTableSqlStatement statement = (TCreateTableSqlStatement) tCustomSqlStatement;
+		SQLCreateTableStatement statement = (SQLCreateTableStatement) sqlStatement;
+		Operator operator = null;
+		
+		if (!Schema.chekTableExists(statement.getTableName().toString())) {
+			operator = new CreateOperator(statement);
+//			System.out.println("CreateTablePlan (makePlan): " + statement.getTableName());
+		} else {
+			System.out.println("CreateTablePlanner (makePlan): " + "table already exists");
+		}
+		return operator;
+	}
+
 }

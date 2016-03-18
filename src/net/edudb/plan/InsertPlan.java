@@ -8,26 +8,29 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.query_planner;
+
+package net.edudb.plan;
 
 import gudusoft.gsqlparser.TCustomSqlStatement;
-import gudusoft.gsqlparser.stmt.TSelectSqlStatement;
+import gudusoft.gsqlparser.nodes.TMultiTargetList;
+import gudusoft.gsqlparser.nodes.TObjectNameList;
+import gudusoft.gsqlparser.stmt.TInsertSqlStatement;
+import net.edudb.operator.InsertOperator;
 import net.edudb.operator.Operator;
-import net.edudb.relational_algebra.Translator;
 
-public class SelectPlanner implements Planer {
+import java.util.ArrayList;
 
-	@Override
-	public Operator makePlan(TCustomSqlStatement tCustomSqlStatement) {
-		TSelectSqlStatement statement = (TSelectSqlStatement) tCustomSqlStatement;
-		Operator plan = null;
-		// TODO add a tree of operators
-		try {
-			plan = Translator.translate(statement.toString());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return plan;
-	}
+/**
+ * Created by mohamed on 4/9/14.
+ */
+public class InsertPlan implements Plan {
+    @Override
+    public Operator makePlan(TCustomSqlStatement tCustomSqlStatement) {
+        TInsertSqlStatement statement = (TInsertSqlStatement) tCustomSqlStatement;
+        //TODO read column list
+        TMultiTargetList values = statement.getValues();
+        System.out.println("InsertPlanner (makePlan): " + values.toString());
+        Operator insert = new InsertOperator(tCustomSqlStatement);
+        return insert;
+    }
 }

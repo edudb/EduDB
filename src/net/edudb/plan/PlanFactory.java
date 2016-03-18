@@ -8,45 +8,47 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.query_planner;
+package net.edudb.plan;
 
 import gudusoft.gsqlparser.TCustomSqlStatement;
 import net.edudb.operator.Operator;
+import net.edudb.statement.SQLStatement;
+import net.edudb.statement.SQLStatementType;
 
 /**
  * Created by mohamed on 4/1/14.
  */
-public class PlanFactory implements Planer {
+public class PlanFactory implements Plan {
 	/**
 	 * @uml.property name="planner"
 	 * @uml.associationEnd
 	 */
-	private Planer planner;
+	private Plan planner;
 
 	@Override
-	public Operator makePlan(TCustomSqlStatement tCustomSqlStatement) {
-		setPlanar(tCustomSqlStatement);
+	public Operator makePlan(SQLStatement statement) {
+		setPlanner(statement.statementType());
 		if (planner == null) {
 			return null;
 		}
-		Operator plan = planner.makePlan(tCustomSqlStatement);
+		Operator plan = planner.makePlan(statement);
 		return plan;
 	}
 
-	public void setPlanar(TCustomSqlStatement statement) {
-		System.out.println(statement.sqlstatementtype);
-		switch (statement.sqlstatementtype) {
-		case sstcreatetable:
-			planner = new CreateTablePlanner();
+	public void setPlanner(SQLStatementType statement) {
+		System.out.println("PlanFactory (setPlanner): " + statement);
+		switch (statement) {
+		case SQLCreateTableStatement:
+			planner = new CreateTablePlan();
 			break;
-		case sstselect:
-			planner = new SelectPlanner();
+		case SQLSelectStatement:
+			planner = new SelectPlan();
 			break;
-		case sstinsert:
-			planner = new InsertPlanner();
+		case SQLInsertStatement:
+			planner = new InsertPlan();
 			break;
-		case sstupdate:
-			planner = new UpdatePlanner();
+		case SQLUpdateStatement:
+			planner = new UpdatePlan();
 			break;
 		default:
 			System.out.println("Sorry! such statement not supported");

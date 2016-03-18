@@ -11,8 +11,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.operator;
 
-import gudusoft.gsqlparser.stmt.TCreateTableSqlStatement;
+//import gudusoft.gsqlparser.stmt.TCreateTableSqlStatement;
+import net.edudb.file_utility.FileManager;
 import net.edudb.operator.Operator;
+import net.edudb.statement.SQLCreateTableStatement;
 import net.edudb.statistics.Schema;
 import net.edudb.transcation.Page;
 
@@ -25,21 +27,25 @@ public class CreateOperator implements Operator {
      * @uml.property  name="statement"
      * @uml.associationEnd  multiplicity="(1 1)"
      */
-    private TCreateTableSqlStatement statement;
+    private SQLCreateTableStatement statement;
 
-    public CreateOperator(TCreateTableSqlStatement statement){
+    public CreateOperator(SQLCreateTableStatement statement){
         this.statement = statement;
     }
     @Override
     public DBResult execute() {
+    	
+//    	TCreateTableSqlStatement s = new TCreateTableSqlStatement(null);
+//    	s.getcol
+    	
         System.out.println("executing create operation");
         // add table to schema
         String line = statement.getTableName().toString();
-        line += " "+ statement.getColumnList().toString();
+        line += " "+ statement.getColumnListString();
         System.out.println("@create operation " + line);
         Schema.AddTable(line);
         //create table file and folder
-        //FileManager.createTable(statement.getTableName().toString());
+        FileManager.createTable(statement.getTableName());
         return null;
     }
 

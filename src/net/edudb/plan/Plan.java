@@ -9,26 +9,15 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 */
 
 
-package net.edudb.query_planner;
+package net.edudb.plan;
 
-import java.util.ArrayList;
-
+//import gudusoft.gsqlparser.TCustomSqlStatement;
 import net.edudb.operator.Operator;
+import net.edudb.statement.SQLStatement;
 
-public class Plan {
-
-    /**
-     * @uml.property  name="operators"
-     */
-    private final ArrayList<Operator> operators;
-
-    public Plan(ArrayList<Operator> operators){
-            this.operators = operators;
-    }
-
-    public void execute(){
-        for(Operator operator : operators){
-            operator.execute();
-        }
-    }
+/**
+ * Created by mohamed on 4/1/14.
+ */
+public interface Plan {
+    public Operator makePlan(SQLStatement sqlStatement);
 }
