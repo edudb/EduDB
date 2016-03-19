@@ -50,6 +50,7 @@ public class DBTable {
 	}
 
 	public DBIndex getPrimaryIndex() {
+		System.out.println("DBIndex (getPrimaryIndex): " + indices.get(0));
 		return indices.get(0);
 		// TODO primary is at index 0
 	}

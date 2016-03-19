@@ -10,7 +10,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.plan;
 
-import gudusoft.gsqlparser.TCustomSqlStatement;
 import net.edudb.operator.Operator;
 import net.edudb.statement.SQLStatement;
 import net.edudb.statement.SQLStatementType;

@@ -11,15 +11,16 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.plan;
 
-import gudusoft.gsqlparser.TCustomSqlStatement;
-import gudusoft.gsqlparser.nodes.TMultiTargetList;
-import gudusoft.gsqlparser.nodes.TObjectNameList;
-import gudusoft.gsqlparser.stmt.TInsertSqlStatement;
+//import gudusoft.gsqlparser.TCustomSqlStatement;
+//import gudusoft.gsqlparser.nodes.TMultiTargetList;
+//import gudusoft.gsqlparser.nodes.TObjectNameList;
+//import gudusoft.gsqlparser.stmt.TInsertSqlStatement;
 import net.edudb.operator.InsertOperator;
 import net.edudb.operator.Operator;
+import net.edudb.statement.SQLInsertStatement;
 import net.edudb.statement.SQLStatement;
 
-import java.util.ArrayList;
+//import java.util.ArrayList;
 
 /**
  * Created by mohamed on 4/9/14.
@@ -31,7 +32,8 @@ public class InsertPlan implements Plan {
         //TODO read column list
 //        TMultiTargetList values = statement.getValues();
 //        System.out.println("InsertPlanner (makePlan): " + values.toString());
-        Operator insert = new InsertOperator(tCustomSqlStatement);
+    	SQLInsertStatement statement = (SQLInsertStatement) sqlStatement;
+        Operator insert = new InsertOperator(statement);
         return insert;
     }
 }

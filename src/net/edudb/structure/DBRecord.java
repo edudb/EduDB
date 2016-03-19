@@ -43,11 +43,12 @@ public class DBRecord {
 		}
 	}
 
-	public DBRecord(TResultColumnList RValues, String tableName) {
+	public DBRecord(ArrayList<String> valuesList, String tableName) {
 		columns = Schema.getColumns(tableName);
 		values = new ArrayList<>();
-		for (int i = 0; i < RValues.size(); i++) {
-			values.add(new DB_Type.DB_Int(Integer.parseInt(RValues.getResultColumn(i).toString())));
+		for (int i = 0; i < valuesList.size(); i++) {
+			values.add(new DB_Type.DB_Int(Integer.parseInt(valuesList.get(i))));
+//			System.out.println(valuesList.get(i));
 		}
 	}
 

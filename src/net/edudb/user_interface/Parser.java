@@ -18,6 +18,7 @@ import net.edudb.operator.Operator;
 import net.edudb.plan.PlanFactory;
 import net.edudb.statement.SQLStatement;
 import net.edudb.statement.SQLStatementFactory;
+import net.edudb.statement.SQLStatementType;
 import net.edudb.transcation.DBBufferManager;
 import net.edudb.transcation.DBTransactionManager;
 
@@ -45,16 +46,17 @@ public class Parser {
 		int ret = sqlparser.parse();
 		if (ret == 0) {
 			for (int i = 0; i < sqlparser.sqlstatements.size(); i++) {
-				Operator plan = planFactory.makePlan(SQLStatementFactory.getSQLStatement(sqlparser.sqlstatements.get(i)));
-//				System.out.println("Parser (parseSQL): " + "plan ready -- " + plan);
+				SQLStatementFactory statementFactory = new SQLStatementFactory();
+				SQLStatement statement = statementFactory.getSQLStatement(sqlparser.sqlstatements.get(i));
+				Operator plan = planFactory.makePlan(statement);
 				if (plan == null) {
 					return;
 				}
 				
 				DBTransactionManager.run(plan);
 
-				if (sqlparser.sqlstatements.get(i).sqlstatementtype != ESqlStatementType.sstselect) {
-					System.out.println(plan.execute());
+				if (statement.statementType() != SQLStatementType.SQLSelectStatement) {
+					System.out.println("Parser (parseSQL): " + plan.execute());
 				}
 			}
 		} else {

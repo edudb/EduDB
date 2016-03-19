@@ -3,7 +3,7 @@ package net.edudb.statement;
 import gudusoft.gsqlparser.TCustomSqlStatement;
 
 public class SQLStatementFactory {
-	public static SQLStatement getSQLStatement(TCustomSqlStatement tCustomSqlStatement) {
+	public SQLStatement getSQLStatement(TCustomSqlStatement tCustomSqlStatement) {
 		switch (tCustomSqlStatement.sqlstatementtype) {
 		case sstcreatetable:
 			return new SQLCreateTableStatement(tCustomSqlStatement);
