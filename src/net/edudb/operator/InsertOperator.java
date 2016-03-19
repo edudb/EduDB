@@ -16,7 +16,7 @@ import net.edudb.data_type.DB_Type;
 import net.edudb.operator.Operator;
 import net.edudb.statement.SQLInsertStatement;
 import net.edudb.structure.DBIndex;
-import net.edudb.structure.DBRecord;
+import net.edudb.structure.Record;
 import net.edudb.structure.DBTable;
 import net.edudb.structure.DataManager;
 import net.edudb.transcation.Page;
@@ -47,7 +47,7 @@ public class InsertOperator implements Operator {
 		DBIndex index = table.getPrimaryIndex();
 		// TODO value may be null
 		ArrayList<String> values = statement.getValueList();
-		DBRecord record = new DBRecord(values, table.getTableName());
+		Record record = new Record(values, table.getTableName());
 		int key = ((DB_Type.DB_Int) record.getValue(0)).getNumber();
 		index.insert(key, record);
 		index.write();

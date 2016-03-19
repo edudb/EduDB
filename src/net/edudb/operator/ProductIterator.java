@@ -11,7 +11,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.operator;
 
 import net.edudb.index.BPlusTree.DBBTreeIterator;
-import net.edudb.structure.DBRecord;
+import net.edudb.structure.Record;
 
 import java.util.ArrayList;
 
@@ -58,21 +58,21 @@ public class ProductIterator implements DBResult, DBIterator {
 		DBSimpleiterator iter = new DBSimpleiterator();
 		iter.project(columns);
 		iter.filter(conditions);
-		ArrayList<DBRecord> records = new ArrayList<DBRecord>();
+		ArrayList<Record> records = new ArrayList<Record>();
 		if (iterators.get(0) instanceof DBBTreeIterator && iterators.get(1) instanceof DBBTreeIterator) {
 			DBBTreeIterator itr1 = (DBBTreeIterator) iterators.get(0);
 			DBBTreeIterator itr2 = (DBBTreeIterator) iterators.get(1);
-			DBRecord element = (DBRecord) itr1.first();
+			Record element = (Record) itr1.first();
 			do {
-				DBRecord element2 = (DBRecord) itr2.first();
+				Record element2 = (Record) itr2.first();
 				do {
-					DBRecord record = new DBRecord();
+					Record record = new Record();
 					record.add(element.getValues(), element.getColumns());
 					record.add(element2.getValues(), element2.getColumns());
 					iter.add(record);
-					element2 = (DBRecord) itr2.next();
+					element2 = (Record) itr2.next();
 				} while (element2 != null);
-				element = (DBRecord) itr1.next();
+				element = (Record) itr1.next();
 			} while (element != null);
 			return iter;
 		}

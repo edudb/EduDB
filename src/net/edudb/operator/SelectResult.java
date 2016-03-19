@@ -13,13 +13,13 @@ package net.edudb.operator;
 
 import java.util.ArrayList;
 
-import net.edudb.structure.DBRecord;
+import net.edudb.structure.Record;
 
 public class SelectResult implements DBResult{
     /**
      * @uml.property  name="data"
      */
-    public ArrayList<DBRecord> data;
+    public ArrayList<Record> data;
 
     @Override
     public void print() {

@@ -13,16 +13,16 @@ package net.edudb.operator;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
-import net.edudb.structure.DBRecord;
+import net.edudb.structure.Record;
 
 public class DBSimpleiterator implements DBResult, ListIterator, DBIterator {
 
-	private ArrayList<DBRecord> records;
+	private ArrayList<Record> records;
 	private SelectColumns columns;
 	private ArrayList<DBCond> conditions;
 
 	public DBSimpleiterator() {
-		this.records = new ArrayList<DBRecord>();
+		this.records = new ArrayList<Record>();
 	}
 
 	@Override
@@ -88,7 +88,7 @@ public class DBSimpleiterator implements DBResult, ListIterator, DBIterator {
 
 	@Override
 	public void add(Object o) {
-		records.add((DBRecord) o);
+		records.add((Record) o);
 	}
 
 	@Override

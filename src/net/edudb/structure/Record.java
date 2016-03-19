@@ -10,7 +10,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.structure;
 
-import gudusoft.gsqlparser.nodes.TResultColumnList;
 import net.edudb.data_type.DB_Type;
 import net.edudb.data_type.DataType;
 import net.edudb.operator.DBAssignment;
@@ -19,9 +18,8 @@ import net.edudb.operator.SelectColumns;
 import net.edudb.statistics.Schema;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
-public class DBRecord {
+public class Record {
 	/**
 	 * @uml.property name="columns"
 	 */
@@ -33,7 +31,7 @@ public class DBRecord {
 	 */
 	private ArrayList<DataType> values;
 
-	public DBRecord(String[] line, String tableName) {
+	public Record(String[] line, String tableName) {
 		columns = Schema.getColumns(tableName);
 		// TODO remove redundant schema calls
 		values = new ArrayList<>();
@@ -43,7 +41,7 @@ public class DBRecord {
 		}
 	}
 
-	public DBRecord(ArrayList<String> valuesList, String tableName) {
+	public Record(ArrayList<String> valuesList, String tableName) {
 		columns = Schema.getColumns(tableName);
 		values = new ArrayList<>();
 		for (int i = 0; i < valuesList.size(); i++) {
@@ -52,7 +50,7 @@ public class DBRecord {
 		}
 	}
 
-	public DBRecord() {
+	public Record() {
 		columns = new ArrayList<>();
 		values = new ArrayList<>();
 	}
@@ -127,8 +125,8 @@ public class DBRecord {
 		values.set(order, value);
 	}
 
-	public DBRecord getCopy() {
-		DBRecord record = new DBRecord();
+	public Record getCopy() {
+		Record record = new Record();
 		for (DataType value : values) {
 			record.values.add(value);
 		}

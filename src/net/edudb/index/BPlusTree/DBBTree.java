@@ -16,7 +16,7 @@ import net.edudb.operator.DBIterator;
 import net.edudb.statistics.Schema;
 import net.edudb.structure.DBColumn;
 import net.edudb.structure.DBIndex;
-import net.edudb.structure.DBRecord;
+import net.edudb.structure.Record;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,7 +24,7 @@ import java.util.HashMap;
 /**
  * Created by mohamed on 4/11/14.
  */
-public class DBBTree extends BTree<Integer, DBRecord> implements DBIndex {
+public class DBBTree extends BTree<Integer, Record> implements DBIndex {
 	/**
 	 * @uml.property name="tableName"
 	 * @uml.associationEnd
@@ -40,7 +40,7 @@ public class DBBTree extends BTree<Integer, DBRecord> implements DBIndex {
 		columnNames = Schema.getColumns(tableName);
 	}
 
-	public void insert(int key, DBRecord value) {
+	public void insert(int key, Record value) {
 		super.insert(key, value);
 	}
 
@@ -53,10 +53,10 @@ public class DBBTree extends BTree<Integer, DBRecord> implements DBIndex {
 	public DBIndex getCopy() {
 		DBBTree out = new DBBTree(tableName);
 		DBIterator iter = getIterator();
-		DBRecord record = (DBRecord) iter.first();
+		Record record = (Record) iter.first();
 		do {
 			out.insert(((DB_Type.DB_Int) record.getValue(0)).getNumber(), record.getCopy());
-			record = (DBRecord) iter.next();
+			record = (Record) iter.next();
 		} while (record != null);
 		return out;
 	}
@@ -71,7 +71,7 @@ public class DBBTree extends BTree<Integer, DBRecord> implements DBIndex {
 		for (int i = 0; i < lines.size(); i++) {
 			String[] line = lines.get(i).split(",");
 			Integer key = Integer.parseInt(line[0]);
-			DBRecord record = new DBRecord(line, tableName);
+			Record record = new Record(line, tableName);
 			this.insert(key, record);
 		}
 	}
@@ -94,7 +94,7 @@ public class DBBTree extends BTree<Integer, DBRecord> implements DBIndex {
 		tree.print();
 		System.out.println("copy");
 		copy.print();
-		((DBRecord) copy.getSmallest().getValue(0)).setValue(0, new DB_Type.DB_Int(5));
+		((Record) copy.getSmallest().getValue(0)).setValue(0, new DB_Type.DB_Int(5));
 		System.out.println("tree");
 		tree.print();
 		System.out.println("copy");

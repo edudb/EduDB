@@ -14,7 +14,7 @@ package net.edudb.operator;
 import net.edudb.index.BPlusTree.DBBTreeIterator;
 import net.edudb.operator.FilterOperator;
 import net.edudb.operator.Operator;
-import net.edudb.structure.DBRecord;
+import net.edudb.structure.Record;
 import net.edudb.transcation.Page;
 import net.edudb.transcation.PageRead;
 import net.edudb.transcation.Step;
@@ -42,10 +42,10 @@ public class UpdateOperator implements Operator{
         filterOperator.giveParameter(relationOperator);
         filterOperator.giveParameter(condition);
         DBBTreeIterator resultIterator = (DBBTreeIterator) filterOperator.execute();
-        DBRecord record = (DBRecord) resultIterator.first();
+        Record record = (Record) resultIterator.first();
         do{
             record.update(assignments);
-            record = (DBRecord) resultIterator.next();
+            record = (Record) resultIterator.next();
         }while (record != null);
         resultIterator.write();
         return resultIterator;

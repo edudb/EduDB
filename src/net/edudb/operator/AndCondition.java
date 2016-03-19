@@ -12,7 +12,7 @@ package net.edudb.operator;
 
 import java.util.ArrayList;
 
-import net.edudb.structure.DBRecord;
+import net.edudb.structure.Record;
 
 public class AndCondition implements DBMulCondition {
 
@@ -56,7 +56,7 @@ public class AndCondition implements DBMulCondition {
 	}
 
 	@Override
-	public boolean evaluate(DBRecord dbRecord) {
+	public boolean evaluate(Record dbRecord) {
 		return condition1.evaluate(dbRecord) && condition2.evaluate(dbRecord);
 	}
 }
