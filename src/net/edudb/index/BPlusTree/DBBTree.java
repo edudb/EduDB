@@ -17,9 +17,7 @@ import net.edudb.statistics.Schema;
 import net.edudb.structure.DBColumn;
 import net.edudb.structure.DBIndex;
 import net.edudb.structure.Record;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by mohamed on 4/11/14.

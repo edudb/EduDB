@@ -15,8 +15,8 @@ import java.util.Hashtable;
 import java.util.Iterator;
 
 import net.edudb.operator.Operator;
-import net.edudb.operator.UpdateOp;
 import net.edudb.operator.UpdateOperator;
+//import net.edudb.operator.UpdateOperator;
 
 public class DBTransactionManager {
 
@@ -31,8 +31,8 @@ public class DBTransactionManager {
 	}
 
 	public static void run(Operator op) {
-		if (op instanceof UpdateOp) {
-			updateTable((UpdateOp) op);
+		if (op instanceof UpdateOperator) {
+			updateTable((UpdateOperator) op);
 			System.out.println("DBTransactionManager (run): " + "#1");
 		} else {
 			System.out.println("DBTransactionManager (run): " + "#2");
@@ -52,7 +52,7 @@ public class DBTransactionManager {
 
 	}
 
-	public static void updateTable(UpdateOp updateOperator) {
+	public static void updateTable(UpdateOperator updateOperator) {
 		ArrayList<Step> steps = updateOperator.getSteps();
 		DBTransaction transaction = new DBTransaction();
 		transaction.init(steps);

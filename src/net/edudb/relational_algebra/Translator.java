@@ -311,7 +311,7 @@ public class Translator {
 					if (!required.empty()) {
 						if (required.peek().numOfParameters() == 1) {
 							DBParameter top = required.pop();
-							((DBMulCondition) top).giveParameter(x);
+							((DBMulCondition) top).setParameter(x);
 							x = (DBCond) top;
 						} else {
 							given = x;
@@ -319,8 +319,8 @@ public class Translator {
 					}
 				} else {
 					DBParameter top = required.pop();
-					((DBMulCondition) top).giveParameter(x);
-					((DBMulCondition) top).giveParameter(given);
+					((DBMulCondition) top).setParameter(x);
+					((DBMulCondition) top).setParameter(given);
 					x = (DBCond) top;
 					given = x;
 				}

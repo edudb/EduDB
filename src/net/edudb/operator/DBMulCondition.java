@@ -12,6 +12,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.operator;
 
 public interface DBMulCondition extends DBCond{
-    public void giveParameter(DBCond param);
+    public void setParameter(DBCond param);
     public DBCond[] getChildren();
 }

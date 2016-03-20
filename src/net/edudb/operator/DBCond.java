@@ -12,7 +12,7 @@ package net.edudb.operator;
 
 import net.edudb.structure.Record;
 
-public interface DBCond extends DBParameter{
+public interface DBCond extends DBParameter {
 
-    boolean evaluate(Record dbRecord);
+	boolean evaluate(Record dbRecord);
 }

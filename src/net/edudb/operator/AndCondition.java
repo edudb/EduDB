@@ -10,8 +10,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.operator;
 
-import java.util.ArrayList;
-
 import net.edudb.structure.Record;
 
 public class AndCondition implements DBMulCondition {
@@ -38,7 +36,7 @@ public class AndCondition implements DBMulCondition {
 	}
 
 	@Override
-	public void giveParameter(DBCond param) {
+	public void setParameter(DBCond param) {
 		if (condition1 == null) {
 			condition1 = param;
 		} else {

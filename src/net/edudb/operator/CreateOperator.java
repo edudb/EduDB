@@ -8,10 +8,8 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-
 package net.edudb.operator;
 
-//import gudusoft.gsqlparser.stmt.TCreateTableSqlStatement;
 import net.edudb.file_utility.FileManager;
 import net.edudb.operator.Operator;
 import net.edudb.statement.SQLCreateTableStatement;
@@ -23,60 +21,57 @@ import net.edudb.transcation.Page;
  */
 public class CreateOperator implements Operator {
 
-    /**
-     * @uml.property  name="statement"
-     * @uml.associationEnd  multiplicity="(1 1)"
-     */
-    private SQLCreateTableStatement statement;
+	/**
+	 * @uml.property name="statement"
+	 * @uml.associationEnd multiplicity="(1 1)"
+	 */
+	private SQLCreateTableStatement statement;
 
-    public CreateOperator(SQLCreateTableStatement statement){
-        this.statement = statement;
-    }
-    @Override
-    public DBResult execute() {
-    	
-//    	TCreateTableSqlStatement s = new TCreateTableSqlStatement(null);
-//    	s.getcol
-    	
-        System.out.println("executing create operation");
-        // add table to schema
-        String line = statement.getTableName().toString();
-        line += " "+ statement.getColumnListString();
-        System.out.println("@create operation " + line);
-        Schema.AddTable(line);
-        //create table file and folder
-        FileManager.createTable(statement.getTableName());
-        return null;
-    }
+	public CreateOperator(SQLCreateTableStatement statement) {
+		this.statement = statement;
+	}
 
-    @Override
-    public DBParameter[] getChildren() {
-        return new DBParameter[0];
-    }
+	@Override
+	public DBResult execute() {
 
-    @Override
-    public void giveParameter(DBParameter par) {
+		System.out.println("executing create operation");
+		// add table to schema
+		String line = statement.getTableName().toString();
+		line += " " + statement.getColumnListString();
+		System.out.println("@create operation " + line);
+		Schema.AddTable(line);
+		// create table file and folder
+		FileManager.createTable(statement.getTableName());
+		return null;
+	}
 
-    }
+	@Override
+	public DBParameter[] getChildren() {
+		return new DBParameter[0];
+	}
 
-    @Override
-    public void runStep(Page page) {
+	@Override
+	public void giveParameter(DBParameter par) {
 
-    }
+	}
 
-    @Override
-    public Page getPage() {
-        return null;
-    }
+	@Override
+	public void runStep(Page page) {
 
+	}
 
-    @Override
-    public void print() {
+	@Override
+	public Page getPage() {
+		return null;
+	}
 
-    }
+	@Override
+	public void print() {
 
-    @Override
-    public int numOfParameters() {
-        return 0;
-    }
+	}
+
+	@Override
+	public int numOfParameters() {
+		return 0;
+	}
 }

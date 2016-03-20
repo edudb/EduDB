@@ -10,6 +10,14 @@ public class SQLUpdateStatement implements SQLStatement {
 	public SQLUpdateStatement(TCustomSqlStatement tCustomSqlStatement) {
 		this.statement = (TUpdateSqlStatement) tCustomSqlStatement;
 	}
+	
+	public String getTargetTableString() {
+		return statement.getTargetTable().toString();
+	}
+	
+	public TUpdateSqlStatement getStatement() {
+		return statement;
+	}
 
 	@Override
 	public SQLStatementType statementType() {
