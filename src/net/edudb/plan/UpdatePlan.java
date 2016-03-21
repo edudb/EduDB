@@ -18,6 +18,7 @@ import gudusoft.gsqlparser.stmt.TUpdateSqlStatement;
 import net.edudb.data_type.DB_Type;
 import net.edudb.operator.*;
 import net.edudb.operator.Operator;
+import net.edudb.server.ServerWriter;
 import net.edudb.statement.SQLStatement;
 import net.edudb.statement.SQLUpdateStatement;
 import net.edudb.structure.DBColumn;
@@ -38,26 +39,23 @@ public class UpdatePlan implements Plan {
 			DBAssignment assignment1 = new DBAssignment(assignment.getStartToken().toString(),
 					assignment.getEndToken().toString(), tableName);
 			
-			System.out.println("UpdatePlanner (makePlan): " + assignment.getStartToken().toString());
-			System.out.println("UpdatePlanner (makePlan): " + assignment.getEndToken().toString());
-			
 			assignments.add(assignment1);
 		}
 
 		// extract conditions
-		System.out.println("UpdatePlanner (makePlan): " + statement.getWhereClause().getCondition().toString());
+		ServerWriter.getInstance().writeln("UpdatePlanner (makePlan): " + statement.getWhereClause().getCondition().toString());
 		
 		TExpression expression = statement.getWhereClause().getCondition();
 		
-		System.out.println("UpdatePlanner (makePlan): " + " Type -- " + expression.getExpressionType());
+		ServerWriter.getInstance().writeln("UpdatePlanner (makePlan): " + " Type -- " + expression.getExpressionType());
 		
 		if (expression.getExpressionType() == EExpressionType.simple_comparison_t) {
 			String leftString = expression.getLeftOperand().toString();
-			System.out.println("UpdatePlanner (makePlan): " + leftString);
+			ServerWriter.getInstance().writeln("UpdatePlanner (makePlan): " + leftString);
 			DBColumn column1 = new DBColumn(leftString, tableName);
 			TExpression right = expression.getRightOperand();
 			String rightString = right.toString();
-			System.out.println("UpdatePlanner (makePlan): " + rightString);
+			ServerWriter.getInstance().writeln("UpdatePlanner (makePlan): " + rightString);
 			if (right.getExpressionType() == EExpressionType.simple_constant_t) {
 				DB_Type.DB_Int constant = new DB_Type.DB_Int(rightString);
 				DBCondition condition = new DBCondition(column1, constant,
@@ -72,7 +70,7 @@ public class UpdatePlan implements Plan {
 				return update;
 			}
 		} else {
-			System.out.println("UpdatePlanner (makePlan): " + null);
+			ServerWriter.getInstance().writeln("UpdatePlanner (makePlan): " + null);
 		}
 		return null;
 	}

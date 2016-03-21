@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import net.edudb.server.ServerWriter;
+
 /**
  * Created by mohamed on 5/20/14.
  */
@@ -45,7 +47,7 @@ public class DBBufferManager {
 
 	public synchronized Page read(PageID pageID, boolean bModify) {
 		if (used.containsKey(pageID)) {
-			System.out.println("found" + (bModify ? " write" : " read"));
+			ServerWriter.getInstance().writeln("found" + (bModify ? " write" : " read"));
 			Page page1 = used.get(pageID);
 			page1 = page1.getCopy();
 			if (bModify) {
@@ -67,10 +69,10 @@ public class DBBufferManager {
 			readersCount.put(pageID, readersCount.get(pageID) + 1);
 			return page1;
 		} else {
-			System.out.println("not found");
+			ServerWriter.getInstance().writeln("not found");
 			Page page1 = empty.get(pageID);
 			if (used.size() == DBConfig.getMaximumUsedBufferSlots()) {
-				System.out.println("what ");
+				ServerWriter.getInstance().writeln("what ");
 				removeLRU();
 			}
 			allocate(pageID, page1);
@@ -86,7 +88,7 @@ public class DBBufferManager {
 	}
 
 	private void allocate(PageID pageId, Page page) {
-		System.out.println("buf" + page);
+		ServerWriter.getInstance().writeln("buf" + page);
 		page.allocate();
 		used.put(pageId, page);
 		locks.put(pageId, Page.LockState.free);
@@ -110,7 +112,7 @@ public class DBBufferManager {
 			ArrayList<Thread> threads = listeners.get(pageID);
 			for (Thread t : threads) {
 				synchronized (t) {
-					System.out.println(t.getName());
+					ServerWriter.getInstance().writeln(t.getName());
 					t.notify();
 				}
 			}
@@ -131,7 +133,7 @@ public class DBBufferManager {
 	}
 
 	private synchronized boolean removeLRU() {
-		System.out.println("lru " + used.size());
+		ServerWriter.getInstance().writeln("lru " + used.size());
 		Page toBeReplaced = null;
 		int min = Integer.MAX_VALUE;
 		int minIndex = -1;
@@ -140,8 +142,8 @@ public class DBBufferManager {
 		while (iter.hasNext()) {
 			Map.Entry pair = (Map.Entry) iter.next();
 			Page page1 = (Page) pair.getValue();
-			System.out.println(locks);
-			System.out.println(page1.getPageId());
+			ServerWriter.getInstance().writeln(locks);
+			ServerWriter.getInstance().writeln(page1.getPageId());
 			if (locks.get(page1.getPageId()) == Page.LockState.free && page1.getlastAccessed() < min) {
 				toBeReplaced = page1;
 				min = page1.getlastAccessed();
@@ -158,10 +160,10 @@ public class DBBufferManager {
 				toBeReplaced.write();
 			}
 			toBeReplaced.free();
-			System.out.println("lru " + used.size());
+			ServerWriter.getInstance().writeln("lru " + used.size());
 			return true;
 		}
-		System.out.println("lru " + used.size());
+		ServerWriter.getInstance().writeln("lru " + used.size());
 		return false;
 	}
 
@@ -180,7 +182,7 @@ public class DBBufferManager {
 
 		@Override
 		public void run() {
-			System.out.println("reader" + count);
+			ServerWriter.getInstance().writeln("reader" + count);
 			manager.read(id, false);
 			synchronized (this) {
 				try {
@@ -190,7 +192,7 @@ public class DBBufferManager {
 				}
 			}
 			manager.releasePage(id);
-			System.out.println("reader" + count + " released");
+			ServerWriter.getInstance().writeln("reader" + count + " released");
 		}
 	}
 
@@ -209,15 +211,15 @@ public class DBBufferManager {
 
 		@Override
 		public void run() {
-			System.out.println("writer" + count);
+			ServerWriter.getInstance().writeln("writer" + count);
 			Page read = manager.read(id, true);
 			if (read == null) {
 				try {
 					Thread thread = Thread.currentThread();
 					synchronized (thread) {
-						System.out.println("going to sleep ");
+						ServerWriter.getInstance().writeln("going to sleep ");
 						thread.wait();
-						System.out.println("sleepy ");
+						ServerWriter.getInstance().writeln("sleepy ");
 					}
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -231,9 +233,9 @@ public class DBBufferManager {
 					e.printStackTrace();
 				}
 			}
-			System.out.println("awake ");
+			ServerWriter.getInstance().writeln("awake ");
 			manager.releasePage(id);
-			System.out.println("writer " + count + " released");
+			ServerWriter.getInstance().writeln("writer " + count + " released");
 			// manager.write();
 		}
 	}
@@ -260,7 +262,7 @@ public class DBBufferManager {
 			} catch (Exception e) {
 
 			}
-			System.out.println(manager.used.size());
+			ServerWriter.getInstance().writeln(manager.used.size());
 			manager.removeLRU();
 		}
 	}

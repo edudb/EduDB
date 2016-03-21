@@ -20,13 +20,23 @@ public class ServerWriter {
 		this.context = context;
 	}
 	
-	public void write(String string) {
+	public void writeln(Object obj) {
 		if (context != null) {
-			ByteBuf buf = Unpooled.copiedBuffer(string+"\n", Charsets.UTF_8);
+			ByteBuf buf = Unpooled.copiedBuffer("edudb$ " + obj.toString()+"\n", Charsets.UTF_8);
 			
 			context.writeAndFlush(buf);
 		} else {
-			System.out.println(string);
+			System.out.println("edudb$ " + obj);
+		}
+	}
+	
+	public void write(Object obj) {
+		if (context != null) {
+			ByteBuf buf = Unpooled.copiedBuffer(obj.toString(), Charsets.UTF_8);
+			
+			context.writeAndFlush(buf);
+		} else {
+			System.out.print(obj);
 		}
 	}
 }

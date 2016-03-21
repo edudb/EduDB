@@ -29,6 +29,7 @@ import net.edudb.operator.ProjectOperator;
 import net.edudb.operator.RelationOperator;
 import net.edudb.operator.SelectColumns;
 import net.edudb.operator.SortOperator;
+import net.edudb.server.ServerWriter;
 import net.edudb.statistics.Schema;
 import net.edudb.structure.DBColumn;
 import ra.Term;
@@ -60,7 +61,7 @@ public class Translator {
 
 			// Term ra = Queries.getRaOf(Schema.getSchema(), sqlQuery);
 			Term ra = Queries.getRaOf(adipe.translate.ra.Schema.create(Schema.getSchema()), sqlQuery);
-			System.out.println("Translator (translate): " + "ra - " + ra);
+			ServerWriter.getInstance().writeln("Translator (translate): " + "ra - " + ra);
 			return Translator.extractOperations(ra.toString());
 		} catch (TranslationException e) {
 			e.printStackTrace();
@@ -74,7 +75,7 @@ public class Translator {
 	 */
 	public static Operator extractOperations(String cur) {
 
-		System.out.println("Translator (extractOperations): " + "ra - " + cur);
+		ServerWriter.getInstance().writeln("Translator (extractOperations): " + "ra - " + cur);
 
 		boolean first = true;
 		Operator out = null;
@@ -149,8 +150,8 @@ public class Translator {
 						count++;
 					}
 				}
-				System.out.println("Translator (extractOperations): " + "table - " + tableName);
-				System.out.println("Translator (extractOperations): " + "count - " + count);
+				ServerWriter.getInstance().writeln("Translator (extractOperations): " + "table - " + tableName);
+				ServerWriter.getInstance().writeln("Translator (extractOperations): " + "count - " + count);
 				// System.out.println("count " + count);
 				if (i < cur.length() - 1) {
 					cur = cur.substring(++i);

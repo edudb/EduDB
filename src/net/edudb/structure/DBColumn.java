@@ -14,6 +14,7 @@ package net.edudb.structure;
 import java.util.ArrayList;
 
 import net.edudb.operator.DBParameter;
+import net.edudb.server.ServerWriter;
 import net.edudb.statistics.Schema;
 
 /**
@@ -44,7 +45,7 @@ public class DBColumn implements DBParameter{
 
     @Override
     public void print() {
-        System.out.print(tableName + "." + order);
+    	ServerWriter.getInstance().write(tableName + "." + order);
         
     }
 

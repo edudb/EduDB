@@ -95,7 +95,7 @@ public class EBBucket implements EBPartitionedHashIndex {
 	public void print() {
 		for (int i = 0; i < this.freeSlot; ++i) {
 			EBIndex ebIndex = this.indexes[i];
-			System.out.println(ebIndex.toString());
+			ServerWriter.getInstance().writeln(ebIndex.toString());
 		}
 	}
 

@@ -13,6 +13,7 @@ package net.edudb.index.BPlusTree;
 import net.edudb.data_type.DB_Type;
 import net.edudb.file_utility.FileManager;
 import net.edudb.operator.DBIterator;
+import net.edudb.server.ServerWriter;
 import net.edudb.statistics.Schema;
 import net.edudb.structure.DBColumn;
 import net.edudb.structure.DBIndex;
@@ -88,14 +89,14 @@ public class DBBTree extends BTree<Integer, Record> implements DBIndex {
 		DBBTree tree = new DBBTree("persons");
 		tree.readTable();
 		DBBTree copy = (DBBTree) tree.getCopy();
-		System.out.println("tree");
+		ServerWriter.getInstance().writeln("tree");
 		tree.print();
-		System.out.println("copy");
+		ServerWriter.getInstance().writeln("copy");
 		copy.print();
 		((Record) copy.getSmallest().getValue(0)).setValue(0, new DB_Type.DB_Int(5));
-		System.out.println("tree");
+		ServerWriter.getInstance().writeln("tree");
 		tree.print();
-		System.out.println("copy");
+		ServerWriter.getInstance().writeln("copy");
 		copy.print();
 	}
 }

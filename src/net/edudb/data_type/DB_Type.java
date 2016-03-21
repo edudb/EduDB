@@ -10,6 +10,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.data_type;
 
+import net.edudb.server.ServerWriter;
 import net.edudb.structure.DBConst;
 
 /**
@@ -81,7 +82,7 @@ public class DB_Type {
 
 		@Override
 		public void print() {
-			System.out.print(number);
+			ServerWriter.getInstance().write(number);
 		}
 
 		@Override
@@ -128,7 +129,7 @@ public class DB_Type {
 
 		@Override
 		public void print() {
-			System.out.print(c);
+			ServerWriter.getInstance().write(c);
 		}
 
 		@Override

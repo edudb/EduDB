@@ -47,7 +47,7 @@ public class EBDirectoryTest {
 		
 		ArrayList<EBIndex> indexes = directory.getIndex(oldIndex);
 		
-		System.out.println(indexes.get(0));
+//		System.out.println(indexes.get(0));
 		
 		assertArrayEquals(new String[] {"d", "c"}, indexes.get(0).getValues());
 	}

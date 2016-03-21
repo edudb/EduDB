@@ -14,6 +14,7 @@ package net.edudb.plan;
 //import gudusoft.gsqlparser.stmt.TCreateTableSqlStatement;
 import net.edudb.operator.CreateOperator;
 import net.edudb.operator.Operator;
+import net.edudb.server.ServerWriter;
 import net.edudb.statement.SQLCreateTableStatement;
 import net.edudb.statement.SQLStatement;
 import net.edudb.statistics.Schema;
@@ -41,9 +42,8 @@ public class CreateTablePlan implements Plan {
 		
 		if (!Schema.chekTableExists(statement.getTableName().toString())) {
 			operator = new CreateOperator(statement);
-//			System.out.println("CreateTablePlan (makePlan): " + statement.getTableName());
 		} else {
-			System.out.println("CreateTablePlanner (makePlan): " + "table already exists");
+			ServerWriter.getInstance().writeln("CreateTablePlanner (makePlan): " + "table already exists");
 		}
 		return operator;
 	}

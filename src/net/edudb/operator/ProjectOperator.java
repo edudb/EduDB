@@ -12,6 +12,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.operator;
 
 import net.edudb.operator.Operator;
+import net.edudb.server.ServerWriter;
 import net.edudb.transcation.Page;
 
 /**
@@ -41,13 +42,13 @@ public class ProjectOperator implements Operator{
             iter.project(columns);
             return iter;
         }
-        System.out.println("project: 24 not iterator\n");
+        ServerWriter.getInstance().writeln("project: 24 not iterator\n");
         return null;
     }
 
     @Override
     public void print() {
-        System.out.print(execute());
+    	ServerWriter.getInstance().write(execute());
     }
 
     @Override

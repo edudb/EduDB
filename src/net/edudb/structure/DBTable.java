@@ -17,6 +17,7 @@ import net.edudb.index.BPlusTree.DBBTree;
 import net.edudb.index.BPlusTree.DBBTreeIterator;
 import net.edudb.operator.DBResult;
 import net.edudb.operator.SelectResult;
+import net.edudb.server.ServerWriter;
 
 public class DBTable {
 	// TODO initialize object
@@ -50,7 +51,7 @@ public class DBTable {
 	}
 
 	public DBIndex getPrimaryIndex() {
-		System.out.println("DBIndex (getPrimaryIndex): " + indices.get(0));
+		ServerWriter.getInstance().writeln("DBIndex (getPrimaryIndex): " + indices.get(0));
 		return indices.get(0);
 		// TODO primary is at index 0
 	}

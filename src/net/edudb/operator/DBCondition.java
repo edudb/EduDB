@@ -14,6 +14,7 @@ package net.edudb.operator;
 import gudusoft.gsqlparser.nodes.TExpression;
 import net.edudb.data_type.DB_Type;
 import net.edudb.data_type.DataType;
+import net.edudb.server.ServerWriter;
 import net.edudb.structure.DBColumn;
 import net.edudb.structure.DBConst;
 import net.edudb.structure.Record;
@@ -49,7 +50,7 @@ public class DBCondition implements DBCond {
     }
 
     public void print() {
-        System.out.print(column1.toString() + " " + op + " "
+    	ServerWriter.getInstance().write(column1.toString() + " " + op + " "
                 + column2.toString());
     }
 
@@ -82,9 +83,9 @@ public class DBCondition implements DBCond {
 
             }
         }*/
-        System.out.println(expression.getExpressionType());
-        System.out.println(expression.getLeftOperand().getExpressionType());
-        System.out.println(expression.getRightOperand().getExpressionType());
+    	ServerWriter.getInstance().writeln(expression.getExpressionType());
+    	ServerWriter.getInstance().writeln(expression.getLeftOperand().getExpressionType());
+    	ServerWriter.getInstance().writeln(expression.getRightOperand().getExpressionType());
         return null;
     }
 }

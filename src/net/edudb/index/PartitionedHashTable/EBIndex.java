@@ -10,6 +10,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.index.PartitionedHashTable;
 
+import net.edudb.server.ServerWriter;
+
 /**
  * 
  * @author Ahmed Abdul Badie
@@ -101,6 +103,6 @@ public class EBIndex {
 		String[] v2 = {"ahmed", null}; 
 		EBIndex i2 = new EBIndex(v2, "t", 1);
 		
-		System.out.println(i1.equals(i2));
+		ServerWriter.getInstance().writeln(i1.equals(i2));
 	}
 }

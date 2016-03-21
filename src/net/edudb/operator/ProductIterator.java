@@ -11,6 +11,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.operator;
 
 import net.edudb.index.BPlusTree.DBBTreeIterator;
+import net.edudb.server.ServerWriter;
 import net.edudb.structure.Record;
 
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ public class ProductIterator implements DBResult, DBIterator {
 
 	@Override
 	public void print() {
-		System.out.println(this);
+		ServerWriter.getInstance().writeln(this);
 	}
 
 	@Override

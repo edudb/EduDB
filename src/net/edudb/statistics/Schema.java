@@ -12,6 +12,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.statistics;
 
 import net.edudb.file_utility.FileManager;
+import net.edudb.server.ServerWriter;
 import net.edudb.structure.DBColumn;
 
 import java.util.ArrayList;
@@ -76,7 +77,7 @@ public class Schema {
         initSchema();
         putTable(line);
         line += System.lineSeparator();
-        System.out.println("new table");
+        ServerWriter.getInstance().writeln("new table");
         FileManager.addToFile(FileManager.getSchema(), line);
     }
 

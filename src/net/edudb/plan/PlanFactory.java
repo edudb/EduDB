@@ -11,6 +11,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.plan;
 
 import net.edudb.operator.Operator;
+import net.edudb.server.ServerWriter;
 import net.edudb.statement.SQLStatement;
 import net.edudb.statement.SQLStatementType;
 
@@ -35,7 +36,7 @@ public class PlanFactory implements Plan {
 	}
 
 	public void setPlanner(SQLStatementType statement) {
-		System.out.println("PlanFactory (setPlanner): " + statement);
+		ServerWriter.getInstance().writeln("PlanFactory (setPlanner): " + statement);
 		switch (statement) {
 		case SQLCreateTableStatement:
 			planner = new CreateTablePlan();
@@ -50,7 +51,7 @@ public class PlanFactory implements Plan {
 			planner = new UpdatePlan();
 			break;
 		default:
-			System.out.println("Sorry! such statement not supported");
+			ServerWriter.getInstance().writeln("Sorry! such statement not supported");
 		}
 	}
 }

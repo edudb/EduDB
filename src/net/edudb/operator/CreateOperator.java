@@ -12,6 +12,7 @@ package net.edudb.operator;
 
 import net.edudb.file_utility.FileManager;
 import net.edudb.operator.Operator;
+import net.edudb.server.ServerWriter;
 import net.edudb.statement.SQLCreateTableStatement;
 import net.edudb.statistics.Schema;
 import net.edudb.transcation.Page;
@@ -34,11 +35,11 @@ public class CreateOperator implements Operator {
 	@Override
 	public DBResult execute() {
 
-		System.out.println("executing create operation");
+		ServerWriter.getInstance().writeln("executing create operation");
 		// add table to schema
 		String line = statement.getTableName().toString();
 		line += " " + statement.getColumnListString();
-		System.out.println("@create operation " + line);
+		ServerWriter.getInstance().writeln("@create operation " + line);
 		Schema.AddTable(line);
 		// create table file and folder
 		FileManager.createTable(statement.getTableName());

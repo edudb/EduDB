@@ -13,6 +13,7 @@ package net.edudb.operator;
 import net.edudb.index.BPlusTree.DBBTreeIterator;
 import net.edudb.operator.FilterOperator;
 import net.edudb.operator.Operator;
+import net.edudb.server.ServerWriter;
 import net.edudb.structure.Record;
 import net.edudb.transcation.Page;
 import net.edudb.transcation.PageRead;
@@ -85,8 +86,8 @@ public class UpdateOperator implements Operator {
 
 	public void runStep(Page page) {
 		this.page = page;
-		System.out.println("run");
-		System.out.println(page);
+		ServerWriter.getInstance().writeln("run");
+		ServerWriter.getInstance().writeln(page);
 		FilterOperator filterOperator = new FilterOperator();
 		filterOperator.giveParameter(page.getData());
 		filterOperator.giveParameter(condition);

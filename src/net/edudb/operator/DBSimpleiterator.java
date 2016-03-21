@@ -13,6 +13,7 @@ package net.edudb.operator;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
+import net.edudb.server.ServerWriter;
 import net.edudb.structure.Record;
 
 public class DBSimpleiterator implements DBResult, ListIterator, DBIterator {
@@ -38,7 +39,7 @@ public class DBSimpleiterator implements DBResult, ListIterator, DBIterator {
 
 	@Override
 	public void print() {
-		System.out.println(this);
+		ServerWriter.getInstance().writeln(this);
 	}
 
 	@Override

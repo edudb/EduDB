@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 import net.edudb.operator.DBParameter;
 import net.edudb.operator.Operator;
+import net.edudb.server.ServerWriter;
 
 /**
  * A B+ tree Since the structures and behaviors between internal node and external node are different,  so there are two different classes for each kind of node.
@@ -101,10 +102,10 @@ public class BTree<TKey extends Comparable<TKey>, TValue> {
                     lower.add( child );
             }
         }
-        System.out.print(cur.toString() + " ");
+        ServerWriter.getInstance().write(cur.toString() + " ");
         upper.remove(0);
         if(upper.isEmpty()){
-            System.out.print("\n");
+        	ServerWriter.getInstance().write("\n");
             upper = lower;
             lower = new ArrayList<>();
         }

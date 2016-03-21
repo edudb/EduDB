@@ -12,6 +12,7 @@ package net.edudb.structure;
 
 import java.util.HashMap;
 
+import net.edudb.server.ServerWriter;
 import net.edudb.statistics.Schema;
 
 /**
@@ -27,7 +28,7 @@ public class DataManager {
 	}
 
 	public static void size() {
-		System.out.println((tables == null) ? "null" : tables.size());
+		ServerWriter.getInstance().writeln((tables == null) ? "null" : tables.size());
 	}
 
 	public static DBTable getTable(String tableName) {
@@ -42,7 +43,7 @@ public class DataManager {
 				return table;
 			}
 		} else {// table doesn't exist
-			System.out.println("table " + tableName + " is not in schema");
+			ServerWriter.getInstance().writeln("table " + tableName + " is not in schema");
 			return null;
 		}
 	}

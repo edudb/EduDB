@@ -12,6 +12,8 @@ package net.edudb.index.PartitionedHashTable;
 
 import java.util.ArrayList;
 
+import net.edudb.server.ServerWriter;
+
 /**
  * 
  * @author Ahmed Abdul Badie
@@ -220,16 +222,14 @@ public class EBDirectory implements EBPartitionedHashIndex {
 		if (isUniqueEntry(oldIndex)) {
 			EBBucketList list = bucketListArray[entryNumber];
 			if (areEquivalentHashes(oldIndex, newIndex)) {
-				System.out.println("YES");
 				if (list != null) {
 					list.updateIndex(oldIndex, newIndex);
 				}
 			}
 		}
 		if (!isUniqueEntry(oldIndex) || !areEquivalentHashes(oldIndex, newIndex)) {
-			System.out.println("NO");
 			ArrayList<EBIndex> indexList = this.getIndex(oldIndex);
-			System.out.println(indexList.get(0));
+//			ServerWriter.getInstance().write(indexList.get(0));
 			for (EBIndex ebIndex : indexList) {
 				ebIndex.setValues(newIndex.getValues());
 				this.addIndex(ebIndex);

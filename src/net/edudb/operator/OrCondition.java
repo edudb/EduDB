@@ -10,6 +10,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.operator;
 
+import net.edudb.server.ServerWriter;
 import net.edudb.structure.Record;
 
 /**
@@ -34,7 +35,7 @@ public class OrCondition implements DBMulCondition {
 
 	@Override
 	public void print() {
-		System.out.println("OR");
+		ServerWriter.getInstance().writeln("OR");
 	}
 
 	@Override

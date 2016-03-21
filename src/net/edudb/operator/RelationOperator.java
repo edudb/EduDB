@@ -11,6 +11,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.operator;
 
 import net.edudb.operator.Operator;
+import net.edudb.server.ServerWriter;
 import net.edudb.structure.DBTable;
 import net.edudb.structure.DataManager;
 import net.edudb.transcation.Page;
@@ -41,7 +42,7 @@ public class RelationOperator implements Operator {
 
 	@Override
 	public void print() {
-		System.out.print(execute());
+		ServerWriter.getInstance().write(execute());
 	}
 
 	@Override

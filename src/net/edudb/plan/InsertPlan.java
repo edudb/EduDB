@@ -30,8 +30,6 @@ public class InsertPlan implements Plan {
     public Operator makePlan(SQLStatement sqlStatement) {
 //        TInsertSqlStatement statement = (TInsertSqlStatement) tCustomSqlStatement;
         //TODO read column list
-//        TMultiTargetList values = statement.getValues();
-//        System.out.println("InsertPlanner (makePlan): " + values.toString());
     	SQLInsertStatement statement = (SQLInsertStatement) sqlStatement;
         Operator insert = new InsertOperator(statement);
         return insert;

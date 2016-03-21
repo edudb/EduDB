@@ -11,6 +11,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.operator;
 
 import net.edudb.operator.Operator;
+import net.edudb.server.ServerWriter;
 import net.edudb.transcation.Page;
 
 public class FilterOperator implements Operator {
@@ -43,13 +44,13 @@ public class FilterOperator implements Operator {
 			iterator.filter(condition);
 			return iterator;
 		}
-		System.out.println("filter: not iterator\n");
+		ServerWriter.getInstance().writeln("filter: not iterator\n");
 		return null;
 	}
 
 	@Override
 	public void print() {
-		System.out.print(execute());
+		ServerWriter.getInstance().write(execute());
 	}
 
 	@Override

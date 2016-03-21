@@ -19,6 +19,7 @@ import net.edudb.exception.DBEngineException;
 import net.edudb.operator.Operator;
 import net.edudb.operator.UpdateOperator;
 //import net.edudb.operator.UpdateOperator;
+import net.edudb.server.ServerWriter;
 
 public class DBTransactionManager {
 
@@ -35,9 +36,9 @@ public class DBTransactionManager {
 	public static void run(Operator op) {
 		if (op instanceof UpdateOperator) {
 			updateTable((UpdateOperator) op);
-			System.out.println("DBTransactionManager (run): " + "#1");
+			ServerWriter.getInstance().writeln("DBTransactionManager (run): " + "#1");
 		} else {
-			System.out.println("DBTransactionManager (run): " + "#2");
+			ServerWriter.getInstance().writeln("DBTransactionManager (run): " + "#2");
 			op.print();
 		}
 	}

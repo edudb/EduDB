@@ -14,6 +14,7 @@ import net.edudb.operator.DBCond;
 import net.edudb.operator.DBIterator;
 import net.edudb.operator.DBResult;
 import net.edudb.operator.SelectColumns;
+import net.edudb.server.ServerWriter;
 import net.edudb.structure.Record;
 
 import java.util.ArrayList;
@@ -152,7 +153,7 @@ public class DBBTreeIterator implements ListIterator, DBResult, DBIterator {
 
 	@Override
 	public void print() {
-		System.out.print(this);
+		ServerWriter.getInstance().write(this);
 	}
 
 	@Override
@@ -168,10 +169,10 @@ public class DBBTreeIterator implements ListIterator, DBResult, DBIterator {
 		cur = tree.getSmallest();
 
 		if (cur == null) {
-			System.out.println("1");
+			ServerWriter.getInstance().writeln("1");
 		}
 		if (cur.getValue(0) == null) {
-			System.out.println(cur);
+			ServerWriter.getInstance().writeln(cur);
 		}
 		if (!((Record) cur.getValue(0)).evaluate(conditions).equals(""))
 			return cur.getValue(0);

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import net.edudb.data_type.DB_Type;
 import net.edudb.operator.Operator;
+import net.edudb.server.ServerWriter;
 import net.edudb.statement.SQLInsertStatement;
 import net.edudb.structure.DBIndex;
 import net.edudb.structure.Record;
@@ -38,10 +39,10 @@ public class InsertOperator implements Operator {
 
 	@Override
 	public DBResult execute() {
-		System.out.println("executing insert operation");
+		ServerWriter.getInstance().writeln("executing insert operation");
 		DBTable table = DataManager.getTable(statement.getTargetTableString());
 		if (table == null) {
-			System.out.println("table does not exist");
+			ServerWriter.getInstance().writeln("table does not exist");
 			return null;
 		}
 		DBIndex index = table.getPrimaryIndex();

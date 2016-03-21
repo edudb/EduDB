@@ -16,6 +16,7 @@ import gudusoft.gsqlparser.ESqlStatementType;
 import gudusoft.gsqlparser.TGSqlParser;
 import net.edudb.operator.Operator;
 import net.edudb.plan.PlanFactory;
+import net.edudb.server.ServerWriter;
 import net.edudb.statement.SQLStatement;
 import net.edudb.statement.SQLStatementFactory;
 import net.edudb.statement.SQLStatementType;
@@ -56,11 +57,11 @@ public class Parser {
 				DBTransactionManager.run(plan);
 
 				if (statement.statementType() != SQLStatementType.SQLSelectStatement) {
-					System.out.println("Parser (parseSQL): " + plan.execute());
+					ServerWriter.getInstance().writeln("Parser (parseSQL): " + plan.execute());
 				}
 			}
 		} else {
-			System.out.println(sqlparser.getErrormessage());
+			ServerWriter.getInstance().writeln(sqlparser.getErrormessage());
 		}
 	}
 }

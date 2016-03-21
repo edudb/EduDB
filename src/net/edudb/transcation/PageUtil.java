@@ -11,6 +11,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.transcation;
 
 import net.edudb.operator.DBResult;
+import net.edudb.server.ServerWriter;
 import net.edudb.statistics.Schema;
 import net.edudb.structure.DBTable;
 
@@ -29,7 +30,7 @@ public class PageUtil {
 		PageID id = tables.get(tableName);
 		if (id != null)
 			return id;
-		System.out.println("table " + tableName + " does not exist");
+		ServerWriter.getInstance().writeln("table " + tableName + " does not exist");
 		return null;
 	}
 
