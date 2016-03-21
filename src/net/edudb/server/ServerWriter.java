@@ -22,11 +22,11 @@ public class ServerWriter {
 	
 	public void writeln(Object obj) {
 		if (context != null) {
-			ByteBuf buf = Unpooled.copiedBuffer("edudb$ " + obj.toString()+"\n", Charsets.UTF_8);
+			ByteBuf buf = Unpooled.copiedBuffer(obj.toString()+"\n", Charsets.UTF_8);
 			
 			context.writeAndFlush(buf);
 		} else {
-			System.out.println("edudb$ " + obj);
+			System.out.println(obj);
 		}
 	}
 	

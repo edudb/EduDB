@@ -8,25 +8,37 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+package net.edudb.page;
 
-package net.edudb.operator;
+import net.edudb.operator.Operator;
+import net.edudb.server.ServerWriter;
+import net.edudb.transcation.BufferManager;
+import net.edudb.transcation.TransactionManager;
+import net.edudb.transcation.Step;
 
-import java.util.ArrayList;
+public class PageRead extends Step {
+	private Operator operator;
+	private String tableName;
+	private boolean bModify;
 
-import net.edudb.structure.Record;
+	public PageRead(Operator operator, String tableName) {
+		this.operator = operator;
+	}
 
-public class SelectResult implements DBResult{
-    /**
-     * @uml.property  name="data"
-     */
-    public ArrayList<Record> data;
+	public PageRead(Operator operator, String tableName, boolean bModify) {
+		this.operator = operator;
+		this.tableName = tableName;
+		this.bModify = bModify;
+	}
 
-    @Override
-    public void print() {
-    }
+	@Override
+	public void execute() {
+		PageID pageID = PageUtil.getPageID(tableName);
+		BufferManager bufferManager = TransactionManager.getBufferManager();
 
-    @Override
-    public int numOfParameters() {
-        return 0;
-    }
+		Page page = bufferManager.read(pageID, bModify);
+		ServerWriter.getInstance().writeln("PageRead (execute): " + page);
+//		page.print();
+		operator.runStep(page);
+	}
 }

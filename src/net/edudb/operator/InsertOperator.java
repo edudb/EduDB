@@ -14,13 +14,13 @@ import java.util.ArrayList;
 
 import net.edudb.data_type.DB_Type;
 import net.edudb.operator.Operator;
+import net.edudb.page.Page;
 import net.edudb.server.ServerWriter;
 import net.edudb.statement.SQLInsertStatement;
 import net.edudb.structure.DBIndex;
 import net.edudb.structure.Record;
 import net.edudb.structure.DBTable;
 import net.edudb.structure.DataManager;
-import net.edudb.transcation.Page;
 
 /**
  * Created by mohamed on 4/11/14.

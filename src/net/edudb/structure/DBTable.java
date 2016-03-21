@@ -16,7 +16,7 @@ import net.edudb.index.BPlusTree.BTree;
 import net.edudb.index.BPlusTree.DBBTree;
 import net.edudb.index.BPlusTree.DBBTreeIterator;
 import net.edudb.operator.DBResult;
-import net.edudb.operator.SelectResult;
+//import net.edudb.operator.SelectResult;
 import net.edudb.server.ServerWriter;
 
 public class DBTable {

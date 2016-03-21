@@ -12,10 +12,10 @@ package net.edudb.operator;
 
 import net.edudb.file_utility.FileManager;
 import net.edudb.operator.Operator;
+import net.edudb.page.Page;
 import net.edudb.server.ServerWriter;
 import net.edudb.statement.SQLCreateTableStatement;
 import net.edudb.statistics.Schema;
-import net.edudb.transcation.Page;
 
 /**
  * Created by mohamed on 4/1/14.

@@ -1,7 +1,9 @@
 package net.edudb.block;
 
+import net.edudb.page.Page;
+
 public interface BlockReader {
 
-	public Object read(String blockName);
+	public Page read(String blockName);
 	
 }

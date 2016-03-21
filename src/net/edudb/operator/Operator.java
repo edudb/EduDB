@@ -11,7 +11,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.operator;
 
-import net.edudb.transcation.Page;
+import net.edudb.page.Page;
 
 public interface Operator extends DBParameter{
 

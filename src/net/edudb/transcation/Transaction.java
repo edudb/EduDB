@@ -10,47 +10,25 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.transcation;
 
-import net.edudb.operator.DBResult;
-import net.edudb.server.ServerWriter;
-import net.edudb.statistics.Schema;
-import net.edudb.structure.DBTable;
-
-import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.Vector;
 
-public class PageUtil {
-	private static HashMap<String, PageID> tables;
-	private static boolean initialized;
+import net.edudb.operator.DBResult;
 
-	public static PageID getPageID(String tableName) {
-		init();
-		PageID id = tables.get(tableName);
-		if (id != null)
-			return id;
-		ServerWriter.getInstance().writeln("table " + tableName + " does not exist");
-		return null;
+public class Transaction implements Runnable {
+
+	private ArrayList<Step> vSteps;
+	private long ID;
+
+	public void init(ArrayList<Step> vSteps) {
+		this.vSteps = vSteps;
 	}
 
-	private static void init() {
-		if (!initialized) {
-			initialized = true;
-			Set<String> tableNames = Schema.getTableNames();
-			tables = new HashMap<>();
-			DBBufferManager manager = DBTransactionManager.getBufferManager();
-			Iterator iter = tableNames.iterator();
-			HashMap<PageID, Page> empty = new HashMap<>();
-			while (iter.hasNext()) {
-				String name = (String) iter.next();
-				Page page = new Page(name);
-				PageID id = new PageID();
-				page.setPageID(id);
-				tables.put(name, id);
-				empty.put(id, page);
-			}
-			manager.initEmpty(empty);
+	@Override
+	public void run() {
+		for (int i = 0; i < vSteps.size(); i++) {
+			Step step = vSteps.get(i);
+			step.execute();
 		}
 	}
 }

@@ -18,12 +18,16 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import net.edudb.page.Page;
+import net.edudb.page.PageID;
 import net.edudb.server.ServerWriter;
 
 /**
  * Created by mohamed on 5/20/14.
  */
-public class DBBufferManager {
+public class BufferManager {
+	
+	private static BufferManager instance = new BufferManager();
 
 	HashMap<PageID, Page> used;
 	HashMap<PageID, Page> empty;
@@ -32,8 +36,12 @@ public class DBBufferManager {
 	HashMap<PageID, Integer> readersCount;
 	HashMap<PageID, Page.PageState> states;
 
-	public DBBufferManager() {
+	private BufferManager() {
 		init();
+	}
+	
+	public static BufferManager getInstance() {
+		return instance;
 	}
 
 	public void init() {
@@ -170,10 +178,10 @@ public class DBBufferManager {
 	public static class Reader implements Runnable {
 
 		private final PageID id;
-		private final DBBufferManager manager;
+		private final BufferManager manager;
 		private int count;
 
-		public Reader(PageID id, DBBufferManager manager, int count) {
+		public Reader(PageID id, BufferManager manager, int count) {
 
 			this.id = id;
 			this.manager = manager;
@@ -199,10 +207,10 @@ public class DBBufferManager {
 	public static class Writer implements Runnable {
 
 		private final PageID id;
-		private final DBBufferManager manager;
+		private final BufferManager manager;
 		private int count;
 
-		public Writer(PageID id, DBBufferManager manager, int count) {
+		public Writer(PageID id, BufferManager manager, int count) {
 
 			this.id = id;
 			this.manager = manager;
@@ -241,7 +249,7 @@ public class DBBufferManager {
 	}
 
 	public static void main(String[] args) {
-		DBBufferManager manager = new DBBufferManager();
+		BufferManager manager = new BufferManager();
 		manager.init();
 		Page page1 = new Page();
 		PageID id1 = new PageID();

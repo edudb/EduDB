@@ -9,28 +9,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 */
 
 
-package net.edudb.transcation;
-
-import net.edudb.operator.DBParameter;
-import net.edudb.operator.Operator;
-
-public class PageWrite extends Step{
-    private Operator operator;
-
-    public PageWrite(Operator operator) {
-        this.operator = operator;
-    }
+package net.edudb.page;
 
 
-    public void giveParameter(DBParameter par){
-        operator.giveParameter(par);
-    }
-
-    @Override
-    public void execute() {
-        Page page = operator.getPage();
-        DBBufferManager bufferManager = DBTransactionManager.getBufferManager();
-        bufferManager.write(page.getPageId(), page);
-        page.print();
-    }
+public class PageID {
 }

@@ -9,12 +9,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 */
 
 
-package net.edudb.transcation;
+package net.edudb.page;
 
 import net.edudb.index.BPlusTree.DBBTree;
 import net.edudb.operator.DBResult;
 import net.edudb.structure.DBIndex;
 import net.edudb.structure.DBTable;
+import net.edudb.transcation.TimeUtil;
 
 /**
  * Created by mohamed on 5/20/14.

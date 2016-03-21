@@ -12,7 +12,6 @@ package net.edudb.user_interface;
 
 import adipe.translate.TranslationException;
 import gudusoft.gsqlparser.EDbVendor;
-import gudusoft.gsqlparser.ESqlStatementType;
 import gudusoft.gsqlparser.TGSqlParser;
 import net.edudb.operator.Operator;
 import net.edudb.plan.PlanFactory;
@@ -20,8 +19,8 @@ import net.edudb.server.ServerWriter;
 import net.edudb.statement.SQLStatement;
 import net.edudb.statement.SQLStatementFactory;
 import net.edudb.statement.SQLStatementType;
-import net.edudb.transcation.DBBufferManager;
-import net.edudb.transcation.DBTransactionManager;
+import net.edudb.transcation.BufferManager;
+import net.edudb.transcation.TransactionManager;
 
 public class Parser {
 	/**
@@ -38,12 +37,12 @@ public class Parser {
 	public Parser() {
 		sqlparser = new TGSqlParser(EDbVendor.dbvoracle);
 		planFactory = new PlanFactory();
-		DBBufferManager bufferManager = new DBBufferManager();
-		DBTransactionManager.init(bufferManager);
+		BufferManager bufferManager = BufferManager.getInstance();
+		TransactionManager.init(bufferManager);
 	}
 
 	public void parseSQL(String strSQL) throws TranslationException {
-		sqlparser.sqltext = strSQL;
+		sqlparser.setSqltext(strSQL);
 		int ret = sqlparser.parse();
 		if (ret == 0) {
 			for (int i = 0; i < sqlparser.sqlstatements.size(); i++) {
@@ -54,7 +53,7 @@ public class Parser {
 					return;
 				}
 				
-				DBTransactionManager.run(plan);
+				TransactionManager.run(plan);
 
 				if (statement.statementType() != SQLStatementType.SQLSelectStatement) {
 					ServerWriter.getInstance().writeln("Parser (parseSQL): " + plan.execute());

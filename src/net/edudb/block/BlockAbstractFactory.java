@@ -1,5 +1,9 @@
 package net.edudb.block;
 
-public class BlockAbstractFactory {
+public abstract class BlockAbstractFactory {
+	
+	public abstract BlockReader getReader();
+	
+	public abstract BlockWriter getWrtier();
 
 }

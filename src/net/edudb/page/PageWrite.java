@@ -8,27 +8,32 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.transcation;
 
-import java.util.ArrayList;
-import java.util.Vector;
+package net.edudb.page;
 
-import net.edudb.operator.DBResult;
+import net.edudb.operator.DBParameter;
+import net.edudb.operator.Operator;
+import net.edudb.transcation.BufferManager;
+import net.edudb.transcation.TransactionManager;
+import net.edudb.transcation.Step;
 
-public class DBTransaction implements Runnable {
+public class PageWrite extends Step{
+    private Operator operator;
 
-	private ArrayList<Step> vSteps;
-	private long ID;
+    public PageWrite(Operator operator) {
+        this.operator = operator;
+    }
 
-	public void init(ArrayList<Step> vSteps) {
-		this.vSteps = vSteps;
-	}
 
-	@Override
-	public void run() {
-		for (int i = 0; i < vSteps.size(); i++) {
-			Step step = vSteps.get(i);
-			step.execute();
-		}
-	}
+    public void giveParameter(DBParameter par){
+        operator.giveParameter(par);
+    }
+
+    @Override
+    public void execute() {
+        Page page = operator.getPage();
+        BufferManager bufferManager = TransactionManager.getBufferManager();
+        bufferManager.write(page.getPageId(), page);
+        page.print();
+    }
 }

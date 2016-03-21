@@ -21,15 +21,15 @@ import net.edudb.operator.UpdateOperator;
 //import net.edudb.operator.UpdateOperator;
 import net.edudb.server.ServerWriter;
 
-public class DBTransactionManager {
+public class TransactionManager {
 
-	private static DBBufferManager bufferManager;
+	private static BufferManager bufferManager;
 
-	public static void init(DBBufferManager manager) {
+	public static void init(BufferManager manager) {
 		bufferManager = manager;
 	}
 
-	public static DBBufferManager getBufferManager() {
+	public static BufferManager getBufferManager() {
 		return bufferManager;
 	}
 
@@ -57,7 +57,7 @@ public class DBTransactionManager {
 
 	public static void updateTable(UpdateOperator updateOperator) {
 		ArrayList<Step> steps = updateOperator.getSteps();
-		DBTransaction transaction = new DBTransaction();
+		Transaction transaction = new Transaction();
 		transaction.init(steps);
 		Thread thread = new Thread(transaction);
 		thread.run();

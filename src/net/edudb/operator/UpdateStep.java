@@ -12,8 +12,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.operator;
 
 import net.edudb.operator.Operator;
+import net.edudb.page.Page;
 import net.edudb.structure.Record;
-import net.edudb.transcation.Page;
 
 import java.util.ArrayList;
 

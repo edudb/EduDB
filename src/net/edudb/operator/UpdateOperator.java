@@ -13,11 +13,11 @@ package net.edudb.operator;
 import net.edudb.index.BPlusTree.DBBTreeIterator;
 import net.edudb.operator.FilterOperator;
 import net.edudb.operator.Operator;
+import net.edudb.page.Page;
+import net.edudb.page.PageRead;
+import net.edudb.page.PageWrite;
 import net.edudb.server.ServerWriter;
 import net.edudb.structure.Record;
-import net.edudb.transcation.Page;
-import net.edudb.transcation.PageRead;
-import net.edudb.transcation.PageWrite;
 import net.edudb.transcation.Step;
 
 import java.util.ArrayList;
