@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 
+import net.edudb.exception.DBAppException;
+import net.edudb.exception.DBEngineException;
 import net.edudb.operator.Operator;
 import net.edudb.operator.UpdateOperator;
 //import net.edudb.operator.UpdateOperator;

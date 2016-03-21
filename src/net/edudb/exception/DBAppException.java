@@ -9,11 +9,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 */
 
 
-package net.edudb.transcation;
+package net.edudb.exception;
 
-
-public class TupleInsert extends Step{
-    @Override
-    public void execute() {
-    }
+/**
+ * Created by mohamed on 5/20/14.
+ */
+public class DBAppException extends Exception {
 }

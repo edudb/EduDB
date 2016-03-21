@@ -24,5 +24,6 @@
 	<classpathentry kind="lib" path="/Users/ahmedabadie/Documents/Education/Eighth Semester/Project/EduDB/libs/xstream-1.4.7.jar"/>
 	<classpathentry kind="lib" path="/Users/ahmedabadie/Documents/Education/Eighth Semester/Project/EduDB/libs/bitmap-index.jar"/>
 	<classpathentry kind="lib" path="/Users/ahmedabadie/Documents/Education/Eighth Semester/Project/EduDB/libs/JavaEWAH-0.6.12.jar"/>
+	<classpathentry kind="lib" path="/Users/ahmedabadie/Documents/Education/Eighth Semester/Project/EduDB/libs/netty-all-4.0.34.Final.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

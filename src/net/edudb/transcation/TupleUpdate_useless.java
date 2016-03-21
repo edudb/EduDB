@@ -1,3 +1,4 @@
+package net.edudb.transcation;
 ///*
 //EduDB is made available under the OSI-approved MIT license.
 //
@@ -8,42 +9,12 @@
 //THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //*/
 //
+//
 //package net.edudb.transcation;
 //
-//import java.util.Hashtable;
 //
-///**
-// * Created by mohamed on 5/20/14.
-// */
-//public class DBLogManager {
-//
-//	public void init() {
-//
-//	}
-//
-//	public synchronized void flushLog() {
-//
-//	}
-//
-//	public synchronized void recordStart(String strTransID) {
-//
-//	}
-//
-//	public synchronized void recordUpdate(String strTransID, PageID page, String strKeyValue, String strColName,
-//			Object objOld, Object objNew) {
-//
-//	}
-//
-//	public synchronized void recordInsert(String strTransID, PageID page, Hashtable<String, String> htblColValues) {
-//
-//	}
-//
-//	public synchronized void recordDelete(String strTransID, PageID page, String strKeyValue,
-//			Hashtable<String, String> htblColValues) {
-//
-//	}
-//
-//	public synchronized void recordCommit(String strTransID) {
-//
-//	}
+//public class TupleUpdate extends Step{
+//    @Override
+//    public void execute() {
+//    }
 //}

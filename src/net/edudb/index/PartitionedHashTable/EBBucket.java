@@ -12,6 +12,8 @@ package net.edudb.index.PartitionedHashTable;
 
 import java.util.ArrayList;
 
+import net.edudb.server.ServerWriter;
+
 /**
  * 
  * @author Ahmed Abdul Badie
