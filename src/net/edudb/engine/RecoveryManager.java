@@ -1,3 +1,4 @@
+package net.edudb.engine;
 /*
 EduDB is made available under the OSI-approved MIT license.
 

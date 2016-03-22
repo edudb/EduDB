@@ -10,12 +10,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.page;
 
+import net.edudb.engine.BufferManager;
+import net.edudb.engine.TransactionManager;
 import net.edudb.operator.DBResult;
 import net.edudb.server.ServerWriter;
 import net.edudb.statistics.Schema;
 import net.edudb.structure.DBTable;
-import net.edudb.transcation.BufferManager;
-import net.edudb.transcation.TransactionManager;
 
 import java.awt.*;
 import java.util.ArrayList;

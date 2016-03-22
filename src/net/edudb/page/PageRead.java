@@ -10,10 +10,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.page;
 
+import net.edudb.engine.BufferManager;
+import net.edudb.engine.TransactionManager;
 import net.edudb.operator.Operator;
 import net.edudb.server.ServerWriter;
-import net.edudb.transcation.BufferManager;
-import net.edudb.transcation.TransactionManager;
 import net.edudb.transcation.Step;
 
 public class PageRead extends Step {

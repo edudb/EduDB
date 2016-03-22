@@ -13,14 +13,14 @@ package net.edudb.user_interface;
 import adipe.translate.TranslationException;
 import gudusoft.gsqlparser.EDbVendor;
 import gudusoft.gsqlparser.TGSqlParser;
+import net.edudb.engine.BufferManager;
+import net.edudb.engine.TransactionManager;
 import net.edudb.operator.Operator;
 import net.edudb.plan.PlanFactory;
 import net.edudb.server.ServerWriter;
 import net.edudb.statement.SQLStatement;
 import net.edudb.statement.SQLStatementFactory;
 import net.edudb.statement.SQLStatementType;
-import net.edudb.transcation.BufferManager;
-import net.edudb.transcation.TransactionManager;
 
 public class Parser {
 	/**
@@ -38,7 +38,7 @@ public class Parser {
 		sqlparser = new TGSqlParser(EDbVendor.dbvoracle);
 		planFactory = new PlanFactory();
 		BufferManager bufferManager = BufferManager.getInstance();
-		TransactionManager.init(bufferManager);
+		TransactionManager.getInstance().init(bufferManager);
 	}
 
 	public void parseSQL(String strSQL) throws TranslationException {

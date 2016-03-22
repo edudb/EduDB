@@ -43,11 +43,11 @@ public class UpdatePlan implements Plan {
 		}
 
 		// extract conditions
-		ServerWriter.getInstance().writeln("UpdatePlanner (makePlan): " + statement.getWhereClause().getCondition().toString());
+//		ServerWriter.getInstance().writeln("UpdatePlanner (makePlan): " + statement.getWhereClause().getCondition().toString());
 		
 		TExpression expression = statement.getWhereClause().getCondition();
 		
-		ServerWriter.getInstance().writeln("UpdatePlanner (makePlan): " + " Type -- " + expression.getExpressionType());
+//		ServerWriter.getInstance().writeln("UpdatePlanner (makePlan): " + " Type -- " + expression.getExpressionType());
 		
 		if (expression.getExpressionType() == EExpressionType.simple_comparison_t) {
 			String leftString = expression.getLeftOperand().toString();
