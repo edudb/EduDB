@@ -18,6 +18,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import net.edudb.block.BlockAbstractFactory;
+import net.edudb.block.BlockWriter;
+import net.edudb.block.BlockWriterFactory;
 import net.edudb.page.Page;
 import net.edudb.page.PageID;
 import net.edudb.server.ServerWriter;
@@ -55,18 +58,19 @@ public class BufferManager {
 	}
 
 	public synchronized Page read(PageID pageID, boolean bModify) {
+		Page page = null;
 		if (used.containsKey(pageID)) {
 			ServerWriter.getInstance().writeln("found" + (bModify ? " write" : " read"));
-			Page page1 = used.get(pageID);
-			page1 = page1.getCopy();
+			page = used.get(pageID);
+			page = page.getCopy();
 			if (bModify) {
 				if (locks.get(pageID) != Page.LockState.free) {
 					listeners.get(pageID).add(Thread.currentThread());
 					return null;
 				}
 				locks.put(pageID, Page.LockState.write);
-				page1.setLastAccessed();
-				return page1;
+				page.setLastAccessed();
+				return page;
 			}
 			if (locks.get(pageID) == Page.LockState.write) {
 				listeners.get(pageID).add(Thread.currentThread());
@@ -74,26 +78,28 @@ public class BufferManager {
 				return null;
 			}
 			locks.put(pageID, Page.LockState.read);
-			page1.setLastAccessed();
+			page.setLastAccessed();
 			readersCount.put(pageID, readersCount.get(pageID) + 1);
-			return page1;
+//			return page;
 		} else {
 			ServerWriter.getInstance().writeln("not found");
-			Page page1 = empty.get(pageID);
+			page = empty.get(pageID);
+			ServerWriter.getInstance().writeln("BufferManager (read)-Empty: " + page);
 			if (used.size() == DBConfig.getMaximumUsedBufferSlots()) {
 				ServerWriter.getInstance().writeln("what ");
 				removeLRU();
 			}
-			allocate(pageID, page1);
+			allocate(pageID, page);
 			if (bModify) {
 				locks.put(pageID, Page.LockState.write);
 			} else {
 				locks.put(pageID, Page.LockState.read);
 				readersCount.put(pageID, readersCount.get(pageID) + 1);
 			}
-			page1.setLastAccessed();
-			return page1;
+			page.setLastAccessed();
+//			return page;
 		}
+		return page;
 	}
 
 	private void allocate(PageID pageId, Page page) {
@@ -134,18 +140,18 @@ public class BufferManager {
 		this.empty = empty;
 	}
 
-	class LRUThreaad implements Runnable {
-		@Override
-		public void run() {
-			removeLRU();
-		}
-	}
+//	class LRUThreaad implements Runnable {
+//		@Override
+//		public void run() {
+//			removeLRU();
+//		}
+//	}
 
 	private synchronized boolean removeLRU() {
 		ServerWriter.getInstance().writeln("lru " + used.size());
 		Page toBeReplaced = null;
 		int min = Integer.MAX_VALUE;
-		int minIndex = -1;
+//		int minIndex = -1;
 		PageID minId = null;
 		Iterator iter = used.entrySet().iterator();
 		while (iter.hasNext()) {
@@ -166,7 +172,10 @@ public class BufferManager {
 			listeners.remove(minId);
 			empty.put(minId, toBeReplaced);
 			if (states.get(toBeReplaced.getPageId()) == Page.PageState.dirty) {
-				toBeReplaced.write();
+				BlockAbstractFactory blockWriterFactory = new BlockWriterFactory();
+				BlockWriter blockWriter = blockWriterFactory.getWriter(Config.blockType());
+				blockWriter.write(toBeReplaced);
+//				toBeReplaced.write();
 			}
 			toBeReplaced.free();
 			ServerWriter.getInstance().writeln("lru " + used.size());
@@ -176,103 +185,103 @@ public class BufferManager {
 		return false;
 	}
 
-	public static class Reader implements Runnable {
+//	public static class Reader implements Runnable {
+//
+//		private final PageID id;
+//		private final BufferManager manager;
+//		private int count;
+//
+//		public Reader(PageID id, BufferManager manager, int count) {
+//
+//			this.id = id;
+//			this.manager = manager;
+//			this.count = count;
+//		}
+//
+//		@Override
+//		public void run() {
+//			ServerWriter.getInstance().writeln("reader" + count);
+//			manager.read(id, false);
+//			synchronized (this) {
+//				try {
+//					wait(2000);
+//				} catch (InterruptedException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//			manager.releasePage(id);
+//			ServerWriter.getInstance().writeln("reader" + count + " released");
+//		}
+//	}
 
-		private final PageID id;
-		private final BufferManager manager;
-		private int count;
+//	public static class Writer implements Runnable {
+//
+//		private final PageID id;
+//		private final BufferManager manager;
+//		private int count;
+//
+//		public Writer(PageID id, BufferManager manager, int count) {
+//
+//			this.id = id;
+//			this.manager = manager;
+//			this.count = count;
+//		}
+//
+//		@Override
+//		public void run() {
+//			ServerWriter.getInstance().writeln("writer" + count);
+//			Page read = manager.read(id, true);
+//			if (read == null) {
+//				try {
+//					Thread thread = Thread.currentThread();
+//					synchronized (thread) {
+//						ServerWriter.getInstance().writeln("going to sleep ");
+//						thread.wait();
+//						ServerWriter.getInstance().writeln("sleepy ");
+//					}
+//				} catch (InterruptedException e) {
+//					e.printStackTrace();
+//				}
+//
+//			}
+//			synchronized (this) {
+//				try {
+//					wait(2000);
+//				} catch (InterruptedException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//			ServerWriter.getInstance().writeln("awake ");
+//			manager.releasePage(id);
+//			ServerWriter.getInstance().writeln("writer " + count + " released");
+//			// manager.write();
+//		}
+//	}
 
-		public Reader(PageID id, BufferManager manager, int count) {
-
-			this.id = id;
-			this.manager = manager;
-			this.count = count;
-		}
-
-		@Override
-		public void run() {
-			ServerWriter.getInstance().writeln("reader" + count);
-			manager.read(id, false);
-			synchronized (this) {
-				try {
-					wait(2000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-			manager.releasePage(id);
-			ServerWriter.getInstance().writeln("reader" + count + " released");
-		}
-	}
-
-	public static class Writer implements Runnable {
-
-		private final PageID id;
-		private final BufferManager manager;
-		private int count;
-
-		public Writer(PageID id, BufferManager manager, int count) {
-
-			this.id = id;
-			this.manager = manager;
-			this.count = count;
-		}
-
-		@Override
-		public void run() {
-			ServerWriter.getInstance().writeln("writer" + count);
-			Page read = manager.read(id, true);
-			if (read == null) {
-				try {
-					Thread thread = Thread.currentThread();
-					synchronized (thread) {
-						ServerWriter.getInstance().writeln("going to sleep ");
-						thread.wait();
-						ServerWriter.getInstance().writeln("sleepy ");
-					}
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-
-			}
-			synchronized (this) {
-				try {
-					wait(2000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-			ServerWriter.getInstance().writeln("awake ");
-			manager.releasePage(id);
-			ServerWriter.getInstance().writeln("writer " + count + " released");
-			// manager.write();
-		}
-	}
-
-	public static void main(String[] args) {
-		BufferManager manager = new BufferManager();
-		manager.init();
-		Page page1 = new Page();
-		PageID id1 = new PageID();
-		page1.setPageID(id1);
-		manager.empty.put(id1, page1);
-		Writer writer1 = new Writer(id1, manager, 1);
-		Thread t3 = new Thread(writer1);
-		t3.start();
-		Reader reader1 = new Reader(id1, manager, 1);
-		Thread t1 = new Thread(reader1);
-		t1.start();
-		Thread t2 = new Thread(reader1);
-		t2.start();
-		Thread t = Thread.currentThread();
-		synchronized (t) {
-			try {
-				t.wait(3000);
-			} catch (Exception e) {
-
-			}
-			ServerWriter.getInstance().writeln(manager.used.size());
-			manager.removeLRU();
-		}
-	}
+//	public static void main(String[] args) {
+//		BufferManager manager = new BufferManager();
+//		manager.init();
+//		Page page1 = new Page();
+//		PageID id1 = new PageID();
+//		page1.setPageID(id1);
+//		manager.empty.put(id1, page1);
+//		Writer writer1 = new Writer(id1, manager, 1);
+//		Thread t3 = new Thread(writer1);
+//		t3.start();
+//		Reader reader1 = new Reader(id1, manager, 1);
+//		Thread t1 = new Thread(reader1);
+//		t1.start();
+//		Thread t2 = new Thread(reader1);
+//		t2.start();
+//		Thread t = Thread.currentThread();
+//		synchronized (t) {
+//			try {
+//				t.wait(3000);
+//			} catch (Exception e) {
+//
+//			}
+//			ServerWriter.getInstance().writeln(manager.used.size());
+//			manager.removeLRU();
+//		}
+//	}
 }

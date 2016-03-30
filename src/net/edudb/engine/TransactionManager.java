@@ -26,23 +26,23 @@ import net.edudb.transcation.Transaction;
 public class TransactionManager {
 
 	private static TransactionManager instance = new TransactionManager();
-	private static BufferManager bufferManager;
+//	private static BufferManager bufferManager;
 	
 	private TransactionManager() {}
 
-	public void init(BufferManager manager) {
-		bufferManager = manager;
-	}
+//	public void init(BufferManager manager) {
+//		bufferManager = manager;
+//	}
 	
 	public static TransactionManager getInstance() {
 		return instance;
 	}
 
-	public static BufferManager getBufferManager() {
-		return bufferManager;
-	}
+//	public static BufferManager getBufferManager() {
+//		return bufferManager;
+//	}
 
-	public static void run(Operator op) {
+	public void run(Operator op) {
 		if (op instanceof UpdateOperator) {
 			updateTable((UpdateOperator) op);
 			ServerWriter.getInstance().writeln("DBTransactionManager (run): " + "#1");

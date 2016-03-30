@@ -14,7 +14,7 @@ package net.edudb.page;
 import net.edudb.index.BPlusTree.DBBTree;
 import net.edudb.operator.DBResult;
 import net.edudb.structure.DBIndex;
-import net.edudb.structure.DBTable;
+//import net.edudb.structure.DBTable;
 import net.edudb.transcation.TimeUtil;
 
 /**
@@ -23,10 +23,10 @@ import net.edudb.transcation.TimeUtil;
 public class Page implements DBResult {
     private PageID id;
     private PageState pageState;
-    private LockState lockState;
+//    private LockState lockState;
     private int lastAccessed;
-    private int readers;
-    private boolean locked;
+//    private int readers;
+//    private boolean locked;
     private DBIndex tree;
     private String table;
 

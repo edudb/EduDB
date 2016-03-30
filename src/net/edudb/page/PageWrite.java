@@ -12,7 +12,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.page;
 
 import net.edudb.engine.BufferManager;
-import net.edudb.engine.TransactionManager;
 import net.edudb.operator.DBParameter;
 import net.edudb.operator.Operator;
 import net.edudb.transcation.Step;
@@ -32,8 +31,8 @@ public class PageWrite extends Step{
     @Override
     public void execute() {
         Page page = operator.getPage();
-        BufferManager bufferManager = TransactionManager.getBufferManager();
-        bufferManager.write(page.getPageId(), page);
+//        BufferManager bufferManager = TransactionManager.getBufferManager();
+        BufferManager.getInstance().write(page.getPageId(), page);
         page.print();
     }
 }

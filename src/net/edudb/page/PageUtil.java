@@ -11,14 +11,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.page;
 
 import net.edudb.engine.BufferManager;
-import net.edudb.engine.TransactionManager;
-import net.edudb.operator.DBResult;
 import net.edudb.server.ServerWriter;
 import net.edudb.statistics.Schema;
-import net.edudb.structure.DBTable;
-
-import java.awt.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
@@ -41,7 +35,7 @@ public class PageUtil {
 			initialized = true;
 			Set<String> tableNames = Schema.getTableNames();
 			tables = new HashMap<>();
-			BufferManager manager = TransactionManager.getBufferManager();
+//			BufferManager manager = TransactionManager.getBufferManager();
 			Iterator iter = tableNames.iterator();
 			HashMap<PageID, Page> empty = new HashMap<>();
 			while (iter.hasNext()) {
@@ -52,7 +46,8 @@ public class PageUtil {
 				tables.put(name, id);
 				empty.put(id, page);
 			}
-			manager.initEmpty(empty);
+//			manager.initEmpty(empty);
+			BufferManager.getInstance().initEmpty(empty);
 		}
 	}
 }
