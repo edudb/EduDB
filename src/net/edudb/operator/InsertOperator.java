@@ -10,17 +10,18 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.operator;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
-import net.edudb.data_type.DB_Type;
+import net.edudb.engine.BufferManager;
 import net.edudb.operator.Operator;
-import net.edudb.page.Page;
+import net.edudb.page.DBPage;
+import net.edudb.page.Pageable;
 import net.edudb.server.ServerWriter;
 import net.edudb.statement.SQLInsertStatement;
-import net.edudb.structure.DBIndex;
-import net.edudb.structure.Record;
-import net.edudb.structure.DBTable;
-import net.edudb.structure.DataManager;
+import net.edudb.statistics.Schema;
+import net.edudb.structure.DBRecord;
+import net.edudb.table.*;
 
 /**
  * Created by mohamed on 4/11/14.
@@ -38,20 +39,33 @@ public class InsertOperator implements Operator {
 	}
 
 	@Override
-	public DBResult execute() {
-		ServerWriter.getInstance().writeln("executing insert operation");
-		DBTable table = DataManager.getTable(statement.getTargetTableString());
-		if (table == null) {
-			ServerWriter.getInstance().writeln("table does not exist");
+	public DBResult execute() {		
+		if (!Schema.chekTableExists(statement.getTargetTableName())) {
+			ServerWriter.getInstance().writeln("Table does not exist");
 			return null;
 		}
-		DBIndex index = table.getPrimaryIndex();
-		// TODO value may be null
+		
+		TableAbstractFactory tableFactory = new TableReaderFactory();
+		TableReader tableReader = tableFactory.getReader(TableFileType.Binary);
+		Tabular table = null;
+		try {
+			table = tableReader.read(statement.getTargetTableName());
+		} catch (ClassNotFoundException | IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+		ArrayList<String> pageNames = (ArrayList<String>) table.getPageNames();
+		String lastPageName = pageNames.get(pageNames.size() - 1);
+		
+		Pageable page = BufferManager.getInstance().read(lastPageName);
+		
 		ArrayList<String> values = statement.getValueList();
-		Record record = new Record(values, table.getTableName());
-		int key = ((DB_Type.DB_Int) record.getValue(0)).getNumber();
-		index.insert(key, record);
-		index.write();
+		DBRecord record = new DBRecord(values, table.getName());
+		page.addRecord(record);
+		
+		BufferManager.getInstance().write(page.getName());
+		
 		return null;
 	}
 
@@ -66,12 +80,12 @@ public class InsertOperator implements Operator {
 	}
 
 	@Override
-	public void runStep(Page page) {
+	public void runStep(DBPage page) {
 
 	}
 
 	@Override
-	public Page getPage() {
+	public DBPage getPage() {
 		return null;
 	}
 

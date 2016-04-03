@@ -8,9 +8,9 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-
 package net.edudb.structure;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import net.edudb.operator.DBParameter;
@@ -20,45 +20,46 @@ import net.edudb.statistics.Schema;
 /**
  * Created by mohamed on 4/19/14.
  */
-public class DBColumn implements DBParameter{
-    /**
-     * @uml.property  name="order"
-     */
-    public int order;
-    /**
-     * @uml.property  name="tableName"
-     */
-    public String tableName;
-    public DBColumn(int num, String tableName) {
-        this.order = num;
-        this.tableName = tableName;
-    }
+public class DBColumn implements DBParameter, Serializable {
+	/**
+	 * @uml.property name="order"
+	 */
+	public int order;
+	/**
+	 * @uml.property name="tableName"
+	 */
+	public String tableName;
 
-    public DBColumn(String name, String tableName) {
-        this.order = Schema.getColumnNumber(name, tableName)+1;
-        this.tableName = tableName;
-    }
+	public DBColumn(int num, String tableName) {
+		this.order = num;
+		this.tableName = tableName;
+	}
 
-    public String toString(){
-        return tableName + "." + order;
-    }
+	public DBColumn(String name, String tableName) {
+		this.order = Schema.getColumnNumber(name, tableName) + 1;
+		this.tableName = tableName;
+	}
 
-    @Override
-    public void print() {
-    	ServerWriter.getInstance().write(tableName + "." + order);
-        
-    }
+	public String toString() {
+		return tableName + "." + order;
+	}
 
-    @Override
-    public boolean equals(Object o){
-        if (o instanceof DBColumn){
-            return ((DBColumn) o).order == order
-                    && ( (DBColumn) o).tableName.equals(tableName);
-        }
-        return false;
-    }
-    @Override
-    public int numOfParameters() {
-        return 0;
-    }
+	@Override
+	public void print() {
+		ServerWriter.getInstance().write(tableName + "." + order);
+
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof DBColumn) {
+			return ((DBColumn) o).order == order && ((DBColumn) o).tableName.equals(tableName);
+		}
+		return false;
+	}
+
+	@Override
+	public int numOfParameters() {
+		return 0;
+	}
 }

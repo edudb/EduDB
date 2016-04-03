@@ -13,11 +13,11 @@ package net.edudb.operator;
 import net.edudb.index.BPlusTree.DBBTreeIterator;
 import net.edudb.operator.FilterOperator;
 import net.edudb.operator.Operator;
-import net.edudb.page.Page;
-import net.edudb.page.PageRead;
-import net.edudb.page.PageWrite;
+import net.edudb.page.DBPage;
+import net.edudb.page.DBPageRead;
+import net.edudb.page.DBPageWrite;
 import net.edudb.server.ServerWriter;
-import net.edudb.structure.Record;
+import net.edudb.structure.DBRecord;
 import net.edudb.transcation.Step;
 
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public class UpdateOperator implements Operator {
 	private String tableName;
 	private ArrayList<DBAssignment> assignments;
 	private DBCond condition;
-	private Page page;
+	private DBPage page;
 	private int state;
 
 	public UpdateOperator(String tableName, ArrayList<DBAssignment> assignments, DBCondition condition) {
@@ -44,10 +44,10 @@ public class UpdateOperator implements Operator {
 		filterOperator.giveParameter(relationOperator);
 		filterOperator.giveParameter(condition);
 		DBBTreeIterator resultIterator = (DBBTreeIterator) filterOperator.execute();
-		Record record = (Record) resultIterator.first();
+		DBRecord record = (DBRecord) resultIterator.first();
 		do {
 			record.update(assignments);
-			record = (Record) resultIterator.next();
+			record = (DBRecord) resultIterator.next();
 		} while (record != null);
 		resultIterator.write();
 		return resultIterator;
@@ -75,16 +75,16 @@ public class UpdateOperator implements Operator {
 
 	public ArrayList<Step> getSteps() {
 		ArrayList<Step> out = new ArrayList<>();
-		PageRead read = new PageRead(this, tableName, true);
+		DBPageRead read = new DBPageRead(this, tableName, true);
 		out.add(read);
 
-		PageWrite write = new PageWrite(this);
+		DBPageWrite write = new DBPageWrite(this);
 
 		out.add(write);
 		return out;
 	}
 
-	public void runStep(Page page) {
+	public void runStep(DBPage page) {
 		this.page = page;
 		ServerWriter.getInstance().writeln("run");
 		ServerWriter.getInstance().writeln(page);
@@ -92,14 +92,14 @@ public class UpdateOperator implements Operator {
 		filterOperator.giveParameter(page.getData());
 		filterOperator.giveParameter(condition);
 		DBIterator iterator = (DBIterator) filterOperator.execute();
-		Record record = (Record) iterator.first();
+		DBRecord record = (DBRecord) iterator.first();
 		do {
 			record.update(assignments);
-			record = (Record) iterator.next();
+			record = (DBRecord) iterator.next();
 		} while (record != null);
 	}
 
-	public Page getPage() {
+	public DBPage getPage() {
 		return page;
 	}
 }

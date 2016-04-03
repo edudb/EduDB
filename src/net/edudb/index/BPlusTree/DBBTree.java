@@ -17,13 +17,13 @@ import net.edudb.server.ServerWriter;
 import net.edudb.statistics.Schema;
 import net.edudb.structure.DBColumn;
 import net.edudb.structure.DBIndex;
-import net.edudb.structure.Record;
+import net.edudb.structure.DBRecord;
 import java.util.ArrayList;
 
 /**
  * Created by mohamed on 4/11/14.
  */
-public class DBBTree extends BTree<Integer, Record> implements DBIndex {
+public class DBBTree extends BTree<Integer, DBRecord> implements DBIndex {
 	/**
 	 * @uml.property name="tableName"
 	 * @uml.associationEnd
@@ -39,7 +39,7 @@ public class DBBTree extends BTree<Integer, Record> implements DBIndex {
 		columnNames = Schema.getColumns(tableName);
 	}
 
-	public void insert(int key, Record value) {
+	public void insert(int key, DBRecord value) {
 		super.insert(key, value);
 	}
 
@@ -52,10 +52,10 @@ public class DBBTree extends BTree<Integer, Record> implements DBIndex {
 	public DBIndex getCopy() {
 		DBBTree out = new DBBTree(tableName);
 		DBIterator iter = getIterator();
-		Record record = (Record) iter.first();
+		DBRecord record = (DBRecord) iter.first();
 		do {
 			out.insert(((DB_Type.DB_Int) record.getValue(0)).getNumber(), record.getCopy());
-			record = (Record) iter.next();
+			record = (DBRecord) iter.next();
 		} while (record != null);
 		return out;
 	}
@@ -70,7 +70,7 @@ public class DBBTree extends BTree<Integer, Record> implements DBIndex {
 		for (int i = 0; i < lines.size(); i++) {
 			String[] line = lines.get(i).split(",");
 			Integer key = Integer.parseInt(line[0]);
-			Record record = new Record(line, tableName);
+			DBRecord record = new DBRecord(line, tableName);
 			this.insert(key, record);
 		}
 	}
@@ -93,7 +93,7 @@ public class DBBTree extends BTree<Integer, Record> implements DBIndex {
 		tree.print();
 		ServerWriter.getInstance().writeln("copy");
 		copy.print();
-		((Record) copy.getSmallest().getValue(0)).setValue(0, new DB_Type.DB_Int(5));
+		((DBRecord) copy.getSmallest().getValue(0)).setValue(0, new DB_Type.DB_Int(5));
 		ServerWriter.getInstance().writeln("tree");
 		tree.print();
 		ServerWriter.getInstance().writeln("copy");

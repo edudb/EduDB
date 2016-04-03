@@ -12,7 +12,7 @@ package net.edudb.operator;
 
 import java.util.ArrayList;
 
-import net.edudb.structure.Record;
+import net.edudb.structure.DBRecord;
 
 //public class SelectResult_useless implements DBResult {
 //	/**

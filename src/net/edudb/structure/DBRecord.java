@@ -17,9 +17,10 @@ import net.edudb.operator.DBCond;
 import net.edudb.operator.SelectColumns;
 import net.edudb.statistics.Schema;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Record {
+public class DBRecord implements Recordable, Serializable {
 	/**
 	 * @uml.property name="columns"
 	 */
@@ -31,7 +32,7 @@ public class Record {
 	 */
 	private ArrayList<DataType> values;
 
-	public Record(String[] line, String tableName) {
+	public DBRecord(String[] line, String tableName) {
 		columns = Schema.getColumns(tableName);
 		// TODO remove redundant schema calls
 		values = new ArrayList<>();
@@ -41,16 +42,15 @@ public class Record {
 		}
 	}
 
-	public Record(ArrayList<String> valuesList, String tableName) {
+	public DBRecord(ArrayList<String> valuesList, String tableName) {
 		columns = Schema.getColumns(tableName);
 		values = new ArrayList<>();
 		for (int i = 0; i < valuesList.size(); i++) {
 			values.add(new DB_Type.DB_Int(Integer.parseInt(valuesList.get(i))));
-//			System.out.println(valuesList.get(i));
 		}
 	}
 
-	public Record() {
+	public DBRecord() {
 		columns = new ArrayList<>();
 		values = new ArrayList<>();
 	}
@@ -125,8 +125,8 @@ public class Record {
 		values.set(order, value);
 	}
 
-	public Record getCopy() {
-		Record record = new Record();
+	public DBRecord getCopy() {
+		DBRecord record = new DBRecord();
 		for (DataType value : values) {
 			record.values.add(value);
 		}

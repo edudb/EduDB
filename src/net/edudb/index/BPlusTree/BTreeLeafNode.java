@@ -13,7 +13,7 @@ package net.edudb.index.BPlusTree;
 
 import net.edudb.operator.DBCond;
 import net.edudb.operator.SelectColumns;
-import net.edudb.structure.Record;
+import net.edudb.structure.DBRecord;
 
 import java.util.ArrayList;
 
@@ -223,8 +223,8 @@ class BTreeLeafNode<TKey extends Comparable<TKey>, TValue> extends BTreeNode<TKe
                 }
             }
             TValue value = this.getValue(index);
-            if(value instanceof Record){
-                Record record = (Record) value;
+            if(value instanceof DBRecord){
+                DBRecord record = (DBRecord) value;
                 String inc = record.project(columns);
                 out += inc + "\n";
             }else{
@@ -239,8 +239,8 @@ class BTreeLeafNode<TKey extends Comparable<TKey>, TValue> extends BTreeNode<TKe
     public void filter(ArrayList<DBCond> conditions) {
         for (int index = 0; index < this.getKeyCount(); ++index) {
             TValue value = this.getValue(index);
-            if(value instanceof Record){
-                Record record = (Record) value;
+            if(value instanceof DBRecord){
+                DBRecord record = (DBRecord) value;
                 String inc = record.evaluate(conditions);
                 if (inc .equals("")){
                     filters.add(false);

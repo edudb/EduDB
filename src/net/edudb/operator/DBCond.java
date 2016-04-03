@@ -10,9 +10,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.operator;
 
-import net.edudb.structure.Record;
+import net.edudb.structure.DBRecord;
 
 public interface DBCond extends DBParameter {
 
-	boolean evaluate(Record dbRecord);
+	boolean evaluate(DBRecord dbRecord);
 }

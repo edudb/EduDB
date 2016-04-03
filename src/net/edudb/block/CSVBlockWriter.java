@@ -1,13 +1,14 @@
 package net.edudb.block;
 
-import net.edudb.page.Page;
+import net.edudb.page.DBPage;
+import net.edudb.page.Pageable;
 import net.edudb.server.ServerWriter;
 
 public class CSVBlockWriter implements BlockWriter {
 	
-	public void write(Page page) {
+	public void write(Pageable page) {
 		ServerWriter.getInstance().writeln("Writing");
-		page.write();
+		((DBPage) page).write();
 	}
 
 }

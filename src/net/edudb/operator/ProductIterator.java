@@ -12,7 +12,7 @@ package net.edudb.operator;
 
 import net.edudb.index.BPlusTree.DBBTreeIterator;
 import net.edudb.server.ServerWriter;
-import net.edudb.structure.Record;
+import net.edudb.structure.DBRecord;
 
 import java.util.ArrayList;
 
@@ -59,21 +59,21 @@ public class ProductIterator implements DBResult, DBIterator {
 		DBSimpleiterator iter = new DBSimpleiterator();
 		iter.project(columns);
 		iter.filter(conditions);
-		ArrayList<Record> records = new ArrayList<Record>();
+		ArrayList<DBRecord> records = new ArrayList<DBRecord>();
 		if (iterators.get(0) instanceof DBBTreeIterator && iterators.get(1) instanceof DBBTreeIterator) {
 			DBBTreeIterator itr1 = (DBBTreeIterator) iterators.get(0);
 			DBBTreeIterator itr2 = (DBBTreeIterator) iterators.get(1);
-			Record element = (Record) itr1.first();
+			DBRecord element = (DBRecord) itr1.first();
 			do {
-				Record element2 = (Record) itr2.first();
+				DBRecord element2 = (DBRecord) itr2.first();
 				do {
-					Record record = new Record();
+					DBRecord record = new DBRecord();
 					record.add(element.getValues(), element.getColumns());
 					record.add(element2.getValues(), element2.getColumns());
 					iter.add(record);
-					element2 = (Record) itr2.next();
+					element2 = (DBRecord) itr2.next();
 				} while (element2 != null);
-				element = (Record) itr1.next();
+				element = (DBRecord) itr1.next();
 			} while (element != null);
 			return iter;
 		}

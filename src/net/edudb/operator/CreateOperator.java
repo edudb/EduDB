@@ -10,12 +10,15 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.operator;
 
-import net.edudb.file_utility.FileManager;
+import java.io.IOException;
+
+import net.edudb.block.*;
 import net.edudb.operator.Operator;
-import net.edudb.page.Page;
-import net.edudb.server.ServerWriter;
+import net.edudb.page.*;
 import net.edudb.statement.SQLCreateTableStatement;
 import net.edudb.statistics.Schema;
+import net.edudb.table.Table;
+import net.edudb.table.*;
 
 /**
  * Created by mohamed on 4/1/14.
@@ -34,15 +37,34 @@ public class CreateOperator implements Operator {
 
 	@Override
 	public DBResult execute() {
-
-		ServerWriter.getInstance().writeln("executing create operation");
+		
 		// add table to schema
-		String line = statement.getTableName().toString();
+		String line = statement.getTableName();
 		line += " " + statement.getColumnListString();
-		ServerWriter.getInstance().writeln("@create operation " + line);
 		Schema.AddTable(line);
-		// create table file and folder
-		FileManager.createTable(statement.getTableName());
+		
+		Tabular table = new Table(statement.getTableName());
+		TableAbstractFactory tableFactory = new TableWriterFactory();
+		TableWriter tableWriter = tableFactory.getWriter(TableFileType.Binary);
+		
+		Pageable page = new Page();
+		BlockAbstractFactory blockFactory = new BlockWriterFactory();
+		BlockWriter blockWriter = blockFactory.getWriter(BlockFileType.Binary);
+		
+		try {
+			blockWriter.write(page);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		table.addPageName(page.getName());
+		
+		try {
+			tableWriter.write(table);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		return null;
 	}
 
@@ -57,12 +79,12 @@ public class CreateOperator implements Operator {
 	}
 
 	@Override
-	public void runStep(Page page) {
+	public void runStep(DBPage page) {
 
 	}
 
 	@Override
-	public Page getPage() {
+	public DBPage getPage() {
 		return null;
 	}
 

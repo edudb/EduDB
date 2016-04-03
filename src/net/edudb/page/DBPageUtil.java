@@ -10,20 +10,20 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.page;
 
-import net.edudb.engine.BufferManager;
+import net.edudb.engine.DBBufferManager;
 import net.edudb.server.ServerWriter;
 import net.edudb.statistics.Schema;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
-public class PageUtil {
-	private static HashMap<String, PageID> tables;
+public class DBPageUtil {
+	private static HashMap<String, DBPageID> tables;
 	private static boolean initialized;
 
-	public static PageID getPageID(String tableName) {
+	public static DBPageID getPageID(String tableName) {
 		init();
-		PageID id = tables.get(tableName);
+		DBPageID id = tables.get(tableName);
 		if (id != null)
 			return id;
 		ServerWriter.getInstance().writeln("table " + tableName + " does not exist");
@@ -37,17 +37,17 @@ public class PageUtil {
 			tables = new HashMap<>();
 //			BufferManager manager = TransactionManager.getBufferManager();
 			Iterator iter = tableNames.iterator();
-			HashMap<PageID, Page> empty = new HashMap<>();
+			HashMap<DBPageID, DBPage> empty = new HashMap<>();
 			while (iter.hasNext()) {
 				String name = (String) iter.next();
-				Page page = new Page(name);
-				PageID id = new PageID();
+				DBPage page = new DBPage(name);
+				DBPageID id = new DBPageID();
 				page.setPageID(id);
 				tables.put(name, id);
 				empty.put(id, page);
 			}
 //			manager.initEmpty(empty);
-			BufferManager.getInstance().initEmpty(empty);
+			DBBufferManager.getInstance().initEmpty(empty);
 		}
 	}
 }

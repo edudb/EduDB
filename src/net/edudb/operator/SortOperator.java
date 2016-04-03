@@ -12,7 +12,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.operator;
 
 import net.edudb.operator.Operator;
-import net.edudb.page.Page;
+import net.edudb.page.DBPage;
 
 public class SortOperator implements Operator{
     @Override
@@ -31,12 +31,12 @@ public class SortOperator implements Operator{
     }
 
     @Override
-    public void runStep(Page page) {
+    public void runStep(DBPage page) {
 
     }
 
     @Override
-    public Page getPage() {
+    public DBPage getPage() {
         return null;
     }
 

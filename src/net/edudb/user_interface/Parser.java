@@ -36,8 +36,6 @@ public class Parser {
 	public Parser() {
 		sqlparser = new TGSqlParser(EDbVendor.dbvoracle);
 		planFactory = new PlanFactory();
-//		BufferManager bufferManager = BufferManager.getInstance();
-//		TransactionManager.getInstance().init(bufferManager);
 	}
 
 	public void parseSQL(String strSQL) throws TranslationException {

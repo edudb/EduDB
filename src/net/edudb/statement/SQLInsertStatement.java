@@ -14,7 +14,7 @@ public class SQLInsertStatement implements SQLStatement {
 		this.statement = (TInsertSqlStatement) tCustomSqlStatement;
 	}
 	
-	public String getTargetTableString() {
+	public String getTargetTableName() {
 		return statement.getTargetTable().toString();
 	}
 	

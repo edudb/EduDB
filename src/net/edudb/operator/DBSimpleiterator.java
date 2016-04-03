@@ -14,16 +14,16 @@ import java.util.ArrayList;
 import java.util.ListIterator;
 
 import net.edudb.server.ServerWriter;
-import net.edudb.structure.Record;
+import net.edudb.structure.DBRecord;
 
 public class DBSimpleiterator implements DBResult, ListIterator, DBIterator {
 
-	private ArrayList<Record> records;
+	private ArrayList<DBRecord> records;
 	private SelectColumns columns;
 	private ArrayList<DBCond> conditions;
 
 	public DBSimpleiterator() {
-		this.records = new ArrayList<Record>();
+		this.records = new ArrayList<DBRecord>();
 	}
 
 	@Override
@@ -89,7 +89,7 @@ public class DBSimpleiterator implements DBResult, ListIterator, DBIterator {
 
 	@Override
 	public void add(Object o) {
-		records.add((Record) o);
+		records.add((DBRecord) o);
 	}
 
 	@Override

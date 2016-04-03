@@ -14,6 +14,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import net.edudb.engine.DatabaseSystem;
 
 public class Server {
 
@@ -63,6 +64,8 @@ public class Server {
 		frame.add(label, BorderLayout.CENTER);
 
 		frame.setVisible(true);
+		
+		DatabaseSystem.getInstance().initialize();
 
 		int port;
 		if (args.length > 0) {

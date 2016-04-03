@@ -10,6 +10,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.data_type;
 
+import java.io.Serializable;
+
 import net.edudb.server.ServerWriter;
 import net.edudb.structure.DBConst;
 
@@ -21,7 +23,7 @@ public class DB_Type {
 	/**
 	 * @author mohamed
 	 */
-	public static class DB_Int implements DataType, DBConst {
+	public static class DB_Int implements DataType, DBConst, Serializable {
 		/**
 		 * @uml.property name="number"
 		 */
@@ -91,7 +93,7 @@ public class DB_Type {
 		}
 	}
 
-	public static class DB_Char implements DataType, DBConst {
+	public static class DB_Char implements DataType, DBConst, Serializable {
 		public char c;
 
 		public DB_Char(char c) {
@@ -138,7 +140,7 @@ public class DB_Type {
 		}
 	}
 
-	public static class DB_String implements DataType {
+	public static class DB_String implements DataType, Serializable {
 		public String str;
 
 		public double diff(DataType key) {

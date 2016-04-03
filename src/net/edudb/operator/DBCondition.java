@@ -17,7 +17,7 @@ import net.edudb.data_type.DataType;
 import net.edudb.server.ServerWriter;
 import net.edudb.structure.DBColumn;
 import net.edudb.structure.DBConst;
-import net.edudb.structure.Record;
+import net.edudb.structure.DBRecord;
 
 /**
  * Created by mohamed on 4/19/14.
@@ -60,7 +60,7 @@ public class DBCondition implements DBCond {
     }
 
     @Override
-    public boolean evaluate(Record dbRecord) {
+    public boolean evaluate(DBRecord dbRecord) {
         DataType value1 = dbRecord.getValue(column1);
         if (column2 instanceof DBColumn){
             DataType value2 = dbRecord.getValue( ( (DBColumn) column2 ).order-1);

@@ -12,8 +12,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.operator;
 
 import net.edudb.operator.Operator;
-import net.edudb.page.Page;
-import net.edudb.structure.Record;
+import net.edudb.page.DBPage;
+import net.edudb.structure.DBRecord;
 
 import java.util.ArrayList;
 
@@ -28,10 +28,10 @@ public class UpdateStep implements Operator{
 
     @Override
     public DBResult execute() {
-        Record record = (Record) iterator.first();
+        DBRecord record = (DBRecord) iterator.first();
         do{
             record.update(assignments);
-            record = (Record) iterator.next();
+            record = (DBRecord) iterator.next();
         }while (record != null);
         return iterator;
     }
@@ -49,12 +49,12 @@ public class UpdateStep implements Operator{
     }
 
     @Override
-    public void runStep(Page page) {
+    public void runStep(DBPage page) {
 
     }
 
     @Override
-    public Page getPage() {
+    public DBPage getPage() {
         return null;
     }
 

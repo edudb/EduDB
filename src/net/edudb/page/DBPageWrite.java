@@ -8,35 +8,31 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+
 package net.edudb.page;
 
-import net.edudb.engine.BufferManager;
+import net.edudb.engine.DBBufferManager;
+import net.edudb.operator.DBParameter;
 import net.edudb.operator.Operator;
-import net.edudb.server.ServerWriter;
 import net.edudb.transcation.Step;
 
-public class PageRead extends Step {
-	private Operator operator;
-	private String tableName;
-	private boolean bModify;
+public class DBPageWrite extends Step{
+    private Operator operator;
 
-	public PageRead(Operator operator, String tableName) {
-		this.operator = operator;
-	}
+    public DBPageWrite(Operator operator) {
+        this.operator = operator;
+    }
 
-	public PageRead(Operator operator, String tableName, boolean bModify) {
-		this.operator = operator;
-		this.tableName = tableName;
-		this.bModify = bModify;
-	}
 
-	@Override
-	public void execute() {
-		PageID pageID = PageUtil.getPageID(tableName);
-//		BufferManager bufferManager = TransactionManager.getBufferManager();
-		Page page = BufferManager.getInstance().read(pageID, bModify);
-		ServerWriter.getInstance().writeln("PageRead (execute): " + page);
-//		page.print();
-		operator.runStep(page);
-	}
+    public void giveParameter(DBParameter par){
+        operator.giveParameter(par);
+    }
+
+    @Override
+    public void execute() {
+        DBPage page = operator.getPage();
+//        BufferManager bufferManager = TransactionManager.getBufferManager();
+        DBBufferManager.getInstance().write(page.getPageId(), page);
+        page.print();
+    }
 }

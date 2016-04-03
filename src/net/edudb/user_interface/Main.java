@@ -13,11 +13,15 @@ package net.edudb.user_interface;
 import adipe.translate.TranslationException;
 import jline.TerminalFactory;
 import jline.console.ConsoleReader;
+import net.edudb.engine.DatabaseSystem;
+
 import java.io.IOException;
 
 public class Main {
 
 	public static void main(String[] args) throws TranslationException {
+		
+		DatabaseSystem.getInstance().initialize();
 
 		try {
 			ConsoleReader console = new ConsoleReader();
@@ -29,7 +33,6 @@ public class Main {
 					System.exit(0);
 				} else if (line.equals("clear")) {
 					console.clearScreen();
-				} else if (line.equals("commit")) {
 				} else {
 					parser.parseSQL(line);
 				}

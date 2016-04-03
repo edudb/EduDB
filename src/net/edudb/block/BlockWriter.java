@@ -1,9 +1,11 @@
 package net.edudb.block;
 
-import net.edudb.page.Page;
+import java.io.IOException;
+
+import net.edudb.page.Pageable;
 
 public interface BlockWriter {
 	
-	public void write(Page page);
+	public void write(Pageable page) throws IOException;
 
 }

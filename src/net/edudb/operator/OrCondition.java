@@ -11,7 +11,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.operator;
 
 import net.edudb.server.ServerWriter;
-import net.edudb.structure.Record;
+import net.edudb.structure.DBRecord;
 
 /**
  * Created by mohamed on 4/19/14.
@@ -57,7 +57,7 @@ public class OrCondition implements DBMulCondition {
 	}
 
 	@Override
-	public boolean evaluate(Record dbRecord) {
+	public boolean evaluate(DBRecord dbRecord) {
 		return condition1.evaluate(dbRecord) || condition2.evaluate(dbRecord);
 	}
 }

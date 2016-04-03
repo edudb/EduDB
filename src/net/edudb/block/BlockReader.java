@@ -1,9 +1,11 @@
 package net.edudb.block;
 
-import net.edudb.page.Page;
+import java.io.IOException;
+
+import net.edudb.page.Pageable;
 
 public interface BlockReader {
 
-	public Page read(String blockName);
+	public Pageable read(String blockName) throws IOException, ClassNotFoundException;
 	
 }

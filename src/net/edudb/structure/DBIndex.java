@@ -19,7 +19,7 @@ import net.edudb.operator.DBIterator;
 public interface DBIndex {
     public ArrayList<DBColumn> getColumns();
     public void write();
-    public void insert(int key, Record value);
+    public void insert(int key, DBRecord value);
     public DBIterator getIterator();
     public DBIndex getCopy();
 }

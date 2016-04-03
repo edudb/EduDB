@@ -11,7 +11,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.operator;
 
 import net.edudb.operator.Operator;
-import net.edudb.page.Page;
+import net.edudb.page.DBPage;
 import net.edudb.server.ServerWriter;
 
 public class FilterOperator implements Operator {
@@ -80,12 +80,12 @@ public class FilterOperator implements Operator {
 	}
 
 	@Override
-	public void runStep(Page page) {
+	public void runStep(DBPage page) {
 
 	}
 
 	@Override
-	public Page getPage() {
+	public DBPage getPage() {
 		return null;
 	}
 }

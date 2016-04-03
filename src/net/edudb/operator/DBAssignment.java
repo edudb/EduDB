@@ -14,7 +14,7 @@ package net.edudb.operator;
 import net.edudb.data_type.DB_Type;
 import net.edudb.data_type.DataType;
 import net.edudb.statistics.Schema;
-import net.edudb.structure.Record;
+import net.edudb.structure.DBRecord;
 
 /**
  * Created by mohamed on 5/20/14.
@@ -39,7 +39,7 @@ public class DBAssignment implements DBParameter{
         return 0;
     }
 
-    public void execute(Record dbRecord) {
+    public void execute(DBRecord dbRecord) {
         dbRecord.setValue(order, value);
     }
 }

@@ -15,7 +15,7 @@ import net.edudb.operator.DBIterator;
 import net.edudb.operator.DBResult;
 import net.edudb.operator.SelectColumns;
 import net.edudb.server.ServerWriter;
-import net.edudb.structure.Record;
+import net.edudb.structure.DBRecord;
 
 import java.util.ArrayList;
 import java.util.ListIterator;
@@ -81,7 +81,7 @@ public class DBBTreeIterator implements ListIterator, DBResult, DBIterator {
 		}
 		currentkey++;
 		if (currentkey < cur.getKeyCount()) {
-			if (!((Record) cur.getValue(currentkey)).evaluate(conditions).equals(""))
+			if (!((DBRecord) cur.getValue(currentkey)).evaluate(conditions).equals(""))
 				return cur.getValue(currentkey);
 			else
 				return next();
@@ -91,7 +91,7 @@ public class DBBTreeIterator implements ListIterator, DBResult, DBIterator {
 			if (cur == null) {
 				return null;
 			}
-			if (!((Record) cur.getValue(0)).evaluate(conditions).equals(""))
+			if (!((DBRecord) cur.getValue(0)).evaluate(conditions).equals(""))
 				return cur.getValue(0);
 			else
 				return next();
@@ -174,7 +174,7 @@ public class DBBTreeIterator implements ListIterator, DBResult, DBIterator {
 		if (cur.getValue(0) == null) {
 			ServerWriter.getInstance().writeln(cur);
 		}
-		if (!((Record) cur.getValue(0)).evaluate(conditions).equals(""))
+		if (!((DBRecord) cur.getValue(0)).evaluate(conditions).equals(""))
 			return cur.getValue(0);
 		else
 			return next();

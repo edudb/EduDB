@@ -1,11 +1,11 @@
 package net.edudb.block;
 
-import net.edudb.page.Page;
+import net.edudb.page.DBPage;
 
 public class CSVBlockReader implements BlockReader {
 
 	@Override
-	public Page read(String blockName) {
+	public DBPage read(String blockName) {
 		// TODO Auto-generated method stub
 		return null;
 	}

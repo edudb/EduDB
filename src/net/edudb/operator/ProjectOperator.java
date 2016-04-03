@@ -8,78 +8,78 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-
 package net.edudb.operator;
 
 import net.edudb.operator.Operator;
-import net.edudb.page.Page;
+import net.edudb.page.DBPage;
 import net.edudb.server.ServerWriter;
 
 /**
  * Created by mohamed on 4/2/14.
  */
-public class ProjectOperator implements Operator{
+public class ProjectOperator implements Operator {
 
-    /**
-     * @uml.property  name="columns"
-     * @uml.associationEnd  
-     */
-    SelectColumns columns;
-    /**
-     * @uml.property  name="tableDbParameter"
-     * @uml.associationEnd  
-     */
-    DBParameter tableDbParameter;
+	/**
+	 * @uml.property name="columns"
+	 * @uml.associationEnd
+	 */
+	SelectColumns columns;
+	/**
+	 * @uml.property name="tableDbParameter"
+	 * @uml.associationEnd
+	 */
+	DBParameter tableDbParameter;
 
-    public ProjectOperator() {
-    }
+	public ProjectOperator() {
+	}
 
-    @Override
-    public DBResult execute(){
-        DBResult dbResult = ((Operator) tableDbParameter).execute();
-        if(dbResult instanceof DBIterator){
-            DBIterator iter = (DBIterator) dbResult;
-            iter.project(columns);
-            return iter;
-        }
-        ServerWriter.getInstance().writeln("project: 24 not iterator\n");
-        return null;
-    }
+	@Override
+	public DBResult execute() {
+		DBResult dbResult = ((Operator) tableDbParameter).execute();
+		if (dbResult instanceof DBIterator) {
+			DBIterator iter = (DBIterator) dbResult;
+			iter.project(columns);
+			return iter;
+		}
+		ServerWriter.getInstance().writeln("project: 24 not iterator\n");
+		return null;
+	}
 
-    @Override
-    public void print() {
-    	ServerWriter.getInstance().write(execute());
-    }
+	@Override
+	public void print() {
+		ServerWriter.getInstance().write(execute());
+	}
 
-    @Override
-    public String toString(){
-        return "project " + columns.toString()+ " ";
-    }
-    @Override
-    public int numOfParameters() {
-        return 2;
-    }
+	@Override
+	public String toString() {
+		return "project " + columns.toString() + " ";
+	}
 
-    @Override
-    public DBParameter[] getChildren() {
-        return new DBParameter[] {tableDbParameter};
-    }
+	@Override
+	public int numOfParameters() {
+		return 2;
+	}
 
-    @Override
-    public void giveParameter(DBParameter par) {
-        if(par instanceof SelectColumns)
-            columns = (SelectColumns) par;
-        else
-            tableDbParameter = par;
-    }
+	@Override
+	public DBParameter[] getChildren() {
+		return new DBParameter[] { tableDbParameter };
+	}
 
-    @Override
-    public void runStep(Page page) {
+	@Override
+	public void giveParameter(DBParameter par) {
+		if (par instanceof SelectColumns)
+			columns = (SelectColumns) par;
+		else
+			tableDbParameter = par;
+	}
 
-    }
+	@Override
+	public void runStep(DBPage page) {
 
-    @Override
-    public Page getPage() {
-        return null;
-    }
+	}
+
+	@Override
+	public DBPage getPage() {
+		return null;
+	}
 }
