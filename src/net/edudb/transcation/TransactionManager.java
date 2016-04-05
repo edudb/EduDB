@@ -8,63 +8,21 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.page;
+package net.edudb.transcation;
 
-import net.edudb.structure.Recordable;
+public class TransactionManager {
+	
+	private static TransactionManager instance = new TransactionManager();
+	
+	private TransactionManager() {
+	}
+	
+	public static TransactionManager getInstance() {
+		return instance;
+	}
 
-public interface Page {
-
-	/**
-	 * 
-	 * @return Name of the page.
-	 */
-	public String getName();
-
-	/**
-	 * 
-	 * @return Records inside the page.
-	 */
-	public Recordable[] getRecords();
-
-	/**
-	 * Adds a record to the page.
-	 * 
-	 * @param record
-	 *            Record to be added to the page.
-	 */
-	public void addRecord(Recordable record);
-
-	/**
-	 * 
-	 * @return Number of records the page can hold.
-	 */
-	public int capacity();
-
-	/**
-	 * 
-	 * @return Number of records in the page.
-	 */
-	public int size();
-
-	public boolean isFull();
-
-	public boolean isEmpty();
-
-	/**
-	 * Increments the open count.
-	 */
-	public void open();
-
-	/**
-	 * Decrements the open count;
-	 */
-	public void close();
-
-	public boolean isOpen();
-
-	/**
-	 * Prints the records to the console.
-	 */
-	public void print();
-
+	public void executeConcurrently(ConcurrentTransaction transaction) {
+		Thread thread = new Thread(transaction);
+		thread.start();
+	}
 }

@@ -18,6 +18,7 @@ import net.edudb.server.ServerWriter;
 
 /**
  * Singleton that handles pages read/written from/to disk.
+ * 
  * @author Ahmed Abdul Badie
  *
  */
@@ -35,8 +36,11 @@ public class BufferManager {
 	}
 
 	/**
-	 * Reads a page from the disk and adds it to the buffer if not present in the buffer.
-	 * @param pageName Name of page required.
+	 * Reads a page from the disk and adds it to the buffer if not present in
+	 * the buffer.
+	 * 
+	 * @param pageName
+	 *            Name of page required.
 	 * @return Page The read page.
 	 */
 	public synchronized Page read(String pageName) {
@@ -51,9 +55,9 @@ public class BufferManager {
 		}
 
 		ServerWriter.getInstance().writeln("BufferManager (read): " + "Not Available");
-		
+
 		page = PageManager.read(pageName);
-		
+
 		if (page != null) {
 			pageBuffer.put(pageName, page);
 		}

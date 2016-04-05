@@ -13,13 +13,16 @@ package net.edudb.user_interface;
 import adipe.translate.TranslationException;
 import gudusoft.gsqlparser.EDbVendor;
 import gudusoft.gsqlparser.TGSqlParser;
-import net.edudb.engine.TransactionManager;
+import net.edudb.engine.DBTransactionManager;
 import net.edudb.operator.Operator;
 import net.edudb.plan.PlanFactory;
 import net.edudb.server.ServerWriter;
 import net.edudb.statement.SQLStatement;
 import net.edudb.statement.SQLStatementFactory;
 import net.edudb.statement.SQLStatementType;
+import net.edudb.transcation.ConcurrentTransaction;
+import net.edudb.transcation.Transaction;
+import net.edudb.transcation.TransactionManager;
 
 public class Parser {
 	/**
@@ -50,10 +53,15 @@ public class Parser {
 					return;
 				}
 				
-				TransactionManager.getInstance().execute(plan);
+				if (statement.statementType() == SQLStatementType.SQLInsertStatement) {
+					ConcurrentTransaction transaction = new ConcurrentTransaction(plan);
+					TransactionManager.getInstance().executeConcurrently(transaction);
+				} else {
+					DBTransactionManager.getInstance().execute(plan);
 
-				if (statement.statementType() != SQLStatementType.SQLSelectStatement) {
-					ServerWriter.getInstance().writeln("Parser (parseSQL): " + plan.execute());
+					if (statement.statementType() != SQLStatementType.SQLSelectStatement) {
+						ServerWriter.getInstance().writeln("Parser (parseSQL): " + plan.execute());
+					}
 				}
 			}
 		} else {

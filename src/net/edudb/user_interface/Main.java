@@ -33,6 +33,7 @@ public class Main {
 					System.exit(0);
 				} else if (line.equals("clear")) {
 					console.clearScreen();
+					console.flush();
 				} else {
 					parser.parseSQL(line);
 				}

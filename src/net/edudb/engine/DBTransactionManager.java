@@ -23,14 +23,14 @@ import net.edudb.server.ServerWriter;
 import net.edudb.transcation.Step;
 import net.edudb.transcation.DBTransaction;
 
-public class TransactionManager {
+public class DBTransactionManager {
 
-	private static TransactionManager instance = new TransactionManager();
+	private static DBTransactionManager instance = new DBTransactionManager();
 
-	private TransactionManager() {
+	private DBTransactionManager() {
 	}
 
-	public static TransactionManager getInstance() {
+	public static DBTransactionManager getInstance() {
 		return instance;
 	}
 

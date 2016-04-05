@@ -47,6 +47,8 @@ public class InsertOperator implements Operator {
 		DBRecord record = new DBRecord(values, table.getName());
 
 		table.getPageManager().addRecord(record);
+		
+		table.getPageManager().print();
 
 		/**
 		 * ATTENTION
