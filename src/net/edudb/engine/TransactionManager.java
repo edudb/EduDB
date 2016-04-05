@@ -21,7 +21,7 @@ import net.edudb.operator.UpdateOperator;
 //import net.edudb.operator.UpdateOperator;
 import net.edudb.server.ServerWriter;
 import net.edudb.transcation.Step;
-import net.edudb.transcation.Transaction;
+import net.edudb.transcation.DBTransaction;
 
 public class TransactionManager {
 
@@ -34,7 +34,7 @@ public class TransactionManager {
 		return instance;
 	}
 
-	public void run(Operator op) {
+	public void execute(Operator op) {
 		if (op instanceof UpdateOperator) {
 			updateTable((UpdateOperator) op);
 			ServerWriter.getInstance().writeln("DBTransactionManager (run): " + "#1");
@@ -58,7 +58,7 @@ public class TransactionManager {
 
 	public static void updateTable(UpdateOperator updateOperator) {
 		ArrayList<Step> steps = updateOperator.getSteps();
-		Transaction transaction = new Transaction();
+		DBTransaction transaction = new DBTransaction();
 		transaction.init(steps);
 		Thread thread = new Thread(transaction);
 		thread.run();

@@ -17,7 +17,7 @@ public class PageTest {
 	
 	@Test
 	public void initTest() {
-		Pageable page = new Page();
+		Page page = new BinaryPage();
 		
 		assertNotNull(page);
 		assertNotNull(page.getName());
@@ -27,7 +27,7 @@ public class PageTest {
 	
 	@Test
 	public void saveTest() {
-		Pageable page = new Page();
+		Page page = new BinaryPage();
 		page.addRecord(new DBRecord());
 		page.addRecord(new DBRecord());
 		page.addRecord(new DBRecord());
@@ -53,7 +53,7 @@ public class PageTest {
 		BlockReader blockReader = blockReaderFactory.getReader(BlockFileType.Binary);
 		
 		try {
-			Pageable page = blockReader.read(pageName);
+			Page page = blockReader.read(pageName);
 			
 			assertNotNull(page);
 			assertEquals(page.size(), 3);

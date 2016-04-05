@@ -10,13 +10,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.operator;
 
-import java.io.IOException;
 import java.util.ArrayList;
-
-import net.edudb.engine.BufferManager;
 import net.edudb.operator.Operator;
 import net.edudb.page.DBPage;
-import net.edudb.page.Pageable;
 import net.edudb.server.ServerWriter;
 import net.edudb.statement.SQLInsertStatement;
 import net.edudb.statistics.Schema;
@@ -39,33 +35,27 @@ public class InsertOperator implements Operator {
 	}
 
 	@Override
-	public DBResult execute() {		
+	public DBResult execute() {
 		if (!Schema.chekTableExists(statement.getTargetTableName())) {
 			ServerWriter.getInstance().writeln("Table does not exist");
 			return null;
 		}
-		
-		TableAbstractFactory tableFactory = new TableReaderFactory();
-		TableReader tableReader = tableFactory.getReader(TableFileType.Binary);
-		Tabular table = null;
-		try {
-			table = tableReader.read(statement.getTargetTableName());
-		} catch (ClassNotFoundException | IOException e) {
-			e.printStackTrace();
-			return null;
-		}
-		
-		ArrayList<String> pageNames = (ArrayList<String>) table.getPageNames();
-		String lastPageName = pageNames.get(pageNames.size() - 1);
-		
-		Pageable page = BufferManager.getInstance().read(lastPageName);
-		
+
+		Table table = TableManager.read(statement.getTargetTableName());
+
 		ArrayList<String> values = statement.getValueList();
 		DBRecord record = new DBRecord(values, table.getName());
-		page.addRecord(record);
-		
-		BufferManager.getInstance().write(page.getName());
-		
+
+		table.getPageManager().addRecord(record);
+
+		/**
+		 * ATTENTION
+		 * 
+		 * Used to update the table's information on the disk after possibly
+		 * attaching a new page to the table's page manager.
+		 */
+		TableManager.write(table);
+
 		return null;
 	}
 

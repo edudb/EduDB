@@ -9,7 +9,7 @@ import net.edudb.engine.Config;
 public class BinaryTableWriter implements TableWriter {
 
 	@Override
-	public void write(Tabular table) throws IOException {
+	public void write(Table table) throws IOException {
 		FileOutputStream fileOut = new FileOutputStream(Config.tablesPath() + table.getName() + ".table");
 		ObjectOutputStream out = new ObjectOutputStream(fileOut);
 		out.writeObject(table);

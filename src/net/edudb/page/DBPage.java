@@ -21,7 +21,7 @@ import net.edudb.transcation.TimeUtil;
 /**
  * Created by mohamed on 5/20/14.
  */
-public class DBPage implements DBResult, Pageable {
+public class DBPage implements DBResult, Page {
     private DBPageID id;
     private PageState pageState;
 //    private LockState lockState;
@@ -148,6 +148,24 @@ public class DBPage implements DBResult, Pageable {
 
 	@Override
 	public boolean isEmpty() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void open() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void close() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean isOpen() {
 		// TODO Auto-generated method stub
 		return false;
 	}

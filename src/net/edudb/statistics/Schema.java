@@ -73,11 +73,11 @@ public class Schema {
     }
 
     // add table to schema file
-    public static void AddTable(String line){
+    public static void addTable(String line){
         initSchema();
         putTable(line);
         line += System.lineSeparator();
-        ServerWriter.getInstance().writeln("new table");
+        ServerWriter.getInstance().writeln("Schema (addTable):" + "new table");
         FileManager.addToFile(FileManager.getSchema(), line);
     }
 

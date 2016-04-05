@@ -25,7 +25,7 @@ import net.edudb.block.BlockWriter;
 import net.edudb.block.BlockWriterFactory;
 import net.edudb.page.DBPage;
 import net.edudb.page.DBPageID;
-import net.edudb.page.Pageable;
+import net.edudb.page.Page;
 import net.edudb.server.ServerWriter;
 import net.edudb.transcation.DBConfig;
 
@@ -178,7 +178,7 @@ public class DBBufferManager {
 				BlockAbstractFactory blockWriterFactory = new BlockWriterFactory();
 				BlockWriter blockWriter = blockWriterFactory.getWriter(Config.blockType());
 				try {
-					blockWriter.write((Pageable) toBeReplaced);
+					blockWriter.write((Page) toBeReplaced);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

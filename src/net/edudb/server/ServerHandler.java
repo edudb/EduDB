@@ -38,7 +38,8 @@ public class ServerHandler extends ChannelInboundHandlerAdapter { // (1)
 
 			Parser parser = new Parser();
 			parser.parseSQL(s);
-			ServerWriter.getInstance().write("edudb$ ");
+			
+			ServerWriter.getInstance().writeln("edudb$");
 
 		} catch (TranslationException e) {
 			// TODO Auto-generated catch block
@@ -61,7 +62,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter { // (1)
 			return -1;
 		case "[edudb::init]":
 		case "clear":
-			ServerWriter.getInstance().write("edudb$ ");
+			ServerWriter.getInstance().writeln("Initialized connection\nedudb$");
 			return 0;
 		default:
 			return 1;

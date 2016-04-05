@@ -13,6 +13,6 @@ public interface TableReader {
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	public Tabular read(String tableName) throws IOException, ClassNotFoundException;
+	public Table read(String tableName) throws IOException, ClassNotFoundException;
 	
 }

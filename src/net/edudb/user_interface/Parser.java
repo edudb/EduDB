@@ -50,7 +50,7 @@ public class Parser {
 					return;
 				}
 				
-				TransactionManager.getInstance().run(plan);
+				TransactionManager.getInstance().execute(plan);
 
 				if (statement.statementType() != SQLStatementType.SQLSelectStatement) {
 					ServerWriter.getInstance().writeln("Parser (parseSQL): " + plan.execute());

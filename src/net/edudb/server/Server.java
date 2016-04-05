@@ -39,8 +39,6 @@ public class Server {
 			// Bind and start to accept incoming connections.
 			ChannelFuture f = b.bind(port).sync();
 
-			System.out.println("Server is up and running.");
-
 			// Wait until the server socket is closed.
 			// In this example, this does not happen, but you can do that to
 			// gracefully

@@ -11,11 +11,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.transcation;
 
 public interface DBWrite {
-    DBWriteType getType();
+	DBWriteType getType();
 
-    public enum DBWriteType{
-        dbinsert,
-        dbupdate,
-        dbdelte
-    }
+	public enum DBWriteType {
+		dbinsert, dbupdate, dbdelte
+	}
 }

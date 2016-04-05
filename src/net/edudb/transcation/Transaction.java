@@ -10,25 +10,17 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.transcation;
 
-import java.util.ArrayList;
-import java.util.Vector;
-
-import net.edudb.operator.DBResult;
+import net.edudb.operator.Operator;
 
 public class Transaction implements Runnable {
+	private Operator plan;
 
-	private ArrayList<Step> vSteps;
-	private long ID;
-
-	public void init(ArrayList<Step> vSteps) {
-		this.vSteps = vSteps;
+	public Transaction(Operator plan) {
+		this.plan = plan;
 	}
 
 	@Override
 	public void run() {
-		for (int i = 0; i < vSteps.size(); i++) {
-			Step step = vSteps.get(i);
-			step.execute();
-		}
+		plan.print();
 	}
 }

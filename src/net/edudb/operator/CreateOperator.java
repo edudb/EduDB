@@ -10,14 +10,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.operator;
 
-import java.io.IOException;
-
-import net.edudb.block.*;
+import net.edudb.engine.Config;
 import net.edudb.operator.Operator;
 import net.edudb.page.*;
 import net.edudb.statement.SQLCreateTableStatement;
 import net.edudb.statistics.Schema;
-import net.edudb.table.Table;
 import net.edudb.table.*;
 
 /**
@@ -41,29 +38,12 @@ public class CreateOperator implements Operator {
 		// add table to schema
 		String line = statement.getTableName();
 		line += " " + statement.getColumnListString();
-		Schema.AddTable(line);
+		Schema.addTable(line);
 		
-		Tabular table = new Table(statement.getTableName());
-		TableAbstractFactory tableFactory = new TableWriterFactory();
-		TableWriter tableWriter = tableFactory.getWriter(TableFileType.Binary);
+		TableFactory tableFactory = new TableFactory();
+		Table table = tableFactory.makeTable(Config.tableType(), statement.getTableName());
 		
-		Pageable page = new Page();
-		BlockAbstractFactory blockFactory = new BlockWriterFactory();
-		BlockWriter blockWriter = blockFactory.getWriter(BlockFileType.Binary);
-		
-		try {
-			blockWriter.write(page);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		table.addPageName(page.getName());
-		
-		try {
-			tableWriter.write(table);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		TableManager.write(table);
 		
 		return null;
 	}

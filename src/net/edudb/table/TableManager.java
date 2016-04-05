@@ -8,10 +8,44 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.transcation;
+package net.edudb.table;
+
+import java.io.IOException;
+
+import net.edudb.engine.Config;
 
 /**
- * Created by mohamed on 5/21/14.
+ * 
+ * TableManager is a wrapper class around TableAbstractFactory. It handles the
+ * reading and writing of tables using the default file type defined in
+ * net.edudb.engine.Config.
+ * 
+ * @author Ahmed Abdul Badie
+ *
  */
-public interface DBRead {
+public class TableManager {
+
+	public static Table read(String tableName) {
+		TableAbstractFactory tableFactory = new TableReaderFactory();
+		TableReader tableReader = tableFactory.getReader(Config.tableType());
+		Table table = null;
+
+		try {
+			table = tableReader.read(tableName);
+		} catch (ClassNotFoundException | IOException e) {
+			e.printStackTrace();
+		}
+		return table;
+	}
+
+	public static void write(Table table) {
+		TableAbstractFactory tableFactory = new TableWriterFactory();
+		TableWriter tableWriter = tableFactory.getWriter(Config.tableType());
+
+		try {
+			tableWriter.write(table);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }

@@ -9,6 +9,6 @@ public interface TableWriter {
 	 * 
 	 * @throws IOException
 	 */
-	public void write(Tabular table) throws IOException;
+	public void write(Table table) throws IOException;
 
 }

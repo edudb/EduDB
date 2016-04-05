@@ -10,8 +10,22 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.transcation;
 
-/**
- * Created by mohamed on 5/21/14.
- */
-public interface DBRead {
+import java.util.ArrayList;
+
+public class DBTransaction implements Runnable {
+
+	private ArrayList<Step> vSteps;
+	private long ID;
+
+	public void init(ArrayList<Step> vSteps) {
+		this.vSteps = vSteps;
+	}
+
+	@Override
+	public void run() {
+		for (int i = 0; i < vSteps.size(); i++) {
+			Step step = vSteps.get(i);
+			step.execute();
+		}
+	}
 }
