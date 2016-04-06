@@ -1,4 +1,0 @@
-persons number integer, age integer, birth integer, married integer
-places id integer, address integer
-block idx integer, adx integer
-asd a integer

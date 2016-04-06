@@ -21,8 +21,12 @@ public class TransactionManager {
 		return instance;
 	}
 
-	public void executeConcurrently(ConcurrentTransaction transaction) {
+	public void execute(ConcurrentTransaction transaction) {
 		Thread thread = new Thread(transaction);
 		thread.start();
+	}
+	
+	public void execute(SynchronizedTransaction transaction) {
+		transaction.run();
 	}
 }

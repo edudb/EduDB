@@ -96,7 +96,7 @@ public class PageManager implements Pageable, Serializable {
 		this.pageNames.add(pageName);
 	}
 
-	private Page createPage() {
+	private synchronized Page createPage() {
 		PageFactory pageFactory = new PageFactory();
 		Page page = pageFactory.makePage(Config.blockType());
 		pageNames.add(page.getName());
@@ -130,7 +130,7 @@ public class PageManager implements Pageable, Serializable {
 			PageManager.write(newPage);
 		}
 		page.close();
-		PageManager.write(page);
+//		PageManager.write(page);
 	}
 
 	public void print() {

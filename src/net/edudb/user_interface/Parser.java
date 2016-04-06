@@ -13,14 +13,17 @@ package net.edudb.user_interface;
 import adipe.translate.TranslationException;
 import gudusoft.gsqlparser.EDbVendor;
 import gudusoft.gsqlparser.TGSqlParser;
+import net.edudb.console.DatabaseConsole;
 import net.edudb.engine.DBTransactionManager;
 import net.edudb.operator.Operator;
 import net.edudb.plan.PlanFactory;
 import net.edudb.server.ServerWriter;
+import net.edudb.statement.SQLInsertStatement;
 import net.edudb.statement.SQLStatement;
 import net.edudb.statement.SQLStatementFactory;
 import net.edudb.statement.SQLStatementType;
 import net.edudb.transcation.ConcurrentTransaction;
+import net.edudb.transcation.SynchronizedTransaction;
 import net.edudb.transcation.Transaction;
 import net.edudb.transcation.TransactionManager;
 
@@ -41,28 +44,36 @@ public class Parser {
 		planFactory = new PlanFactory();
 	}
 
-	public void parseSQL(String strSQL) throws TranslationException {
+	public synchronized void parseSQL(String strSQL) throws TranslationException {
 		sqlparser.setSqltext(strSQL);
 		int ret = sqlparser.parse();
 		if (ret == 0) {
-			for (int i = 0; i < sqlparser.sqlstatements.size(); i++) {
-				SQLStatementFactory statementFactory = new SQLStatementFactory();
-				SQLStatement statement = statementFactory.getSQLStatement(sqlparser.sqlstatements.get(i));
-				Operator plan = planFactory.makePlan(statement);
-				if (plan == null) {
-					return;
-				}
-				
-				if (statement.statementType() == SQLStatementType.SQLInsertStatement) {
-					ConcurrentTransaction transaction = new ConcurrentTransaction(plan);
-					TransactionManager.getInstance().executeConcurrently(transaction);
-				} else {
-					DBTransactionManager.getInstance().execute(plan);
+			SQLStatementFactory statementFactory = new SQLStatementFactory();
+			SQLStatement statement = statementFactory.getSQLStatement(sqlparser.sqlstatements.get(0));
+			Operator plan = planFactory.makePlan(statement);
+			if (plan == null) {
+				return;
+			}
 
-					if (statement.statementType() != SQLStatementType.SQLSelectStatement) {
-						ServerWriter.getInstance().writeln("Parser (parseSQL): " + plan.execute());
-					}
+			switch (statement.statementType()) {
+			case SQLCreateTableStatement:
+			case SQLInsertStatement: {
+				DatabaseConsole.getInstance().writeln("Parser (parseSQL): " + "Transaction");
+				ConcurrentTransaction transaction = new ConcurrentTransaction(plan);
+				// SynchronizedTransaction transaction = new
+				// SynchronizedTransaction(plan);
+				TransactionManager.getInstance().execute(transaction);
+				break;
+			}
+			default: {
+				DBTransactionManager.getInstance().execute(plan);
+
+				if (statement.statementType() != SQLStatementType.SQLSelectStatement) {
+					ServerWriter.getInstance().writeln("Parser (parseSQL): " + plan.execute());
 				}
+				break;
+			}
+
 			}
 		} else {
 			ServerWriter.getInstance().writeln(sqlparser.getErrormessage());

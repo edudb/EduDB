@@ -79,5 +79,11 @@ public class BufferManager {
 			PageManager.write(page);
 		}
 	}
+	
+	public void writeAll() {
+		for (Page page : pageBuffer.values()) {
+			this.write(page.getName());
+		}
+	}
 
 }

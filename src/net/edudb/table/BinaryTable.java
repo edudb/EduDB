@@ -11,10 +11,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.table;
 
 import java.io.Serializable;
-import java.util.Collection;
-
 import net.edudb.page.PageManager;
-import net.edudb.page.Pageable;
 
 public class BinaryTable implements Table, Serializable {
 
@@ -28,17 +25,15 @@ public class BinaryTable implements Table, Serializable {
 	/**
 	 * Name of the pages in which data are persisted in.
 	 */
-//	private ArrayList<String> pages;
 	private PageManager pageManager;
 
 	public BinaryTable(String name) {
 		this.name = name;
-//		this.pages = new ArrayList<>();
 		this.pageManager = new PageManager();
 	}
-	
+
 	@Override
-	public PageManager getPageManager() {
+	public synchronized PageManager getPageManager() {
 		return pageManager;
 	}
 

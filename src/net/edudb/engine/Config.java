@@ -36,7 +36,7 @@ public class Config {
 	}
 	
 	public static int pageSize() {
-		return 5;
+		return 100;
 	}
 
 }

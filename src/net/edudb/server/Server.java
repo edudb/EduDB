@@ -63,7 +63,7 @@ public class Server {
 
 		frame.setVisible(true);
 		
-		DatabaseSystem.getInstance().initialize();
+		DatabaseSystem.getInstance().initializeDirectories();
 
 		int port;
 		if (args.length > 0) {

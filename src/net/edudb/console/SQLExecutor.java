@@ -8,38 +8,26 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.user_interface;
+package net.edudb.console;
 
 import adipe.translate.TranslationException;
-import net.edudb.console.DatabaseConsole;
-import net.edudb.engine.DatabaseSystem;
+import net.edudb.user_interface.Parser;
 
-public class Main {
+public class SQLExecutor implements ConsoleExecutorChain {
+	private ConsoleExecutorChain nextChainElement;
 
-	public static void main(String[] args) throws TranslationException {
-
-		/**
-		 * ATTENTION
-		 * 
-		 * Important call.
-		 */
-		DatabaseSystem.getInstance().initializeDirectories();
-
-		DatabaseConsole console = DatabaseConsole.getInstance();
-		console.setPrompt("edudb$ ");
-		console.start();
-//		Parser parser = new Parser();
-//		String line;
-//		while ((line = console.readLine()) != null) {
-//			if (line.equals("exit")) {
-//				DatabaseSystem.getInstance().exit(0);
-//			} else if (line.equals("clear")) {
-//				console.clearScreen();
-//				console.flush();
-//			} else {
-//				parser.parseSQL(line);
-//			}
-//		}
+	@Override
+	public void setNextInChain(ConsoleExecutorChain chainElement) {
+		this.nextChainElement = chainElement;
 	}
 
+	@Override
+	public void execute(String string) {
+		Parser parser = new Parser();
+		try {
+			parser.parseSQL(string);
+		} catch (TranslationException e) {
+			e.printStackTrace();
+		}
+	}
 }

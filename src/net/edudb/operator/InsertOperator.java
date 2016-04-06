@@ -36,10 +36,10 @@ public class InsertOperator implements Operator {
 
 	@Override
 	public DBResult execute() {
-		if (!Schema.chekTableExists(statement.getTargetTableName())) {
-			ServerWriter.getInstance().writeln("Table does not exist");
-			return null;
-		}
+//		if (!Schema.chekTableExists(statement.getTargetTableName())) {
+//			ServerWriter.getInstance().writeln("InsertOperator (execute): " + "Table does not exist");
+//			return null;
+//		}
 
 		Table table = TableManager.read(statement.getTargetTableName());
 
@@ -48,7 +48,7 @@ public class InsertOperator implements Operator {
 
 		table.getPageManager().addRecord(record);
 		
-		table.getPageManager().print();
+//		table.getPageManager().print();
 
 		/**
 		 * ATTENTION
