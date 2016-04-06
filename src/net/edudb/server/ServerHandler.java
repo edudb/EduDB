@@ -18,11 +18,9 @@ public class ServerHandler extends ChannelInboundHandlerAdapter { // (1)
 
 		String s = "";
 		try {
-			// Do something with msg
 			while (in.isReadable()) {
 				s += (char) in.readByte();
 			}
-			// s = s.substring(0, s.length() - 1);
 
 			ServerWriter.getInstance().setContext(ctx);
 
@@ -38,10 +36,10 @@ public class ServerHandler extends ChannelInboundHandlerAdapter { // (1)
 
 			Parser parser = new Parser();
 			parser.parseSQL(s);
-			ServerWriter.getInstance().write("edudb$ ");
+			
+			ServerWriter.getInstance().writeln("edudb$");
 
 		} catch (TranslationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			ReferenceCountUtil.release(msg);
@@ -61,7 +59,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter { // (1)
 			return -1;
 		case "[edudb::init]":
 		case "clear":
-			ServerWriter.getInstance().write("edudb$ ");
+			ServerWriter.getInstance().writeln("Initialized connection\nedudb$");
 			return 0;
 		default:
 			return 1;
