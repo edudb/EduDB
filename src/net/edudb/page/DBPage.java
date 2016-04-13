@@ -11,10 +11,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.page;
 
+import net.edudb.db_operator.DBResult;
 import net.edudb.index.BPlusTree.DBBTree;
-import net.edudb.operator.DBResult;
 import net.edudb.structure.DBIndex;
-import net.edudb.structure.Recordable;
+import net.edudb.structure.Record;
 //import net.edudb.structure.DBTable;
 import net.edudb.transcation.TimeUtil;
 
@@ -117,13 +117,13 @@ public class DBPage implements DBResult, Page {
 	}
 
 	@Override
-	public Recordable[] getRecords() {
+	public Record[] getRecords() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void addRecord(Recordable record) {
+	public void addRecord(Record record) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -168,5 +168,11 @@ public class DBPage implements DBResult, Page {
 	public boolean isOpen() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public Record getRecord(int index) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

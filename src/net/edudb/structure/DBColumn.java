@@ -11,51 +11,62 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.structure;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
-import net.edudb.operator.DBParameter;
+import net.edudb.db_operator.DBParameter;
 import net.edudb.server.ServerWriter;
-import net.edudb.statistics.Schema;
 
 /**
  * Created by mohamed on 4/19/14.
  */
 public class DBColumn implements DBParameter, Serializable {
+
+	private static final long serialVersionUID = -6271986181160247610L;
+
 	/**
 	 * @uml.property name="order"
 	 */
-	public int order;
+	private int order;
+
+	public int getOrder() {
+		return order;
+	}
+
+	private String name;
+
 	/**
 	 * @uml.property name="tableName"
 	 */
-	public String tableName;
+	private String tableName;
+	
+	public DBColumn(int order) {
+		this.order = order;
+	}
 
-	public DBColumn(int num, String tableName) {
+	public DBColumn(int num, String name, String tableName) {
 		this.order = num;
 		this.tableName = tableName;
-	}
-
-	public DBColumn(String name, String tableName) {
-		this.order = Schema.getColumnNumber(name, tableName) + 1;
-		this.tableName = tableName;
-	}
-
-	public String toString() {
-		return tableName + "." + order;
+		this.name = name;
 	}
 
 	@Override
-	public void print() {
-		ServerWriter.getInstance().write(tableName + "." + order);
+	public String toString() {
+		return name;
+	}
 
+	@Override
+	public int hashCode() {
+		return order;
+	};
+
+	@Override
+	public void print() {
+		ServerWriter.getInstance().write(this);
 	}
 
 	@Override
 	public boolean equals(Object o) {
-		if (o instanceof DBColumn) {
-			return ((DBColumn) o).order == order && ((DBColumn) o).tableName.equals(tableName);
-		}
-		return false;
+		DBColumn column = (DBColumn) o;
+		return column.order == order;// && column.name.equals(name) && column.tableName.equals(tableName);
 	}
 
 	@Override

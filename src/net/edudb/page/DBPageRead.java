@@ -10,21 +10,21 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.page;
 
+import net.edudb.db_operator.DBOperator;
 import net.edudb.engine.DBBufferManager;
-import net.edudb.operator.Operator;
 import net.edudb.server.ServerWriter;
 import net.edudb.transcation.Step;
 
 public class DBPageRead extends Step {
-	private Operator operator;
+	private DBOperator operator;
 	private String tableName;
 	private boolean bModify;
 
-	public DBPageRead(Operator operator, String tableName) {
+	public DBPageRead(DBOperator operator, String tableName) {
 		this.operator = operator;
 	}
 
-	public DBPageRead(Operator operator, String tableName, boolean bModify) {
+	public DBPageRead(DBOperator operator, String tableName, boolean bModify) {
 		this.operator = operator;
 		this.tableName = tableName;
 		this.bModify = bModify;

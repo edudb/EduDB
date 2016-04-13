@@ -14,10 +14,10 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 
+import net.edudb.db_operator.DBOperator;
+import net.edudb.db_operator.UpdateOperator;
 import net.edudb.exception.DBAppException;
 import net.edudb.exception.DBEngineException;
-import net.edudb.operator.Operator;
-import net.edudb.operator.UpdateOperator;
 //import net.edudb.operator.UpdateOperator;
 import net.edudb.server.ServerWriter;
 import net.edudb.transcation.Step;
@@ -34,7 +34,7 @@ public class DBTransactionManager {
 		return instance;
 	}
 
-	public void execute(Operator op) {
+	public void execute(DBOperator op) {
 		if (op instanceof UpdateOperator) {
 			updateTable((UpdateOperator) op);
 			ServerWriter.getInstance().writeln("DBTransactionManager (run): " + "#1");

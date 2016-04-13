@@ -13,7 +13,7 @@ package net.edudb.structure;
 
 import java.util.ArrayList;
 
-import net.edudb.operator.DBIterator;
+import net.edudb.db_operator.DBIterator;
 
 
 public interface DBIndex {

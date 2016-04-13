@@ -15,8 +15,7 @@ import java.io.Serializable;
 import net.edudb.engine.Config;
 import net.edudb.engine.Utility;
 import net.edudb.server.ServerWriter;
-import net.edudb.structure.DBRecord;
-import net.edudb.structure.Recordable;
+import net.edudb.structure.Record;
 
 public class BinaryPage implements Page, Serializable {
 
@@ -33,7 +32,7 @@ public class BinaryPage implements Page, Serializable {
 	/**
 	 * Array holding the records in the page.
 	 */
-	private Recordable[] records;
+	private Record[] records;
 
 	/**
 	 * The location in the page where the next record should be placed next.
@@ -49,7 +48,7 @@ public class BinaryPage implements Page, Serializable {
 
 	public BinaryPage() {
 		this.name = Utility.generateUUID();
-		this.records = new DBRecord[Config.pageSize()];
+		this.records = new Record[Config.pageSize()];
 		this.nextLocation = 0;
 		this.openCount = 0;
 	}
@@ -58,15 +57,20 @@ public class BinaryPage implements Page, Serializable {
 	public String getName() {
 		return name;
 	}
+	
+	@Override
+	public Record getRecord(int index) {
+		return records[index];
+	}
 
 	@Override
-	public Recordable[] getRecords() {
+	public Record[] getRecords() {
 		return records;
 	}
 
 	@Override
-	public synchronized void addRecord(Recordable record) {
-		if (nextLocation <= Config.pageSize()) {
+	public synchronized void addRecord(Record record) {
+		if (nextLocation <= records.length) {
 			records[nextLocation++] = record;
 		}
 	}
@@ -83,7 +87,7 @@ public class BinaryPage implements Page, Serializable {
 
 	@Override
 	public boolean isFull() {
-		return size() >= Config.pageSize();
+		return size() >= records.length;
 	}
 
 	@Override

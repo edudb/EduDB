@@ -11,7 +11,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.console;
 
 import adipe.translate.TranslationException;
-import net.edudb.user_interface.Parser;
+import net.edudb.parser.Parser;
 
 public class SQLExecutor implements ConsoleExecutorChain {
 	private ConsoleExecutorChain nextChainElement;

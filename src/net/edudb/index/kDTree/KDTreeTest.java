@@ -12,8 +12,9 @@ package net.edudb.index.kDTree;
 
 import org.junit.Test;
 
-import net.edudb.data_type.DB_Type;
+import net.edudb.data_type.DBType;
 import net.edudb.data_type.DataType;
+import net.edudb.data_type.IntegerType;
 
 /**
  * Created by mohamed on 3/23/14.
@@ -30,9 +31,9 @@ public class KDTreeTest {
 		KDTree tree = new KDTree(2);
 		DataType[] key = new DataType[2];
 		for (int i = 0; i < 10; i++) {
-			key[0] = new DB_Type.DB_Int(i);
-			key[1] = new DB_Type.DB_Char((char) ('a' + i));
-			DataType value = new DB_Type.DB_Int(100);
+			key[0] = new IntegerType(i);
+			key[1] = new DBType.DB_Char((char) ('a' + i));
+			DataType value = new IntegerType(100);
 			tree.insert(key, value);
 		}
 	}
@@ -42,17 +43,17 @@ public class KDTreeTest {
 		KDTree tree = new KDTree(2);
 		DataType[] key = new DataType[2];
 		for (int i = 0; i < 10; i++) {
-			key[0] = new DB_Type.DB_Int(i);
-			key[1] = new DB_Type.DB_Char((char) ('a' + i));
-			DataType value = new DB_Type.DB_Int(i + 5);
+			key[0] = new IntegerType(i);
+			key[1] = new DBType.DB_Char((char) ('a' + i));
+			DataType value = new IntegerType(i + 5);
 			tree.insert(key, value);
 		}
 		for (int i = 0; i < 10; i++) {
-			key[0] = new DB_Type.DB_Int(i);
-			key[1] = new DB_Type.DB_Char((char) ('a' + i));
+			key[0] = new IntegerType(i);
+			key[1] = new DBType.DB_Char((char) ('a' + i));
 			Object value = tree.search(key);
 			assert value != null;
-			DB_Type.DB_Int intValue = (DB_Type.DB_Int) value;
+			IntegerType intValue = (IntegerType) value;
 			assert intValue.number == i + 5;
 		}
 	}
@@ -62,14 +63,14 @@ public class KDTreeTest {
 		KDTree tree = new KDTree(2);
 		DataType[] key = new DataType[2];
 		for (int i = 0; i < 10; i++) {
-			key[0] = new DB_Type.DB_Int(i);
-			key[1] = new DB_Type.DB_Char((char) ('a' + i));
-			DataType value = new DB_Type.DB_Int(i + 5);
+			key[0] = new IntegerType(i);
+			key[1] = new DBType.DB_Char((char) ('a' + i));
+			DataType value = new IntegerType(i + 5);
 			tree.insert(key, value);
 		}
 		for (int i = 0; i < 10; i++) {
-			key[0] = new DB_Type.DB_Int(i);
-			key[1] = new DB_Type.DB_Char((char) ('a' + i));
+			key[0] = new IntegerType(i);
+			key[1] = new DBType.DB_Char((char) ('a' + i));
 			tree.delete(key);
 		}
 	}
@@ -79,17 +80,17 @@ public class KDTreeTest {
 		KDTree tree = new KDTree(2);
 		DataType[] key = new DataType[2];
 		for (int i = 0; i < 10; i++) {
-			key[0] = new DB_Type.DB_Int(i);
-			key[1] = new DB_Type.DB_Char((char) ('a' + i));
-			DataType value = new DB_Type.DB_Int(i + 5);
+			key[0] = new IntegerType(i);
+			key[1] = new DBType.DB_Char((char) ('a' + i));
+			DataType value = new IntegerType(i + 5);
 			tree.insert(key, value);
 		}
 		DataType[] lowk = new DataType[2];
-		lowk[0] = new DB_Type.DB_Int(3);
-		lowk[1] = new DB_Type.DB_Char('d');
+		lowk[0] = new IntegerType(3);
+		lowk[1] = new DBType.DB_Char('d');
 		DataType[] uppk = new DataType[2];
-		uppk[0] = new DB_Type.DB_Int(6);
-		uppk[1] = new DB_Type.DB_Char('g');
+		uppk[0] = new IntegerType(6);
+		uppk[1] = new DBType.DB_Char('g');
 		Object[] values = tree.range(lowk, uppk);
 		assert values.length == 4;
 	}

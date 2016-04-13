@@ -23,20 +23,19 @@ import java.util.Set;
  */
 public class Schema {
 
+	private static Schema instance = new Schema();
 	private static HashMap<String, ArrayList<String>> schema;
-	private static boolean initalized;
 
-	public static void initSchema() {
-		if (initalized) {
-			return;
-		}
+	private Schema() {
 		schema = new HashMap<>();
 		setSchema();
-		initalized = true;
 	}
 
-	public static boolean chekTableExists(String tableName) {
-		initSchema();
+	public static Schema getInstance() {
+		return instance;
+	}
+
+	public boolean chekTableExists(String tableName) {
 		return schema.get(tableName) != null;
 	}
 
@@ -47,13 +46,17 @@ public class Schema {
 		}
 	}
 
-	// get column list of table
-	public static ArrayList<DBColumn> getColumns(String tableName) {
-		initSchema();
+	/**
+	 * get column list of table
+	 * 
+	 * @param tableName
+	 * @return
+	 */
+	public ArrayList<DBColumn> getColumns(String tableName) {
 		ArrayList<DBColumn> columns = new ArrayList<>();
 		int count = schema.get(tableName).size();
 		for (int i = 1; i <= count; i++) {
-			DBColumn column = new DBColumn(i, tableName);
+			DBColumn column = new DBColumn(i, getColumnNames(tableName).get(i - 1), tableName);
 			columns.add(column);
 		}
 		return columns;
@@ -72,25 +75,22 @@ public class Schema {
 	}
 
 	// add table to schema file
-	public static void addTable(String line) {
-		initSchema();
+	public void addTable(String line) {
 		putTable(line);
 		line += System.lineSeparator();
 		ServerWriter.getInstance().writeln("Schema (addTable):" + "new table");
 		FileManager.addToFile(FileManager.getSchema(), line);
 	}
 
-	public static HashMap<String, ArrayList<String>> getSchema() {
-		initSchema();
+	public HashMap<String, ArrayList<String>> getSchema() {
 		return schema;
 	}
 
-	public static int getCount(String tableName) {
+	public int getCount(String tableName) {
 		return schema.get(tableName).size();
 	}
 
-	public static ArrayList<String> getColumnNames(String tableName) {
-		initSchema();
+	public ArrayList<String> getColumnNames(String tableName) {
 		ArrayList<String> columnNames = new ArrayList<>();
 		int count = schema.get(tableName).size();
 		for (int i = 0; i < count; i++) {
@@ -99,11 +99,11 @@ public class Schema {
 		return columnNames;
 	}
 
-	public static int getColumnNumber(String name, String tableName) {
+	public int getColumnNumber(String name, String tableName) {
 		return getColumnNames(tableName).indexOf(name);
 	}
 
-	public static Set<String> getTableNames() {
+	public Set<String> getTableNames() {
 		return schema.keySet();
 	}
 }

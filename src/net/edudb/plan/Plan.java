@@ -11,13 +11,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.plan;
 
-//import gudusoft.gsqlparser.TCustomSqlStatement;
-import net.edudb.operator.Operator;
+import net.edudb.db_operator.DBOperator;
 import net.edudb.statement.SQLStatement;
 
 /**
  * Created by mohamed on 4/1/14.
  */
 public interface Plan {
-    public Operator makePlan(SQLStatement sqlStatement);
+    public DBOperator makePlan(SQLStatement sqlStatement);
 }

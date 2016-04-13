@@ -10,19 +10,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.page;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
-
-import net.edudb.block.BlockAbstractFactory;
-import net.edudb.block.BlockReader;
-import net.edudb.block.BlockReaderFactory;
-import net.edudb.block.BlockWriter;
-import net.edudb.block.BlockWriterFactory;
 import net.edudb.engine.BufferManager;
 import net.edudb.engine.Config;
-import net.edudb.structure.Recordable;
+import net.edudb.structure.Record;
 
 /**
  * 
@@ -49,45 +41,8 @@ public class PageManager implements Pageable, Serializable {
 		this.pageNames = pages;
 	}
 
-	/**
-	 * Handles reading a page directly from disk.
-	 * 
-	 * @param page
-	 *            Name of page to read.
-	 */
-	public static Page read(String pageName) {
-		Page page = null;
-		BlockAbstractFactory blockReaderFactory = new BlockReaderFactory();
-		BlockReader blockReader = blockReaderFactory.getReader(Config.blockType());
-		try {
-			page = blockReader.read(pageName);
-			return page;
-		} catch (ClassNotFoundException | IOException e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	/**
-	 * Handles writing a page directly to disk.
-	 * 
-	 * @param page
-	 *            Page to be written.
-	 */
-	public static void write(Page page) {
-		BlockAbstractFactory blockFactory = new BlockWriterFactory();
-		BlockWriter blockWriter = blockFactory.getWriter(Config.blockType());
-
-		try {
-			blockWriter.write(page);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
 	@Override
-	public Collection<String> getPageNames() {
+	public ArrayList<String> getPageNames() {
 		return pageNames;
 	}
 
@@ -110,15 +65,11 @@ public class PageManager implements Pageable, Serializable {
 	 * @param record
 	 *            Record to be added to a page.
 	 */
-	public synchronized void addRecord(Recordable record) {
+	public synchronized void addRecord(Record record) {
 		Page page = null;
 		if (pageNames.size() == 0) {
 			Page newPage = createPage();
-			/**
-			 * No need to access the Buffer Manager since the page is not yet
-			 * requested by the engine.
-			 */
-			PageManager.write(newPage);
+			BufferManager.getInstance().write(newPage);
 		}
 
 		page = BufferManager.getInstance().read(pageNames.get(pageNames.size() - 1));
@@ -127,10 +78,10 @@ public class PageManager implements Pageable, Serializable {
 		page.addRecord(record);
 		if (page.isFull()) {
 			Page newPage = createPage();
-			PageManager.write(newPage);
+			BufferManager.getInstance().write(newPage);
 		}
 		page.close();
-//		PageManager.write(page);
+//		BufferManager.getInstance().write(page);
 	}
 
 	public void print() {

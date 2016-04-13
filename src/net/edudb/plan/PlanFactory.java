@@ -10,7 +10,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.plan;
 
-import net.edudb.operator.Operator;
+import net.edudb.db_operator.DBOperator;
 import net.edudb.server.ServerWriter;
 import net.edudb.statement.SQLStatement;
 import net.edudb.statement.SQLStatementType;
@@ -26,12 +26,12 @@ public class PlanFactory implements Plan {
 	private Plan planner;
 
 	@Override
-	public Operator makePlan(SQLStatement statement) {
+	public DBOperator makePlan(SQLStatement statement) {
 		setPlanner(statement.statementType());
 		if (planner == null) {
 			return null;
 		}
-		Operator plan = planner.makePlan(statement);
+		DBOperator plan = planner.makePlan(statement);
 		return plan;
 	}
 

@@ -13,6 +13,8 @@ package net.edudb.engine;
 import java.io.File;
 import java.io.IOException;
 
+import net.edudb.structure.table.TableManager;
+
 public class DatabaseSystem {
 
 	private static DatabaseSystem instance = new DatabaseSystem();
@@ -76,6 +78,7 @@ public class DatabaseSystem {
 	
 	public void exit(int status) {
 		BufferManager.getInstance().writeAll();
+		TableManager.getInstance().writeAll();
 		System.exit(status);
 	}
 

@@ -10,7 +10,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.page;
 
-import java.util.Collection;
+import java.util.ArrayList;
 
 public interface Pageable {
 
@@ -18,7 +18,7 @@ public interface Pageable {
 	 * 
 	 * @return ArrayList<String> of page names holding the data.
 	 */
-	public Collection<String> getPageNames();
+	public ArrayList<String> getPageNames();
 
 	/**
 	 * Adds a new page name to the page names list.

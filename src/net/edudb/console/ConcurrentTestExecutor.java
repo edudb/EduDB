@@ -11,9 +11,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.console;
 
 import adipe.translate.TranslationException;
-import net.edudb.table.Table;
-import net.edudb.table.TableManager;
-import net.edudb.user_interface.Parser;
+import net.edudb.parser.Parser;
+import net.edudb.relation.Relation;
+import net.edudb.relation.RelationIterator;
+import net.edudb.relation.VolatileRelation;
+import net.edudb.structure.table.Table;
+import net.edudb.structure.table.TableManager;
 
 public class ConcurrentTestExecutor implements ConsoleExecutorChain {
 	private ConsoleExecutorChain nextChainElement;
@@ -26,21 +29,26 @@ public class ConcurrentTestExecutor implements ConsoleExecutorChain {
 	@Override
 	public void execute(String string) {
 		if (string.equalsIgnoreCase("test")) {
-			Parser parser = new Parser();
-			try {
-				parser.parseSQL("create table test (a integer)");
-				Thread.sleep(2000);
-				for (int i = 0; i < 10; i++) {
-					parser.parseSQL("insert into test values(" + (i + 1) + ")");
-					Thread.sleep(50);
-				}
+//			Parser parser = new Parser();
+//			try {
+//				parser.parseSQL("create table test (a integer)");
+//				Thread.sleep(1000);
+//				for (int i = 0; i < 10; i++) {
+//					parser.parseSQL("insert into test values(" + (i + 1) + ")");
+//				}
+//
+//			} catch (TranslationException | InterruptedException e) {
+//				e.printStackTrace();
+//			}
 
-			} catch (TranslationException | InterruptedException e) {
-				e.printStackTrace();
+			Table table = TableManager.getInstance().read("test");
+			
+			Relation r = new VolatileRelation(table);
+			RelationIterator rit = r.getIterator();
+			
+			while(rit.hasNext()) {
+				System.out.println(rit.next());
 			}
-
-			Table table = TableManager.read("test");
-			table.getPageManager().print();
 			return;
 		}
 		nextChainElement.execute(string);

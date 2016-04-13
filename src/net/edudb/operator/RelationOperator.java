@@ -10,70 +10,48 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.operator;
 
-import net.edudb.operator.Operator;
-import net.edudb.page.DBPage;
-import net.edudb.server.ServerWriter;
-import net.edudb.structure.DBTable;
-import net.edudb.structure.DataManager;
+import net.edudb.ebtree.EBNode;
+import net.edudb.query.UnaryQueryNode;
 
 /**
- * Created by mohamed on 4/13/14.
+ * Operator that relates to a relation. It has no children because it is the
+ * leaf in the query tree.
+ * 
+ * @author Ahmed Abdul Badie
+ *
  */
-public class RelationOperator implements Operator {
+public class RelationOperator implements Operator, UnaryQueryNode {
 
-	/**
-	 * @uml.property name="tableName"
-	 */
-	private String tableName;
+	private OperatorParameter parameter;
+	private EBNode parent;
 
-	/**
-	 * @param tableName
-	 * @uml.property name="tableName"
-	 */
-	public void setTableName(String tableName) {
-		this.tableName = tableName;
+	@Override
+	public void setParameter(OperatorParameter parameter) {
+		this.parameter = parameter;
 	}
 
 	@Override
-	public DBResult execute() {
-		DBTable table = DataManager.getTable(tableName);
-		return table.getData();
+	public OperatorParameter getParameter() {
+		return parameter;
 	}
 
 	@Override
-	public void print() {
-		ServerWriter.getInstance().write(execute());
+	public void setParent(EBNode parent) {
+		this.parent = parent;
 	}
 
 	@Override
-	public String toString() {
-		return "table(" + tableName + ")";
+	public EBNode getParent() {
+		return parent;
 	}
 
 	@Override
-	public int numOfParameters() {
-		// TODO Auto-generated method stub
-		return 0;
+	public void setChild(EBNode child) {
 	}
 
 	@Override
-	public DBParameter[] getChildren() {
-		return new DBParameter[] {};
-	}
-
-	@Override
-	public void giveParameter(DBParameter par) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void runStep(DBPage page) {
-
-	}
-
-	@Override
-	public DBPage getPage() {
+	public EBNode getChild() {
 		return null;
 	}
+
 }

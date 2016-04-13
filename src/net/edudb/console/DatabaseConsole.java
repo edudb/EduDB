@@ -12,7 +12,7 @@ package net.edudb.console;
 
 import java.io.IOException;
 import jline.console.ConsoleReader;
-import jline.console.CursorBuffer;
+//import jline.console.CursorBuffer;
 
 /**
  * Singleton that handles the console and its commands.
@@ -28,7 +28,7 @@ public class DatabaseConsole {
 	/**
 	 * See the last two methods
 	 */
-	private CursorBuffer stashed;
+//	private CursorBuffer stashed;
 
 	private DatabaseConsole() {
 		try {
@@ -127,23 +127,23 @@ public class DatabaseConsole {
 	 * and are writing to the console.
 	 */
 
-	private void stashLine() {
-		this.stashed = this.consoleReader.getCursorBuffer().copy();
-		// try {
-		// this.consoleReader.getOutput().write("\u001b[1G\u001b[K");
-		// this.consoleReader.flush();
-		// } catch (IOException e) {
-		// // ignore
-		// }
-	}
-
-	private void unstashLine() {
-		try {
-			this.consoleReader.resetPromptLine(this.consoleReader.getPrompt(), this.stashed.toString(),
-					this.stashed.cursor);
-		} catch (IOException e) {
-			// ignore
-		}
-	}
+//	private void stashLine() {
+//		this.stashed = this.consoleReader.getCursorBuffer().copy();
+//		// try {
+//		// this.consoleReader.getOutput().write("\u001b[1G\u001b[K");
+//		// this.consoleReader.flush();
+//		// } catch (IOException e) {
+//		// // ignore
+//		// }
+//	}
+//
+//	private void unstashLine() {
+//		try {
+//			this.consoleReader.resetPromptLine(this.consoleReader.getPrompt(), this.stashed.toString(),
+//					this.stashed.cursor);
+//		} catch (IOException e) {
+//			// ignore
+//		}
+//	}
 
 }

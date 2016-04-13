@@ -10,17 +10,18 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.structure;
 
-import net.edudb.data_type.DB_Type;
 import net.edudb.data_type.DataType;
-import net.edudb.operator.DBAssignment;
-import net.edudb.operator.DBCond;
-import net.edudb.operator.SelectColumns;
+import net.edudb.data_type.IntegerType;
+import net.edudb.db_operator.DBAssignment;
+import net.edudb.db_operator.DBCond;
+import net.edudb.db_operator.SelectColumns;
 import net.edudb.statistics.Schema;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class DBRecord implements Recordable, Serializable {
+public class DBRecord implements Record, Serializable {
+
+	private static final long serialVersionUID = 5260115926554053270L;
 	/**
 	 * @uml.property name="columns"
 	 */
@@ -33,20 +34,20 @@ public class DBRecord implements Recordable, Serializable {
 	private ArrayList<DataType> values;
 
 	public DBRecord(String[] line, String tableName) {
-		columns = Schema.getColumns(tableName);
+		columns = Schema.getInstance().getColumns(tableName);
 		// TODO remove redundant schema calls
 		values = new ArrayList<>();
 		for (int i = 0; i < line.length; i++) {
 			// TODO add data types support
-			values.add(new DB_Type.DB_Int(Integer.parseInt(line[i])));
+			values.add(new IntegerType(line[i]));
 		}
 	}
 
 	public DBRecord(ArrayList<String> valuesList, String tableName) {
-		columns = Schema.getColumns(tableName);
+		columns = Schema.getInstance().getColumns(tableName);
 		values = new ArrayList<>();
 		for (int i = 0; i < valuesList.size(); i++) {
-			values.add(new DB_Type.DB_Int(Integer.parseInt(valuesList.get(i))));
+			values.add(new IntegerType(valuesList.get(i)));
 		}
 	}
 

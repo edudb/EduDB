@@ -10,9 +10,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.engine;
 
+import java.io.IOException;
 import java.util.HashMap;
-
-import net.edudb.page.PageManager;
+import net.edudb.block.BlockAbstractFactory;
+import net.edudb.block.BlockReader;
+import net.edudb.block.BlockReaderFactory;
+import net.edudb.block.BlockWriter;
+import net.edudb.block.BlockWriterFactory;
 import net.edudb.page.Page;
 import net.edudb.server.ServerWriter;
 
@@ -56,7 +60,7 @@ public class BufferManager {
 
 		ServerWriter.getInstance().writeln("BufferManager (read): " + "Not Available");
 
-		page = PageManager.read(pageName);
+		page = this.readFromDisk(pageName);
 
 		if (page != null) {
 			pageBuffer.put(pageName, page);
@@ -76,13 +80,52 @@ public class BufferManager {
 		page = pageBuffer.get(pageName);
 
 		if (page != null) {
-			PageManager.write(page);
+			this.writeToDisk(page);
 		}
 	}
-	
+
+	/**
+	 * Writes a page to disk and adds it to the buffer.
+	 * 
+	 * @param page
+	 *            The page to write.
+	 */
+	public synchronized void write(Page page) {
+		this.pageBuffer.put(page.getName(), page);
+//		this.writeToDisk(page);
+	}
+
+	/**
+	 * Writes all the pages to disk.
+	 */
 	public void writeAll() {
 		for (Page page : pageBuffer.values()) {
 			this.write(page.getName());
+		}
+	}
+
+	private Page readFromDisk(String pageName) {
+		Page page = null;
+		BlockAbstractFactory blockReaderFactory = new BlockReaderFactory();
+		BlockReader blockReader = blockReaderFactory.getReader(Config.blockType());
+		try {
+			page = blockReader.read(pageName);
+			return page;
+		} catch (ClassNotFoundException | IOException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	private void writeToDisk(Page page) {
+		BlockAbstractFactory blockFactory = new BlockWriterFactory();
+		BlockWriter blockWriter = blockFactory.getWriter(Config.blockType());
+
+		try {
+			blockWriter.write(page);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 

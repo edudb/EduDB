@@ -1,0 +1,82 @@
+/*
+EduDB is made available under the OSI-approved MIT license.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
+package net.edudb.db_operator;
+
+import net.edudb.db_operator.DBOperator;
+import net.edudb.page.DBPage;
+import net.edudb.server.ServerWriter;
+
+/**
+ * Created by mohamed on 4/13/14.
+ */
+public class JoinOperator implements DBOperator {
+	/**
+	 * @uml.property name="table1"
+	 * @uml.associationEnd
+	 */
+	DBParameter table1;
+	/**
+	 * @uml.property name="table2"
+	 * @uml.associationEnd
+	 */
+	DBParameter table2;
+
+	@Override
+	public DBResult execute() {
+		DBResult dbResult1 = ((DBOperator) table1).execute();
+		DBResult dbResult2 = ((DBOperator) table2).execute();
+		ProductIterator iter = new ProductIterator();
+		iter.giveIterator(dbResult1);
+		iter.giveIterator(dbResult2);
+		iter.finish();
+		return iter;
+	}
+
+	@Override
+	public void print() {
+		ServerWriter.getInstance().write(execute());
+	}
+
+	@Override
+	public String toString() {
+		return "join";
+	}
+
+	@Override
+	public int numOfParameters() {
+		return 2;
+	}
+
+	@Override
+	public DBParameter[] getChildren() {
+		return new DBParameter[] { table1, table2 };
+	}
+
+	@Override
+	public void giveParameter(DBParameter par) {
+		if (table1 == null) {
+			table1 = par;
+		} else {
+			table2 = par;
+		}
+
+	}
+
+	@Override
+	public void runStep(DBPage page) {
+
+	}
+
+	@Override
+	public DBPage getPage() {
+		return null;
+	}
+}

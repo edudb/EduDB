@@ -1,11 +1,11 @@
 package net.edudb.transcation;
 
-import net.edudb.operator.Operator;
+import net.edudb.db_operator.DBOperator;
 
 public class SynchronizedTransaction implements Transaction {
-	private Operator plan;
+	private DBOperator plan;
 
-	public SynchronizedTransaction(Operator plan) {
+	public SynchronizedTransaction(DBOperator plan) {
 		this.plan = plan;
 	}
 	

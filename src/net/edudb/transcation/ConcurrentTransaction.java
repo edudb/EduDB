@@ -10,12 +10,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.transcation;
 
-import net.edudb.operator.Operator;
+import net.edudb.db_operator.DBOperator;
 
 public class ConcurrentTransaction implements Transaction, Runnable {
-	private Operator plan;
+	private DBOperator plan;
 
-	public ConcurrentTransaction(Operator plan) {
+	public ConcurrentTransaction(DBOperator plan) {
 		this.plan = plan;
 	}
 

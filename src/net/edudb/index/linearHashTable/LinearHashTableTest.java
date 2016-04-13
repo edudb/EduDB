@@ -15,8 +15,9 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import net.edudb.data_type.DB_Type;
+import net.edudb.data_type.DBType;
 import net.edudb.data_type.DataType;
+import net.edudb.data_type.IntegerType;
 
 public class LinearHashTableTest {
 
@@ -24,8 +25,8 @@ public class LinearHashTableTest {
 	public void testPutOneGetOne() {
 		LinearHashTable table = new LinearHashTable(0.75f, 2);
 
-        DB_Type.DB_Int key = new DB_Type.DB_Int(5);
-		DB_Type.DB_String value = new DB_Type.DB_String();
+        IntegerType key = new IntegerType(5);
+		DBType.DB_String value = new DBType.DB_String();
 		value.str = "five";
 		table.put(key, value);
 		assertTrue(key.equals(key));
@@ -35,13 +36,13 @@ public class LinearHashTableTest {
 	@Test
 	public void testResize() {
 		LinearHashTable table = new LinearHashTable(0.75f, 2);
-		DB_Type.DB_Int key1 = new DB_Type.DB_Int(5);
-		DB_Type.DB_String value1 = new DB_Type.DB_String();
+		IntegerType key1 = new IntegerType(5);
+		DBType.DB_String value1 = new DBType.DB_String();
 		value1.str = "five";
 		table.put(key1, value1);
 		assertEquals("table size increased", 1, table.size());
-		DB_Type.DB_Int key2 = new DB_Type.DB_Int(6);
-		DB_Type.DB_String value2 = new DB_Type.DB_String();
+		IntegerType key2 = new IntegerType(6);
+		DBType.DB_String value2 = new DBType.DB_String();
 		value2.str = "six";
 		table.put(key2, value2);
 		assertEquals("table size increased", 2, table.size());
@@ -51,8 +52,8 @@ public class LinearHashTableTest {
 	public void put100(){
 		LinearHashTable table = new LinearHashTable(0.75f, 2);
 		for (int i = 0; i < 100; i++) {
-			DB_Type.DB_Int key1 = new DB_Type.DB_Int(i);
-			DB_Type.DB_String value1 = new DB_Type.DB_String();
+			IntegerType key1 = new IntegerType(i);
+			DBType.DB_String value1 = new DBType.DB_String();
 			value1.str = "num "+i;
 			table.put(key1, value1);
 		}
@@ -64,14 +65,14 @@ public class LinearHashTableTest {
 		LinearHashTable table = new LinearHashTable(0.75f, 2);
         int count = 100;
 		for (int i = 0; i < count; i++) {
-			DB_Type.DB_Int key1 = new DB_Type.DB_Int(i);
-			DB_Type.DB_String value1 = new DB_Type.DB_String();
+			IntegerType key1 = new IntegerType(i);
+			DBType.DB_String value1 = new DBType.DB_String();
 			value1.str = "num "+i;
 			table.put(key1, value1);
 		}
 		for (int i = 0; i < count; i++) {
-			DB_Type.DB_Int key2 = new DB_Type.DB_Int(i);
-			DB_Type.DB_String value2 = new DB_Type.DB_String();
+			IntegerType key2 = new IntegerType(i);
+			DBType.DB_String value2 = new DBType.DB_String();
 			value2.str = "num "+i;
 			DataType value = table.remove(key2);
 			assertEquals("value", value2, value);
@@ -81,13 +82,13 @@ public class LinearHashTableTest {
 	@Test
 	public void testRemove() {
 		LinearHashTable table = new LinearHashTable(0.75f, 2);
-		DB_Type.DB_Int key1 = new DB_Type.DB_Int(5);
-		DB_Type.DB_String value1 = new DB_Type.DB_String();
+		IntegerType key1 = new IntegerType(5);
+		DBType.DB_String value1 = new DBType.DB_String();
 		value1.str = "five";
 		table.put(key1, value1);
 		assertEquals("table size increased", 1, table.size());
-		DB_Type.DB_Int key2 = new DB_Type.DB_Int(6);
-		DB_Type.DB_String value2 = new DB_Type.DB_String();
+		IntegerType key2 = new IntegerType(6);
+		DBType.DB_String value2 = new DBType.DB_String();
 		value2.str = "six";
 		table.put(key2, value2);
 		DataType value3 = table.remove(key2);

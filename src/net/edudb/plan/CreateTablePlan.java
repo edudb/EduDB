@@ -10,10 +10,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.plan;
 
-//import gudusoft.gsqlparser.TCustomSqlStatement;
-//import gudusoft.gsqlparser.stmt.TCreateTableSqlStatement;
-import net.edudb.operator.CreateOperator;
-import net.edudb.operator.Operator;
+import net.edudb.db_operator.CreateOperator;
+import net.edudb.db_operator.DBOperator;
 import net.edudb.server.ServerWriter;
 import net.edudb.statement.SQLCreateTableStatement;
 import net.edudb.statement.SQLStatement;
@@ -35,12 +33,11 @@ import net.edudb.statistics.Schema;
 public class CreateTablePlan implements Plan {
 
 	@Override
-	public Operator makePlan(SQLStatement sqlStatement) {
-//		TCreateTableSqlStatement statement = (TCreateTableSqlStatement) tCustomSqlStatement;
+	public DBOperator makePlan(SQLStatement sqlStatement) {
 		SQLCreateTableStatement statement = (SQLCreateTableStatement) sqlStatement;
-		Operator operator = null;
+		DBOperator operator = null;
 		
-		if (!Schema.chekTableExists(statement.getTableName().toString())) {
+		if (!Schema.getInstance().chekTableExists(statement.getTableName())) {
 			operator = new CreateOperator(statement);
 		} else {
 			ServerWriter.getInstance().writeln("CreateTablePlanner (makePlan): " + "table already exists");

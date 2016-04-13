@@ -10,9 +10,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.index.BPlusTree;
 
-import net.edudb.data_type.DB_Type;
+import net.edudb.data_type.IntegerType;
+import net.edudb.db_operator.DBIterator;
 import net.edudb.file_utility.FileManager;
-import net.edudb.operator.DBIterator;
 import net.edudb.server.ServerWriter;
 import net.edudb.statistics.Schema;
 import net.edudb.structure.DBColumn;
@@ -36,7 +36,7 @@ public class DBBTree extends BTree<Integer, DBRecord> implements DBIndex {
 
 	public DBBTree(String tableName) {
 		this.tableName = tableName;
-		columnNames = Schema.getColumns(tableName);
+		columnNames = Schema.getInstance().getColumns(tableName);
 	}
 
 	public void insert(int key, DBRecord value) {
@@ -54,7 +54,7 @@ public class DBBTree extends BTree<Integer, DBRecord> implements DBIndex {
 		DBIterator iter = getIterator();
 		DBRecord record = (DBRecord) iter.first();
 		do {
-			out.insert(((DB_Type.DB_Int) record.getValue(0)).getNumber(), record.getCopy());
+			out.insert(((IntegerType) record.getValue(0)).getNumber(), record.getCopy());
 			record = (DBRecord) iter.next();
 		} while (record != null);
 		return out;
@@ -93,7 +93,7 @@ public class DBBTree extends BTree<Integer, DBRecord> implements DBIndex {
 		tree.print();
 		ServerWriter.getInstance().writeln("copy");
 		copy.print();
-		((DBRecord) copy.getSmallest().getValue(0)).setValue(0, new DB_Type.DB_Int(5));
+		((DBRecord) copy.getSmallest().getValue(0)).setValue(0, new IntegerType(5));
 		ServerWriter.getInstance().writeln("tree");
 		tree.print();
 		ServerWriter.getInstance().writeln("copy");

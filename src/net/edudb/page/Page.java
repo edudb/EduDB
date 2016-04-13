@@ -10,9 +10,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.page;
 
-import net.edudb.structure.Recordable;
+import net.edudb.structure.Record;
 
-public interface Page {
+public interface Page extends Recordable {
 
 	/**
 	 * 
@@ -22,9 +22,17 @@ public interface Page {
 
 	/**
 	 * 
+	 * @param index
+	 *            Index of record to return.
+	 * @return The required record.
+	 */
+	public Record getRecord(int index);
+
+	/**
+	 * 
 	 * @return Records inside the page.
 	 */
-	public Recordable[] getRecords();
+	public Record[] getRecords();
 
 	/**
 	 * Adds a record to the page.
@@ -32,7 +40,7 @@ public interface Page {
 	 * @param record
 	 *            Record to be added to the page.
 	 */
-	public void addRecord(Recordable record);
+	public void addRecord(Record record);
 
 	/**
 	 * 

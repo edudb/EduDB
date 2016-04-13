@@ -11,7 +11,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.transcation;
 
 
-import net.edudb.operator.DBResult;
+import net.edudb.db_operator.DBResult;
 
 public abstract class Step {
     public abstract void execute();

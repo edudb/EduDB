@@ -8,30 +8,21 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-
 package net.edudb.plan;
 
-//import gudusoft.gsqlparser.TCustomSqlStatement;
-//import gudusoft.gsqlparser.nodes.TMultiTargetList;
-//import gudusoft.gsqlparser.nodes.TObjectNameList;
-//import gudusoft.gsqlparser.stmt.TInsertSqlStatement;
-import net.edudb.operator.InsertOperator;
-import net.edudb.operator.Operator;
+import net.edudb.db_operator.InsertOperator;
+import net.edudb.db_operator.DBOperator;
 import net.edudb.statement.SQLInsertStatement;
 import net.edudb.statement.SQLStatement;
-
-//import java.util.ArrayList;
 
 /**
  * Created by mohamed on 4/9/14.
  */
 public class InsertPlan implements Plan {
-    @Override
-    public Operator makePlan(SQLStatement sqlStatement) {
-//        TInsertSqlStatement statement = (TInsertSqlStatement) tCustomSqlStatement;
-        //TODO read column list
-    	SQLInsertStatement statement = (SQLInsertStatement) sqlStatement;
-        Operator insert = new InsertOperator(statement);
-        return insert;
-    }
+	@Override
+	public DBOperator makePlan(SQLStatement sqlStatement) {
+		SQLInsertStatement statement = (SQLInsertStatement) sqlStatement;
+		DBOperator insert = new InsertOperator(statement);
+		return insert;
+	}
 }

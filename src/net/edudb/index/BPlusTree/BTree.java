@@ -13,8 +13,8 @@ package net.edudb.index.BPlusTree;
 
 import java.util.ArrayList;
 
-import net.edudb.operator.DBParameter;
-import net.edudb.operator.Operator;
+import net.edudb.db_operator.DBParameter;
+import net.edudb.db_operator.DBOperator;
 import net.edudb.server.ServerWriter;
 
 /**

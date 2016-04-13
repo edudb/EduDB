@@ -13,8 +13,8 @@ package net.edudb.index.BPlusTree;
 
 import java.util.ArrayList;
 
-import net.edudb.operator.DBCond;
-import net.edudb.operator.SelectColumns;
+import net.edudb.db_operator.DBCond;
+import net.edudb.db_operator.SelectColumns;
 
 /**
  * @author  mohamed

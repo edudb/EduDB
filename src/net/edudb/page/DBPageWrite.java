@@ -11,15 +11,15 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.page;
 
+import net.edudb.db_operator.DBParameter;
+import net.edudb.db_operator.DBOperator;
 import net.edudb.engine.DBBufferManager;
-import net.edudb.operator.DBParameter;
-import net.edudb.operator.Operator;
 import net.edudb.transcation.Step;
 
 public class DBPageWrite extends Step{
-    private Operator operator;
+    private DBOperator operator;
 
-    public DBPageWrite(Operator operator) {
+    public DBPageWrite(DBOperator operator) {
         this.operator = operator;
     }
 

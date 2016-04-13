@@ -25,7 +25,7 @@
  */
 package net.edudb.index.kDTree;
 
-import net.edudb.data_type.DB_Type;
+import net.edudb.data_type.IntegerType;
 
 class HRect {
 
@@ -84,8 +84,8 @@ class HRect {
 	HPoint vmax = new HPoint(d);
 	
 	for (int i=0; i<d; ++i) {
-	    vmin.coord[i] = new DB_Type.DB_Int(Integer.MIN_VALUE);
-	    vmax.coord[i] = new DB_Type.DB_Int(Integer.MAX_VALUE);
+	    vmin.coord[i] = new IntegerType(Integer.MIN_VALUE);
+	    vmax.coord[i] = new IntegerType(Integer.MAX_VALUE);
 	}
 
 	return new HRect(vmin, vmax);

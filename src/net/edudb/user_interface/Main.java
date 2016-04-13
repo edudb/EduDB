@@ -28,18 +28,6 @@ public class Main {
 		DatabaseConsole console = DatabaseConsole.getInstance();
 		console.setPrompt("edudb$ ");
 		console.start();
-//		Parser parser = new Parser();
-//		String line;
-//		while ((line = console.readLine()) != null) {
-//			if (line.equals("exit")) {
-//				DatabaseSystem.getInstance().exit(0);
-//			} else if (line.equals("clear")) {
-//				console.clearScreen();
-//				console.flush();
-//			} else {
-//				parser.parseSQL(line);
-//			}
-//		}
 	}
 
 }

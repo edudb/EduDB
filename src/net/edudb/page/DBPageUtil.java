@@ -33,7 +33,7 @@ public class DBPageUtil {
 	private static void init() {
 		if (!initialized) {
 			initialized = true;
-			Set<String> tableNames = Schema.getTableNames();
+			Set<String> tableNames = Schema.getInstance().getTableNames();
 			tables = new HashMap<>();
 //			BufferManager manager = TransactionManager.getBufferManager();
 			Iterator iter = tableNames.iterator();

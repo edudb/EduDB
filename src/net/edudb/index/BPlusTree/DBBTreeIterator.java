@@ -10,10 +10,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.index.BPlusTree;
 
-import net.edudb.operator.DBCond;
-import net.edudb.operator.DBIterator;
-import net.edudb.operator.DBResult;
-import net.edudb.operator.SelectColumns;
+import net.edudb.db_operator.DBCond;
+import net.edudb.db_operator.DBIterator;
+import net.edudb.db_operator.DBResult;
+import net.edudb.db_operator.SelectColumns;
 import net.edudb.server.ServerWriter;
 import net.edudb.structure.DBRecord;
 

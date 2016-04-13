@@ -10,21 +10,19 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.plan;
 
-//import gudusoft.gsqlparser.TCustomSqlStatement;
-//import gudusoft.gsqlparser.stmt.TSelectSqlStatement;
-import net.edudb.operator.Operator;
-import net.edudb.relational_algebra.Translator;
+import net.edudb.db_operator.DBOperator;
+import net.edudb.relational_algebra.DBTranslator;
 import net.edudb.statement.SQLStatement;
 
 public class SelectPlan implements Plan {
 
 	@Override
-	public Operator makePlan(SQLStatement sqlStatement) {
+	public DBOperator makePlan(SQLStatement sqlStatement) {
 //		TSelectSqlStatement statement = (TSelectSqlStatement) tCustomSqlStatement;
-		Operator plan = null;
+		DBOperator plan = null;
 		// TODO add a tree of operators
 		try {
-			plan = Translator.translate(sqlStatement.toString());
+			plan = DBTranslator.translate(sqlStatement.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

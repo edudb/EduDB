@@ -11,7 +11,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.engine;
 
 import net.edudb.block.BlockFileType;
-import net.edudb.table.TableFileType;
+import net.edudb.structure.table.TableFileType;
 
 public class Config {
 	
@@ -36,7 +36,7 @@ public class Config {
 	}
 	
 	public static int pageSize() {
-		return 100;
+		return 5;
 	}
 
 }

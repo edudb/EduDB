@@ -12,10 +12,10 @@ package net.edudb.structure;
 
 import java.util.ArrayList;
 
+import net.edudb.db_operator.DBResult;
 import net.edudb.index.BPlusTree.BTree;
 import net.edudb.index.BPlusTree.DBBTree;
 import net.edudb.index.BPlusTree.DBBTreeIterator;
-import net.edudb.operator.DBResult;
 //import net.edudb.operator.SelectResult;
 import net.edudb.server.ServerWriter;
 
