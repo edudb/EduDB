@@ -26,12 +26,12 @@ public class FilterMatcher implements RAMatcherChain {
 	public RAMatcherResult parse(String string) {
 		Matcher matcher = Translator.matcher(string, regex);
 		if (matcher.matches()) {
-			FilterOperator filter = new FilterOperator();
+			FilterOperator filterOperator = new FilterOperator();
 
 			ExpressionTree tree = getExpressionTree(matcher.group(2));
-			filter.setParameter(tree);
+			filterOperator.setParameter(tree);
 
-			return new RAMatcherResult(filter, matcher.group(1));
+			return new RAMatcherResult(filterOperator, matcher.group(1));
 		}
 		return this.nextElement.parse(string);
 	}
@@ -92,7 +92,7 @@ public class FilterMatcher implements RAMatcherChain {
 			operator = OperatorType.GreaterThanOrEqual;
 			break;
 		case "<=":
-			operator = OperatorType.LessThan;
+			operator = OperatorType.LessThanOrEqual;
 			break;
 		default:
 			operator = OperatorType.Equal;

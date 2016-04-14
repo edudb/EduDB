@@ -15,6 +15,7 @@ import net.edudb.data_type.IntegerType;
 import net.edudb.db_operator.DBAssignment;
 import net.edudb.db_operator.DBCond;
 import net.edudb.db_operator.SelectColumns;
+import net.edudb.expression.BinaryExpressionTree;
 import net.edudb.statistics.Schema;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -135,5 +136,23 @@ public class DBRecord implements Record, Serializable {
 			record.columns.add(column);
 		}
 		return record;
+	}
+
+	@Override
+	public void addValue(DBColumn key, DataType value) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean evaluate(BinaryExpressionTree expressionTree) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Record project(Integer[] projectedColumns) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

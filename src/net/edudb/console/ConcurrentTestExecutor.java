@@ -31,10 +31,10 @@ public class ConcurrentTestExecutor implements ConsoleExecutorChain {
 		if (string.equalsIgnoreCase("test")) {
 //			Parser parser = new Parser();
 //			try {
-//				parser.parseSQL("create table test (a integer)");
+//				parser.parseSQL("create table test (a integer, b integer)");
 //				Thread.sleep(1000);
 //				for (int i = 0; i < 10; i++) {
-//					parser.parseSQL("insert into test values(" + (i + 1) + ")");
+//					parser.parseSQL("insert into test values(" + (i + 1) + ", " + (i + 1) + ")");
 //				}
 //
 //			} catch (TranslationException | InterruptedException e) {

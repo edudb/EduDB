@@ -10,6 +10,15 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.structure;
 
+import net.edudb.data_type.DataType;
+import net.edudb.expression.BinaryExpressionTree;
+
 public interface Record {
 
+	public void addValue(DBColumn key, DataType value);
+	
+	public boolean evaluate(BinaryExpressionTree expressionTree);
+	
+	public Record project(Integer[] projectedColumns);
+	
 }

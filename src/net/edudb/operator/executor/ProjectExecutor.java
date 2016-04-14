@@ -10,17 +10,15 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.operator.executor;
 
-import net.edudb.expression.BinaryExpressionTree;
-import net.edudb.expression.ExpressionTree;
-import net.edudb.operator.FilterOperator;
 import net.edudb.operator.Operator;
+import net.edudb.operator.ProjectOperator;
+import net.edudb.operator.ProjectParameter;
 import net.edudb.relation.Relation;
 import net.edudb.relation.RelationIterator;
 import net.edudb.relation.VolatileRelation;
 import net.edudb.structure.TableRecord;
 
-public class FilterExecutor extends PostOrderOperatorExecutor implements OperatorExecutionChain {
-
+public class ProjectExecutor extends PostOrderOperatorExecutor implements OperatorExecutionChain {
 	private OperatorExecutionChain nextElement;
 
 	@Override
@@ -30,19 +28,17 @@ public class FilterExecutor extends PostOrderOperatorExecutor implements Operato
 
 	@Override
 	public Relation execute(Operator operator) {
-		if (operator instanceof FilterOperator) {
-			FilterOperator filter = (FilterOperator) operator;
-			ExpressionTree tree = (ExpressionTree) filter.getParameter();
-			Relation relation = getChain().execute((Operator) filter.getChild());
+		if (operator instanceof ProjectOperator) {
+			ProjectOperator projectOperator = (ProjectOperator) operator;
+			ProjectParameter projectedColumns = (ProjectParameter) projectOperator.getParameter();
+			Relation relation = getChain().execute((Operator) projectOperator.getChild());
 
 			RelationIterator ri = relation.getIterator();
 			Relation resultRelation = new VolatileRelation();
 
 			while (ri.hasNext()) {
 				TableRecord r = (TableRecord) ri.next();
-				if (r.evaluate((BinaryExpressionTree) tree)) {
-					resultRelation.addRecord(r);
-				}
+				resultRelation.addRecord(r.project(projectedColumns.getProjectedColumns()));
 			}
 
 			return resultRelation;

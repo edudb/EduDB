@@ -12,10 +12,10 @@ package net.edudb.relational_algebra;
 
 import java.util.regex.Matcher;
 
+import net.edudb.engine.Config;
 import net.edudb.operator.RelationOperator;
 import net.edudb.structure.table.Table;
-import net.edudb.structure.table.TableManager;
-
+import net.edudb.structure.table.TableFactory;
 
 public class RelationMatcher implements RAMatcherChain {
 	private RAMatcherChain nextElement;
@@ -31,7 +31,12 @@ public class RelationMatcher implements RAMatcherChain {
 		Matcher matcher = Translator.matcher(string, regex);
 		if (matcher.matches()) {
 			RelationOperator relationOperator = new RelationOperator();
-			Table table = TableManager.getInstance().read(matcher.group(1));
+			/**
+			 * Defer reading the actual table until the execution step to
+			 * minimize effects.
+			 */
+			TableFactory tableFactory = new TableFactory();
+			Table table = tableFactory.makeTable(Config.tableType(), matcher.group(1));
 			relationOperator.setParameter(table);
 			return new RAMatcherResult(relationOperator, "");
 		}

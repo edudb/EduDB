@@ -11,7 +11,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.structure;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.Set;
+
+import com.google.common.collect.Sets;
 
 import net.edudb.data_type.DataType;
 import net.edudb.data_type.IntegerType;
@@ -32,12 +37,35 @@ public class TableRecord implements Record, Serializable {
 		this.data = data;
 	}
 
+	@Override
 	public void addValue(DBColumn key, DataType value) {
 		data.put(key, value);
 	}
 
+	@Override
 	public boolean evaluate(BinaryExpressionTree expressionTree) {
 		return expressionTree.evaluate(data);
+	}
+
+	@Override
+	public Record project(Integer[] projectedColumns) {
+		Integer[] columns = new Integer[data.size()];
+		int i = 0;
+		for (DBColumn column : data.keySet()) {
+			columns[i++] = column.getOrder();
+		}
+
+		Set<Integer> set1 = Sets.newHashSet(columns);
+		Set<Integer> set2 = Sets.newHashSet(projectedColumns);
+
+		Object[] setDifference = Sets.difference(set1, set2).toArray();
+
+		for (Object integer : setDifference) {
+			Integer in = (Integer) integer;
+			data.remove(new DBColumn(in));
+		}
+
+		return this;
 	}
 
 	@Override
@@ -46,7 +74,7 @@ public class TableRecord implements Record, Serializable {
 	}
 
 	public static void main(String[] args) {
-		TableRecord r = new TableRecord();
+		Record r = new TableRecord();
 		DBColumn a = new DBColumn(1, "a", "test");
 		DBColumn b = new DBColumn(2, "b", "test");
 		DBColumn c = new DBColumn(3, "c", "test");
@@ -54,17 +82,20 @@ public class TableRecord implements Record, Serializable {
 		r.addValue(b, new IntegerType(11));
 		r.addValue(c, new IntegerType(20));
 
-		BinaryExpressionNode and = new ANDLogicalOperator();
-		and.setLeftChild(new Expression(a, new IntegerType(10), OperatorType.Equal));
-		and.setRightChild(new Expression(b, new IntegerType(1), OperatorType.Equal));
-
-		BinaryExpressionNode or = new ANDLogicalOperator();
-		or.setRightChild(new Expression(c, new IntegerType(20), OperatorType.Equal));
-
-		EBTree et = new BinaryExpressionTree(and);
-		et.addNode(or);
-
-		System.out.println(r.evaluate((BinaryExpressionTree) et));
+		// BinaryExpressionNode and = new ANDLogicalOperator();
+		// and.setLeftChild(new Expression(a, new IntegerType(10),
+		// OperatorType.Equal));
+		// and.setRightChild(new Expression(b, new IntegerType(1),
+		// OperatorType.Equal));
+		//
+		// BinaryExpressionNode or = new ANDLogicalOperator();
+		// or.setRightChild(new Expression(c, new IntegerType(20),
+		// OperatorType.Equal));
+		//
+		// EBTree et = new BinaryExpressionTree(and);
+		// et.addNode(or);
+		//
+		// System.out.println(r.evaluate((BinaryExpressionTree) et));
 	}
 
 }

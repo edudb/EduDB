@@ -14,10 +14,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import adipe.translate.Queries;
 import adipe.translate.TranslationException;
-import net.edudb.data_type.IntegerType;
 import net.edudb.ebtree.EBNode;
 import net.edudb.ebtree.EBTree;
 import net.edudb.query.PostOrderTreeExecutor;
@@ -29,22 +27,27 @@ import net.edudb.statistics.Schema;
 import ra.Term;
 
 public class Translator {
-	public QueryTree translate(String sqlString) {
+	public String translate(String sqlString) {
 		try {
 			Term term = Queries.getRaOf(adipe.translate.ra.Schema.create(Schema.getInstance().getSchema()), sqlString);
-			System.out.println(term.toString());
-			ArrayList<EBNode> nodes = constructTreeNodes(term.toString(), getChain());
-			Collections.reverse(nodes);
-			EBTree tree = new QueryTree();
-			tree.constructTree(nodes);
-
-			return (QueryTree) tree;
+			return term.toString();
 		} catch (RuntimeException | TranslationException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
+	
+	private RAMatcherChain getChain() {
+		RAMatcherChain project = new ProjectMatcher();
+		RAMatcherChain filter = new FilterMatcher();
+		RAMatcherChain relation = new RelationMatcher();
 
+		project.setNextInChain(filter);
+		filter.setNextInChain(relation);
+		relation.setNextInChain(new NullMatcher());
+		return project;
+	}
+	
 	private ArrayList<EBNode> constructTreeNodes(String relationAlgebra, RAMatcherChain chain) {
 		ArrayList<EBNode> nodes = new ArrayList<>();
 		while (relationAlgebra.length() != 0) {
@@ -60,13 +63,13 @@ public class Translator {
 		return nodes;
 	}
 
-	private RAMatcherChain getChain() {
-		RAMatcherChain filter = new FilterMatcher();
-		RAMatcherChain relation = new RelationMatcher();
+	public QueryTree processRelationalAlgebra(String relationAlgebra) {
+		ArrayList<EBNode> nodes = constructTreeNodes(relationAlgebra, getChain());
+		Collections.reverse(nodes);
+		EBTree tree = new QueryTree();
+		tree.constructTree(nodes);
 
-		filter.setNextInChain(relation);
-		relation.setNextInChain(new NullMatcher());
-		return filter;
+		return (QueryTree) tree;
 	}
 
 	/**
@@ -86,7 +89,11 @@ public class Translator {
 	public static void main(String[] args) {
 		Translator t = new Translator();
 
-		QueryTree qt = t.translate("select * from test where a>3 and a<7");
+		String ra = t.translate("select a,b from test where b<>4 and a<=7");
+
+		System.out.println(ra);
+
+		QueryTree qt = t.processRelationalAlgebra(ra);
 
 		QueryTreeExecutor qte = new PostOrderTreeExecutor();
 
@@ -96,10 +103,5 @@ public class Translator {
 		while (ri.hasNext()) {
 			System.out.println(ri.next());
 		}
-		
-//		IntegerType a = new IntegerType(7);
-//		IntegerType b = new IntegerType(6);
-//		
-//		System.out.println(a.compareTo(b));
 	}
 }

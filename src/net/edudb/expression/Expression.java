@@ -58,19 +58,22 @@ public class Expression implements BinaryExpressionNode {
 
 	@Override
 	public boolean evaluate(LinkedHashMap<DBColumn, DataType> data) {
+
+		int comparisonResult = data.get(column).compareTo(value);
+
 		switch (operator) {
 		case Equal:
-			return data.get(column).compareTo(value) == 0;
+			return comparisonResult == 0;
 		case NotEqual:
-			return data.get(column).compareTo(value) != 0;
+			return comparisonResult != 0;
 		case GreaterThan:
-			return data.get(column).compareTo(value) > 0;
+			return comparisonResult > 0;
 		case LessThan:
-			return data.get(column).compareTo(value) < 0;
+			return comparisonResult < 0;
 		case GreaterThanOrEqual:
-			return data.get(column).compareTo(value) > 0 || data.get(column).compareTo(value) == 0;
+			return comparisonResult > 0 || comparisonResult == 0;
 		case LessThanOrEqual:
-			return data.get(column).compareTo(value) < 0 || data.get(column).compareTo(value) == 0;
+			return comparisonResult < 0 || comparisonResult == 0;
 		default:
 			return false;
 		}

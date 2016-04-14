@@ -15,6 +15,7 @@ import net.edudb.operator.RelationOperator;
 import net.edudb.relation.Relation;
 import net.edudb.relation.VolatileRelation;
 import net.edudb.structure.table.Table;
+import net.edudb.structure.table.TableManager;
 
 public class RelationExecutor extends PostOrderOperatorExecutor implements OperatorExecutionChain {
 
@@ -29,6 +30,7 @@ public class RelationExecutor extends PostOrderOperatorExecutor implements Opera
 	public Relation execute(Operator operator) {
 		if (operator instanceof RelationOperator) {
 			Table table = (Table) operator.getParameter();
+			table = TableManager.getInstance().read(table.getName());
 			Relation relation = new VolatileRelation(table);
 			return relation;
 		}
