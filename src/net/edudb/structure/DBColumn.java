@@ -11,7 +11,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.structure;
 
 import java.io.Serializable;
-
 import net.edudb.db_operator.DBParameter;
 import net.edudb.server.ServerWriter;
 
@@ -72,5 +71,13 @@ public class DBColumn implements DBParameter, Serializable {
 	@Override
 	public int numOfParameters() {
 		return 0;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getTableName() {
+		return tableName;
 	}
 }

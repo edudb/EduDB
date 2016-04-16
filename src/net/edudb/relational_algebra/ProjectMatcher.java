@@ -25,7 +25,7 @@ public class ProjectMatcher implements RAMatcherChain {
 	}
 
 	@Override
-	public RAMatcherResult parse(String string) {
+	public RAMatcherResult match(String string) {
 		Matcher matcher = Translator.matcher(string, regex);
 		if (matcher.matches()) {
 			ProjectOperator projectOperator = new ProjectOperator();
@@ -33,14 +33,14 @@ public class ProjectMatcher implements RAMatcherChain {
 			String[] columns = matcher.group(2).split(",");
 			Integer[] projectedColumns = new Integer[columns.length];
 			for (int i = 0; i < projectedColumns.length; i++) {
-				projectedColumns[i] = Integer.parseInt(columns[i]);
+				projectedColumns[i] = Integer.parseInt(columns[i].trim());
 			}
 			
 			projectOperator.setParameter(new ProjectParameter(projectedColumns));
 
 			return new RAMatcherResult(projectOperator, matcher.group(1));
 		}
-		return this.nextElement.parse(string);
+		return this.nextElement.match(string);
 	}
 
 }

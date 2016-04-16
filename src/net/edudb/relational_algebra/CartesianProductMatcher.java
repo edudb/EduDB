@@ -10,14 +10,37 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.relational_algebra;
 
-public class NullMatcher implements RAMatcherChain {
+import java.util.regex.Matcher;
+
+import net.edudb.operator.CartesianProductOperator;
+import net.edudb.operator.RelationOperator;
+
+public class CartesianProductMatcher implements RAMatcherChain {
+	private RAMatcherChain nextElement;
+	private String regex = "\\ACartProd\\((.*\\))\\,(.*)\\)\\z";
 
 	@Override
 	public void setNextInChain(RAMatcherChain chainElement) {
+		this.nextElement = chainElement;
 	}
 
 	@Override
 	public RAMatcherResult match(String string) {
-		return null;
+		Matcher matcher = Translator.matcher(string, regex);
+		if (matcher.matches()) {
+			/**
+			 * The right argument of the CartProd relational algebra is always a
+			 * relation.
+			 */
+			RelationMatcher relationMatcher = new RelationMatcher();
+			RelationOperator relationOperator = (RelationOperator) relationMatcher.match(matcher.group(2)).getNode();
+			
+			CartesianProductOperator cartesianOperator = new CartesianProductOperator();
+			cartesianOperator.setRightChild(relationOperator);
+			
+			return new RAMatcherResult(cartesianOperator, matcher.group(1));
+		}
+		return nextElement.match(string);
 	}
+
 }

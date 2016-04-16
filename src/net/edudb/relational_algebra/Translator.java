@@ -39,10 +39,14 @@ public class Translator {
 	
 	private RAMatcherChain getChain() {
 		RAMatcherChain project = new ProjectMatcher();
+		RAMatcherChain cartesian = new CartesianProductMatcher();
+		RAMatcherChain equi = new EquiJoinMatcher();
 		RAMatcherChain filter = new FilterMatcher();
 		RAMatcherChain relation = new RelationMatcher();
 
-		project.setNextInChain(filter);
+		project.setNextInChain(cartesian);
+		cartesian.setNextInChain(equi);
+		equi.setNextInChain(filter);
 		filter.setNextInChain(relation);
 		relation.setNextInChain(new NullMatcher());
 		return project;
@@ -51,7 +55,7 @@ public class Translator {
 	private ArrayList<EBNode> constructTreeNodes(String relationAlgebra, RAMatcherChain chain) {
 		ArrayList<EBNode> nodes = new ArrayList<>();
 		while (relationAlgebra.length() != 0) {
-			RAMatcherResult result = chain.parse(relationAlgebra);
+			RAMatcherResult result = chain.match(relationAlgebra);
 			if (result != null) {
 				nodes.add(result.getNode());
 				relationAlgebra = result.getString();
@@ -89,7 +93,7 @@ public class Translator {
 	public static void main(String[] args) {
 		Translator t = new Translator();
 
-		String ra = t.translate("select a,b from test where b<>4 and a<=7");
+		String ra = t.translate("select a,b,c,d from test inner join test2 on a=c");
 
 		System.out.println(ra);
 

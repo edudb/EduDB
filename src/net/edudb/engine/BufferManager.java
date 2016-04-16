@@ -54,11 +54,11 @@ public class BufferManager {
 		page = pageBuffer.get(pageName);
 
 		if (page != null) {
-			ServerWriter.getInstance().writeln("BufferManager (read): " + "Available");
+//			ServerWriter.getInstance().writeln("BufferManager (read): " + "Available");
 			return page;
 		}
 
-		ServerWriter.getInstance().writeln("BufferManager (read): " + "Not Available");
+//		ServerWriter.getInstance().writeln("BufferManager (read): " + "Not Available");
 
 		page = this.readFromDisk(pageName);
 

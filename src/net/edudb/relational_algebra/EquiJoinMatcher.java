@@ -10,14 +10,45 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.relational_algebra;
 
-public class NullMatcher implements RAMatcherChain {
+import java.util.regex.Matcher;
+
+import net.edudb.expression.Expression;
+import net.edudb.expression.OperatorType;
+import net.edudb.operator.EquiJoinOperator;
+import net.edudb.operator.RelationOperator;
+import net.edudb.structure.DBColumn;
+
+public class EquiJoinMatcher implements RAMatcherChain {
+	private RAMatcherChain nextElement;
+	private String regex = "\\AEqJoin\\((.*\\)),(.*)\\,(\\d+)\\,(\\d+)\\)\\z";
 
 	@Override
 	public void setNextInChain(RAMatcherChain chainElement) {
+		this.nextElement = chainElement;
 	}
 
 	@Override
 	public RAMatcherResult match(String string) {
-		return null;
+		Matcher matcher = Translator.matcher(string, regex);
+		if (matcher.matches()) {
+			/**
+			 * The second argument of the EqJoin relational algebra is always a
+			 * relation.
+			 */
+			RelationMatcher relationMatcher = new RelationMatcher();
+			RelationOperator relationOperator = (RelationOperator) relationMatcher.match(matcher.group(2)).getNode();
+
+			EquiJoinOperator equiOperator = new EquiJoinOperator();
+			equiOperator.setRightChild(relationOperator);
+
+			Expression expression = new Expression(new DBColumn(Integer.parseInt(matcher.group(3))),
+					new DBColumn(Integer.parseInt(matcher.group(4))), OperatorType.Equal);
+
+			equiOperator.setParameter(expression);
+
+			return new RAMatcherResult(equiOperator, matcher.group(1));
+		}
+		return nextElement.match(string);
 	}
+
 }

@@ -11,21 +11,36 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.expression;
 
 import java.util.LinkedHashMap;
-
 import net.edudb.data_type.DataType;
 import net.edudb.ebtree.EBNode;
+import net.edudb.operator.OperatorParameter;
 import net.edudb.structure.DBColumn;
 
-public class Expression implements BinaryExpressionNode {
+public class Expression implements BinaryExpressionNode, OperatorParameter {
 	private BinaryExpressionNode parent;
-	DBColumn column;
+	DBColumn leftColumn;
+	DBColumn rightColumn;
 	DataType value;
 	OperatorType operator;
 
-	public Expression(DBColumn column, DataType value, OperatorType operator) {
-		this.column = column;
+	public Expression(DBColumn leftColumn, DataType value, OperatorType operator) {
+		this.leftColumn = leftColumn;
 		this.value = value;
 		this.operator = operator;
+	}
+
+	public Expression(DBColumn leftColumn, DBColumn rightColumn, OperatorType operator) {
+		this.leftColumn = leftColumn;
+		this.rightColumn = rightColumn;
+		this.operator = operator;
+	}
+	
+	public DBColumn getLeftColumn() {
+		return leftColumn;
+	}
+	
+	public DBColumn getRightColumn() {
+		return rightColumn;
 	}
 
 	@Override
@@ -59,7 +74,18 @@ public class Expression implements BinaryExpressionNode {
 	@Override
 	public boolean evaluate(LinkedHashMap<DBColumn, DataType> data) {
 
-		int comparisonResult = data.get(column).compareTo(value);
+		Object val = data.get(leftColumn);
+
+		if (rightColumn != null) {
+			int comparisonResult = ((DataType) val).compareTo((DataType) data.get(rightColumn));
+			return evaluate(comparisonResult);
+		} else {
+			int comparisonResult = ((DataType) val).compareTo(value);
+			return evaluate(comparisonResult);
+		}
+	}
+
+	public boolean evaluate(int comparisonResult) {
 
 		switch (operator) {
 		case Equal:
@@ -78,4 +104,5 @@ public class Expression implements BinaryExpressionNode {
 			return false;
 		}
 	}
+
 }

@@ -10,15 +10,24 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.structure;
 
+import java.util.LinkedHashMap;
+
 import net.edudb.data_type.DataType;
 import net.edudb.expression.BinaryExpressionTree;
+import net.edudb.expression.Expression;
 
 public interface Record {
 
 	public void addValue(DBColumn key, DataType value);
 	
-	public boolean evaluate(BinaryExpressionTree expressionTree);
+	public LinkedHashMap<DBColumn, DataType> getData();
 	
 	public Record project(Integer[] projectedColumns);
+	
+	public boolean evaluate(BinaryExpressionTree expressionTree);
+	
+	public Record join(Record record);
+	
+	public boolean equates(Record record, Expression expression);
 	
 }

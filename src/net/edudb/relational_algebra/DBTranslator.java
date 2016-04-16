@@ -314,8 +314,10 @@ public class DBTranslator {
 				"select age from persons where age>12 order by age desc", "select number from persons group by number",
 				"select count(age), count(number) from persons", "select age,id from persons, places where age = 32",
 				"select birth from persons inner join places on age = id",
+				"select p1.birth from persons p1 inner join places on p1.age = id inner join persons p on p.age = p1.number",
 				"select * from persons where exists (select id from places where id=30)",
-				"select age from persons, places where number=id", "select age from persons, places where age=5" };
+				"select age from persons, places where number>=id", 
+				"select age from persons, places where age=5" };
 		Term ra2;
 		try {
 			for (int i = 0; i < s.length; i++) {

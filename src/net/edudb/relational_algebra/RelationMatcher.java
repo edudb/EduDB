@@ -19,6 +19,9 @@ import net.edudb.structure.table.TableFactory;
 
 public class RelationMatcher implements RAMatcherChain {
 	private RAMatcherChain nextElement;
+	/**
+	 * Group one is the relation's name.
+	 */
 	private String regex = "\\A(\\w+)\\=(?:Relation\\(.(?:\\,.)*\\))\\z";
 
 	@Override
@@ -27,19 +30,19 @@ public class RelationMatcher implements RAMatcherChain {
 	}
 
 	@Override
-	public RAMatcherResult parse(String string) {
+	public RAMatcherResult match(String string) {
 		Matcher matcher = Translator.matcher(string, regex);
 		if (matcher.matches()) {
 			RelationOperator relationOperator = new RelationOperator();
 			/**
 			 * Defer reading the actual table until the execution step to
-			 * minimize effects.
+			 * minimize cost.
 			 */
 			TableFactory tableFactory = new TableFactory();
 			Table table = tableFactory.makeTable(Config.tableType(), matcher.group(1));
 			relationOperator.setParameter(table);
 			return new RAMatcherResult(relationOperator, "");
 		}
-		return this.nextElement.parse(string);
+		return this.nextElement.match(string);
 	}
 }

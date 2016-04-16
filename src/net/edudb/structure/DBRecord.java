@@ -16,9 +16,11 @@ import net.edudb.db_operator.DBAssignment;
 import net.edudb.db_operator.DBCond;
 import net.edudb.db_operator.SelectColumns;
 import net.edudb.expression.BinaryExpressionTree;
+import net.edudb.expression.Expression;
 import net.edudb.statistics.Schema;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 public class DBRecord implements Record, Serializable {
 
@@ -154,5 +156,23 @@ public class DBRecord implements Record, Serializable {
 	public Record project(Integer[] projectedColumns) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Record join(Record record) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public LinkedHashMap<DBColumn, DataType> getData() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean equates(Record record, Expression expression) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

@@ -4,5 +4,5 @@ public interface RAMatcherChain {
 	
 	public void setNextInChain(RAMatcherChain chainElement);
 	
-	public RAMatcherResult parse(String string);
+	public RAMatcherResult match(String string);
 }
