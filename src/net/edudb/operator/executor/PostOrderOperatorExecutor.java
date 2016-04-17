@@ -11,20 +11,26 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.operator.executor;
 
 public class PostOrderOperatorExecutor {
-	
+
 	public OperatorExecutionChain getChain() {
 		OperatorExecutionChain project = new ProjectExecutor();
 		OperatorExecutionChain cartesian = new CartesianProductExecutor();
 		OperatorExecutionChain equi = new EquiJoinExecutor();
 		OperatorExecutionChain filter = new FilterExecutor();
 		OperatorExecutionChain relation = new RelationExecutor();
-		
+		OperatorExecutionChain updateTable = new UpdateTableExecutor();
+		OperatorExecutionChain delete = new DeleteExecutor();
+		OperatorExecutionChain createTable = new CreateTableExecutor();
+
 		project.setNextElementInChain(cartesian);
 		cartesian.setNextElementInChain(equi);
 		equi.setNextElementInChain(filter);
 		filter.setNextElementInChain(relation);
-		relation.setNextElementInChain(new NullExecutor());
-		
+		relation.setNextElementInChain(updateTable);
+		updateTable.setNextElementInChain(delete);
+		delete.setNextElementInChain(createTable);
+		createTable.setNextElementInChain(new NullExecutor());
+
 		return project;
 	}
 

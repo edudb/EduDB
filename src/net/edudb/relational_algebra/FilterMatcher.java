@@ -18,7 +18,7 @@ public class FilterMatcher implements RAMatcherChain {
 	private String regex = "\\AFilter\\((.+)\\,\"(.+)\"\\)\\z";
 
 	@Override
-	public void setNextInChain(RAMatcherChain chainElement) {
+	public void setNextElementInChain(RAMatcherChain chainElement) {
 		this.nextElement = chainElement;
 	}
 

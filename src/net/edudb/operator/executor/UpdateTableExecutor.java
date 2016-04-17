@@ -10,17 +10,20 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.operator.executor;
 
+import java.util.LinkedHashMap;
+
+import net.edudb.data_type.DataType;
+import net.edudb.data_type.IntegerType;
 import net.edudb.expression.BinaryExpressionTree;
 import net.edudb.expression.ExpressionTree;
-import net.edudb.operator.FilterOperator;
 import net.edudb.operator.Operator;
+import net.edudb.operator.UpdateTableOperator;
 import net.edudb.relation.Relation;
 import net.edudb.relation.RelationIterator;
-import net.edudb.relation.VolatileRelation;
+import net.edudb.structure.DBColumn;
 import net.edudb.structure.Record;
 
-public class FilterExecutor extends PostOrderOperatorExecutor implements OperatorExecutionChain {
-
+public class UpdateTableExecutor extends PostOrderOperatorExecutor implements OperatorExecutionChain {
 	private OperatorExecutionChain nextElement;
 
 	@Override
@@ -30,22 +33,22 @@ public class FilterExecutor extends PostOrderOperatorExecutor implements Operato
 
 	@Override
 	public Relation execute(Operator operator) {
-		if (operator instanceof FilterOperator) {
-			FilterOperator filter = (FilterOperator) operator;
-			ExpressionTree tree = (ExpressionTree) filter.getParameter();
-			Relation relation = getChain().execute((Operator) filter.getChild());
+		if (operator instanceof UpdateTableOperator) {
+			UpdateTableOperator update = (UpdateTableOperator) operator;
+			ExpressionTree tree = (ExpressionTree) update.getParameter();
+			Relation relation = getChain().execute((Operator) update.getChild());
 
-			RelationIterator ri = relation.getIterator();
-			Relation resultRelation = new VolatileRelation();
+			LinkedHashMap<DBColumn, DataType> data = new LinkedHashMap<>();
+			data.put(new DBColumn(1), new IntegerType(0));
 
-			while (ri.hasNext()) {
-				Record r = (Record) ri.next();
-				if (r.evaluate((BinaryExpressionTree) tree)) {
-					resultRelation.addRecord(r);
+			RelationIterator iterator = relation.getIterator();
+			while (iterator.hasNext()) {
+				Record record = (Record) iterator.next();
+				if (record.evaluate((BinaryExpressionTree) tree)) {
+					record.update(data);
 				}
 			}
-
-			return resultRelation;
+			return relation;
 		}
 		return nextElement.execute(operator);
 	}

@@ -10,7 +10,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.plan;
 
-import net.edudb.db_operator.DBOperator;
+import net.edudb.query.QueryTree;
 import net.edudb.server.ServerWriter;
 import net.edudb.statement.SQLStatement;
 import net.edudb.statement.SQLStatementType;
@@ -26,12 +26,12 @@ public class PlanFactory implements Plan {
 	private Plan planner;
 
 	@Override
-	public DBOperator makePlan(SQLStatement statement) {
+	public QueryTree makePlan(SQLStatement statement) {
 		setPlanner(statement.statementType());
 		if (planner == null) {
 			return null;
 		}
-		DBOperator plan = planner.makePlan(statement);
+		QueryTree plan = planner.makePlan(statement);
 		return plan;
 	}
 
@@ -41,17 +41,20 @@ public class PlanFactory implements Plan {
 		case SQLCreateTableStatement:
 			planner = new CreateTablePlan();
 			break;
-		case SQLSelectStatement:
-			planner = new SelectPlan();
+		case SQLDeleteStatement:
+			planner = new DeletePlan();
 			break;
 		case SQLInsertStatement:
 			planner = new InsertPlan();
+			break;
+		case SQLSelectStatement:
+			planner = new SelectPlan();
 			break;
 		case SQLUpdateStatement:
 			planner = new UpdatePlan();
 			break;
 		default:
-			ServerWriter.getInstance().writeln("Sorry! such statement not supported");
+			ServerWriter.getInstance().writeln("Sorry, this statement is not supported.");
 		}
 	}
 }

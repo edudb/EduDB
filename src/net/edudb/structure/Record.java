@@ -30,4 +30,10 @@ public interface Record {
 	
 	public boolean equates(Record record, Expression expression);
 	
+	public void update(LinkedHashMap<DBColumn, DataType> data);
+	
+	public void delete();
+	
+	public boolean isDeleted();
+	
 }

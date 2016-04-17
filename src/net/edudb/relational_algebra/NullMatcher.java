@@ -13,7 +13,7 @@ package net.edudb.relational_algebra;
 public class NullMatcher implements RAMatcherChain {
 
 	@Override
-	public void setNextInChain(RAMatcherChain chainElement) {
+	public void setNextElementInChain(RAMatcherChain chainElement) {
 	}
 
 	@Override

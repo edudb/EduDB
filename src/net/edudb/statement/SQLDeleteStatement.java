@@ -10,6 +10,41 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.statement;
 
-public enum SQLStatementType {
-	SQLCreateTableStatement, SQLDeleteStatement, SQLInsertStatement, SQLSelectStatement, SQLUpdateStatement, SQLNoStatement
+import gudusoft.gsqlparser.TCustomSqlStatement;
+import gudusoft.gsqlparser.stmt.TDeleteSqlStatement;
+
+public class SQLDeleteStatement implements SQLStatement {
+	private TDeleteSqlStatement statement;
+	private String tableName;
+	private String statementString;
+	private String whereClause;
+
+	public SQLDeleteStatement(TCustomSqlStatement tCustomSqlStatement) {
+		this.statement = (TDeleteSqlStatement) tCustomSqlStatement;
+		this.tableName = statement.getTargetTable().toString();
+		this.statementString = statement.toString();
+		if (statement.getWhereClause() != null) {
+			this.whereClause = statement.getWhereClause().toString();
+		}
+	}
+
+	public String getWhereClause() {
+		return whereClause;
+	}
+
+	@Override
+	public String getTableName() {
+		return tableName;
+	}
+
+	@Override
+	public SQLStatementType statementType() {
+		return SQLStatementType.SQLDeleteStatement;
+	}
+
+	@Override
+	public String toString() {
+		return statementString;
+	}
+
 }

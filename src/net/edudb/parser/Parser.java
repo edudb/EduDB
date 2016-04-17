@@ -13,16 +13,11 @@ package net.edudb.parser;
 import adipe.translate.TranslationException;
 import gudusoft.gsqlparser.EDbVendor;
 import gudusoft.gsqlparser.TGSqlParser;
-import net.edudb.console.DatabaseConsole;
-import net.edudb.db_operator.DBOperator;
-import net.edudb.engine.DBTransactionManager;
 import net.edudb.plan.PlanFactory;
+import net.edudb.query.QueryTree;
 import net.edudb.server.ServerWriter;
-import net.edudb.statement.SQLSelectStatement;
 import net.edudb.statement.SQLStatement;
 import net.edudb.statement.SQLStatementFactory;
-import net.edudb.statement.SQLStatementType;
-import net.edudb.structure.table.TableManager;
 import net.edudb.transcation.ConcurrentTransaction;
 import net.edudb.transcation.SynchronizedTransaction;
 import net.edudb.transcation.TransactionManager;
@@ -40,7 +35,7 @@ public class Parser {
 	PlanFactory planFactory;
 
 	public Parser() {
-		sqlparser = new TGSqlParser(EDbVendor.dbvoracle);
+		sqlparser = new TGSqlParser(EDbVendor.dbvpostgresql);
 		planFactory = new PlanFactory();
 	}
 
@@ -50,28 +45,17 @@ public class Parser {
 		if (ret == 0) {
 			SQLStatementFactory statementFactory = new SQLStatementFactory();
 			SQLStatement statement = statementFactory.getSQLStatement(sqlparser.sqlstatements.get(0));
-			DBOperator plan = planFactory.makePlan(statement);
+			QueryTree plan = planFactory.makePlan(statement);
+			
 			if (plan == null) {
 				return;
 			}
 
-			switch (statement.statementType()) {
-			case SQLCreateTableStatement:
-			case SQLInsertStatement: {
-//				ConcurrentTransaction transaction = new ConcurrentTransaction(plan);
-				SynchronizedTransaction transaction = new SynchronizedTransaction(plan);
-				TransactionManager.getInstance().execute(transaction);
-				break;
-			}
-			default: {
-				DBTransactionManager.getInstance().execute(plan);
-				if (statement.statementType() != SQLStatementType.SQLSelectStatement) {
-					ServerWriter.getInstance().writeln("Parser (parseSQL): " + plan.execute());
-				}
-				break;
-			}
+			// ConcurrentTransaction transaction = new
+			// ConcurrentTransaction(plan);
+			SynchronizedTransaction transaction = new SynchronizedTransaction(plan);
+			TransactionManager.getInstance().execute(transaction);
 
-			}
 		} else {
 			ServerWriter.getInstance().writeln(sqlparser.getErrormessage());
 		}

@@ -16,7 +16,7 @@ import net.edudb.operator.ProjectParameter;
 import net.edudb.relation.Relation;
 import net.edudb.relation.RelationIterator;
 import net.edudb.relation.VolatileRelation;
-import net.edudb.structure.TableRecord;
+import net.edudb.structure.Record;
 
 public class ProjectExecutor extends PostOrderOperatorExecutor implements OperatorExecutionChain {
 	private OperatorExecutionChain nextElement;
@@ -37,7 +37,7 @@ public class ProjectExecutor extends PostOrderOperatorExecutor implements Operat
 			Relation resultRelation = new VolatileRelation();
 
 			while (ri.hasNext()) {
-				TableRecord r = (TableRecord) ri.next();
+				Record r = (Record) ri.next();
 				resultRelation.addRecord(r.project(projectedColumns.getProjectedColumns()));
 			}
 

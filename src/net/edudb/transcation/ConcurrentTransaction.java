@@ -10,17 +10,29 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.transcation;
 
-import net.edudb.db_operator.DBOperator;
+import net.edudb.query.PostOrderTreeExecutor;
+import net.edudb.query.QueryTree;
+import net.edudb.query.QueryTreeExecutor;
+import net.edudb.relation.Relation;
+import net.edudb.relation.RelationIterator;
+import net.edudb.server.ServerWriter;
 
 public class ConcurrentTransaction implements Transaction, Runnable {
-	private DBOperator plan;
+	private QueryTree plan;
+	private QueryTreeExecutor queryTreeExecutor;
 
-	public ConcurrentTransaction(DBOperator plan) {
+	public ConcurrentTransaction(QueryTree plan) {
 		this.plan = plan;
+		this.queryTreeExecutor = new PostOrderTreeExecutor();
 	}
 
 	@Override
 	public void run() {
-		plan.execute();
+		Relation r = queryTreeExecutor.execute(plan);
+
+		RelationIterator ri = r.getIterator();
+		while (ri.hasNext()) {
+			ServerWriter.getInstance().writeln(ri.next());
+		}
 	}
 }

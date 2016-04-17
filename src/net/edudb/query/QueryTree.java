@@ -15,6 +15,13 @@ import net.edudb.ebtree.EBTree;
 
 public class QueryTree extends EBTree {
 
+	public QueryTree() {
+	}
+
+	public QueryTree(QueryNode root) {
+		super(root);
+	}
+
 	@Override
 	public void addNode(EBNode node) {
 		if (this.root != null) {

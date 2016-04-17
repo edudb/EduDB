@@ -34,11 +34,11 @@ public class Expression implements BinaryExpressionNode, OperatorParameter {
 		this.rightColumn = rightColumn;
 		this.operator = operator;
 	}
-	
+
 	public DBColumn getLeftColumn() {
 		return leftColumn;
 	}
-	
+
 	public DBColumn getRightColumn() {
 		return rightColumn;
 	}
@@ -76,16 +76,25 @@ public class Expression implements BinaryExpressionNode, OperatorParameter {
 
 		Object val = data.get(leftColumn);
 
+		/**
+		 * Expression in which both sides are columns. e.g. a=b where a,b are
+		 * table columns.
+		 */
 		if (rightColumn != null) {
 			int comparisonResult = ((DataType) val).compareTo((DataType) data.get(rightColumn));
 			return evaluate(comparisonResult);
-		} else {
+		}
+		/**
+		 * Expression in which the left-hand side is a column and the right-hand
+		 * size is a constant value. e.g. a=2.
+		 */
+		else {
 			int comparisonResult = ((DataType) val).compareTo(value);
 			return evaluate(comparisonResult);
 		}
 	}
 
-	public boolean evaluate(int comparisonResult) {
+	private boolean evaluate(int comparisonResult) {
 
 		switch (operator) {
 		case Equal:

@@ -23,7 +23,7 @@ public class EquiJoinMatcher implements RAMatcherChain {
 	private String regex = "\\AEqJoin\\((.*\\)),(.*)\\,(\\d+)\\,(\\d+)\\)\\z";
 
 	@Override
-	public void setNextInChain(RAMatcherChain chainElement) {
+	public void setNextElementInChain(RAMatcherChain chainElement) {
 		this.nextElement = chainElement;
 	}
 

@@ -44,11 +44,11 @@ public class Translator {
 		RAMatcherChain filter = new FilterMatcher();
 		RAMatcherChain relation = new RelationMatcher();
 
-		project.setNextInChain(cartesian);
-		cartesian.setNextInChain(equi);
-		equi.setNextInChain(filter);
-		filter.setNextInChain(relation);
-		relation.setNextInChain(new NullMatcher());
+		project.setNextElementInChain(cartesian);
+		cartesian.setNextElementInChain(equi);
+		equi.setNextElementInChain(filter);
+		filter.setNextElementInChain(relation);
+		relation.setNextElementInChain(new NullMatcher());
 		return project;
 	}
 	

@@ -11,6 +11,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.plan;
 
 import net.edudb.db_operator.InsertOperator;
+import net.edudb.query.QueryTree;
 import net.edudb.db_operator.DBOperator;
 import net.edudb.statement.SQLInsertStatement;
 import net.edudb.statement.SQLStatement;
@@ -20,9 +21,9 @@ import net.edudb.statement.SQLStatement;
  */
 public class InsertPlan implements Plan {
 	@Override
-	public DBOperator makePlan(SQLStatement sqlStatement) {
+	public QueryTree makePlan(SQLStatement sqlStatement) {
 		SQLInsertStatement statement = (SQLInsertStatement) sqlStatement;
 		DBOperator insert = new InsertOperator(statement);
-		return insert;
+		return null;
 	}
 }

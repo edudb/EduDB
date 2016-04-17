@@ -11,22 +11,18 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.structure;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Set;
 import com.google.common.collect.Sets;
-
 import net.edudb.data_type.DataType;
-import net.edudb.data_type.IntegerType;
-import net.edudb.ebtree.EBTree;
 import net.edudb.expression.*;
 
-public class TableRecord implements Record, Serializable, Cloneable {
+public class TableRecord implements Record, Serializable {
 
 	private static final long serialVersionUID = -3305225200308977932L;
 
-	LinkedHashMap<DBColumn, DataType> data;
+	private LinkedHashMap<DBColumn, DataType> data;
+	private boolean deleted;
 
 	public TableRecord() {
 		this.data = new LinkedHashMap<>();
@@ -73,6 +69,9 @@ public class TableRecord implements Record, Serializable, Cloneable {
 
 	@Override
 	public boolean evaluate(BinaryExpressionTree expressionTree) {
+		if (expressionTree == null) {
+			return true;
+		}
 		return expressionTree.evaluate(data);
 	}
 
@@ -95,43 +94,30 @@ public class TableRecord implements Record, Serializable, Cloneable {
 	public boolean equates(Record record, Expression expression) {
 		DataType leftValue = this.getData().get(expression.getLeftColumn());
 		DataType rightValue = record.getData().get(expression.getRightColumn());
-		
+
 		return leftValue.compareTo(rightValue) == 0;
 	}
 
 	@Override
-	public Object clone() throws CloneNotSupportedException {
-		return super.clone();
+	public void update(LinkedHashMap<DBColumn, DataType> data) {
+		data.forEach((key, value) -> {
+			this.data.put(key, value);
+		});
+	}
+
+	@Override
+	public void delete() {
+		deleted = true;
+	}
+
+	@Override
+	public boolean isDeleted() {
+		return deleted;
 	}
 
 	@Override
 	public String toString() {
-		return data.toString();
-	}
-
-	public static void main(String[] args) throws CloneNotSupportedException {
-		// Record r = new TableRecord();
-		// DBColumn a = new DBColumn(1, "a", "test");
-		// DBColumn b = new DBColumn(2, "b", "test");
-		// DBColumn c = new DBColumn(3, "c", "test");
-		// r.addValue(a, new IntegerType(10));
-		// r.addValue(b, new IntegerType(11));
-		// r.addValue(c, new IntegerType(20));
-
-		// BinaryExpressionNode and = new ANDLogicalOperator();
-		// and.setLeftChild(new Expression(a, new IntegerType(10),
-		// OperatorType.Equal));
-		// and.setRightChild(new Expression(b, new IntegerType(1),
-		// OperatorType.Equal));
-		//
-		// BinaryExpressionNode or = new ANDLogicalOperator();
-		// or.setRightChild(new Expression(c, new IntegerType(20),
-		// OperatorType.Equal));
-		//
-		// EBTree et = new BinaryExpressionTree(and);
-		// et.addNode(or);
-		//
-		// System.out.println(r.evaluate((BinaryExpressionTree) et));
+		return data.toString() + " - " + isDeleted();
 	}
 
 }

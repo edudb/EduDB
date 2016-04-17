@@ -13,22 +13,22 @@ package net.edudb.plan;
 import net.edudb.engine.Config;
 import net.edudb.expression.BinaryExpressionTree;
 import net.edudb.expression.ExpressionTree;
+import net.edudb.operator.DeleteOperator;
 import net.edudb.operator.FilterOperator;
 import net.edudb.operator.RelationOperator;
-import net.edudb.operator.UpdateTableOperator;
 import net.edudb.query.QueryTree;
 import net.edudb.relational_algebra.Translator;
+import net.edudb.statement.SQLDeleteStatement;
 import net.edudb.statement.SQLStatement;
-import net.edudb.statement.SQLUpdateStatement;
 import net.edudb.statistics.Schema;
 import net.edudb.structure.table.Table;
 import net.edudb.structure.table.TableFactory;
 
-public class UpdatePlan implements Plan {
+public class DeletePlan implements Plan {
 
 	@Override
 	public QueryTree makePlan(SQLStatement sqlStatement) {
-		SQLUpdateStatement statement = (SQLUpdateStatement) sqlStatement;
+		SQLDeleteStatement statement = (SQLDeleteStatement) sqlStatement;
 		
 		if (!Schema.getInstance().chekTableExists(statement.getTableName())) {
 			return null;
@@ -36,7 +36,7 @@ public class UpdatePlan implements Plan {
 
 		QueryTree plan = null;
 
-		UpdateTableOperator operator = new UpdateTableOperator();
+		DeleteOperator operator = new DeleteOperator();
 
 		/**
 		 * Defer reading the actual table until the execution step to minimize
@@ -83,4 +83,5 @@ public class UpdatePlan implements Plan {
 
 		return plan;
 	}
+
 }

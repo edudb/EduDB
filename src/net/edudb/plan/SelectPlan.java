@@ -10,22 +10,19 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.plan;
 
-import net.edudb.db_operator.DBOperator;
-import net.edudb.relational_algebra.DBTranslator;
+import net.edudb.query.QueryTree;
+import net.edudb.relational_algebra.Translator;
 import net.edudb.statement.SQLStatement;
 
 public class SelectPlan implements Plan {
 
 	@Override
-	public DBOperator makePlan(SQLStatement sqlStatement) {
-//		TSelectSqlStatement statement = (TSelectSqlStatement) tCustomSqlStatement;
-		DBOperator plan = null;
-		// TODO add a tree of operators
-		try {
-			plan = DBTranslator.translate(sqlStatement.toString());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	public QueryTree makePlan(SQLStatement sqlStatement) {
+		QueryTree plan = null;
+		Translator translator = new Translator();
+
+		String ra = translator.translate(sqlStatement.toString());
+		plan = translator.processRelationalAlgebra(ra);
 
 		return plan;
 	}

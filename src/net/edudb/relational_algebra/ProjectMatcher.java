@@ -20,7 +20,7 @@ public class ProjectMatcher implements RAMatcherChain {
 	private String regex = "\\AProject\\((.+)\\,\\[(\\d(?:\\,\\s*\\d)*)\\]\\)\\z";
 
 	@Override
-	public void setNextInChain(RAMatcherChain chainElement) {
+	public void setNextElementInChain(RAMatcherChain chainElement) {
 		this.nextElement = chainElement;
 	}
 

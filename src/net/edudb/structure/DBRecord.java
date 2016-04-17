@@ -143,7 +143,7 @@ public class DBRecord implements Record, Serializable {
 	@Override
 	public void addValue(DBColumn key, DataType value) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -172,6 +172,24 @@ public class DBRecord implements Record, Serializable {
 
 	@Override
 	public boolean equates(Record record, Expression expression) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void update(LinkedHashMap<DBColumn, DataType> data) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void delete() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public boolean isDeleted() {
 		// TODO Auto-generated method stub
 		return false;
 	}

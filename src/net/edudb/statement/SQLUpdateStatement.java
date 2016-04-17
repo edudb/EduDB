@@ -8,28 +8,35 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-
 package net.edudb.statement;
 
 import gudusoft.gsqlparser.TCustomSqlStatement;
 import gudusoft.gsqlparser.stmt.TUpdateSqlStatement;
 
 public class SQLUpdateStatement implements SQLStatement {
-	
+
 	private TUpdateSqlStatement statement;
 	private String tableName;
 	private String statementString;
-	
+	private String whereClause;
+
 	public SQLUpdateStatement(TCustomSqlStatement tCustomSqlStatement) {
 		this.statement = (TUpdateSqlStatement) tCustomSqlStatement;
 		this.tableName = statement.getTargetTable().toString();
 		this.statementString = statement.toString();
+		if (statement.getWhereClause() != null) {
+			this.whereClause = statement.getWhereClause().toString();
+		}
 	}
-	
+
 	public TUpdateSqlStatement getStatement() {
 		return statement;
 	}
-	
+
+	public String getWhereClause() {
+		return whereClause;
+	}
+
 	@Override
 	public String getTableName() {
 		return tableName;

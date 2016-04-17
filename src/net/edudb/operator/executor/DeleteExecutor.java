@@ -12,15 +12,13 @@ package net.edudb.operator.executor;
 
 import net.edudb.expression.BinaryExpressionTree;
 import net.edudb.expression.ExpressionTree;
-import net.edudb.operator.FilterOperator;
+import net.edudb.operator.DeleteOperator;
 import net.edudb.operator.Operator;
 import net.edudb.relation.Relation;
 import net.edudb.relation.RelationIterator;
-import net.edudb.relation.VolatileRelation;
 import net.edudb.structure.Record;
 
-public class FilterExecutor extends PostOrderOperatorExecutor implements OperatorExecutionChain {
-
+public class DeleteExecutor extends PostOrderOperatorExecutor implements OperatorExecutionChain {
 	private OperatorExecutionChain nextElement;
 
 	@Override
@@ -30,22 +28,19 @@ public class FilterExecutor extends PostOrderOperatorExecutor implements Operato
 
 	@Override
 	public Relation execute(Operator operator) {
-		if (operator instanceof FilterOperator) {
-			FilterOperator filter = (FilterOperator) operator;
-			ExpressionTree tree = (ExpressionTree) filter.getParameter();
-			Relation relation = getChain().execute((Operator) filter.getChild());
+		if (operator instanceof DeleteOperator) {
+			DeleteOperator delete = (DeleteOperator) operator;
+			ExpressionTree tree = (ExpressionTree) delete.getParameter();
+			Relation relation = getChain().execute((Operator) delete.getChild());
 
-			RelationIterator ri = relation.getIterator();
-			Relation resultRelation = new VolatileRelation();
-
-			while (ri.hasNext()) {
-				Record r = (Record) ri.next();
-				if (r.evaluate((BinaryExpressionTree) tree)) {
-					resultRelation.addRecord(r);
+			RelationIterator iterator = relation.getIterator();
+			while (iterator.hasNext()) {
+				Record record = (Record) iterator.next();
+				if (record.evaluate((BinaryExpressionTree) tree)) {
+					record.delete();
 				}
 			}
-
-			return resultRelation;
+			return relation;
 		}
 		return nextElement.execute(operator);
 	}

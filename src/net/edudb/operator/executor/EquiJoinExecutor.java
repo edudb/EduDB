@@ -11,7 +11,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.operator.executor;
 
 import net.edudb.expression.Expression;
-import net.edudb.expression.ExpressionTree;
 import net.edudb.operator.EquiJoinOperator;
 import net.edudb.operator.Operator;
 import net.edudb.relation.Relation;

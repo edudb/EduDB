@@ -8,8 +8,42 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.statement;
+package net.edudb.operator;
 
-public enum SQLStatementType {
-	SQLCreateTableStatement, SQLDeleteStatement, SQLInsertStatement, SQLSelectStatement, SQLUpdateStatement, SQLNoStatement
+import net.edudb.ebtree.EBNode;
+import net.edudb.query.UnaryQueryNode;
+
+public class CreateTableOperator implements Operator, UnaryQueryNode {
+	private OperatorParameter parameter;
+	private EBNode parent;
+
+	@Override
+	public void setParameter(OperatorParameter parameter) {
+		this.parameter = parameter;
+	}
+
+	@Override
+	public OperatorParameter getParameter() {
+		return parameter;
+	}
+
+	@Override
+	public void setChild(EBNode child) {
+	}
+
+	@Override
+	public EBNode getChild() {
+		return null;
+	}
+
+	@Override
+	public void setParent(EBNode parent) {
+		this.parent = parent;
+	}
+
+	@Override
+	public EBNode getParent() {
+		return parent;
+	}
+
 }

@@ -20,7 +20,7 @@ public class CartesianProductMatcher implements RAMatcherChain {
 	private String regex = "\\ACartProd\\((.*\\))\\,(.*)\\)\\z";
 
 	@Override
-	public void setNextInChain(RAMatcherChain chainElement) {
+	public void setNextElementInChain(RAMatcherChain chainElement) {
 		this.nextElement = chainElement;
 	}
 

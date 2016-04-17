@@ -25,7 +25,7 @@ public class RelationMatcher implements RAMatcherChain {
 	private String regex = "\\A(\\w+)\\=(?:Relation\\(.(?:\\,.)*\\))\\z";
 
 	@Override
-	public void setNextInChain(RAMatcherChain chainElement) {
+	public void setNextElementInChain(RAMatcherChain chainElement) {
 		this.nextElement = chainElement;
 	}
 
@@ -37,6 +37,10 @@ public class RelationMatcher implements RAMatcherChain {
 			/**
 			 * Defer reading the actual table until the execution step to
 			 * minimize cost.
+			 *  
+			 * ATTENTION
+			 * 
+			 * Do not write this table to disk.
 			 */
 			TableFactory tableFactory = new TableFactory();
 			Table table = tableFactory.makeTable(Config.tableType(), matcher.group(1));

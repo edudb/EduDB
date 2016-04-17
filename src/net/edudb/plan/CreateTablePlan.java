@@ -10,14 +10,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.plan;
 
-import net.edudb.db_operator.CreateOperator;
-import net.edudb.db_operator.DBOperator;
+import net.edudb.operator.CreateTableOperator;
+import net.edudb.query.QueryTree;
 import net.edudb.server.ServerWriter;
 import net.edudb.statement.SQLCreateTableStatement;
 import net.edudb.statement.SQLStatement;
 import net.edudb.statistics.Schema;
-
-//import java.util.ArrayList;
 
 //CREATE TABLE table_name
 //(
@@ -33,16 +31,18 @@ import net.edudb.statistics.Schema;
 public class CreateTablePlan implements Plan {
 
 	@Override
-	public DBOperator makePlan(SQLStatement sqlStatement) {
+	public QueryTree makePlan(SQLStatement sqlStatement) {
 		SQLCreateTableStatement statement = (SQLCreateTableStatement) sqlStatement;
-		DBOperator operator = null;
-		
+		QueryTree plan = null;
+
 		if (!Schema.getInstance().chekTableExists(statement.getTableName())) {
-			operator = new CreateOperator(statement);
+			CreateTableOperator operator = new CreateTableOperator();
+			operator.setParameter(statement);
+			plan = new QueryTree(operator);
 		} else {
 			ServerWriter.getInstance().writeln("CreateTablePlanner (makePlan): " + "table already exists");
 		}
-		return operator;
+		return plan;
 	}
 
 }
