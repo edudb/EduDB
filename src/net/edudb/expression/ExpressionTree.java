@@ -4,7 +4,7 @@ import java.util.LinkedHashMap;
 
 import net.edudb.data_type.DataType;
 import net.edudb.operator.parameter.OperatorParameter;
-import net.edudb.structure.DBColumn;
+import net.edudb.structure.Column;
 
 public interface ExpressionTree extends OperatorParameter {
 
@@ -15,6 +15,6 @@ public interface ExpressionTree extends OperatorParameter {
 	 *            Values for the tree to be evaluated against.
 	 * @return Result of evaluation.
 	 */
-	public boolean evaluate(LinkedHashMap<DBColumn, DataType> data);
+	public boolean evaluate(LinkedHashMap<Column, DataType> data);
 
 }

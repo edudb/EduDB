@@ -14,7 +14,7 @@ import java.util.LinkedHashMap;
 
 import net.edudb.data_type.DataType;
 import net.edudb.ebtree.EBBinaryNode;
-import net.edudb.structure.DBColumn;
+import net.edudb.structure.Column;
 
 public interface BinaryExpressionNode extends EBBinaryNode {
 
@@ -24,6 +24,6 @@ public interface BinaryExpressionNode extends EBBinaryNode {
 	 *            Values for the expression to be evaluated against.
 	 * @return Result of evaluation.
 	 */
-	public boolean evaluate(LinkedHashMap<DBColumn, DataType> data);
+	public boolean evaluate(LinkedHashMap<Column, DataType> data);
 
 }

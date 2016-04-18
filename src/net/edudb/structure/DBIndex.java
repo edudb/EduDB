@@ -17,7 +17,7 @@ import net.edudb.db_operator.DBIterator;
 
 
 public interface DBIndex {
-    public ArrayList<DBColumn> getColumns();
+    public ArrayList<Column> getColumns();
     public void write();
     public void insert(int key, DBRecord value);
     public DBIterator getIterator();

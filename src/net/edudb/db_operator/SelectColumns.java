@@ -12,7 +12,7 @@ package net.edudb.db_operator;
 
 import java.util.ArrayList;
 
-import net.edudb.structure.DBColumn;
+import net.edudb.structure.Column;
 
 /**
  * @author mohamed
@@ -24,9 +24,9 @@ public class SelectColumns implements DBParameter {
 	 * @uml.associationEnd multiplicity="(0 -1)"
 	 *                     elementType="DBStructure.DBColumn"
 	 */
-	ArrayList<DBColumn> columns;
+	ArrayList<Column> columns;
 
-	public SelectColumns(ArrayList<DBColumn> columns) {
+	public SelectColumns(ArrayList<Column> columns) {
 		this.columns = columns;
 	}
 
@@ -38,7 +38,7 @@ public class SelectColumns implements DBParameter {
 		}
 	}
 
-	public ArrayList<DBColumn> getColumns() {
+	public ArrayList<Column> getColumns() {
 		return columns;
 	}
 
@@ -57,7 +57,7 @@ public class SelectColumns implements DBParameter {
 	}
 
 	public void union(SelectColumns selectColumns) {
-		ArrayList<DBColumn> dbColumns = selectColumns.getDBColumns();
+		ArrayList<Column> dbColumns = selectColumns.getDBColumns();
 		for (int i = 0; i < dbColumns.size(); i++) {
 			if (columns.indexOf(dbColumns.get(i)) == -1) {
 				columns.add(dbColumns.get(i));
@@ -65,7 +65,7 @@ public class SelectColumns implements DBParameter {
 		}
 	}
 
-	private ArrayList<DBColumn> getDBColumns() {
+	private ArrayList<Column> getDBColumns() {
 		return columns;
 	}
 }

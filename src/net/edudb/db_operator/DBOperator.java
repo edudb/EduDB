@@ -11,7 +11,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.db_operator;
 
-import net.edudb.page.DBPage;
+//import net.edudb.page.DBPage;
 
 public interface DBOperator extends DBParameter{
 
@@ -19,7 +19,7 @@ public interface DBOperator extends DBParameter{
     public DBParameter[] getChildren();
     public void giveParameter(DBParameter par);
 
-    void runStep(DBPage page);
+//    void runStep(DBPage page);
 
-    DBPage getPage();
+//    DBPage getPage();
 }

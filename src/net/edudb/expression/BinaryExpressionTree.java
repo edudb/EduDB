@@ -15,7 +15,7 @@ import java.util.LinkedHashMap;
 import net.edudb.data_type.DataType;
 import net.edudb.ebtree.EBNode;
 import net.edudb.ebtree.EBTree;
-import net.edudb.structure.DBColumn;
+import net.edudb.structure.Column;
 
 public class BinaryExpressionTree extends EBTree implements ExpressionTree {
 
@@ -36,7 +36,7 @@ public class BinaryExpressionTree extends EBTree implements ExpressionTree {
 	}
 
 	@Override
-	public boolean evaluate(LinkedHashMap<DBColumn, DataType> data) {
+	public boolean evaluate(LinkedHashMap<Column, DataType> data) {
 		return ((BinaryExpressionNode) this.root).evaluate(data);
 	}
 

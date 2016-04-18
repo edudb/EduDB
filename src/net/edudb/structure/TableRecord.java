@@ -21,36 +21,36 @@ public class TableRecord implements Record, Serializable {
 
 	private static final long serialVersionUID = -3305225200308977932L;
 
-	private LinkedHashMap<DBColumn, DataType> data;
+	private LinkedHashMap<Column, DataType> data;
 	private boolean deleted;
 
 	public TableRecord() {
 		this.data = new LinkedHashMap<>();
 	}
 
-	public TableRecord(LinkedHashMap<DBColumn, DataType> data) {
+	public TableRecord(LinkedHashMap<Column, DataType> data) {
 		this.data = data;
 	}
 
 	@Override
-	public void addValue(DBColumn key, DataType value) {
+	public void addValue(Column key, DataType value) {
 		data.put(key, value);
 	}
 
 	@Override
-	public LinkedHashMap<DBColumn, DataType> getData() {
+	public LinkedHashMap<Column, DataType> getData() {
 		return data;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public Record project(Integer[] projectedColumns) {
-		LinkedHashMap<DBColumn, DataType> dataClone = (LinkedHashMap<DBColumn, DataType>) getData().clone();
+		LinkedHashMap<Column, DataType> dataClone = (LinkedHashMap<Column, DataType>) getData().clone();
 		Record resultRecord = new TableRecord(dataClone);
 
 		Integer[] columns = new Integer[dataClone.size()];
 		int i = 0;
-		for (DBColumn column : dataClone.keySet()) {
+		for (Column column : dataClone.keySet()) {
 			columns[i++] = column.getOrder();
 		}
 
@@ -61,7 +61,7 @@ public class TableRecord implements Record, Serializable {
 
 		for (Object integer : setDifference) {
 			Integer in = (Integer) integer;
-			dataClone.remove(new DBColumn(in));
+			dataClone.remove(new Column(in));
 		}
 
 		return resultRecord;
@@ -78,13 +78,13 @@ public class TableRecord implements Record, Serializable {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Record join(Record record) {
-		LinkedHashMap<DBColumn, DataType> dataClone = (LinkedHashMap<DBColumn, DataType>) getData().clone();
+		LinkedHashMap<Column, DataType> dataClone = (LinkedHashMap<Column, DataType>) getData().clone();
 		final Record resultRecord = new TableRecord(dataClone);
 
-		LinkedHashMap<DBColumn, DataType> data = record.getData();
+		LinkedHashMap<Column, DataType> data = record.getData();
 		final int size = getData().size();
 		data.forEach((key, value) -> {
-			resultRecord.addValue(new DBColumn(key.getOrder() + size, key.getName(), key.getTableName()), value);
+			resultRecord.addValue(new Column(key.getOrder() + size, key.getName(), key.getTableName()), value);
 		});
 
 		return resultRecord;
@@ -99,7 +99,7 @@ public class TableRecord implements Record, Serializable {
 	}
 
 	@Override
-	public void update(LinkedHashMap<DBColumn, DataType> data) {
+	public void update(LinkedHashMap<Column, DataType> data) {
 		data.forEach((key, value) -> {
 			this.data.put(key, value);
 		});

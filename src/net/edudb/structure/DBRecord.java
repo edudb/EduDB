@@ -15,20 +15,17 @@ import net.edudb.data_type.IntegerType;
 import net.edudb.db_operator.DBAssignment;
 import net.edudb.db_operator.DBCond;
 import net.edudb.db_operator.SelectColumns;
-import net.edudb.expression.BinaryExpressionTree;
-import net.edudb.expression.Expression;
 import net.edudb.statistics.Schema;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 
-public class DBRecord implements Record, Serializable {
+public class DBRecord implements Serializable {
 
 	private static final long serialVersionUID = 5260115926554053270L;
 	/**
 	 * @uml.property name="columns"
 	 */
-	private ArrayList<DBColumn> columns;
+	private ArrayList<Column> columns;
 	/**
 	 * @uml.property name="values"
 	 * @uml.associationEnd multiplicity="(0 -1)"
@@ -59,7 +56,7 @@ public class DBRecord implements Record, Serializable {
 		values = new ArrayList<>();
 	}
 
-	public void add(ArrayList<DataType> dataValues, ArrayList<DBColumn> dataColumns) {
+	public void add(ArrayList<DataType> dataValues, ArrayList<Column> dataColumns) {
 		for (int i = 0; i < dataValues.size(); i++) {
 			this.values.add(dataValues.get(i));
 			this.columns.add(dataColumns.get(i));
@@ -73,7 +70,7 @@ public class DBRecord implements Record, Serializable {
 	public String project(SelectColumns selectColumns) {
 		if (selectColumns == null)
 			return toString();
-		ArrayList<DBColumn> columnsArray = selectColumns.getColumns();
+		ArrayList<Column> columnsArray = selectColumns.getColumns();
 		String result = "";
 		for (int i = 0; i < values.size(); i++) {
 			if (columnsArray.indexOf(columns.get(i)) != -1) {
@@ -110,11 +107,11 @@ public class DBRecord implements Record, Serializable {
 		return values;
 	}
 
-	public ArrayList<DBColumn> getColumns() {
+	public ArrayList<Column> getColumns() {
 		return columns;
 	}
 
-	public DataType getValue(DBColumn column) {
+	public DataType getValue(Column column) {
 		int index = columns.indexOf(column);
 		return values.get(index);
 	}
@@ -134,63 +131,9 @@ public class DBRecord implements Record, Serializable {
 		for (DataType value : values) {
 			record.values.add(value);
 		}
-		for (DBColumn column : columns) {
+		for (Column column : columns) {
 			record.columns.add(column);
 		}
 		return record;
-	}
-
-	@Override
-	public void addValue(DBColumn key, DataType value) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean evaluate(BinaryExpressionTree expressionTree) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public Record project(Integer[] projectedColumns) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Record join(Record record) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public LinkedHashMap<DBColumn, DataType> getData() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean equates(Record record, Expression expression) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void update(LinkedHashMap<DBColumn, DataType> data) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void delete() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean isDeleted() {
-		// TODO Auto-generated method stub
-		return false;
 	}
 }

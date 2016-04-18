@@ -20,7 +20,7 @@ import net.edudb.operator.Operator;
 import net.edudb.operator.UpdateTableOperator;
 import net.edudb.relation.Relation;
 import net.edudb.relation.RelationIterator;
-import net.edudb.structure.DBColumn;
+import net.edudb.structure.Column;
 import net.edudb.structure.Record;
 
 public class UpdateTableExecutor extends PostOrderOperatorExecutor implements OperatorExecutionChain {
@@ -38,8 +38,8 @@ public class UpdateTableExecutor extends PostOrderOperatorExecutor implements Op
 			ExpressionTree tree = (ExpressionTree) update.getParameter();
 			Relation relation = getChain().execute((Operator) update.getChild());
 
-			LinkedHashMap<DBColumn, DataType> data = new LinkedHashMap<>();
-			data.put(new DBColumn(1), new IntegerType(0));
+			LinkedHashMap<Column, DataType> data = new LinkedHashMap<>();
+			data.put(new Column(1), new IntegerType(0));
 
 			RelationIterator iterator = relation.getIterator();
 			while (iterator.hasNext()) {

@@ -22,7 +22,7 @@ import net.edudb.relation.Relation;
 import net.edudb.relation.VolatileRelation;
 import net.edudb.statement.SQLInsertStatement;
 import net.edudb.statistics.Schema;
-import net.edudb.structure.DBColumn;
+import net.edudb.structure.Column;
 import net.edudb.structure.Record;
 import net.edudb.structure.TableRecord;
 import net.edudb.structure.table.Table;
@@ -44,9 +44,9 @@ public class InsertExecutor extends PostOrderOperatorExecutor implements Operato
 			Table table = parameter.getTable();
 			SQLInsertStatement statement = parameter.getStatement();
 
-			ArrayList<DBColumn> columns = Schema.getInstance().getColumns(table.getName());
+			ArrayList<Column> columns = Schema.getInstance().getColumns(table.getName());
 			ArrayList<String> values = statement.getValueList();
-			LinkedHashMap<DBColumn, DataType> data = new LinkedHashMap<>();
+			LinkedHashMap<Column, DataType> data = new LinkedHashMap<>();
 			int size = values.size();
 			for (int i = 0; i < size; i++) {
 				data.put(columns.get(i), new IntegerType(values.get(i)));

@@ -14,32 +14,32 @@ import java.util.LinkedHashMap;
 import net.edudb.data_type.DataType;
 import net.edudb.ebtree.EBNode;
 import net.edudb.operator.parameter.OperatorParameter;
-import net.edudb.structure.DBColumn;
+import net.edudb.structure.Column;
 
 public class Expression implements BinaryExpressionNode, OperatorParameter {
 	private BinaryExpressionNode parent;
-	DBColumn leftColumn;
-	DBColumn rightColumn;
+	Column leftColumn;
+	Column rightColumn;
 	DataType value;
 	OperatorType operator;
 
-	public Expression(DBColumn leftColumn, DataType value, OperatorType operator) {
+	public Expression(Column leftColumn, DataType value, OperatorType operator) {
 		this.leftColumn = leftColumn;
 		this.value = value;
 		this.operator = operator;
 	}
 
-	public Expression(DBColumn leftColumn, DBColumn rightColumn, OperatorType operator) {
+	public Expression(Column leftColumn, Column rightColumn, OperatorType operator) {
 		this.leftColumn = leftColumn;
 		this.rightColumn = rightColumn;
 		this.operator = operator;
 	}
 
-	public DBColumn getLeftColumn() {
+	public Column getLeftColumn() {
 		return leftColumn;
 	}
 
-	public DBColumn getRightColumn() {
+	public Column getRightColumn() {
 		return rightColumn;
 	}
 
@@ -72,7 +72,7 @@ public class Expression implements BinaryExpressionNode, OperatorParameter {
 	}
 
 	@Override
-	public boolean evaluate(LinkedHashMap<DBColumn, DataType> data) {
+	public boolean evaluate(LinkedHashMap<Column, DataType> data) {
 
 		Object val = data.get(leftColumn);
 

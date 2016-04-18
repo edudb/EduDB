@@ -19,7 +19,7 @@ import org.junit.Test;
 
 import net.edudb.block.*;
 import net.edudb.engine.Config;
-import net.edudb.structure.DBRecord;
+import net.edudb.structure.TableRecord;
 
 public class PageTest {
 
@@ -38,9 +38,9 @@ public class PageTest {
 	@Test
 	public void saveTest() {
 		Page page = new BinaryPage();
-		page.addRecord(new DBRecord());
-		page.addRecord(new DBRecord());
-		page.addRecord(new DBRecord());
+		page.addRecord(new TableRecord());
+		page.addRecord(new TableRecord());
+		page.addRecord(new TableRecord());
 
 		BlockAbstractFactory blockWriterFactory = new BlockWriterFactory();
 		BlockWriter blockWriter = blockWriterFactory.getWriter(BlockFileType.Binary);

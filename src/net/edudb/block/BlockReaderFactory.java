@@ -7,8 +7,6 @@ public class BlockReaderFactory extends BlockAbstractFactory {
 		switch (fileType) {
 		case Binary:
 			return new BinaryBlockReader();
-		case CSV:
-			return new CSVBlockReader();
 		default:
 			return null;
 		}

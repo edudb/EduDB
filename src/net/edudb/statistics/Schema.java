@@ -12,7 +12,7 @@ package net.edudb.statistics;
 
 import net.edudb.file_utility.FileManager;
 import net.edudb.server.ServerWriter;
-import net.edudb.structure.DBColumn;
+import net.edudb.structure.Column;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,11 +52,11 @@ public class Schema {
 	 * @param tableName
 	 * @return
 	 */
-	public ArrayList<DBColumn> getColumns(String tableName) {
-		ArrayList<DBColumn> columns = new ArrayList<>();
+	public ArrayList<Column> getColumns(String tableName) {
+		ArrayList<Column> columns = new ArrayList<>();
 		int count = schema.get(tableName).size();
 		for (int i = 1; i <= count; i++) {
-			DBColumn column = new DBColumn(i, getColumnNames(tableName).get(i - 1), tableName);
+			Column column = new Column(i, getColumnNames(tableName).get(i - 1), tableName);
 			columns.add(column);
 		}
 		return columns;

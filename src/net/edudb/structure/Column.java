@@ -8,35 +8,76 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.page;
+package net.edudb.structure;
 
-import net.edudb.db_operator.DBOperator;
-import net.edudb.engine.DBBufferManager;
+import java.io.Serializable;
+import net.edudb.db_operator.DBParameter;
 import net.edudb.server.ServerWriter;
-import net.edudb.transcation.Step;
 
-public class DBPageRead extends Step {
-	private DBOperator operator;
-	private String tableName;
-	private boolean bModify;
+/**
+ * Created by mohamed on 4/19/14.
+ */
+public class Column implements DBParameter, Serializable {
 
-	public DBPageRead(DBOperator operator, String tableName) {
-		this.operator = operator;
+	private static final long serialVersionUID = -6271986181160247610L;
+
+	/**
+	 * @uml.property name="order"
+	 */
+	private int order;
+
+	public int getOrder() {
+		return order;
 	}
 
-	public DBPageRead(DBOperator operator, String tableName, boolean bModify) {
-		this.operator = operator;
+	private String name;
+
+	/**
+	 * @uml.property name="tableName"
+	 */
+	private String tableName;
+	
+	public Column(int order) {
+		this.order = order;
+	}
+
+	public Column(int num, String name, String tableName) {
+		this.order = num;
 		this.tableName = tableName;
-		this.bModify = bModify;
+		this.name = name;
 	}
 
 	@Override
-	public void execute() {
-		DBPageID pageID = DBPageUtil.getPageID(tableName);
-//		BufferManager bufferManager = TransactionManager.getBufferManager();
-		DBPage page = DBBufferManager.getInstance().read(pageID, bModify);
-		ServerWriter.getInstance().writeln("PageRead (execute): " + page);
-//		page.print();
-		operator.runStep(page);
+	public String toString() {
+		return name;
+	}
+
+	@Override
+	public int hashCode() {
+		return order;
+	};
+
+	@Override
+	public void print() {
+		ServerWriter.getInstance().write(this);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		Column column = (Column) o;
+		return column.order == order;// && column.name.equals(name) && column.tableName.equals(tableName);
+	}
+
+	@Override
+	public int numOfParameters() {
+		return 0;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getTableName() {
+		return tableName;
 	}
 }

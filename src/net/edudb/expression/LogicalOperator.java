@@ -14,7 +14,7 @@ import java.util.LinkedHashMap;
 
 import net.edudb.data_type.DataType;
 import net.edudb.ebtree.EBNode;
-import net.edudb.structure.DBColumn;
+import net.edudb.structure.Column;
 
 public abstract class LogicalOperator implements BinaryExpressionNode {
 
@@ -53,6 +53,6 @@ public abstract class LogicalOperator implements BinaryExpressionNode {
 	}
 
 	@Override
-	public abstract boolean evaluate(LinkedHashMap<DBColumn, DataType> data);
+	public abstract boolean evaluate(LinkedHashMap<Column, DataType> data);
 
 }

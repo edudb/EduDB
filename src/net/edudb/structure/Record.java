@@ -18,9 +18,9 @@ import net.edudb.expression.Expression;
 
 public interface Record {
 
-	public void addValue(DBColumn key, DataType value);
+	public void addValue(Column key, DataType value);
 	
-	public LinkedHashMap<DBColumn, DataType> getData();
+	public LinkedHashMap<Column, DataType> getData();
 	
 	public Record project(Integer[] projectedColumns);
 	
@@ -30,7 +30,7 @@ public interface Record {
 	
 	public boolean equates(Record record, Expression expression);
 	
-	public void update(LinkedHashMap<DBColumn, DataType> data);
+	public void update(LinkedHashMap<Column, DataType> data);
 	
 	public void delete();
 	

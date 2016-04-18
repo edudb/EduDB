@@ -13,12 +13,12 @@ package net.edudb.expression;
 import java.util.LinkedHashMap;
 
 import net.edudb.data_type.DataType;
-import net.edudb.structure.DBColumn;
+import net.edudb.structure.Column;
 
 public class ORLogicalOperator extends LogicalOperator {
 
 	@Override
-	public boolean evaluate(LinkedHashMap<DBColumn, DataType> data) {
+	public boolean evaluate(LinkedHashMap<Column, DataType> data) {
 		return leftChild.evaluate(data) || rightChild.evaluate(data);
 	}
 

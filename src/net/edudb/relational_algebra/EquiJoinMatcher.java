@@ -16,7 +16,7 @@ import net.edudb.expression.Expression;
 import net.edudb.expression.OperatorType;
 import net.edudb.operator.EquiJoinOperator;
 import net.edudb.operator.RelationOperator;
-import net.edudb.structure.DBColumn;
+import net.edudb.structure.Column;
 
 public class EquiJoinMatcher implements RAMatcherChain {
 	private RAMatcherChain nextElement;
@@ -41,8 +41,8 @@ public class EquiJoinMatcher implements RAMatcherChain {
 			EquiJoinOperator equiOperator = new EquiJoinOperator();
 			equiOperator.setRightChild(relationOperator);
 
-			Expression expression = new Expression(new DBColumn(Integer.parseInt(matcher.group(3))),
-					new DBColumn(Integer.parseInt(matcher.group(4))), OperatorType.Equal);
+			Expression expression = new Expression(new Column(Integer.parseInt(matcher.group(3))),
+					new Column(Integer.parseInt(matcher.group(4))), OperatorType.Equal);
 
 			equiOperator.setParameter(expression);
 

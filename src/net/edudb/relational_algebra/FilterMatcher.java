@@ -11,7 +11,7 @@ import net.edudb.expression.LogicalOperator;
 import net.edudb.expression.ORLogicalOperator;
 import net.edudb.expression.OperatorType;
 import net.edudb.operator.FilterOperator;
-import net.edudb.structure.DBColumn;
+import net.edudb.structure.Column;
 
 public class FilterMatcher implements RAMatcherChain {
 	private RAMatcherChain nextElement;
@@ -83,7 +83,7 @@ public class FilterMatcher implements RAMatcherChain {
 	private Expression getConstantExpression(Matcher matcher) {
 		int order = Integer.parseInt(matcher.group(1));
 		
-		DBColumn column = new DBColumn(order);
+		Column column = new Column(order);
 		DataType value = new IntegerType(matcher.group(3));
 		
 		OperatorType operator = getOperator(matcher.group(2));
@@ -96,8 +96,8 @@ public class FilterMatcher implements RAMatcherChain {
 		int leftOrder = Integer.parseInt(matcher.group(1));
 		int rightOrder = Integer.parseInt(matcher.group(3));
 		
-		DBColumn leftColumn = new DBColumn(leftOrder);
-		DBColumn rightColumn = new DBColumn(rightOrder);
+		Column leftColumn = new Column(leftOrder);
+		Column rightColumn = new Column(rightOrder);
 		
 		OperatorType operator = getOperator(matcher.group(2));
 

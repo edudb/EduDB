@@ -12,8 +12,6 @@ public class BlockWriterFactory extends BlockAbstractFactory {
 		switch (fileType) {
 		case Binary:
 			return new BinaryBlockWriter();
-		case CSV:
-			return new CSVBlockWriter();
 		default:
 			return null;
 		}

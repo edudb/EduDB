@@ -23,7 +23,7 @@ import net.edudb.data_type.IntegerType;
 import net.edudb.relational_algebra.Translator;
 import net.edudb.server.ServerWriter;
 import net.edudb.statistics.Schema;
-import net.edudb.structure.DBColumn;
+import net.edudb.structure.Column;
 import net.edudb.structure.Record;
 import net.edudb.structure.TableRecord;
 import net.edudb.structure.table.Table;
@@ -49,14 +49,14 @@ public class CopyExecutor implements ConsoleExecutorChain {
 					return;
 				}
 				Table table = TableManager.getInstance().read(tableName);
-				ArrayList<DBColumn> columns = Schema.getInstance().getColumns(tableName);
+				ArrayList<Column> columns = Schema.getInstance().getColumns(tableName);
 
 				String path = matcher.group(2);
 				try {
 					List<String> lines = Files.readAllLines(Paths.get(path));
 					for (int i = 0; i < lines.size(); i++) {
 						String[] values = lines.get(i).split(matcher.group(3));
-						LinkedHashMap<DBColumn, DataType> data = new LinkedHashMap<>();
+						LinkedHashMap<Column, DataType> data = new LinkedHashMap<>();
 						int size = values.length;
 						for (int j = 0; j < size; j++) {
 							data.put(columns.get(j), new IntegerType(values[j]));
