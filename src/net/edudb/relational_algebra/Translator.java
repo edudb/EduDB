@@ -18,11 +18,8 @@ import adipe.translate.Queries;
 import adipe.translate.TranslationException;
 import net.edudb.ebtree.EBNode;
 import net.edudb.ebtree.EBTree;
-import net.edudb.query.PostOrderTreeExecutor;
 import net.edudb.query.QueryTree;
-import net.edudb.query.QueryTreeExecutor;
-import net.edudb.relation.Relation;
-import net.edudb.relation.RelationIterator;
+import net.edudb.server.ServerWriter;
 import net.edudb.statistics.Schema;
 import ra.Term;
 
@@ -36,7 +33,7 @@ public class Translator {
 		}
 		return null;
 	}
-	
+
 	private RAMatcherChain getChain() {
 		RAMatcherChain project = new ProjectMatcher();
 		RAMatcherChain cartesian = new CartesianProductMatcher();
@@ -51,7 +48,7 @@ public class Translator {
 		relation.setNextElementInChain(new NullMatcher());
 		return project;
 	}
-	
+
 	private ArrayList<EBNode> constructTreeNodes(String relationAlgebra, RAMatcherChain chain) {
 		ArrayList<EBNode> nodes = new ArrayList<>();
 		while (relationAlgebra.length() != 0) {
@@ -60,7 +57,7 @@ public class Translator {
 				nodes.add(result.getNode());
 				relationAlgebra = result.getString();
 			} else {
-				System.out.println("No Match");
+				ServerWriter.getInstance().writeln("No Match");
 				break;
 			}
 		}
@@ -84,28 +81,10 @@ public class Translator {
 	 *            Regular expression to be matched against
 	 * @return
 	 */
-	public static Matcher matcher(String string, String regex) {
+	public static Matcher getMatcher(String string, String regex) {
 		Pattern pattern = Pattern.compile(regex);
 		Matcher matcher = pattern.matcher(string);
 		return matcher;
 	}
 
-	public static void main(String[] args) {
-		Translator t = new Translator();
-
-		String ra = t.translate("select a,b,c,d from test inner join test2 on a=c");
-
-		System.out.println(ra);
-
-		QueryTree qt = t.processRelationalAlgebra(ra);
-
-		QueryTreeExecutor qte = new PostOrderTreeExecutor();
-
-		Relation r = qte.execute(qt);
-
-		RelationIterator ri = r.getIterator();
-		while (ri.hasNext()) {
-			System.out.println(ri.next());
-		}
-	}
 }

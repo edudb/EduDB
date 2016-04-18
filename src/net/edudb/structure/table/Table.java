@@ -10,7 +10,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.structure.table;
 
-import net.edudb.operator.OperatorParameter;
+import net.edudb.operator.parameter.OperatorParameter;
 import net.edudb.page.PageManager;
 import net.edudb.structure.Record;
 

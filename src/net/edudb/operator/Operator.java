@@ -10,6 +10,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.operator;
 
+import net.edudb.operator.parameter.OperatorParameter;
+
 public interface Operator {
 	
 	public void setParameter(OperatorParameter parameter);

@@ -10,15 +10,24 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.operator.executor;
 
-import net.edudb.operator.Operator;
-import net.edudb.operator.ProjectOperator;
-import net.edudb.operator.parameter.ProjectOperatorParameter;
-import net.edudb.relation.Relation;
-import net.edudb.relation.RelationIterator;
-import net.edudb.relation.VolatileRelation;
-import net.edudb.structure.Record;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
-public class ProjectExecutor extends PostOrderOperatorExecutor implements OperatorExecutionChain {
+import net.edudb.data_type.DataType;
+import net.edudb.data_type.IntegerType;
+import net.edudb.operator.InsertOperator;
+import net.edudb.operator.Operator;
+import net.edudb.operator.parameter.InsertOperatorParameter;
+import net.edudb.relation.Relation;
+import net.edudb.relation.VolatileRelation;
+import net.edudb.statement.SQLInsertStatement;
+import net.edudb.statistics.Schema;
+import net.edudb.structure.DBColumn;
+import net.edudb.structure.Record;
+import net.edudb.structure.TableRecord;
+import net.edudb.structure.table.Table;
+
+public class InsertExecutor extends PostOrderOperatorExecutor implements OperatorExecutionChain {
 	private OperatorExecutionChain nextElement;
 
 	@Override
@@ -28,20 +37,26 @@ public class ProjectExecutor extends PostOrderOperatorExecutor implements Operat
 
 	@Override
 	public Relation execute(Operator operator) {
-		if (operator instanceof ProjectOperator) {
-			ProjectOperator projectOperator = (ProjectOperator) operator;
-			ProjectOperatorParameter projectedColumns = (ProjectOperatorParameter) projectOperator.getParameter();
-			Relation relation = getChain().execute((Operator) projectOperator.getChild());
+		if (operator instanceof InsertOperator) {
+			Operator insert = (InsertOperator) operator;
+			InsertOperatorParameter parameter = (InsertOperatorParameter) insert.getParameter();
 
-			RelationIterator ri = relation.getIterator();
-			Relation resultRelation = new VolatileRelation();
+			Table table = parameter.getTable();
+			SQLInsertStatement statement = parameter.getStatement();
 
-			while (ri.hasNext()) {
-				Record r = (Record) ri.next();
-				resultRelation.addRecord(r.project(projectedColumns.getProjectedColumns()));
+			ArrayList<DBColumn> columns = Schema.getInstance().getColumns(table.getName());
+			ArrayList<String> values = statement.getValueList();
+			LinkedHashMap<DBColumn, DataType> data = new LinkedHashMap<>();
+			int size = values.size();
+			for (int i = 0; i < size; i++) {
+				data.put(columns.get(i), new IntegerType(values.get(i)));
 			}
 
-			return resultRelation;
+			Record record = new TableRecord(data);
+			table.addRecord(record);
+
+			Relation relation = new VolatileRelation(table);
+			return relation;
 		}
 		return nextElement.execute(operator);
 	}

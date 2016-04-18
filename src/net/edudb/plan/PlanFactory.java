@@ -27,34 +27,51 @@ public class PlanFactory implements Plan {
 
 	@Override
 	public QueryTree makePlan(SQLStatement statement) {
-		setPlanner(statement.statementType());
-		if (planner == null) {
-			return null;
-		}
-		QueryTree plan = planner.makePlan(statement);
-		return plan;
-	}
-
-	public void setPlanner(SQLStatementType statement) {
-		ServerWriter.getInstance().writeln("PlanFactory (setPlanner): " + statement);
-		switch (statement) {
+		// setPlanner(statement.statementType());
+		// if (planner == null) {
+		// return null;
+		// }
+		// QueryTree plan = planner.makePlan(statement);
+		// return plan;
+		switch (statement.statementType()) {
 		case SQLCreateTableStatement:
-			planner = new CreateTablePlan();
-			break;
+			return new CreateTablePlan().makePlan(statement);
 		case SQLDeleteStatement:
-			planner = new DeletePlan();
-			break;
+			return new DeletePlan().makePlan(statement);
 		case SQLInsertStatement:
-			planner = new InsertPlan();
-			break;
+			return new InsertPlan().makePlan(statement);
 		case SQLSelectStatement:
-			planner = new SelectPlan();
-			break;
+			return new SelectPlan().makePlan(statement);
 		case SQLUpdateStatement:
-			planner = new UpdatePlan();
-			break;
+			return new UpdatePlan().makePlan(statement);
 		default:
 			ServerWriter.getInstance().writeln("Sorry, this statement is not supported.");
+			return null;
 		}
 	}
+
+	// public void setPlanner(SQLStatementType statement) {
+	// ServerWriter.getInstance().writeln("PlanFactory (setPlanner): " +
+	// statement);
+	// switch (statement) {
+	// case SQLCreateTableStatement:
+	// planner = new CreateTablePlan();
+	// break;
+	// case SQLDeleteStatement:
+	// planner = new DeletePlan();
+	// break;
+	// case SQLInsertStatement:
+	// planner = new InsertPlan();
+	// break;
+	// case SQLSelectStatement:
+	// planner = new SelectPlan();
+	// break;
+	// case SQLUpdateStatement:
+	// planner = new UpdatePlan();
+	// break;
+	// default:
+	// ServerWriter.getInstance().writeln("Sorry, this statement is not
+	// supported.");
+	// }
+	// }
 }

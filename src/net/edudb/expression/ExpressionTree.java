@@ -3,7 +3,7 @@ package net.edudb.expression;
 import java.util.LinkedHashMap;
 
 import net.edudb.data_type.DataType;
-import net.edudb.operator.OperatorParameter;
+import net.edudb.operator.parameter.OperatorParameter;
 import net.edudb.structure.DBColumn;
 
 public interface ExpressionTree extends OperatorParameter {

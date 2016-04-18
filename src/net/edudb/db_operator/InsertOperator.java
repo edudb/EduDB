@@ -47,8 +47,7 @@ public class InsertOperator implements DBOperator {
 		}
 
 		Table table = TableManager.getInstance().read(statement.getTableName());
-		ArrayList<DBColumn> columns = null;
-			columns = Schema.getInstance().getColumns(statement.getTableName());
+		ArrayList<DBColumn> columns = Schema.getInstance().getColumns(statement.getTableName());
 		ArrayList<String> values = statement.getValueList();
 		LinkedHashMap<DBColumn, DataType> data = new LinkedHashMap<>();
 		int size = values.size();
@@ -57,12 +56,6 @@ public class InsertOperator implements DBOperator {
 		}
 
 		Record record = new TableRecord(data);
-		
-		if (record instanceof Record) {
-			System.out.println(record);
-		}
-//		 DBRecord record = new DBRecord(values, table.getName());
-
 		table.addRecord(record);
 
 		return null;

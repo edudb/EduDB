@@ -13,7 +13,7 @@ package net.edudb.expression;
 import java.util.LinkedHashMap;
 import net.edudb.data_type.DataType;
 import net.edudb.ebtree.EBNode;
-import net.edudb.operator.OperatorParameter;
+import net.edudb.operator.parameter.OperatorParameter;
 import net.edudb.structure.DBColumn;
 
 public class Expression implements BinaryExpressionNode, OperatorParameter {

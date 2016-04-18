@@ -31,7 +31,7 @@ public class RelationMatcher implements RAMatcherChain {
 
 	@Override
 	public RAMatcherResult match(String string) {
-		Matcher matcher = Translator.matcher(string, regex);
+		Matcher matcher = Translator.getMatcher(string, regex);
 		if (matcher.matches()) {
 			RelationOperator relationOperator = new RelationOperator();
 			/**

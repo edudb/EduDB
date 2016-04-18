@@ -8,16 +8,25 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.statement;
+package net.edudb.operator.parameter;
 
-import net.edudb.operator.parameter.OperatorParameter;
+import net.edudb.statement.SQLInsertStatement;
+import net.edudb.structure.table.Table;
 
-public interface SQLStatement extends OperatorParameter {
+public class InsertOperatorParameter implements OperatorParameter {
+	private Table table;
+	private SQLInsertStatement statement;
 
-	public String getTableName();
+	public InsertOperatorParameter(Table table, SQLInsertStatement statement) {
+		this.table = table;
+		this.statement = statement;
+	}
 
-	public SQLStatementType statementType();
+	public Table getTable() {
+		return table;
+	}
 
-	public String toString();
-
+	public SQLInsertStatement getStatement() {
+		return statement;
+	}
 }

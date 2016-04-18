@@ -11,6 +11,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.operator;
 
 import net.edudb.ebtree.EBNode;
+import net.edudb.operator.parameter.OperatorParameter;
 import net.edudb.query.UnaryQueryNode;
 
 /**

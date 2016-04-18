@@ -1,6 +1,7 @@
 package net.edudb.operator;
 
 import net.edudb.ebtree.EBNode;
+import net.edudb.operator.parameter.OperatorParameter;
 import net.edudb.query.BinaryQueryNode;
 import net.edudb.query.QueryNode;
 

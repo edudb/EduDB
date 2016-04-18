@@ -29,7 +29,7 @@ public class EquiJoinMatcher implements RAMatcherChain {
 
 	@Override
 	public RAMatcherResult match(String string) {
-		Matcher matcher = Translator.matcher(string, regex);
+		Matcher matcher = Translator.getMatcher(string, regex);
 		if (matcher.matches()) {
 			/**
 			 * The second argument of the EqJoin relational algebra is always a

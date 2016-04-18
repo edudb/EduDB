@@ -18,6 +18,7 @@ public class PostOrderOperatorExecutor {
 		OperatorExecutionChain equi = new EquiJoinExecutor();
 		OperatorExecutionChain filter = new FilterExecutor();
 		OperatorExecutionChain relation = new RelationExecutor();
+		OperatorExecutionChain insert = new InsertExecutor();
 		OperatorExecutionChain updateTable = new UpdateTableExecutor();
 		OperatorExecutionChain delete = new DeleteExecutor();
 		OperatorExecutionChain createTable = new CreateTableExecutor();
@@ -26,7 +27,8 @@ public class PostOrderOperatorExecutor {
 		cartesian.setNextElementInChain(equi);
 		equi.setNextElementInChain(filter);
 		filter.setNextElementInChain(relation);
-		relation.setNextElementInChain(updateTable);
+		relation.setNextElementInChain(insert);
+		insert.setNextElementInChain(updateTable);
 		updateTable.setNextElementInChain(delete);
 		delete.setNextElementInChain(createTable);
 		createTable.setNextElementInChain(new NullExecutor());

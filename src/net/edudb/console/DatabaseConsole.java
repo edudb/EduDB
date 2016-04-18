@@ -105,12 +105,14 @@ public class DatabaseConsole {
 		ConsoleExecutorChain clear = new ClearExecutor();
 		ConsoleExecutorChain exit = new ExitExecutor();
 		ConsoleExecutorChain help = new HelpExecutor();
+		ConsoleExecutorChain copy = new CopyExecutor();
 		ConsoleExecutorChain sql = new SQLExecutor();
 		ConsoleExecutorChain test = new ConcurrentTestExecutor();
 
 		clear.setNextInChain(exit);
 		exit.setNextInChain(help);
-		help.setNextInChain(test);
+		help.setNextInChain(copy);
+		copy.setNextInChain(test);
 		test.setNextInChain(sql);
 		sql.setNextInChain(new NullExecutor());
 

@@ -8,39 +8,43 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.relational_algebra;
+package net.edudb.operator;
 
-import java.util.regex.Matcher;
+import net.edudb.ebtree.EBNode;
+import net.edudb.operator.parameter.OperatorParameter;
+import net.edudb.query.UnaryQueryNode;
 
-import net.edudb.operator.CartesianProductOperator;
-import net.edudb.operator.RelationOperator;
-
-public class CartesianProductMatcher implements RAMatcherChain {
-	private RAMatcherChain nextElement;
-	private String regex = "\\ACartProd\\((.*\\))\\,(.*)\\)\\z";
+public class InsertOperator implements Operator, UnaryQueryNode {
+	private OperatorParameter parameter;
+	private EBNode parent;
 
 	@Override
-	public void setNextElementInChain(RAMatcherChain chainElement) {
-		this.nextElement = chainElement;
+	public void setParameter(OperatorParameter parameter) {
+		this.parameter = parameter;
 	}
 
 	@Override
-	public RAMatcherResult match(String string) {
-		Matcher matcher = Translator.getMatcher(string, regex);
-		if (matcher.matches()) {
-			/**
-			 * The right argument of the CartProd relational algebra is always a
-			 * relation.
-			 */
-			RelationMatcher relationMatcher = new RelationMatcher();
-			RelationOperator relationOperator = (RelationOperator) relationMatcher.match(matcher.group(2)).getNode();
-			
-			CartesianProductOperator cartesianOperator = new CartesianProductOperator();
-			cartesianOperator.setRightChild(relationOperator);
-			
-			return new RAMatcherResult(cartesianOperator, matcher.group(1));
-		}
-		return nextElement.match(string);
+	public OperatorParameter getParameter() {
+		return parameter;
+	}
+
+	@Override
+	public void setChild(EBNode child) {
+	}
+
+	@Override
+	public EBNode getChild() {
+		return null;
+	}
+
+	@Override
+	public void setParent(EBNode parent) {
+		this.parent = parent;
+	}
+
+	@Override
+	public EBNode getParent() {
+		return parent;
 	}
 
 }

@@ -10,11 +10,17 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.plan;
 
-import net.edudb.db_operator.InsertOperator;
+import net.edudb.operator.InsertOperator;
+import net.edudb.operator.Operator;
+import net.edudb.operator.parameter.InsertOperatorParameter;
+import net.edudb.query.QueryNode;
 import net.edudb.query.QueryTree;
-import net.edudb.db_operator.DBOperator;
+import net.edudb.server.ServerWriter;
 import net.edudb.statement.SQLInsertStatement;
 import net.edudb.statement.SQLStatement;
+import net.edudb.statistics.Schema;
+import net.edudb.structure.table.Table;
+import net.edudb.structure.table.TableManager;
 
 /**
  * Created by mohamed on 4/9/14.
@@ -23,7 +29,19 @@ public class InsertPlan implements Plan {
 	@Override
 	public QueryTree makePlan(SQLStatement sqlStatement) {
 		SQLInsertStatement statement = (SQLInsertStatement) sqlStatement;
-		DBOperator insert = new InsertOperator(statement);
-		return null;
+		String tableName = statement.getTableName();
+
+		if (!Schema.getInstance().chekTableExists(tableName)) {
+			ServerWriter.getInstance().writeln("InsertPlan (makePlan): " + "Table '" + tableName + "' does not exist");
+			return null;
+		}
+
+		Table table = TableManager.getInstance().read(tableName);
+		Operator operator = new InsertOperator();
+		InsertOperatorParameter parameter = new InsertOperatorParameter(table, statement);
+		operator.setParameter(parameter);
+
+		QueryTree tree = new QueryTree((QueryNode) operator);
+		return tree;
 	}
 }

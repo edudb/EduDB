@@ -24,7 +24,7 @@ public class FilterMatcher implements RAMatcherChain {
 
 	@Override
 	public RAMatcherResult match(String string) {
-		Matcher matcher = Translator.matcher(string, regex);
+		Matcher matcher = Translator.getMatcher(string, regex);
 		if (matcher.matches()) {
 			FilterOperator filterOperator = new FilterOperator();
 
@@ -65,9 +65,9 @@ public class FilterMatcher implements RAMatcherChain {
 	private String capturedBinaryExpr = "(AND|OR)\\(" + "(" + argument + ")" + "," + "(" + argument + ")" + "\\)";
 
 	private ExpressionTree getExpressionTree(String string) {
-		Matcher constantExpression = Translator.matcher(string, capturedConstantExpr);
-		Matcher columnExpression = Translator.matcher(string, capturedColumnExpr);
-		Matcher binaryExpression = Translator.matcher(string, capturedBinaryExpr);
+		Matcher constantExpression = Translator.getMatcher(string, capturedConstantExpr);
+		Matcher columnExpression = Translator.getMatcher(string, capturedColumnExpr);
+		Matcher binaryExpression = Translator.getMatcher(string, capturedBinaryExpr);
 
 		if (constantExpression.matches()) {
 			return new BinaryExpressionTree(getConstantExpression(constantExpression));
@@ -123,11 +123,11 @@ public class FilterMatcher implements RAMatcherChain {
 	}
 	
 	private LogicalOperator getLogicalOperator(Matcher matcher) {
-		Matcher leftExpression = Translator.matcher(matcher.group(2), capturedConstantExpr);
-		Matcher leftBinaryExpression = Translator.matcher(matcher.group(2), capturedBinaryExpr);
+		Matcher leftExpression = Translator.getMatcher(matcher.group(2), capturedConstantExpr);
+		Matcher leftBinaryExpression = Translator.getMatcher(matcher.group(2), capturedBinaryExpr);
 		
-		Matcher rightExpression = Translator.matcher(matcher.group(3), capturedConstantExpr);
-		Matcher rightBinaryExpression = Translator.matcher(matcher.group(3), capturedBinaryExpr);
+		Matcher rightExpression = Translator.getMatcher(matcher.group(3), capturedConstantExpr);
+		Matcher rightBinaryExpression = Translator.getMatcher(matcher.group(3), capturedBinaryExpr);
 		
 		LogicalOperator operator;
 		switch (matcher.group(1)) {
