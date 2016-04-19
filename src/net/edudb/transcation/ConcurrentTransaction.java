@@ -12,14 +12,11 @@ package net.edudb.transcation;
 
 import net.edudb.query.PostOrderTreeExecutor;
 import net.edudb.query.QueryTree;
-import net.edudb.query.QueryTreeExecutor;
 import net.edudb.relation.Relation;
 import net.edudb.relation.RelationIterator;
 import net.edudb.server.ServerWriter;
 
-public class ConcurrentTransaction implements Transaction, Runnable {
-	private QueryTree plan;
-	private QueryTreeExecutor queryTreeExecutor;
+public class ConcurrentTransaction extends Transaction implements Runnable {
 
 	public ConcurrentTransaction(QueryTree plan) {
 		this.plan = plan;

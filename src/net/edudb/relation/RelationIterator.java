@@ -34,14 +34,30 @@ public class RelationIterator implements Iterator<Record> {
 
 	@Override
 	public boolean hasNext() {
+		/**
+		 * Relation has no pages; empty relation.
+		 */
 		if (currentPage == null) {
 			return false;
 		}
+		/**
+		 * Current index is greater than the size of the current page; iterated
+		 * through the whole page.
+		 */
 		if (currentIndex > 0 && currentIndex >= currentPage.size()) {
+			/**
+			 * Relation has more pages to iterate through.
+			 */
 			if (currentPageIndex < pageNames.size()) {
 				currentPage = BufferManager.getInstance().read(pageNames.get(currentPageIndex++));
 				this.currentIndex = 0;
 			}
+		}
+		for (int i = currentIndex; i < currentPage.size(); i++) {
+			if (!currentPage.getRecord(i).isDeleted()) {
+				break;
+			}
+			currentIndex++;
 		}
 		return currentIndex < currentPage.size();
 	}

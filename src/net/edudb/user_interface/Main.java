@@ -10,13 +10,23 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.user_interface;
 
+import java.awt.AWTException;
+import java.awt.Image;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
+import java.awt.SystemTray;
+import java.awt.Toolkit;
+import java.awt.TrayIcon;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import adipe.translate.TranslationException;
 import net.edudb.console.DatabaseConsole;
 import net.edudb.engine.DatabaseSystem;
 
 public class Main {
 
-	public static void main(String[] args) throws TranslationException {
+	public static void main(String[] args) throws TranslationException, AWTException {
 
 		/**
 		 * ATTENTION
@@ -25,9 +35,42 @@ public class Main {
 		 */
 		DatabaseSystem.getInstance().initializeDirectories();
 
-		DatabaseConsole console = DatabaseConsole.getInstance();
-		console.setPrompt("edudb$ ");
-		console.start();
+		//
+//		final TrayIcon trayIcon;
+//
+//		if (SystemTray.isSupported()) {
+//
+//			SystemTray tray = SystemTray.getSystemTray();
+//			Image image = Toolkit.getDefaultToolkit().getImage("./E.png");
+//
+//			ActionListener exitListener = new ActionListener() {
+//				public void actionPerformed(ActionEvent e) {
+//					DatabaseSystem.getInstance().exit(0);
+//				}
+//			};
+//
+//			PopupMenu popup = new PopupMenu();
+//			MenuItem defaultItem = new MenuItem("Quit Server");
+//			defaultItem.addActionListener(exitListener);
+//			popup.add(defaultItem);
+//
+//			trayIcon = new TrayIcon(image, "EduDB", popup);
+//
+//			trayIcon.setImageAutoSize(true);
+//
+//			try {
+//				tray.add(trayIcon);
+//			} catch (AWTException e) {
+//				System.err.println("TrayIcon could not be added.");
+//			}
+//
+//		} else {
+//		}
+		//
+
+		 DatabaseConsole console = DatabaseConsole.getInstance();
+		 console.setPrompt("edudb$ ");
+		 console.start();
 	}
 
 }
