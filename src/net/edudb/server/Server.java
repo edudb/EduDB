@@ -1,9 +1,14 @@
 package net.edudb.server;
 
-import java.awt.BorderLayout;
-
-import javax.swing.JFrame;
-import javax.swing.JLabel;
+import java.awt.AWTException;
+import java.awt.Image;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
+import java.awt.SystemTray;
+import java.awt.Toolkit;
+import java.awt.TrayIcon;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import io.netty.bootstrap.ServerBootstrap;
 
@@ -50,19 +55,53 @@ public class Server {
 		}
 	}
 
+	public void showTray() {
+		final TrayIcon trayIcon;
+
+		if (SystemTray.isSupported()) {
+
+			SystemTray tray = SystemTray.getSystemTray();
+			// Image image = Toolkit.getDefaultToolkit().getImage("E.png");
+			Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/E.png"));
+
+			ActionListener exitListener = new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					DatabaseSystem.getInstance().exit(0);
+				}
+			};
+
+			PopupMenu popup = new PopupMenu();
+			MenuItem defaultItem = new MenuItem("Quit Server");
+			defaultItem.addActionListener(exitListener);
+			popup.add(defaultItem);
+
+			trayIcon = new TrayIcon(image, "EduDB", popup);
+
+			trayIcon.setImageAutoSize(true);
+
+			try {
+				tray.add(trayIcon);
+			} catch (AWTException e) {
+				System.err.println("TrayIcon could not be added.");
+			}
+
+		} else {
+		}
+	}
+
 	public static void main(String[] args) throws Exception {
 
-		JFrame frame = new JFrame("EduDB Server");
-		frame.setSize(320, 160);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setLocationRelativeTo(null);
+		// JFrame frame = new JFrame("EduDB Server");
+		// frame.setSize(320, 160);
+		// frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		// frame.setLocationRelativeTo(null);
+		//
+		// JLabel label = new JLabel("Server is up and running");
+		// label.setHorizontalAlignment(JLabel.CENTER);
+		// frame.add(label, BorderLayout.CENTER);
+		//
+		// frame.setVisible(true);
 
-		JLabel label = new JLabel("Server is up and running");
-		label.setHorizontalAlignment(JLabel.CENTER);
-		frame.add(label, BorderLayout.CENTER);
-
-		frame.setVisible(true);
-		
 		DatabaseSystem.getInstance().initializeDirectories();
 
 		int port;
@@ -71,6 +110,8 @@ public class Server {
 		} else {
 			port = 8080;
 		}
-		new Server(port).run();
+		Server server = new Server(port);
+		server.showTray();
+		server.run();
 	}
 }
