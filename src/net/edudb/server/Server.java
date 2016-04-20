@@ -24,7 +24,6 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import net.edudb.engine.Config;
 import net.edudb.engine.DatabaseSystem;
 
 public class Server {
@@ -80,11 +79,11 @@ public class Server {
 			ActionListener clientListener = new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					String url = ClassLoader.getSystemClassLoader().getResource(".").getPath();
-					
 					String path = url + "edudb-client";
+					
 					String command = null;
 					if (System.getProperty("os.name").startsWith("Windows")) {
-						command = "cmd /c start " + path;
+						command = "cmd /c start " + path.substring(1);
 					} else {
 						command = "/usr/bin/open -a Terminal " + path;
 					}
@@ -136,8 +135,6 @@ public class Server {
 	}
 
 	public static void main(String[] args) throws Exception {
-		
-		System.out.println(System.getProperty("os.name"));
 		
 		/**
 		 * ATTENTION
