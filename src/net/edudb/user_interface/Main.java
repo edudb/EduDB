@@ -12,6 +12,7 @@ package net.edudb.user_interface;
 
 import adipe.translate.TranslationException;
 import net.edudb.console.DatabaseConsole;
+import net.edudb.engine.Config;
 import net.edudb.engine.DatabaseSystem;
 
 public class Main {

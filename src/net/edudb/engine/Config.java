@@ -23,16 +23,20 @@ public class Config {
 		return TableFileType.Binary;
 	}
 	
+	public static String absolutePath() {
+		return ClassLoader.getSystemClassLoader().getResource(".").getPath();
+	}
+	
 	public static String databasesPath() {
-		return "databases";
+		return absolutePath() + "databases";
 	}
 	
 	public static String tablesPath() {
-		return "database/tables/";
+		return absolutePath() +  "database/tables/";
 	}
 	
 	public static String pagesPath() {
-		return "database/blocks/";
+		return absolutePath() + "database/blocks/";
 	}
 	
 	public static int pageSize() {

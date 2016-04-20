@@ -38,35 +38,35 @@ public class DatabaseSystem {
 	}
 
 	public void createDatabasesDirectory() {
-		File databases = new File("database");
-		if (!databases.exists()) {
-			databases.mkdir();
+		File database = new File(Config.absolutePath() + "database");
+		if (!database.exists()) {
+			database.mkdir();
 		}
 	}
 
 	public void createTablesDirectory() {
-		File tables = new File("database/tables");
+		File tables = new File(Config.absolutePath() + "database/tables");
 		if (!tables.exists()) {
 			tables.mkdir();
 		}
 	}
 
 	public void createBlocksDirectory() {
-		File blocks = new File("database/blocks");
+		File blocks = new File(Config.absolutePath() + "database/blocks");
 		if (!blocks.exists()) {
 			blocks.mkdir();
 		}
 	}
 
 	public void createIndexesDirectory() {
-		File indexes = new File("database/indexes");
+		File indexes = new File(Config.absolutePath() + "database/indexes");
 		if (!indexes.exists()) {
 			indexes.mkdir();
 		}
 	}
-	
+
 	public void createSchemaFile() {
-		File schema = new File("database/schema.txt");
+		File schema = new File(Config.absolutePath() + "database/schema.txt");
 		if (!schema.exists()) {
 			try {
 				schema.createNewFile();
@@ -75,7 +75,7 @@ public class DatabaseSystem {
 			}
 		}
 	}
-	
+
 	public void exit(int status) {
 		BufferManager.getInstance().writeAll();
 		TableManager.getInstance().writeAll();

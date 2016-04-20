@@ -13,6 +13,8 @@ package net.edudb.file_utility;
 import java.io.*;
 import java.util.ArrayList;
 
+import net.edudb.engine.Config;
+
 public class FileManager {
 	private static String dataDirectory;
 	private static String schema;
@@ -20,7 +22,6 @@ public class FileManager {
 	private static boolean isWindows;
 
 	public FileManager() {
-
 	}
 
 	public static ArrayList<String> readFile(String file) {
@@ -49,7 +50,7 @@ public class FileManager {
 		if (initialized) {
 			return;
 		}
-		dataDirectory = appendToPath(System.getProperty("user.dir"), "database");
+		dataDirectory = appendToPath(Config.absolutePath(), "database");
 		File file = new File(dataDirectory);
 		if (!file.exists()) {
 			file.mkdir();
