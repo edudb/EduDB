@@ -11,6 +11,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.structure.table;
 
 import java.io.Serializable;
+import java.util.LinkedHashMap;
 import net.edudb.page.PageManager;
 import net.edudb.structure.Record;
 
@@ -28,9 +29,12 @@ public class BinaryTable implements Table, Serializable {
 	 */
 	private PageManager pageManager;
 
+	private LinkedHashMap<String, String> columnTypes;
+
 	public BinaryTable(String name) {
 		this.name = name;
 		this.pageManager = new PageManager();
+		this.columnTypes = new LinkedHashMap<>();
 	}
 
 	@Override
@@ -46,6 +50,18 @@ public class BinaryTable implements Table, Serializable {
 	@Override
 	public void addRecord(Record record) {
 		pageManager.addRecord(record);
+	}
+
+	@Override
+	public void setColumnTypes(LinkedHashMap<String, String> columnTypes) {
+		if (this.columnTypes.size() == 0) {
+			this.columnTypes = columnTypes;
+		}
+	}
+
+	@Override
+	public LinkedHashMap<String, String> getColumnTypes() {
+		return columnTypes;
 	}
 
 	@Override

@@ -11,77 +11,58 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.data_type;
 
 import java.io.Serializable;
-import net.edudb.server.ServerWriter;
-import net.edudb.structure.DBConst;
 
 /**
+ * 
  * @author mohamed
+ * @author Ahmed Abdul Badie
+ * 
  */
-public class IntegerType implements DataType, DBConst, Serializable {
+public class IntegerType extends DataType implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 3302671401075163802L;
 	/**
-	 * @uml.property name="number"
+	 * @uml.property name="integer"
 	 */
-	public Integer number;
+	private Integer integer;
 
-	public IntegerType(Integer num) {
-		number = num;
-	}
-
-	public IntegerType(char num) {
-		number = num - '0';
-	}
-
-	public IntegerType(String s) {
-		number = Integer.parseInt(s);
+	public IntegerType(Integer integer) {
+		this.integer = integer;
 	}
 
 	public double diff(DataType key) {
-		if (key instanceof IntegerType) {
-			return number - ((IntegerType) key).number;
-		}
-		return -1;
+		IntegerType type = (IntegerType) key;
+		return integer - type.integer;
 	}
 
 	@Override
-	public int compareTo(Object dataType) {
+	public int compareTo(DataType dataType) {
 		IntegerType type = (IntegerType) dataType;
-		return number - type.number;
+		return integer.compareTo(type.integer);
 	}
 
 	@Override
 	public boolean equals(Object o) {
 		IntegerType type = (IntegerType) o;
-		return number == type.number;
+		return integer.equals(type.integer);
 	}
 
 	@Override
 	public int hashCode() {
-		return number;
+		return integer;
 	}
 
 	/**
 	 * @return
-	 * @uml.property name="number"
+	 * @uml.property name="integer"
 	 */
-	public int getNumber() {
-		return number;
+	public int getInteger() {
+		return integer;
 	}
 
 	public String toString() {
-		return number + "";
-	}
-
-	@Override
-	public void print() {
-		ServerWriter.getInstance().write(number);
-	}
-
-	@Override
-	public int numOfParameters() {
-		return 0;
+		return integer.toString();
 	}
 }

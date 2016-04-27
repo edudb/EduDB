@@ -25,7 +25,7 @@ public class DBAssignment implements DBParameter {
 
 	public DBAssignment(String s1, String s2, String tableName) {
 		this.order = Schema.getInstance().getColumnNumber(s1, tableName);
-		this.value = new IntegerType(s2);
+		this.value = new IntegerType(Integer.parseInt(s2));
 	}
 
 	@Override

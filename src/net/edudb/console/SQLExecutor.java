@@ -12,7 +12,13 @@ package net.edudb.console;
 
 import adipe.translate.TranslationException;
 import net.edudb.parser.Parser;
+import net.edudb.server.ServerWriter;
 
+/**
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class SQLExecutor implements ConsoleExecutorChain {
 	private ConsoleExecutorChain nextChainElement;
 
@@ -26,6 +32,9 @@ public class SQLExecutor implements ConsoleExecutorChain {
 		Parser parser = new Parser();
 		try {
 			parser.parseSQL(string);
+			if (ServerWriter.getInstance().getContext() != null) {
+				ServerWriter.getInstance().writeln("[edudb::endofstring]");
+			}
 		} catch (TranslationException e) {
 			e.printStackTrace();
 		}

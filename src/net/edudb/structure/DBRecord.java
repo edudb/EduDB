@@ -39,7 +39,7 @@ public class DBRecord implements Serializable {
 		values = new ArrayList<>();
 		for (int i = 0; i < line.length; i++) {
 			// TODO add data types support
-			values.add(new IntegerType(line[i]));
+			values.add(new IntegerType(Integer.parseInt(line[i])));
 		}
 	}
 
@@ -47,7 +47,7 @@ public class DBRecord implements Serializable {
 		columns = Schema.getInstance().getColumns(tableName);
 		values = new ArrayList<>();
 		for (int i = 0; i < valuesList.size(); i++) {
-			values.add(new IntegerType(valuesList.get(i)));
+			values.add(new IntegerType(Integer.parseInt(valuesList.get(i))));
 		}
 	}
 

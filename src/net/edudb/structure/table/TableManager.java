@@ -13,7 +13,6 @@ package net.edudb.structure.table;
 import java.io.IOException;
 import java.util.HashMap;
 import net.edudb.engine.Config;
-import net.edudb.server.ServerWriter;
 
 /**
  * 
@@ -43,11 +42,8 @@ public class TableManager {
 		table = tableBuffer.get(tableName);
 
 		if (table != null) {
-			ServerWriter.getInstance().writeln("TableManager (read): " + "Table is available.");
 			return table;
 		}
-
-		ServerWriter.getInstance().writeln("TableManager (read): " + "Table is not available.");
 
 		TableAbstractFactory tableFactory = new TableReaderFactory();
 		TableReader tableReader = tableFactory.getReader(Config.tableType());

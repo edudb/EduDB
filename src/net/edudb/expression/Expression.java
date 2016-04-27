@@ -11,11 +11,19 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.expression;
 
 import java.util.LinkedHashMap;
+import java.util.Map.Entry;
 import net.edudb.data_type.DataType;
+import net.edudb.data_type.DataTypeFactory;
+import net.edudb.data_type.GenericType;
 import net.edudb.ebtree.EBNode;
 import net.edudb.operator.parameter.OperatorParameter;
 import net.edudb.structure.Column;
 
+/**
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class Expression implements BinaryExpressionNode, OperatorParameter {
 	private BinaryExpressionNode parent;
 	Column leftColumn;
@@ -73,8 +81,19 @@ public class Expression implements BinaryExpressionNode, OperatorParameter {
 
 	@Override
 	public boolean evaluate(LinkedHashMap<Column, DataType> data) {
-
 		Object val = data.get(leftColumn);
+
+		for (Entry<Column, DataType> entry : data.entrySet()) {
+			if (entry.getKey().equals(leftColumn)) {
+				leftColumn = entry.getKey();
+				break;
+			}
+		}
+
+		DataType value = null;
+		if (this.value != null) {
+			value = new DataTypeFactory().makeType(leftColumn.getTypeName(), ((GenericType) this.value).getValue());
+		}
 
 		/**
 		 * Expression in which both sides are columns. e.g. a=b where a,b are
@@ -86,7 +105,7 @@ public class Expression implements BinaryExpressionNode, OperatorParameter {
 		}
 		/**
 		 * Expression in which the left-hand side is a column and the right-hand
-		 * size is a constant value. e.g. a=2.
+		 * side is a constant value. e.g. a=2.
 		 */
 		else {
 			int comparisonResult = ((DataType) val).compareTo(value);

@@ -13,11 +13,11 @@ package net.edudb.console;
 import net.edudb.engine.DatabaseSystem;
 
 public class ExitExecutor implements ConsoleExecutorChain {
-	private ConsoleExecutorChain nextChainElement;
+	private ConsoleExecutorChain nextElement;
 
 	@Override
 	public void setNextInChain(ConsoleExecutorChain chainElement) {
-		this.nextChainElement = chainElement;
+		this.nextElement = chainElement;
 	}
 
 	@Override
@@ -26,6 +26,6 @@ public class ExitExecutor implements ConsoleExecutorChain {
 			DatabaseSystem.getInstance().exit(0);
 			return;
 		}
-		nextChainElement.execute(string);
+		nextElement.execute(string);
 	}
 }

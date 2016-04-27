@@ -10,19 +10,17 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.plan;
 
-import net.edudb.engine.Config;
 import net.edudb.expression.BinaryExpressionTree;
 import net.edudb.expression.ExpressionTree;
 import net.edudb.operator.FilterOperator;
 import net.edudb.operator.RelationOperator;
 import net.edudb.operator.UpdateTableOperator;
+import net.edudb.operator.parameter.RelationOperatorParameter;
 import net.edudb.query.QueryTree;
 import net.edudb.relational_algebra.Translator;
 import net.edudb.statement.SQLStatement;
 import net.edudb.statement.SQLUpdateStatement;
 import net.edudb.statistics.Schema;
-import net.edudb.structure.table.Table;
-import net.edudb.structure.table.TableFactory;
 
 public class UpdatePlan implements Plan {
 
@@ -38,22 +36,13 @@ public class UpdatePlan implements Plan {
 
 		UpdateTableOperator operator = new UpdateTableOperator();
 
-		/**
-		 * Defer reading the actual table until the execution step to minimize
-		 * cost.
-		 *
-		 * ATTENTION
-		 *
-		 * Do not write this table to disk.
-		 */
-		TableFactory tableFactory = new TableFactory();
-		Table table = tableFactory.makeTable(Config.tableType(), statement.getTableName());
+		RelationOperatorParameter parameter = new RelationOperatorParameter(statement.getTableName());
 
 		/**
 		 * Creates a relation operator to be the child of the delete operator.
 		 */
 		RelationOperator relation = new RelationOperator();
-		relation.setParameter(table);
+		relation.setParameter(parameter);
 		operator.setChild(relation);
 
 		ExpressionTree expressionTree;

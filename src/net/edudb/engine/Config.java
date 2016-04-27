@@ -10,6 +10,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.engine;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
 import net.edudb.block.BlockFileType;
 import net.edudb.structure.table.TableFileType;
 
@@ -24,7 +27,12 @@ public class Config {
 	}
 	
 	public static String absolutePath() {
-		return ClassLoader.getSystemClassLoader().getResource(".").getPath();
+		try {
+			return URLDecoder.decode(ClassLoader.getSystemClassLoader().getResource(".").getPath(), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	public static String databasesPath() {

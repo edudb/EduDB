@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.regex.Matcher;
-
 import net.edudb.data_type.DataType;
 import net.edudb.data_type.IntegerType;
 import net.edudb.relational_algebra.Translator;
@@ -29,6 +28,11 @@ import net.edudb.structure.TableRecord;
 import net.edudb.structure.table.Table;
 import net.edudb.structure.table.TableManager;
 
+/**
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class CopyExecutor implements ConsoleExecutorChain {
 	private ConsoleExecutorChain nextElement;
 	String regex = "\\A(?:(?i)copy)\\s+(\\w+)\\s+(?:(?i)from)\\s+\\'(.+)\\'\\s+(?:(?i)delimiter)\\s+\\'(.+)\\'\\s*\\;?\\z";
@@ -40,7 +44,7 @@ public class CopyExecutor implements ConsoleExecutorChain {
 
 	@Override
 	public void execute(String string) {
-		if (string.startsWith("copy")) {
+		if (string.toLowerCase().startsWith("copy")) {
 			Matcher matcher = Translator.getMatcher(string, regex);
 			if (matcher.matches()) {
 				String tableName = matcher.group(1);
@@ -52,6 +56,7 @@ public class CopyExecutor implements ConsoleExecutorChain {
 				ArrayList<Column> columns = Schema.getInstance().getColumns(tableName);
 
 				String path = matcher.group(2);
+				int count = 0;
 				try {
 					List<String> lines = Files.readAllLines(Paths.get(path));
 					for (int i = 0; i < lines.size(); i++) {
@@ -59,16 +64,21 @@ public class CopyExecutor implements ConsoleExecutorChain {
 						LinkedHashMap<Column, DataType> data = new LinkedHashMap<>();
 						int size = values.length;
 						for (int j = 0; j < size; j++) {
-							data.put(columns.get(j), new IntegerType(values[j]));
+							data.put(columns.get(j), new IntegerType(Integer.parseInt(values[j])));
 						}
 
 						Record record = new TableRecord(data);
 						table.addRecord(record);
+						++count;
 					}
+					ServerWriter.getInstance().writeln("Copied '" + count + "' records");
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+			} else {
+				ServerWriter.getInstance().writeln("Unknown command 'copy'");
 			}
+			ServerWriter.getInstance().writeln("[edudb::endofstring]");
 			return;
 		}
 		nextElement.execute(string);

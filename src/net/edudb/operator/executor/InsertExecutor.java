@@ -12,9 +12,8 @@ package net.edudb.operator.executor;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-
 import net.edudb.data_type.DataType;
-import net.edudb.data_type.IntegerType;
+import net.edudb.data_type.DataTypeFactory;
 import net.edudb.operator.InsertOperator;
 import net.edudb.operator.Operator;
 import net.edudb.operator.parameter.InsertOperatorParameter;
@@ -44,12 +43,16 @@ public class InsertExecutor extends PostOrderOperatorExecutor implements Operato
 			Table table = parameter.getTable();
 			SQLInsertStatement statement = parameter.getStatement();
 
+			DataTypeFactory typeFactory = new DataTypeFactory();
+			
+			LinkedHashMap<String, String> columnTypes = table.getColumnTypes();
+			
 			ArrayList<Column> columns = Schema.getInstance().getColumns(table.getName());
 			ArrayList<String> values = statement.getValueList();
 			LinkedHashMap<Column, DataType> data = new LinkedHashMap<>();
 			int size = values.size();
 			for (int i = 0; i < size; i++) {
-				data.put(columns.get(i), new IntegerType(values.get(i)));
+				data.put(columns.get(i), typeFactory.makeType(columnTypes.get(columns.get(i).getName()), values.get(i)));
 			}
 
 			Record record = new TableRecord(data);

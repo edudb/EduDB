@@ -11,24 +11,48 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.statement;
 
 import gudusoft.gsqlparser.TCustomSqlStatement;
+import gudusoft.gsqlparser.nodes.TColumnDefinitionList;
 import gudusoft.gsqlparser.stmt.TCreateTableSqlStatement;
 
+/**
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class SQLCreateTableStatement implements SQLStatement {
 
 	private TCreateTableSqlStatement statement;
 	private String columnList;
 	private String tableName;
 	private String statementString;
+	private String[] columnNames;
+	private String[] dataTypeNames;
 
 	public SQLCreateTableStatement(TCustomSqlStatement tCustomSqlStatement) {
 		this.statement = (TCreateTableSqlStatement) tCustomSqlStatement;
 		this.columnList = statement.getColumnList().toString();
 		this.tableName = statement.getTargetTable().toString();
 		this.statementString = statement.toString();
+
+		TColumnDefinitionList columnList = this.statement.getColumnList();
+		this.columnNames = new String[columnList.size()];
+		this.dataTypeNames = new String[columnList.size()];
+		for (int i = 0; i < columnList.size(); i++) {
+			this.columnNames[i] = columnList.getColumn(i).getColumnName().toString();
+			this.dataTypeNames[i] = columnList.getColumn(i).getDatatype().toString();
+		}
 	}
 
 	public String getColumnList() {
 		return columnList;
+	}
+
+	public String[] getColumnNames() {
+		return columnNames;
+	}
+
+	public String[] getDataTypeNames() {
+		return dataTypeNames;
 	}
 
 	@Override

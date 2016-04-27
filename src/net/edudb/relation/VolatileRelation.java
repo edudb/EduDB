@@ -10,6 +10,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.relation;
 
+import java.util.LinkedHashMap;
+
 import net.edudb.page.PageManager;
 import net.edudb.structure.Record;
 import net.edudb.structure.table.Table;
@@ -35,6 +37,9 @@ public class VolatileRelation implements Relation {
 
 	@Override
 	public String getName() {
+		if (table == null) {
+			return null;
+		}
 		return table.getName();
 	}
 
@@ -46,6 +51,22 @@ public class VolatileRelation implements Relation {
 	@Override
 	public void addRecord(Record record) {
 		pageManager.addRecord(record);
+	}
+	
+	@Override
+	public void setColumnTypes(LinkedHashMap<String, String> columnTypes) {
+		if (table == null) {
+			return;
+		}
+		table.setColumnTypes(columnTypes);
+	}
+	
+	@Override
+	public LinkedHashMap<String, String> getColumnTypes() {
+		if (table == null) {
+			return null;
+		}
+		return table.getColumnTypes();
 	}
 
 	@Override

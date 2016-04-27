@@ -22,6 +22,11 @@ import net.edudb.transcation.ConcurrentTransaction;
 import net.edudb.transcation.SynchronizedTransaction;
 import net.edudb.transcation.TransactionManager;
 
+/**
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class Parser {
 	/**
 	 * @uml.property name="sqlparser"
@@ -45,8 +50,8 @@ public class Parser {
 		if (ret == 0) {
 			SQLStatementFactory statementFactory = new SQLStatementFactory();
 			SQLStatement statement = statementFactory.getSQLStatement(sqlparser.sqlstatements.get(0));
-			QueryTree plan = planFactory.makePlan(statement);
 			
+			QueryTree plan = planFactory.makePlan(statement);
 			if (plan == null) {
 				return;
 			}

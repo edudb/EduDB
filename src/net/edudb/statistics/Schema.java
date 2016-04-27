@@ -13,10 +13,15 @@ package net.edudb.statistics;
 import net.edudb.file_utility.FileManager;
 import net.edudb.server.ServerWriter;
 import net.edudb.structure.Column;
+import net.edudb.structure.table.Table;
+import net.edudb.structure.table.TableManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Set;
+
+import com.google.common.collect.Iterables;
 
 /**
  * Created by mohamed on 4/1/14.
@@ -54,11 +59,14 @@ public class Schema {
 	 */
 	public ArrayList<Column> getColumns(String tableName) {
 		ArrayList<Column> columns = new ArrayList<>();
-		int count = schema.get(tableName).size();
-		for (int i = 1; i <= count; i++) {
-			Column column = new Column(i, getColumnNames(tableName).get(i - 1), tableName);
-			columns.add(column);
+		Table table = TableManager.getInstance().read(tableName);
+		LinkedHashMap<String, String> columnTypes = table.getColumnTypes();
+		for (int i = 1; i <= columnTypes.size(); i++) {
+			String columnName = Iterables.get(columnTypes.keySet(), i - 1);
+			String columnType = Iterables.get(columnTypes.values(), i - 1);
+			columns.add(new Column(i, columnName, tableName, columnType));
 		}
+
 		return columns;
 	}
 

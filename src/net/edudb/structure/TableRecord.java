@@ -11,13 +11,17 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.structure;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Set;
 import com.google.common.collect.Sets;
 import net.edudb.data_type.DataType;
 import net.edudb.expression.*;
 
+/**
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class TableRecord implements Record, Serializable {
 
 	private static final long serialVersionUID = -3305225200308977932L;
@@ -85,7 +89,7 @@ public class TableRecord implements Record, Serializable {
 		LinkedHashMap<Column, DataType> data = record.getData();
 		final int size = getData().size();
 		data.forEach((key, value) -> {
-			resultRecord.addValue(new Column(key.getOrder() + size, key.getName(), key.getTableName()), value);
+			resultRecord.addValue(new Column(key.getOrder() + size, key.getName(), key.getTableName(), key.getTypeName()), value);
 		});
 
 		return resultRecord;
@@ -118,7 +122,7 @@ public class TableRecord implements Record, Serializable {
 
 	@Override
 	public String toString() {
-		return data.toString() + " - " + isDeleted();
+		return data.toString();
 	}
 
 }

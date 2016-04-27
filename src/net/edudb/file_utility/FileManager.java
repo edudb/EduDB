@@ -40,6 +40,7 @@ public class FileManager {
 				lines.add(line);
 				line = br.readLine();
 			}
+			br.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

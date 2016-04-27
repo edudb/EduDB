@@ -10,10 +10,26 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.relation;
 
+import net.edudb.server.ServerWriter;
 import net.edudb.structure.table.Table;
 
 public interface Relation extends Table {
-	
+
 	public RelationIterator getIterator();
+
+	/**
+	 * Prints a given relation to the writer stream iff the relation is not
+	 * null. <br>
+	 * Uses a Relation Iterator to iterate through the given relation.
+	 */
+	public static void print(Relation relation) {
+		if (relation == null) {
+			return;
+		}
+		RelationIterator relationIterator = relation.getIterator();
+		while (relationIterator.hasNext()) {
+			ServerWriter.getInstance().writeln(relationIterator.next());
+		}
+	}
 
 }

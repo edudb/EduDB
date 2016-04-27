@@ -11,13 +11,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.structure;
 
 import java.io.Serializable;
-import net.edudb.db_operator.DBParameter;
-import net.edudb.server.ServerWriter;
 
 /**
  * Created by mohamed on 4/19/14.
+ * 
+ * @author Ahmed Abdul Badie
  */
-public class Column implements DBParameter, Serializable {
+public class Column implements Serializable {
 
 	private static final long serialVersionUID = -6271986181160247610L;
 
@@ -26,29 +26,29 @@ public class Column implements DBParameter, Serializable {
 	 */
 	private int order;
 
-	public int getOrder() {
-		return order;
-	}
-
 	private String name;
 
 	/**
 	 * @uml.property name="tableName"
 	 */
 	private String tableName;
-	
+
+	private String typeName;
+
 	public Column(int order) {
 		this.order = order;
 	}
 
-	public Column(int num, String name, String tableName) {
+	public Column(int num, String name, String tableName, String typeName) {
 		this.order = num;
 		this.tableName = tableName;
 		this.name = name;
+		this.typeName = typeName;
 	}
 
 	@Override
 	public String toString() {
+		// return order + ". " + tableName + "." + name + " : " + typeName;
 		return name;
 	}
 
@@ -58,19 +58,14 @@ public class Column implements DBParameter, Serializable {
 	};
 
 	@Override
-	public void print() {
-		ServerWriter.getInstance().write(this);
-	}
-
-	@Override
 	public boolean equals(Object o) {
 		Column column = (Column) o;
-		return column.order == order;// && column.name.equals(name) && column.tableName.equals(tableName);
+		return column.order == order;// && column.name.equals(name) &&
+										// column.tableName.equals(tableName);
 	}
 
-	@Override
-	public int numOfParameters() {
-		return 0;
+	public int getOrder() {
+		return order;
 	}
 
 	public String getName() {
@@ -79,5 +74,9 @@ public class Column implements DBParameter, Serializable {
 
 	public String getTableName() {
 		return tableName;
+	}
+
+	public String getTypeName() {
+		return typeName;
 	}
 }

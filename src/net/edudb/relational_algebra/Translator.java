@@ -27,6 +27,7 @@ public class Translator {
 	public String translate(String sqlString) {
 		try {
 			Term term = Queries.getRaOf(adipe.translate.ra.Schema.create(Schema.getInstance().getSchema()), sqlString);
+			System.out.println(term.toString());
 			return term.toString();
 		} catch (RuntimeException | TranslationException e) {
 			e.printStackTrace();

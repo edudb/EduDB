@@ -54,7 +54,7 @@ public class KDTreeTest {
 			Object value = tree.search(key);
 			assert value != null;
 			IntegerType intValue = (IntegerType) value;
-			assert intValue.number == i + 5;
+			assert intValue.getInteger() == i + 5;
 		}
 	}
 

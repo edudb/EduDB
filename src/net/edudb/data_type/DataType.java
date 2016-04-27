@@ -10,11 +10,30 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.data_type;
 
-public interface DataType extends Comparable {
+/**
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
+public abstract class DataType implements Comparable<DataType> {
 
-	double diff(DataType dataType);
+	public abstract double diff(DataType dataType);
 
-	int compareTo(Object o);
-	
-	String toString();
+	public abstract int compareTo(DataType dataType);
+
+	public abstract String toString();
+
+	public static boolean isSupported(String typeName) {
+		switch (typeName.toLowerCase()) {
+		case "integer":
+//		case "boolean":
+//		case "bool":
+		case "varchar":
+//		case "timestamp":
+//		case "decimal":
+			return true;
+		default:
+			return false;
+		}
+	}
 }

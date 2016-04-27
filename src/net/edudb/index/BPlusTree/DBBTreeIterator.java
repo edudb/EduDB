@@ -153,7 +153,7 @@ public class DBBTreeIterator implements ListIterator, DBResult, DBIterator {
 
 	@Override
 	public void print() {
-		ServerWriter.getInstance().write(this);
+		ServerWriter.getInstance().writeln(this);
 	}
 
 	@Override

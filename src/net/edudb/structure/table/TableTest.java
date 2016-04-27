@@ -25,7 +25,7 @@ public class TableTest {
 
 	@Test
 	public void initTest() {
-		Table table = new BinaryTable("test");
+		Table table = new TableFactory().makeTable(Config.tableType(), "test");
 		PageManager pageManager = table.getPageManager();
 		pageManager.addPageName("1");
 		pageManager.addPageName("2");
@@ -38,7 +38,7 @@ public class TableTest {
 
 	@Test
 	public void saveTest() {
-		Table table = new BinaryTable("test");
+		Table table = new TableFactory().makeTable(Config.tableType(), "test");
 		PageManager pageManager = table.getPageManager();
 		pageManager.addPageName("1");
 		pageManager.addPageName("2");

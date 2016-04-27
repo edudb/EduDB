@@ -10,6 +10,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.structure.table;
 
+import java.util.LinkedHashMap;
+
 import net.edudb.operator.parameter.OperatorParameter;
 import net.edudb.page.PageManager;
 import net.edudb.structure.Record;
@@ -33,6 +35,27 @@ public interface Table extends OperatorParameter {
 	 *            The record to add.
 	 */
 	public void addRecord(Record record);
-	
+
+	/**
+	 * 
+	 * @param columnTypes
+	 *            Linked Hash Map that holds each column name and its type name.
+	 */
+	public void setColumnTypes(LinkedHashMap<String, String> columnTypes);
+
+	/**
+	 * 
+	 * @return Linked Hash Map that holds each column name and its type name
+	 *         inside the table.
+	 */
+	public LinkedHashMap<String, String> getColumnTypes();
+
+	/**
+	 * Prints the whole pages of a given table. <br>
+	 * <br>
+	 * ATTENTION <br>
+	 * <br>
+	 * Use only for testing.
+	 */
 	public void print();
 }

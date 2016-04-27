@@ -13,8 +13,6 @@ package net.edudb.transcation;
 import net.edudb.query.PostOrderTreeExecutor;
 import net.edudb.query.QueryTree;
 import net.edudb.relation.Relation;
-import net.edudb.relation.RelationIterator;
-import net.edudb.server.ServerWriter;
 
 public class ConcurrentTransaction extends Transaction implements Runnable {
 
@@ -25,11 +23,8 @@ public class ConcurrentTransaction extends Transaction implements Runnable {
 
 	@Override
 	public void run() {
-		Relation r = queryTreeExecutor.execute(plan);
+		Relation relation = queryTreeExecutor.execute(plan);
 
-		RelationIterator ri = r.getIterator();
-		while (ri.hasNext()) {
-			ServerWriter.getInstance().writeln(ri.next());
-		}
+		Relation.print(relation);
 	}
 }

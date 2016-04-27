@@ -12,6 +12,7 @@ package net.edudb.operator.executor;
 
 import net.edudb.operator.Operator;
 import net.edudb.operator.RelationOperator;
+import net.edudb.operator.parameter.RelationOperatorParameter;
 import net.edudb.relation.Relation;
 import net.edudb.relation.VolatileRelation;
 import net.edudb.structure.table.Table;
@@ -29,8 +30,9 @@ public class RelationExecutor extends PostOrderOperatorExecutor implements Opera
 	@Override
 	public Relation execute(Operator operator) {
 		if (operator instanceof RelationOperator) {
-			Table table = (Table) operator.getParameter();
-			table = TableManager.getInstance().read(table.getName());
+			// Table table = (Table) operator.getParameter();
+			RelationOperatorParameter parameter = (RelationOperatorParameter) operator.getParameter();
+			Table table = TableManager.getInstance().read(parameter.getTableName());
 			Relation relation = new VolatileRelation(table);
 			return relation;
 		}

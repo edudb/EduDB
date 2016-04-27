@@ -2,7 +2,7 @@ package net.edudb.relational_algebra;
 
 import java.util.regex.Matcher;
 import net.edudb.data_type.DataType;
-import net.edudb.data_type.IntegerType;
+import net.edudb.data_type.GenericType;
 import net.edudb.expression.ANDLogicalOperator;
 import net.edudb.expression.BinaryExpressionTree;
 import net.edudb.expression.Expression;
@@ -39,7 +39,7 @@ public class FilterMatcher implements RAMatcherChain {
 	/**
 	 * Matches string of the format: #{number}={number}. e.g. #1=2
 	 */
-	private String genericExpr = "(?:\\#\\d+\\<?\\>?\\=?#?\\d+)";
+	private String genericExpr = "(?:\\#\\d+\\<?\\>?\\=?#?.+)";
 	/**
 	 * Matches string of the format: AND({anything}) or OR({anything})
 	 */
@@ -52,13 +52,15 @@ public class FilterMatcher implements RAMatcherChain {
 	/**
 	 * Matches and captures string of the format: #{number}={number}. e.g. #1=2
 	 */
-	private String capturedConstantExpr = "\\#(\\d+)(\\<?\\>?\\=?)(\\d+)";
+	private String capturedConstantExpr = "\\#(\\d+)(\\<?\\>?\\=?)(.+)";
 	/**
 	 * Matches and captures string of the format: #{number}={number}. e.g. #1=2
 	 */
 	private String capturedColumnExpr = "\\#(\\d+)(\\<?\\>?\\=?)#(\\d+)";
 	/**
-	 * Matches string of the format: AND(genericExpr or binaryExpr, genericExpr or binaryExpr) or OR(genericExpr or binaryExpr, genericExpr or binaryExpr)
+	 * Matches string of the format: AND(genericExpr or binaryExpr, genericExpr
+	 * or binaryExpr) or OR(genericExpr or binaryExpr, genericExpr or
+	 * binaryExpr)
 	 * 
 	 * e.g. AND(OR(#1=3,#4=1),#2=44)
 	 */
@@ -69,10 +71,14 @@ public class FilterMatcher implements RAMatcherChain {
 		Matcher columnExpression = Translator.getMatcher(string, capturedColumnExpr);
 		Matcher binaryExpression = Translator.getMatcher(string, capturedBinaryExpr);
 
-		if (constantExpression.matches()) {
-			return new BinaryExpressionTree(getConstantExpression(constantExpression));
-		} else if (columnExpression.matches()) {
+		// if (constantExpression.matches()) {
+		// return new
+		// BinaryExpressionTree(getConstantExpression(constantExpression));
+		// } else
+		if (columnExpression.matches()) {
 			return new BinaryExpressionTree(getColumnExpression(columnExpression));
+		} else if (constantExpression.matches()) {
+			return new BinaryExpressionTree(getConstantExpression(constantExpression));
 		} else if (binaryExpression.matches()) {
 			return new BinaryExpressionTree(getLogicalOperator(binaryExpression));
 		}
@@ -82,29 +88,30 @@ public class FilterMatcher implements RAMatcherChain {
 
 	private Expression getConstantExpression(Matcher matcher) {
 		int order = Integer.parseInt(matcher.group(1));
-		
+
 		Column column = new Column(order);
-		DataType value = new IntegerType(matcher.group(3));
-		
+		// DataType value = new IntegerType(Integer.parseInt(matcher.group(3)));
+		DataType value = new GenericType(matcher.group(3).replace("\\\"", ""));
+
 		OperatorType operator = getOperator(matcher.group(2));
 
 		Expression expression = new Expression(column, value, operator);
 		return expression;
 	}
-	
+
 	private Expression getColumnExpression(Matcher matcher) {
 		int leftOrder = Integer.parseInt(matcher.group(1));
 		int rightOrder = Integer.parseInt(matcher.group(3));
-		
+
 		Column leftColumn = new Column(leftOrder);
 		Column rightColumn = new Column(rightOrder);
-		
+
 		OperatorType operator = getOperator(matcher.group(2));
 
 		Expression expression = new Expression(leftColumn, rightColumn, operator);
 		return expression;
 	}
-	
+
 	private OperatorType getOperator(String string) {
 		switch (string) {
 		case "<>":
@@ -121,14 +128,16 @@ public class FilterMatcher implements RAMatcherChain {
 			return OperatorType.Equal;
 		}
 	}
-	
+
 	private LogicalOperator getLogicalOperator(Matcher matcher) {
 		Matcher leftExpression = Translator.getMatcher(matcher.group(2), capturedConstantExpr);
+		Matcher leftColumnExpression = Translator.getMatcher(matcher.group(2), capturedColumnExpr);
 		Matcher leftBinaryExpression = Translator.getMatcher(matcher.group(2), capturedBinaryExpr);
-		
+
 		Matcher rightExpression = Translator.getMatcher(matcher.group(3), capturedConstantExpr);
+		Matcher rightColumnExpression = Translator.getMatcher(matcher.group(3), capturedColumnExpr);
 		Matcher rightBinaryExpression = Translator.getMatcher(matcher.group(3), capturedBinaryExpr);
-		
+
 		LogicalOperator operator;
 		switch (matcher.group(1)) {
 		case "AND":
@@ -138,19 +147,23 @@ public class FilterMatcher implements RAMatcherChain {
 			operator = new ORLogicalOperator();
 			break;
 		}
-		
-		if (leftExpression.matches()) {
+
+		if (leftColumnExpression.matches()) {
+			operator.setLeftChild(getColumnExpression(leftColumnExpression));
+		} else if (leftExpression.matches()) {
 			operator.setLeftChild(getConstantExpression(leftExpression));
 		} else if (leftBinaryExpression.matches()) {
 			operator.setLeftChild(getLogicalOperator(leftBinaryExpression));
 		}
-		
-		if (rightExpression.matches()) {
+
+		if (rightColumnExpression.matches()) {
+			operator.setRightChild(getColumnExpression(rightColumnExpression));
+		} else if (rightExpression.matches()) {
 			operator.setRightChild(getConstantExpression(rightExpression));
 		} else if (rightBinaryExpression.matches()) {
 			operator.setRightChild(getLogicalOperator(rightBinaryExpression));
 		}
-		
+
 		return operator;
 	}
 }

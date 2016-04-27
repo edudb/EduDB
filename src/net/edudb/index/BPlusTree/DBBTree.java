@@ -54,7 +54,7 @@ public class DBBTree extends BTree<Integer, DBRecord> implements DBIndex {
 		DBIterator iter = getIterator();
 		DBRecord record = (DBRecord) iter.first();
 		do {
-			out.insert(((IntegerType) record.getValue(0)).getNumber(), record.getCopy());
+			out.insert(((IntegerType) record.getValue(0)).getInteger(), record.getCopy());
 			record = (DBRecord) iter.next();
 		} while (record != null);
 		return out;

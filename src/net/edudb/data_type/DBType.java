@@ -12,30 +12,31 @@ package net.edudb.data_type;
 
 import java.io.Serializable;
 
-import net.edudb.server.ServerWriter;
-import net.edudb.structure.DBConst;
-
 /**
  * Created by mohamed on 3/23/14.
  */
 public class DBType {
-	public static class DB_Char implements DataType, DBConst, Serializable {
-		public char c;
+	public static class DB_Char extends DataType implements Serializable {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 7216756328882699266L;
+		public char character;
 
 		public DB_Char(char c) {
-			this.c = c;
+			this.character = c;
 		}
 
 		public double diff(DataType key) {
 			if (key instanceof DB_Char) {
-				return c - ((DB_Char) key).c;
+				return character - ((DB_Char) key).character;
 			}
 			return -1;
 		}
 
-		public int compareTo(Object dataType) {
+		public int compareTo(DataType dataType) {
 			if (dataType instanceof DB_Char) {
-				return c - ((DB_Char) dataType).c;
+				return character - ((DB_Char) dataType).character;
 			}
 			return -1;
 		}
@@ -43,7 +44,7 @@ public class DBType {
 		@Override
 		public boolean equals(Object o) {
 			if (o instanceof DB_Char) {
-				if (c == ((DB_Char) o).c) {
+				if (character == ((DB_Char) o).character) {
 					return true;
 				}
 			}
@@ -52,42 +53,14 @@ public class DBType {
 
 		@Override
 		public int hashCode() {
-			return c;
+			return character;
 		}
 
 		@Override
-		public void print() {
-			ServerWriter.getInstance().write(c);
-		}
-
-		@Override
-		public int numOfParameters() {
-			return 0;
+		public String toString() {
+			// TODO Auto-generated method stub
+			return character + "";
 		}
 	}
-
-	public static class DB_String implements DataType, Serializable {
-		public String str;
-
-		public double diff(DataType key) {
-			return -1;
-		}
-
-		public int compareTo(Object dataType) {
-			if (dataType instanceof DB_String) {
-				return str.compareTo(((DB_String) dataType).str);
-			}
-			return -1;
-		}
-
-		@Override
-		public boolean equals(Object o) {
-			if (o instanceof DB_String) {
-				if (str.equals(((DB_String) o).str)) {
-					return true;
-				}
-			}
-			return false;
-		}
-	}
+	
 }
