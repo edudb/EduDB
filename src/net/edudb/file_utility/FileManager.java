@@ -51,11 +51,12 @@ public class FileManager {
 		if (initialized) {
 			return;
 		}
-		dataDirectory = appendToPath(Config.absolutePath(), "database");
-		File file = new File(dataDirectory);
-		if (!file.exists()) {
-			file.mkdir();
-		}
+		// dataDirectory = appendToPath(Config.absolutePath(), "database");
+		dataDirectory = Config.databasePath();
+//		File file = new File(dataDirectory);
+//		if (!file.exists()) {
+//			file.mkdir();
+//		}
 		String operatingSystem = System.getProperty("os.name").toLowerCase();
 		if (operatingSystem.startsWith("windows")) {
 			isWindows = true;
@@ -68,7 +69,7 @@ public class FileManager {
 
 	public static String getSchema() {
 		init();
-		return schema;
+		return appendToPath(Config.databasePath(), "schema.txt");
 	}
 
 	private static String appendToPath(String S1, String S2) {

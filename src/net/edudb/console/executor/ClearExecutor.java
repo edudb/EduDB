@@ -8,17 +8,25 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.console;
+package net.edudb.console.executor;
 
-public class NullExecutor implements ConsoleExecutorChain {
+import net.edudb.console.DatabaseConsole;
 
+public class ClearExecutor implements ConsoleExecutorChain {
+	private ConsoleExecutorChain nextChainElement;
+	
 	@Override
 	public void setNextInChain(ConsoleExecutorChain chainElement) {
-		return;
+		this.nextChainElement = chainElement;
 	}
 
 	@Override
 	public void execute(String string) {
-		return;
+		if (string.equalsIgnoreCase("clear")) {
+			DatabaseConsole.getInstance().clearScreen();
+			DatabaseConsole.getInstance().flush();
+			return;
+		}
+		nextChainElement.execute(string);
 	}
 }

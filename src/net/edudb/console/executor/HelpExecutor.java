@@ -8,17 +8,11 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.console;
+package net.edudb.console.executor;
 
-import adipe.translate.TranslationException;
-import net.edudb.parser.Parser;
-import net.edudb.relation.Relation;
-import net.edudb.relation.RelationIterator;
-import net.edudb.relation.VolatileRelation;
-import net.edudb.structure.table.Table;
-import net.edudb.structure.table.TableManager;
+import net.edudb.console.DatabaseConsole;
 
-public class ConcurrentTestExecutor implements ConsoleExecutorChain {
+public class HelpExecutor implements ConsoleExecutorChain {
 	private ConsoleExecutorChain nextChainElement;
 
 	@Override
@@ -28,30 +22,8 @@ public class ConcurrentTestExecutor implements ConsoleExecutorChain {
 
 	@Override
 	public void execute(String string) {
-		if (string.equalsIgnoreCase("test")) {
-//			Parser parser = new Parser();
-//			try {
-//				parser.parseSQL("create table test (a integer, b integer)");
-//				parser.parseSQL("create table test2 (c integer, d integer)");
-//				Thread.sleep(1000);
-//				for (int i = 0; i < 10; i++) {
-//					parser.parseSQL("insert into test values(" + (i + 1) + ", " + (i + 1) + ")");
-//					parser.parseSQL("insert into test2 values(" + (i + 1) + ", " + (i + 1) + ")");
-//				}
-//
-//			} catch (TranslationException | InterruptedException e) {
-//				e.printStackTrace();
-//			}
-
-			Table table = TableManager.getInstance().read("test");
-			
-			Relation r = new VolatileRelation(table);
-			RelationIterator rit = r.getIterator();
-			
-			while(rit.hasNext()) {
-				System.out.println(rit.next());
-			}
-			
+		if (string.equalsIgnoreCase("help")) {
+			DatabaseConsole.getInstance().printHelp();
 			return;
 		}
 		nextChainElement.execute(string);

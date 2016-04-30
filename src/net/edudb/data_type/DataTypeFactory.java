@@ -10,16 +10,33 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.data_type;
 
+import net.edudb.exception.InvalidTypeValueException;
+
 public class DataTypeFactory {
 
 	public DataType makeType(String typeName, String value) {
+		String val = value.replace("'", "");
 		switch (typeName.toLowerCase()) {
-		case "varchar":
-			return new VarCharType(value.replace("'", ""));
-		case "integer":
-			return new IntegerType(Integer.parseInt(value));
+		case "bool":
+		case "boolean":
+			try {
+				return new BooleanType(BooleanType.parseBoolean(val));
+			} catch (InvalidTypeValueException e) {
+				e.printStackTrace();
+			}
 		case "decimal":
-			return new DecimalType(Double.parseDouble(value));
+			return new DecimalType(Double.parseDouble(val));
+		case "integer":
+			return new IntegerType(Integer.parseInt(val));
+		case "timestamp":
+		case "datetime":
+			try {
+				return new TimestampType(TimestampType.parseDate(val));
+			} catch (InvalidTypeValueException e) {
+				e.printStackTrace();
+			}
+		case "varchar":
+			return new VarCharType(val);
 		default:
 			return null;
 		}

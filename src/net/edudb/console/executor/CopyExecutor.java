@@ -8,7 +8,7 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.console;
+package net.edudb.console.executor;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import net.edudb.data_type.DataType;
 import net.edudb.data_type.IntegerType;
-import net.edudb.relational_algebra.Translator;
+import net.edudb.engine.Utility;
 import net.edudb.server.ServerWriter;
 import net.edudb.statistics.Schema;
 import net.edudb.structure.Column;
@@ -35,7 +35,7 @@ import net.edudb.structure.table.TableManager;
  */
 public class CopyExecutor implements ConsoleExecutorChain {
 	private ConsoleExecutorChain nextElement;
-	String regex = "\\A(?:(?i)copy)\\s+(\\w+)\\s+(?:(?i)from)\\s+\\'(.+)\\'\\s+(?:(?i)delimiter)\\s+\\'(.+)\\'\\s*\\;?\\z";
+	String regex = "\\A(?:(?i)copy)\\s+(\\D\\w*)\\s+(?:(?i)from)\\s+\\'(.+)\\'\\s+(?:(?i)delimiter)\\s+\\'(.+)\\'\\s*\\;?\\z";
 
 	@Override
 	public void setNextInChain(ConsoleExecutorChain chainElement) {
@@ -45,7 +45,7 @@ public class CopyExecutor implements ConsoleExecutorChain {
 	@Override
 	public void execute(String string) {
 		if (string.toLowerCase().startsWith("copy")) {
-			Matcher matcher = Translator.getMatcher(string, regex);
+			Matcher matcher = Utility.getMatcher(string, regex);
 			if (matcher.matches()) {
 				String tableName = matcher.group(1);
 				if (!Schema.getInstance().chekTableExists(tableName)) {
@@ -78,7 +78,7 @@ public class CopyExecutor implements ConsoleExecutorChain {
 			} else {
 				ServerWriter.getInstance().writeln("Unknown command 'copy'");
 			}
-			ServerWriter.getInstance().writeln("[edudb::endofstring]");
+			
 			return;
 		}
 		nextElement.execute(string);

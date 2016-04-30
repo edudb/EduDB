@@ -8,10 +8,16 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.console;
+package net.edudb.server.executor;
 
-import net.edudb.engine.DatabaseSystem;
+import net.edudb.console.executor.ConsoleExecutorChain;
+import net.edudb.server.ServerWriter;
 
+/**
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class ExitExecutor implements ConsoleExecutorChain {
 	private ConsoleExecutorChain nextElement;
 
@@ -23,9 +29,10 @@ public class ExitExecutor implements ConsoleExecutorChain {
 	@Override
 	public void execute(String string) {
 		if (string.equalsIgnoreCase("exit")) {
-			DatabaseSystem.getInstance().exit(0);
+			ServerWriter.getInstance().getContext().close();
 			return;
 		}
 		nextElement.execute(string);
 	}
+
 }

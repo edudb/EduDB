@@ -8,32 +8,12 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.plan;
+package net.edudb.console.executor;
 
-import net.edudb.query.QueryTree;
-import net.edudb.server.ServerWriter;
-import net.edudb.statement.SQLStatement;
+public interface ConsoleExecutorChain {
+	
+	public void setNextInChain(ConsoleExecutorChain chainElement);
+	
+	public void execute(String string);
 
-/**
- * Created by mohamed on 4/1/14.
- */
-public class PlanFactory implements Plan {
-	@Override
-	public QueryTree makePlan(SQLStatement statement) {
-		switch (statement.statementType()) {
-		case SQLCreateTableStatement:
-			return new CreateTablePlan().makePlan(statement);
-		case SQLDeleteStatement:
-			return new DeletePlan().makePlan(statement);
-		case SQLInsertStatement:
-			return new InsertPlan().makePlan(statement);
-		case SQLSelectStatement:
-			return new SelectPlan().makePlan(statement);
-		case SQLUpdateStatement:
-			return new UpdatePlan().makePlan(statement);
-		default:
-			ServerWriter.getInstance().writeln("Sorry, this statement is not supported.");
-			return null;
-		}
-	}
 }

@@ -3,6 +3,7 @@ package net.edudb.relational_algebra;
 import java.util.regex.Matcher;
 import net.edudb.data_type.DataType;
 import net.edudb.data_type.GenericType;
+import net.edudb.engine.Utility;
 import net.edudb.expression.ANDLogicalOperator;
 import net.edudb.expression.BinaryExpressionTree;
 import net.edudb.expression.Expression;
@@ -24,7 +25,7 @@ public class FilterMatcher implements RAMatcherChain {
 
 	@Override
 	public RAMatcherResult match(String string) {
-		Matcher matcher = Translator.getMatcher(string, regex);
+		Matcher matcher = Utility.getMatcher(string, regex);
 		if (matcher.matches()) {
 			FilterOperator filterOperator = new FilterOperator();
 
@@ -67,9 +68,9 @@ public class FilterMatcher implements RAMatcherChain {
 	private String capturedBinaryExpr = "(AND|OR)\\(" + "(" + argument + ")" + "," + "(" + argument + ")" + "\\)";
 
 	private ExpressionTree getExpressionTree(String string) {
-		Matcher constantExpression = Translator.getMatcher(string, capturedConstantExpr);
-		Matcher columnExpression = Translator.getMatcher(string, capturedColumnExpr);
-		Matcher binaryExpression = Translator.getMatcher(string, capturedBinaryExpr);
+		Matcher constantExpression = Utility.getMatcher(string, capturedConstantExpr);
+		Matcher columnExpression = Utility.getMatcher(string, capturedColumnExpr);
+		Matcher binaryExpression = Utility.getMatcher(string, capturedBinaryExpr);
 
 		// if (constantExpression.matches()) {
 		// return new
@@ -130,13 +131,13 @@ public class FilterMatcher implements RAMatcherChain {
 	}
 
 	private LogicalOperator getLogicalOperator(Matcher matcher) {
-		Matcher leftExpression = Translator.getMatcher(matcher.group(2), capturedConstantExpr);
-		Matcher leftColumnExpression = Translator.getMatcher(matcher.group(2), capturedColumnExpr);
-		Matcher leftBinaryExpression = Translator.getMatcher(matcher.group(2), capturedBinaryExpr);
+		Matcher leftExpression = Utility.getMatcher(matcher.group(2), capturedConstantExpr);
+		Matcher leftColumnExpression = Utility.getMatcher(matcher.group(2), capturedColumnExpr);
+		Matcher leftBinaryExpression = Utility.getMatcher(matcher.group(2), capturedBinaryExpr);
 
-		Matcher rightExpression = Translator.getMatcher(matcher.group(3), capturedConstantExpr);
-		Matcher rightColumnExpression = Translator.getMatcher(matcher.group(3), capturedColumnExpr);
-		Matcher rightBinaryExpression = Translator.getMatcher(matcher.group(3), capturedBinaryExpr);
+		Matcher rightExpression = Utility.getMatcher(matcher.group(3), capturedConstantExpr);
+		Matcher rightColumnExpression = Utility.getMatcher(matcher.group(3), capturedColumnExpr);
+		Matcher rightBinaryExpression = Utility.getMatcher(matcher.group(3), capturedBinaryExpr);
 
 		LogicalOperator operator;
 		switch (matcher.group(1)) {

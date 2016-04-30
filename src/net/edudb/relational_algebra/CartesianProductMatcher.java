@@ -12,6 +12,7 @@ package net.edudb.relational_algebra;
 
 import java.util.regex.Matcher;
 
+import net.edudb.engine.Utility;
 import net.edudb.operator.CartesianProductOperator;
 import net.edudb.operator.RelationOperator;
 
@@ -26,7 +27,7 @@ public class CartesianProductMatcher implements RAMatcherChain {
 
 	@Override
 	public RAMatcherResult match(String string) {
-		Matcher matcher = Translator.getMatcher(string, regex);
+		Matcher matcher = Utility.getMatcher(string, regex);
 		if (matcher.matches()) {
 			/**
 			 * The right argument of the CartProd relational algebra is always a

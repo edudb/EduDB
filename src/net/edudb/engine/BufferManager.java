@@ -18,7 +18,6 @@ import net.edudb.block.BlockReaderFactory;
 import net.edudb.block.BlockWriter;
 import net.edudb.block.BlockWriterFactory;
 import net.edudb.page.Page;
-import net.edudb.server.ServerWriter;
 
 /**
  * Singleton that handles pages read/written from/to disk.
@@ -54,11 +53,8 @@ public class BufferManager {
 		page = pageBuffer.get(pageName);
 
 		if (page != null) {
-//			ServerWriter.getInstance().writeln("BufferManager (read): " + "Available");
 			return page;
 		}
-
-//		ServerWriter.getInstance().writeln("BufferManager (read): " + "Not Available");
 
 		page = this.readFromDisk(pageName);
 
@@ -92,7 +88,6 @@ public class BufferManager {
 	 */
 	public synchronized void write(Page page) {
 		this.pageBuffer.put(page.getName(), page);
-//		this.writeToDisk(page);
 	}
 
 	/**
@@ -100,7 +95,7 @@ public class BufferManager {
 	 */
 	public void writeAll() {
 		for (Page page : pageBuffer.values()) {
-			this.write(page.getName());
+			this.writeToDisk(page);
 		}
 	}
 

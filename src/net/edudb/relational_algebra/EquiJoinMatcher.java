@@ -12,6 +12,7 @@ package net.edudb.relational_algebra;
 
 import java.util.regex.Matcher;
 
+import net.edudb.engine.Utility;
 import net.edudb.expression.Expression;
 import net.edudb.expression.OperatorType;
 import net.edudb.operator.EquiJoinOperator;
@@ -29,7 +30,7 @@ public class EquiJoinMatcher implements RAMatcherChain {
 
 	@Override
 	public RAMatcherResult match(String string) {
-		Matcher matcher = Translator.getMatcher(string, regex);
+		Matcher matcher = Utility.getMatcher(string, regex);
 		if (matcher.matches()) {
 			/**
 			 * The second argument of the EqJoin relational algebra is always a

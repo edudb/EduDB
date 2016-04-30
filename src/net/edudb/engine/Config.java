@@ -17,15 +17,15 @@ import net.edudb.block.BlockFileType;
 import net.edudb.structure.table.TableFileType;
 
 public class Config {
-	
+
 	public static BlockFileType blockType() {
 		return BlockFileType.Binary;
 	}
-	
+
 	public static TableFileType tableType() {
 		return TableFileType.Binary;
 	}
-	
+
 	public static String absolutePath() {
 		try {
 			return URLDecoder.decode(ClassLoader.getSystemClassLoader().getResource(".").getPath(), "UTF-8");
@@ -34,19 +34,19 @@ public class Config {
 		}
 		return null;
 	}
-	
-	public static String databasesPath() {
-		return absolutePath() + "databases";
+
+	public static String databasePath() {
+		return absolutePath() + "databases" + "/" + DatabaseSystem.getInstance().getDatabaseName();
 	}
-	
+
 	public static String tablesPath() {
-		return absolutePath() +  "database/tables/";
+		return absolutePath() + "databases" + "/" + DatabaseSystem.getInstance().getDatabaseName() + "/tables/";
 	}
-	
+
 	public static String pagesPath() {
-		return absolutePath() + "database/blocks/";
+		return absolutePath() + "databases" + "/" + DatabaseSystem.getInstance().getDatabaseName() + "/blocks/";
 	}
-	
+
 	public static int pageSize() {
 		return 5;
 	}

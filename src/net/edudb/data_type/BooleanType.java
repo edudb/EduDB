@@ -12,6 +12,8 @@ package net.edudb.data_type;
 
 import java.io.Serializable;
 
+import net.edudb.exception.InvalidTypeValueException;
+
 /**
  * 
  * @author Ahmed Abdul Badie
@@ -24,6 +26,36 @@ public class BooleanType extends DataType implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -8942317279081394033L;
+
+	public BooleanType(boolean bool) {
+		this.bool = bool;
+	}
+
+	public static boolean parseBoolean(String string) throws InvalidTypeValueException {
+		switch (string.toLowerCase()) {
+		case "1":
+		case "t":
+		case "true":
+			return true;
+		case "0":
+		case "f":
+		case "false":
+			return false;
+		default:
+			throw new InvalidTypeValueException("Value can only be 1, t, true, 0, f, or false only");
+		}
+	}
+
+	public static boolean parseBoolean(Integer integer) throws InvalidTypeValueException {
+		switch (integer) {
+		case 0:
+			return false;
+		case 1:
+			return true;
+		default:
+			throw new InvalidTypeValueException("Value must be either 0 or 1");
+		}
+	}
 
 	@Override
 	public double diff(DataType dataType) {

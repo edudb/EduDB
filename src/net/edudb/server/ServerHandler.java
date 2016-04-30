@@ -17,11 +17,12 @@ import io.netty.util.ReferenceCountUtil;
 
 /**
  * 
- * @author Ahmed Abdul Badie
  * Handles a server-side channel.
  * 
+ * @author Ahmed Abdul Badie
+ * 
  */
-public class ServerHandler extends ChannelInboundHandlerAdapter { // (1)
+public class ServerHandler extends ChannelInboundHandlerAdapter {
 
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) {
@@ -36,6 +37,8 @@ public class ServerHandler extends ChannelInboundHandlerAdapter { // (1)
 			ServerWriter.getInstance().setContext(ctx);
 
 			Server.getExecutionChain().execute(s);
+
+			 ServerWriter.getInstance().writeln("[edudb::endofstring]");
 
 		} finally {
 			ReferenceCountUtil.release(msg);

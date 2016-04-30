@@ -26,7 +26,7 @@ public class SQLStatementFactory {
 	 * @return SQLStatement Object that is responsible for the supported SQL
 	 *         statements.
 	 */
-	public SQLStatement getSQLStatement(TCustomSqlStatement tCustomSqlStatement) {
+	public SQLStatement makeSQLStatement(TCustomSqlStatement tCustomSqlStatement) {
 		switch (tCustomSqlStatement.sqlstatementtype) {
 		case sstcreatetable:
 			return new SQLCreateTableStatement(tCustomSqlStatement);

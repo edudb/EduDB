@@ -11,6 +11,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.relational_algebra;
 
 import java.util.regex.Matcher;
+
+import net.edudb.engine.Utility;
 import net.edudb.operator.RelationOperator;
 import net.edudb.operator.parameter.RelationOperatorParameter;
 
@@ -28,19 +30,10 @@ public class RelationMatcher implements RAMatcherChain {
 
 	@Override
 	public RAMatcherResult match(String string) {
-		Matcher matcher = Translator.getMatcher(string, regex);
+		Matcher matcher = Utility.getMatcher(string, regex);
 		if (matcher.matches()) {
 			RelationOperator relationOperator = new RelationOperator();
-//			/**
-//			 * Defer reading the actual table until the execution step to
-//			 * minimize cost.
-//			 *  
-//			 * ATTENTION
-//			 * 
-//			 * Do not write this table to disk.
-//			 */
-//			TableFactory tableFactory = new TableFactory();
-//			Table table = tableFactory.makeTable(Config.tableType(), matcher.group(1));
+
 			RelationOperatorParameter parameter = new RelationOperatorParameter(matcher.group(1));
 			relationOperator.setParameter(parameter);
 			return new RAMatcherResult(relationOperator, "");

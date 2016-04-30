@@ -12,12 +12,22 @@ package net.edudb.engine;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 
+import net.edudb.server.ServerWriter;
 import net.edudb.structure.table.TableManager;
 
 public class DatabaseSystem {
 
 	private static DatabaseSystem instance = new DatabaseSystem();
+	private String databasesString = "databases";
+	private String databaseName;
+	private boolean databaseIsOpen;
 
 	private DatabaseSystem() {
 	}
@@ -31,42 +41,125 @@ public class DatabaseSystem {
 	 */
 	public void initializeDirectories() {
 		createDatabasesDirectory();
-		createTablesDirectory();
-		createBlocksDirectory();
-		createIndexesDirectory();
-		createSchemaFile();
 	}
 
-	public void createDatabasesDirectory() {
-		File database = new File(Config.absolutePath() + "database");
-		if (!database.exists()) {
-			database.mkdir();
+	private void initializeDatabaseDirectories(String databaseName) {
+		createTablesDirectory(databaseName);
+		createBlocksDirectory(databaseName);
+		createIndexesDirectory(databaseName);
+		createSchemaFile(databaseName);
+	}
+
+	public String getDatabaseName() {
+		return this.databaseName;
+	}
+
+	public boolean databaseIsOpen() {
+		return this.databaseIsOpen;
+	}
+
+	public void open(String databaseName) {
+		if (databaseExists(databaseName)) {
+			this.databaseName = databaseName;
+			this.databaseIsOpen = true;
+			initializeDatabaseDirectories(this.databaseName);
+			ServerWriter.getInstance().writeln("Opened database '" + databaseName + "'");
+		} else {
+			ServerWriter.getInstance().writeln("Database '" + databaseName + "' does not exist");
 		}
 	}
 
-	public void createTablesDirectory() {
-		File tables = new File(Config.absolutePath() + "database/tables");
+	public void close() {
+		if (!databaseIsOpen) {
+			ServerWriter.getInstance().writeln("No open database");
+			return;
+		}
+
+		BufferManager.getInstance().writeAll();
+		TableManager.getInstance().writeAll();
+
+		String dbName = databaseName;
+
+		this.databaseName = null;
+		this.databaseIsOpen = false;
+
+		ServerWriter.getInstance().writeln("Closed database '" + dbName + "'");
+	}
+
+	public void createDatabase(String databaseName) {
+		if (databaseExists(databaseName)) {
+			ServerWriter.getInstance().writeln("Database '" + databaseName + "' does exist");
+			return;
+		}
+		if (databaseIsOpen) {
+			close();
+		}
+		new File(Config.absolutePath() + databasesString + "/" + databaseName).mkdir();
+		ServerWriter.getInstance().writeln("Created database '" + databaseName + "'");
+		open(databaseName);
+	}
+
+	public void dropDatabase(String databaseName) throws IOException {
+		if (!databaseExists(databaseName)) {
+			ServerWriter.getInstance().writeln("Database '" + databaseName + "' does not exist");
+			return;
+		}
+		if (databaseIsOpen) {
+			close();
+		}
+
+		Path directory = Paths.get(Config.absolutePath() + databasesString + "/" + databaseName);
+		Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {
+			@Override
+			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+				Files.delete(file);
+				return FileVisitResult.CONTINUE;
+			}
+
+			@Override
+			public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+				Files.delete(dir);
+				return FileVisitResult.CONTINUE;
+			}
+		});
+
+		ServerWriter.getInstance().writeln("Dropped database '" + databaseName + "'");
+	}
+
+	private boolean databaseExists(String databaseName) {
+		return new File(Config.absolutePath() + databasesString + "/" + databaseName).exists();
+	}
+
+	private void createDatabasesDirectory() {
+		File databases = new File(Config.absolutePath() + databasesString);
+		if (!databases.exists()) {
+			databases.mkdir();
+		}
+	}
+
+	private void createTablesDirectory(String databaseName) {
+		File tables = new File(Config.absolutePath() + databasesString + "/" + databaseName + "/tables");
 		if (!tables.exists()) {
 			tables.mkdir();
 		}
 	}
 
-	public void createBlocksDirectory() {
-		File blocks = new File(Config.absolutePath() + "database/blocks");
+	private void createBlocksDirectory(String databaseName) {
+		File blocks = new File(Config.absolutePath() + databasesString + "/" + databaseName + "/blocks");
 		if (!blocks.exists()) {
 			blocks.mkdir();
 		}
 	}
 
-	public void createIndexesDirectory() {
-		File indexes = new File(Config.absolutePath() + "database/indexes");
+	private void createIndexesDirectory(String databaseName) {
+		File indexes = new File(Config.absolutePath() + databasesString + "/" + databaseName + "/indexes");
 		if (!indexes.exists()) {
 			indexes.mkdir();
 		}
 	}
 
-	public void createSchemaFile() {
-		File schema = new File(Config.absolutePath() + "database/schema.txt");
+	private void createSchemaFile(String databaseName) {
+		File schema = new File(Config.absolutePath() + databasesString + "/" + databaseName + "/schema.txt");
 		if (!schema.exists()) {
 			try {
 				schema.createNewFile();
@@ -77,8 +170,9 @@ public class DatabaseSystem {
 	}
 
 	public void exit(int status) {
-		BufferManager.getInstance().writeAll();
-		TableManager.getInstance().writeAll();
+		if (databaseIsOpen) {
+			close();
+		}
 		System.exit(status);
 	}
 

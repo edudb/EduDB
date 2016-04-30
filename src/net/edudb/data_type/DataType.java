@@ -25,12 +25,13 @@ public abstract class DataType implements Comparable<DataType> {
 
 	public static boolean isSupported(String typeName) {
 		switch (typeName.toLowerCase()) {
+		case "bool":
+		case "boolean":
+		case "decimal":
 		case "integer":
-//		case "boolean":
-//		case "bool":
+		case "timestamp":
+		case "datetime":
 		case "varchar":
-//		case "timestamp":
-//		case "decimal":
 			return true;
 		default:
 			return false;

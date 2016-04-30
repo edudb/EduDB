@@ -8,35 +8,32 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.console;
+package net.edudb.console.executor;
 
-import adipe.translate.TranslationException;
-import net.edudb.parser.Parser;
-import net.edudb.server.ServerWriter;
+import java.util.regex.Matcher;
 
-/**
- * 
- * @author Ahmed Abdul Badie
- *
- */
-public class SQLExecutor implements ConsoleExecutorChain {
-	private ConsoleExecutorChain nextChainElement;
+import net.edudb.engine.DatabaseSystem;
+import net.edudb.engine.Utility;
+
+public class CloseDatabaseExecutor implements ConsoleExecutorChain {
+	private ConsoleExecutorChain nextElement;
+	private String regex = "\\A(?:(?i)close)\\s+(?:(?i)database)\\s*;?\\z";
 
 	@Override
 	public void setNextInChain(ConsoleExecutorChain chainElement) {
-		this.nextChainElement = chainElement;
+		this.nextElement = chainElement;
 	}
 
 	@Override
 	public void execute(String string) {
-		Parser parser = new Parser();
-		try {
-			parser.parseSQL(string);
-			if (ServerWriter.getInstance().getContext() != null) {
-				ServerWriter.getInstance().writeln("[edudb::endofstring]");
+		if (string.toLowerCase().startsWith("close")) {
+			Matcher matcher = Utility.getMatcher(string, regex);
+			if (matcher.matches()) {
+				DatabaseSystem.getInstance().close();
+				return;
 			}
-		} catch (TranslationException e) {
-			e.printStackTrace();
 		}
+		nextElement.execute(string);
 	}
+
 }

@@ -49,7 +49,11 @@ public class Parser {
 		int ret = sqlparser.parse();
 		if (ret == 0) {
 			SQLStatementFactory statementFactory = new SQLStatementFactory();
-			SQLStatement statement = statementFactory.getSQLStatement(sqlparser.sqlstatements.get(0));
+			SQLStatement statement = statementFactory.makeSQLStatement(sqlparser.sqlstatements.get(0));
+			if (statement == null) {
+				ServerWriter.getInstance().writeln("Unsupported SQL statement");
+				return;
+			}
 			
 			QueryTree plan = planFactory.makePlan(statement);
 			if (plan == null) {

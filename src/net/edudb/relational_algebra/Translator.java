@@ -12,8 +12,6 @@ package net.edudb.relational_algebra;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import adipe.translate.Queries;
 import adipe.translate.TranslationException;
 import net.edudb.ebtree.EBNode;
@@ -72,20 +70,6 @@ public class Translator {
 		tree.constructTree(nodes);
 
 		return (QueryTree) tree;
-	}
-
-	/**
-	 * 
-	 * @param string
-	 *            String to be matched
-	 * @param regex
-	 *            Regular expression to be matched against
-	 * @return
-	 */
-	public static Matcher getMatcher(String string, String regex) {
-		Pattern pattern = Pattern.compile(regex);
-		Matcher matcher = pattern.matcher(string);
-		return matcher;
 	}
 
 }

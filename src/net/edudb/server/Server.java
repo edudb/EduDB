@@ -31,11 +31,15 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import net.edudb.console.ConsoleExecutorChain;
-import net.edudb.console.CopyExecutor;
-import net.edudb.console.NullExecutor;
-import net.edudb.console.SQLExecutor;
+import net.edudb.console.DatabaseConsole;
+import net.edudb.console.executor.CloseDatabaseExecutor;
+import net.edudb.console.executor.ConsoleExecutorChain;
+import net.edudb.console.executor.CreateDatabaseExecutor;
+import net.edudb.console.executor.DropDatabaseExecutor;
+import net.edudb.console.executor.OpenDatabaseExecutor;
+import net.edudb.console.executor.SQLExecutor;
 import net.edudb.engine.DatabaseSystem;
+import net.edudb.server.executor.*;
 
 /**
  * 
@@ -174,13 +178,14 @@ public class Server {
 		ConsoleExecutorChain init = new InitializeExecutor();
 		ConsoleExecutorChain exit = new ExitExecutor();
 		ConsoleExecutorChain copy = new CopyExecutor();
+		ConsoleExecutorChain open = new OpenDatabaseExecutor();
+		ConsoleExecutorChain close = new CloseDatabaseExecutor();
+		ConsoleExecutorChain create = new CreateDatabaseExecutor();
+		ConsoleExecutorChain drop = new DropDatabaseExecutor();
 		ConsoleExecutorChain sql = new SQLExecutor();
 
-		init.setNextInChain(exit);
-		exit.setNextInChain(copy);
-		copy.setNextInChain(sql);
-		sql.setNextInChain(new NullExecutor());
-
-		return init;
+		return DatabaseConsole
+				.connectChain(new ConsoleExecutorChain[] { init, exit, copy, open, close, create, drop, sql });
 	}
+
 }

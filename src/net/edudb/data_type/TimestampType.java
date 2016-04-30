@@ -11,7 +11,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.data_type;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.regex.Matcher;
+
+import net.edudb.engine.Utility;
+import net.edudb.exception.InvalidTypeValueException;
 
 /**
  * 
@@ -25,9 +31,22 @@ public class TimestampType extends DataType implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 8410489057933198854L;
-	
+
 	public TimestampType(Date dateTime) {
 		this.timestamp = dateTime;
+	}
+
+	public static Date parseDate(String string) throws InvalidTypeValueException {
+		Matcher matcher = Utility.getMatcher(string, "\\A\\d{4}\\-\\d{2}\\-\\d{2}\\s\\d{2}\\:\\d{2}\\:\\d{2}\\z");
+		if (matcher.matches()) {
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			try {
+				return dateFormat.parse(string);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		throw new InvalidTypeValueException("The value must be of the format YYYY-MM-DD HH:MM:SS");
 	}
 
 	@Override

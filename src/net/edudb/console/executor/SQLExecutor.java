@@ -8,12 +8,39 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.console;
+package net.edudb.console.executor;
 
-public interface ConsoleExecutorChain {
-	
-	public void setNextInChain(ConsoleExecutorChain chainElement);
-	
-	public void execute(String string);
+import adipe.translate.TranslationException;
+import net.edudb.engine.DatabaseSystem;
+import net.edudb.parser.Parser;
+import net.edudb.server.ServerWriter;
 
+/**
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
+public class SQLExecutor implements ConsoleExecutorChain {
+
+	@Override
+	public void setNextInChain(ConsoleExecutorChain chainElement) {
+	}
+
+	@Override
+	public void execute(String string) {
+		if (!DatabaseSystem.getInstance().databaseIsOpen()) {
+			ServerWriter.getInstance().writeln("You must open a database first");
+			return;
+		}
+
+		Parser parser = new Parser();
+		try {
+			parser.parseSQL(string);
+		} catch (TranslationException e) {
+			e.printStackTrace();
+		}
+//		if (ServerWriter.getInstance().getContext() != null) {
+//			ServerWriter.getInstance().writeln("[edudb::endofstring]");
+//		}
+	}
 }

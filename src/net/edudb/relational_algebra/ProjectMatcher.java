@@ -12,6 +12,7 @@ package net.edudb.relational_algebra;
 
 import java.util.regex.Matcher;
 
+import net.edudb.engine.Utility;
 import net.edudb.operator.ProjectOperator;
 import net.edudb.operator.parameter.ProjectOperatorParameter;
 
@@ -26,7 +27,7 @@ public class ProjectMatcher implements RAMatcherChain {
 
 	@Override
 	public RAMatcherResult match(String string) {
-		Matcher matcher = Translator.getMatcher(string, regex);
+		Matcher matcher = Utility.getMatcher(string, regex);
 		if (matcher.matches()) {
 			ProjectOperator projectOperator = new ProjectOperator();
 			

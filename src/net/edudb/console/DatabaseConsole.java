@@ -12,7 +12,7 @@ package net.edudb.console;
 
 import java.io.IOException;
 import jline.console.ConsoleReader;
-//import jline.console.CursorBuffer;
+import net.edudb.console.executor.*;
 
 /**
  * Singleton that handles the console and its commands.
@@ -24,11 +24,6 @@ public class DatabaseConsole {
 
 	private static DatabaseConsole instance = new DatabaseConsole();
 	private ConsoleReader consoleReader;
-
-	/**
-	 * See the last two methods
-	 */
-//	private CursorBuffer stashed;
 
 	private DatabaseConsole() {
 		try {
@@ -88,7 +83,7 @@ public class DatabaseConsole {
 	}
 
 	public void start() {
-		
+
 		ConsoleExecutorChain chain = DatabaseConsole.getExecutionChain();
 
 		String line;
@@ -101,51 +96,35 @@ public class DatabaseConsole {
 		}
 	}
 
+	/**
+	 * 
+	 * Connects the elements of the given chain in their respected order.
+	 * 
+	 * @param chainElements
+	 *            Elements of the chain to connect
+	 * @return The first element of the connected chain.
+	 */
+	public static ConsoleExecutorChain connectChain(ConsoleExecutorChain[] chainElements) {
+		for (int i = 0; i < chainElements.length - 1; i++) {
+			chainElements[i].setNextInChain(chainElements[i + 1]);
+		}
+		return chainElements[0];
+	}
+
 	public static ConsoleExecutorChain getExecutionChain() {
 		ConsoleExecutorChain clear = new ClearExecutor();
 		ConsoleExecutorChain exit = new ExitExecutor();
 		ConsoleExecutorChain help = new HelpExecutor();
 		ConsoleExecutorChain copy = new CopyExecutor();
-		ConsoleExecutorChain sql = new SQLExecutor();
 		ConsoleExecutorChain test = new ConcurrentTestExecutor();
+		ConsoleExecutorChain open = new OpenDatabaseExecutor();
+		ConsoleExecutorChain close = new CloseDatabaseExecutor();
+		ConsoleExecutorChain create = new CreateDatabaseExecutor();
+		ConsoleExecutorChain drop = new DropDatabaseExecutor();
+		ConsoleExecutorChain sql = new SQLExecutor();
 
-		clear.setNextInChain(exit);
-		exit.setNextInChain(help);
-		help.setNextInChain(copy);
-		copy.setNextInChain(test);
-		test.setNextInChain(sql);
-		sql.setNextInChain(new NullExecutor());
-
-		return clear;
+		return DatabaseConsole.connectChain(
+				new ConsoleExecutorChain[] { clear, exit, help, copy, test, open, close, create, drop, sql });
 	}
-
-	/**
-	 * These methods are taken from a Stack Overflow thread.
-	 * 
-	 * http://stackoverflow.com/questions/9010099/jline-keep-prompt-at-the-
-	 * bottom
-	 * 
-	 * These methods are supposed to handle the prompt when threads are running
-	 * and are writing to the console.
-	 */
-
-//	private void stashLine() {
-//		this.stashed = this.consoleReader.getCursorBuffer().copy();
-//		// try {
-//		// this.consoleReader.getOutput().write("\u001b[1G\u001b[K");
-//		// this.consoleReader.flush();
-//		// } catch (IOException e) {
-//		// // ignore
-//		// }
-//	}
-//
-//	private void unstashLine() {
-//		try {
-//			this.consoleReader.resetPromptLine(this.consoleReader.getPrompt(), this.stashed.toString(),
-//					this.stashed.cursor);
-//		} catch (IOException e) {
-//			// ignore
-//		}
-//	}
 
 }
