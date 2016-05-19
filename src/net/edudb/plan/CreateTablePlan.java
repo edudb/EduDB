@@ -26,7 +26,11 @@ import net.edudb.statistics.Schema;
 //);
 
 /**
+ * A plan to create a new table in a database.
+ * 
  * Created by mohamed on 4/1/14.
+ * 
+ * @author Ahmed Abdul Badie
  */
 public class CreateTablePlan implements Plan {
 
@@ -34,13 +38,14 @@ public class CreateTablePlan implements Plan {
 	public QueryTree makePlan(SQLStatement sqlStatement) {
 		SQLCreateTableStatement statement = (SQLCreateTableStatement) sqlStatement;
 		QueryTree plan = null;
+		String tableName = statement.getTableName();
 
 		if (!Schema.getInstance().chekTableExists(statement.getTableName())) {
 			CreateTableOperator operator = new CreateTableOperator();
 			operator.setParameter(statement);
 			plan = new QueryTree(operator);
 		} else {
-			ServerWriter.getInstance().writeln("CreateTablePlanner (makePlan): " + "table already exists");
+			ServerWriter.getInstance().writeln("Table '" + tableName + "' does exist");
 		}
 		return plan;
 	}

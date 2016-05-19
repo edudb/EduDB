@@ -22,10 +22,17 @@ import net.edudb.statistics.Schema;
 import ra.Term;
 
 public class Translator {
+	/**
+	 * Translates an SQL SELECT statement into a relational algebra formula.
+	 * 
+	 * @param sqlString
+	 *            The SQL statement to translate.
+	 * @return The relational algebra formula.
+	 */
 	public String translate(String sqlString) {
 		try {
 			Term term = Queries.getRaOf(adipe.translate.ra.Schema.create(Schema.getInstance().getSchema()), sqlString);
-			System.out.println(term.toString());
+			ServerWriter.getInstance().writeln(term.toString());
 			return term.toString();
 		} catch (RuntimeException | TranslationException e) {
 			e.printStackTrace();
@@ -33,6 +40,12 @@ public class Translator {
 		return null;
 	}
 
+	/**
+	 * Returns a chain of {@link RAMatcherChain} elements that are used to match
+	 * a relational algebra formula.
+	 * 
+	 * @return Chain of {@link RAMatcherChain} elements.
+	 */
 	private RAMatcherChain getChain() {
 		RAMatcherChain project = new ProjectMatcher();
 		RAMatcherChain cartesian = new CartesianProductMatcher();
@@ -48,6 +61,16 @@ public class Translator {
 		return project;
 	}
 
+	/**
+	 * Creates query tree nodes from a relational algebra formula by using
+	 * string matchers.
+	 * 
+	 * @param relationAlgebra
+	 *            The relational algebra formula to match.
+	 * @param chain
+	 *            The string matcher chain.
+	 * @return List of query tree nodes.
+	 */
 	private ArrayList<EBNode> constructTreeNodes(String relationAlgebra, RAMatcherChain chain) {
 		ArrayList<EBNode> nodes = new ArrayList<>();
 		while (relationAlgebra.length() != 0) {
@@ -63,6 +86,13 @@ public class Translator {
 		return nodes;
 	}
 
+	/**
+	 * Creates a query tree by matching a relational algebra formula.
+	 * 
+	 * @param relationAlgebra
+	 *            The relational algebra formula to match.
+	 * @return The created query tree.
+	 */
 	public QueryTree processRelationalAlgebra(String relationAlgebra) {
 		ArrayList<EBNode> nodes = constructTreeNodes(relationAlgebra, getChain());
 		Collections.reverse(nodes);

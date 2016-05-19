@@ -15,11 +15,18 @@ import net.edudb.operator.parameter.OperatorParameter;
 import net.edudb.query.QueryNode;
 import net.edudb.query.UnaryQueryNode;
 
+/**
+ * A relational algebra operator, with one child, that filters tuples from a
+ * relation based on some condition.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class FilterOperator implements Operator, UnaryQueryNode {
 	private OperatorParameter parameter;
 	private QueryNode child;
 	private EBNode parent;
-	
+
 	@Override
 	public void setParameter(OperatorParameter parameter) {
 		this.parameter = parameter;
@@ -49,5 +56,5 @@ public class FilterOperator implements Operator, UnaryQueryNode {
 	public EBNode getParent() {
 		return parent;
 	}
-	
+
 }

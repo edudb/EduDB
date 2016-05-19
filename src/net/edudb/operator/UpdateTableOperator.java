@@ -15,6 +15,13 @@ import net.edudb.operator.parameter.OperatorParameter;
 import net.edudb.query.QueryNode;
 import net.edudb.query.UnaryQueryNode;
 
+/**
+ * An operator, with one child, that updates tuples in its child relation based
+ * on an optional condition.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class UpdateTableOperator implements Operator, UnaryQueryNode {
 	private OperatorParameter parameter;
 	private QueryNode child;

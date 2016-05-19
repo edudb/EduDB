@@ -12,10 +12,24 @@ package net.edudb.statement;
 
 import net.edudb.operator.parameter.OperatorParameter;
 
+/**
+ * Holds information about the SQL statements.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public interface SQLStatement extends OperatorParameter {
 
+	/**
+	 * 
+	 * @return The target table's name of the SQL statement.
+	 */
 	public String getTableName();
 
+	/**
+	 * 
+	 * @return The type of the SQL statement.
+	 */
 	public SQLStatementType statementType();
 
 	public String toString();

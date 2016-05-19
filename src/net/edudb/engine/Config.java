@@ -16,16 +16,34 @@ import java.net.URLDecoder;
 import net.edudb.block.BlockFileType;
 import net.edudb.structure.table.TableFileType;
 
+/**
+ * Stores the system's configuration.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class Config {
 
+	/**
+	 * 
+	 * @return The type of the block file to save to disk.
+	 */
 	public static BlockFileType blockType() {
 		return BlockFileType.Binary;
 	}
 
+	/**
+	 * 
+	 * @return The type of the table file to save to disk.
+	 */
 	public static TableFileType tableType() {
 		return TableFileType.Binary;
 	}
 
+	/**
+	 * 
+	 * @return The system's absolute path on disk.
+	 */
 	public static String absolutePath() {
 		try {
 			return URLDecoder.decode(ClassLoader.getSystemClassLoader().getResource(".").getPath(), "UTF-8");
@@ -35,20 +53,45 @@ public class Config {
 		return null;
 	}
 
+	/**
+	 * 
+	 * @return The path to the current open database. Null if no database is
+	 *         currently open.
+	 */
 	public static String databasePath() {
 		return absolutePath() + "databases" + "/" + DatabaseSystem.getInstance().getDatabaseName();
 	}
 
+	/**
+	 * 
+	 * @return The path to the table files on disk.
+	 */
 	public static String tablesPath() {
 		return absolutePath() + "databases" + "/" + DatabaseSystem.getInstance().getDatabaseName() + "/tables/";
 	}
 
+	/**
+	 * 
+	 * @return The path to the page files on disk.
+	 */
 	public static String pagesPath() {
 		return absolutePath() + "databases" + "/" + DatabaseSystem.getInstance().getDatabaseName() + "/blocks/";
 	}
 
+	/**
+	 * 
+	 * @return The maximum allowed number of records inside a page.
+	 */
 	public static int pageSize() {
-		return 5;
+		return 100;
+	}
+
+	/**
+	 * 
+	 * @return The maximum allowed number of pages in the page buffer pool.
+	 */
+	public static int bufferSize() {
+		return 1;
 	}
 
 }

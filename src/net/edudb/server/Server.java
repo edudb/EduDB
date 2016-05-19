@@ -36,6 +36,7 @@ import net.edudb.console.executor.CloseDatabaseExecutor;
 import net.edudb.console.executor.ConsoleExecutorChain;
 import net.edudb.console.executor.CreateDatabaseExecutor;
 import net.edudb.console.executor.DropDatabaseExecutor;
+import net.edudb.console.executor.DropTableExecutor;
 import net.edudb.console.executor.OpenDatabaseExecutor;
 import net.edudb.console.executor.SQLExecutor;
 import net.edudb.engine.DatabaseSystem;
@@ -81,6 +82,10 @@ public class Server {
 		}
 	}
 
+	/**
+	 * Creates a system tray icon if supported by the system, else, it creates a
+	 * JFrame.
+	 */
 	public void showTray() {
 		System.setProperty("apple.awt.UIElement", "true");
 
@@ -157,7 +162,8 @@ public class Server {
 	public static void main(String[] args) throws Exception {
 
 		/**
-		 * ATTENTION
+		 * <b>ATTENTION</b><br>
+		 * <br>
 		 * 
 		 * Important call.
 		 */
@@ -180,12 +186,13 @@ public class Server {
 		ConsoleExecutorChain copy = new CopyExecutor();
 		ConsoleExecutorChain open = new OpenDatabaseExecutor();
 		ConsoleExecutorChain close = new CloseDatabaseExecutor();
+		ConsoleExecutorChain dropTable = new DropTableExecutor();
 		ConsoleExecutorChain create = new CreateDatabaseExecutor();
 		ConsoleExecutorChain drop = new DropDatabaseExecutor();
 		ConsoleExecutorChain sql = new SQLExecutor();
 
-		return DatabaseConsole
-				.connectChain(new ConsoleExecutorChain[] { init, exit, copy, open, close, create, drop, sql });
+		return DatabaseConsole.connectChain(
+				new ConsoleExecutorChain[] { init, exit, copy, dropTable, open, close, create, drop, sql });
 	}
 
 }

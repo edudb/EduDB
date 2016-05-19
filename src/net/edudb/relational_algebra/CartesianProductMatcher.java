@@ -16,8 +16,23 @@ import net.edudb.engine.Utility;
 import net.edudb.operator.CartesianProductOperator;
 import net.edudb.operator.RelationOperator;
 
+/**
+ * Matches the relational algebra CartProd formula.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class CartesianProductMatcher implements RAMatcherChain {
 	private RAMatcherChain nextElement;
+	/**
+	 * Matches strings of the form: <br>
+	 * <br>
+	 * <b>CartProd(arg0, arg1)</b> <br>
+	 * <br>
+	 * and captures <b>arg0</b> and <b>arg1</b> in the matcher's groups one and
+	 * two, respectively. <b>arg0</b> is the left relational algebra formula and
+	 * <b>arg1</b> is the right relation.
+	 */
 	private String regex = "\\ACartProd\\((.*\\))\\,(.*)\\)\\z";
 
 	@Override
@@ -35,10 +50,10 @@ public class CartesianProductMatcher implements RAMatcherChain {
 			 */
 			RelationMatcher relationMatcher = new RelationMatcher();
 			RelationOperator relationOperator = (RelationOperator) relationMatcher.match(matcher.group(2)).getNode();
-			
+
 			CartesianProductOperator cartesianOperator = new CartesianProductOperator();
 			cartesianOperator.setRightChild(relationOperator);
-			
+
 			return new RAMatcherResult(cartesianOperator, matcher.group(1));
 		}
 		return nextElement.match(string);

@@ -81,8 +81,19 @@ public class Expression implements BinaryExpressionNode, OperatorParameter {
 
 	@Override
 	public boolean evaluate(LinkedHashMap<Column, DataType> data) {
+		/**
+		 * The right-hand side of the expression.
+		 */
 		Object val = data.get(leftColumn);
 
+		/**
+		 * The leftColumn is a Column that has only an order. This loop selects
+		 * the complete Column which resides in the record. Since relational
+		 * algebra operators does not have access to the table itself, but
+		 * SQLToAlgebra outputs the order of each column, only the order is
+		 * added to the created Column. Columns are hashed based on their order,
+		 * therefore, the order is used.
+		 */
 		for (Entry<Column, DataType> entry : data.entrySet()) {
 			if (entry.getKey().equals(leftColumn)) {
 				leftColumn = entry.getKey();
@@ -91,7 +102,16 @@ public class Expression implements BinaryExpressionNode, OperatorParameter {
 		}
 
 		DataType value = null;
+		/**
+		 * Checks if the expression type is of the form 'column operator value'.
+		 * e.g. a=2.
+		 */
 		if (this.value != null) {
+			/**
+			 * Since parsing a relation algebra formula that has an expression
+			 * creates a generic data type, it must be transformed into a
+			 * defined data type.
+			 */
 			value = new DataTypeFactory().makeType(leftColumn.getTypeName(), ((GenericType) this.value).getValue());
 		}
 
@@ -113,8 +133,14 @@ public class Expression implements BinaryExpressionNode, OperatorParameter {
 		}
 	}
 
+	/**
+	 * Given the type of operator, it returns whether the evaluation holds.
+	 * 
+	 * @param comparisonResult
+	 *            The value to check.
+	 * @return The result of the evaluation.
+	 */
 	private boolean evaluate(int comparisonResult) {
-
 		switch (operator) {
 		case Equal:
 			return comparisonResult == 0;

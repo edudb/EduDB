@@ -30,6 +30,12 @@ public interface Table extends OperatorParameter {
 	public PageManager getPageManager();
 
 	/**
+	 * Delete all the pages associated with the table from disk.
+	 */
+	public void deletePages();
+
+	/**
+	 * Adds a record to the table/relation.
 	 * 
 	 * @param record
 	 *            The record to add.
@@ -51,9 +57,9 @@ public interface Table extends OperatorParameter {
 	public LinkedHashMap<String, String> getColumnTypes();
 
 	/**
-	 * Prints the whole pages of a given table. <br>
+	 * Prints the whole pages of a given table/relation. <br>
 	 * <br>
-	 * ATTENTION <br>
+	 * <b>ATTENTION</b><br>
 	 * <br>
 	 * Use only for testing.
 	 */

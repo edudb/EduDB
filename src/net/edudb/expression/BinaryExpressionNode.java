@@ -16,13 +16,22 @@ import net.edudb.data_type.DataType;
 import net.edudb.ebtree.EBBinaryNode;
 import net.edudb.structure.Column;
 
+/**
+ * An expression node that has two children.
+ * 
+ * @see LogicalOperator
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public interface BinaryExpressionNode extends EBBinaryNode {
 
 	/**
+	 * Evaluates an expression against a record.
 	 * 
-	 * @param values
-	 *            Values for the expression to be evaluated against.
-	 * @return Result of evaluation.
+	 * @param data
+	 *            The record for the expression to be evaluated against.
+	 * @return Result of the evaluation.
 	 */
 	public boolean evaluate(LinkedHashMap<Column, DataType> data);
 

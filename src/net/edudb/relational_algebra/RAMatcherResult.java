@@ -12,19 +12,26 @@ package net.edudb.relational_algebra;
 
 import net.edudb.query.QueryNode;
 
+/**
+ * Holds a query tree node and the remaining string from the relational algebra
+ * formula.
+ * 
+ * @author ahmedabadie
+ *
+ */
 public class RAMatcherResult {
 	private QueryNode node;
 	private String string;
-	
+
 	public RAMatcherResult(QueryNode node, String string) {
 		this.node = node;
 		this.string = string;
 	}
-	
+
 	public QueryNode getNode() {
 		return node;
 	}
-	
+
 	public String getString() {
 		return string;
 	}

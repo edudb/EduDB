@@ -12,8 +12,23 @@ package net.edudb.data_type;
 
 import net.edudb.exception.InvalidTypeValueException;
 
+/**
+ * A factory that creates data types supported by EduDB.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class DataTypeFactory {
 
+	/**
+	 * Creates an instance of a supported data type as an object.
+	 * 
+	 * @param typeName
+	 *            The name of the type.
+	 * @param value
+	 *            The value of the type.
+	 * @return The created data type.
+	 */
 	public DataType makeType(String typeName, String value) {
 		String val = value.replace("'", "");
 		switch (typeName.toLowerCase()) {

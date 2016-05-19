@@ -14,8 +14,19 @@ import net.edudb.query.QueryTree;
 import net.edudb.statement.SQLStatement;
 
 /**
+ * A query plan that will be executed.
+ * 
  * Created by mohamed on 4/1/14.
+ * 
+ * @author Ahmed Abdul Badie
  */
 public interface Plan {
+	/**
+	 * Creates a plan that will be executed.
+	 * 
+	 * @param sqlStatement
+	 *            The SQL statement to derive the plan from.
+	 * @return The derived plan.
+	 */
 	public QueryTree makePlan(SQLStatement sqlStatement);
 }

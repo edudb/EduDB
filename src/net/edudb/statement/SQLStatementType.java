@@ -10,6 +10,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.statement;
 
+/**
+ * Supported SQL statements.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public enum SQLStatementType {
 	SQLCreateTableStatement, SQLDeleteStatement, SQLInsertStatement, SQLSelectStatement, SQLUpdateStatement, SQLNoStatement
 }

@@ -10,10 +10,31 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.console.executor;
 
+/**
+ * An interface, that implements the Chain of Responsibility design pattern, that
+ * is used to execute commands passed from the console.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public interface ConsoleExecutorChain {
-	
-	public void setNextInChain(ConsoleExecutorChain chainElement);
-	
+
+	/**
+	 * Connects an existing executor chain with the argument chain element.
+	 * 
+	 * @param chainElement
+	 *            The {@link ConsoleExecutorChain} to be set next in the chain.
+	 */
+	public void setNextElementInChain(ConsoleExecutorChain chainElement);
+
+	/**
+	 * Executes the passed command. Classes that implement the
+	 * {@link ConsoleExecutorChain} interface handles the execution of the
+	 * passed command according to their functionality.
+	 * 
+	 * @param string
+	 *            The command to execute.
+	 */
 	public void execute(String string);
 
 }

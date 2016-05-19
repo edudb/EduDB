@@ -27,16 +27,25 @@ import net.edudb.exception.InvalidTypeValueException;
 public class TimestampType extends DataType implements Serializable {
 	private Date timestamp;
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 8410489057933198854L;
 
 	public TimestampType(Date dateTime) {
 		this.timestamp = dateTime;
 	}
 
+	/**
+	 * Parses a date passed as a string and returns its value as a date.
+	 * 
+	 * @param string
+	 *            The data to parse.
+	 * @return The parsed date iff the value is valid.
+	 * @throws InvalidTypeValueException
+	 */
 	public static Date parseDate(String string) throws InvalidTypeValueException {
+		/**
+		 * Matches strings of the form:<br><br>
+		 * <b>YYYY-MM-DD HH:MM:SS</b>
+		 */
 		Matcher matcher = Utility.getMatcher(string, "\\A\\d{4}\\-\\d{2}\\-\\d{2}\\s\\d{2}\\:\\d{2}\\:\\d{2}\\z");
 		if (matcher.matches()) {
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

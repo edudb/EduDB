@@ -22,6 +22,12 @@ import net.edudb.statement.SQLDeleteStatement;
 import net.edudb.statement.SQLStatement;
 import net.edudb.statistics.Schema;
 
+/**
+ * A plan to delete data from a table.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class DeletePlan implements Plan {
 
 	@Override

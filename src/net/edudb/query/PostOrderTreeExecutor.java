@@ -14,6 +14,12 @@ import net.edudb.operator.Operator;
 import net.edudb.operator.executor.*;
 import net.edudb.relation.Relation;
 
+/**
+ * @see PostOrderOperatorExecutor
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class PostOrderTreeExecutor implements QueryTreeExecutor {
 
 	@Override

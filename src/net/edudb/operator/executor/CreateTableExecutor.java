@@ -16,6 +16,7 @@ import net.edudb.structure.table.TableFactory;
 import net.edudb.structure.table.TableManager;
 
 /**
+ * Executes the SQL CREATE TABLE statement.
  * 
  * @author Ahmed Abdul Badie
  *
@@ -59,6 +60,8 @@ public class CreateTableExecutor extends PostOrderOperatorExecutor implements Op
 			table.setColumnTypes(columnTypes);
 
 			TableManager.getInstance().write(table);
+
+			ServerWriter.getInstance().writeln("Created table '" + table.getName() + "'");
 
 			Relation relation = new VolatileRelation(table);
 

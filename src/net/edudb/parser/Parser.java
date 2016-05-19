@@ -18,11 +18,11 @@ import net.edudb.query.QueryTree;
 import net.edudb.server.ServerWriter;
 import net.edudb.statement.SQLStatement;
 import net.edudb.statement.SQLStatementFactory;
-import net.edudb.transcation.ConcurrentTransaction;
 import net.edudb.transcation.SynchronizedTransaction;
 import net.edudb.transcation.TransactionManager;
 
 /**
+ * The SQL parser.
  * 
  * @author Ahmed Abdul Badie
  *
@@ -44,8 +44,16 @@ public class Parser {
 		planFactory = new PlanFactory();
 	}
 
+	/**
+	 * Parses and executes an SQL query by encapsulating it inside a
+	 * synchronized transaction.
+	 * 
+	 * @param strSQL
+	 *            The SQL string to parse.
+	 * @throws TranslationException
+	 */
 	public void parseSQL(String strSQL) throws TranslationException {
-		sqlparser.setSqltext(strSQL);
+		sqlparser.setSqltext(strSQL.replace(";", ""));
 		int ret = sqlparser.parse();
 		if (ret == 0) {
 			SQLStatementFactory statementFactory = new SQLStatementFactory();
@@ -54,14 +62,12 @@ public class Parser {
 				ServerWriter.getInstance().writeln("Unsupported SQL statement");
 				return;
 			}
-			
+
 			QueryTree plan = planFactory.makePlan(statement);
 			if (plan == null) {
 				return;
 			}
 
-			// ConcurrentTransaction transaction = new
-			// ConcurrentTransaction(plan);
 			SynchronizedTransaction transaction = new SynchronizedTransaction(plan);
 			TransactionManager.getInstance().execute(transaction);
 

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import net.edudb.server.ServerWriter;
 
 /**
+ * The container that holds the data.
  * 
  * @author Ahmed Abdul Badie
  *
@@ -43,7 +44,7 @@ public class EBBucket implements EBPartitionedHashIndex {
 	
 	/**
 	 * 
-	 * @return Bucket is full of indexes
+	 * @return Bucket is full of indexes.
 	 */
 	
 	public boolean isFull() {
@@ -52,7 +53,7 @@ public class EBBucket implements EBPartitionedHashIndex {
 	
 	/**
 	 * 
-	 * @return Bucket has no indexes
+	 * @return Bucket has no indexes.
 	 */
 	
 	public boolean isEmpty() {
@@ -61,7 +62,7 @@ public class EBBucket implements EBPartitionedHashIndex {
 	
 	/**
 	 * 
-	 * @return Count of indexes in the bucket
+	 * @return Count of indexes in the bucket.
 	 */
 	
 	public int length() {
@@ -70,7 +71,7 @@ public class EBBucket implements EBPartitionedHashIndex {
 	
 	/**
 	 * 
-	 * @return Number of indexes the bucket can hold
+	 * @return Number of indexes the bucket can hold.
 	 */
 	
 	public int capacity() {
@@ -79,7 +80,7 @@ public class EBBucket implements EBPartitionedHashIndex {
 	
 	/**
 	 * 
-	 * @return Count of not deleted indexes
+	 * @return Count of not deleted indexes.
 	 */
 	
 	public int size() {

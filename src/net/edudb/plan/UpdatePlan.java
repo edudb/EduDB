@@ -16,18 +16,25 @@ import net.edudb.operator.FilterOperator;
 import net.edudb.operator.RelationOperator;
 import net.edudb.operator.UpdateTableOperator;
 import net.edudb.operator.parameter.RelationOperatorParameter;
+import net.edudb.operator.parameter.UpdateTableOperatorParameter;
 import net.edudb.query.QueryTree;
 import net.edudb.relational_algebra.Translator;
 import net.edudb.statement.SQLStatement;
 import net.edudb.statement.SQLUpdateStatement;
 import net.edudb.statistics.Schema;
 
+/**
+ * A plan to update data in a table.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class UpdatePlan implements Plan {
 
 	@Override
 	public QueryTree makePlan(SQLStatement sqlStatement) {
 		SQLUpdateStatement statement = (SQLUpdateStatement) sqlStatement;
-		
+
 		if (!Schema.getInstance().chekTableExists(statement.getTableName())) {
 			return null;
 		}
@@ -39,13 +46,13 @@ public class UpdatePlan implements Plan {
 		RelationOperatorParameter parameter = new RelationOperatorParameter(statement.getTableName());
 
 		/**
-		 * Creates a relation operator to be the child of the delete operator.
+		 * Creates a relation operator to be the child of the update operator.
 		 */
 		RelationOperator relation = new RelationOperator();
 		relation.setParameter(parameter);
 		operator.setChild(relation);
 
-		ExpressionTree expressionTree;
+		ExpressionTree expressionTree = null;
 		if (statement.getWhereClause() != null) {
 			/**
 			 * This block of code is used to get the expression tree from the
@@ -64,9 +71,11 @@ public class UpdatePlan implements Plan {
 			QueryTree queryTree = translator.processRelationalAlgebra(ra);
 			FilterOperator filter = (FilterOperator) queryTree.getRoot();
 			expressionTree = (BinaryExpressionTree) filter.getParameter();
-
-			operator.setParameter(expressionTree);
 		}
+
+		UpdateTableOperatorParameter updateParameter = new UpdateTableOperatorParameter(statement.getAssignemnts(),
+				expressionTree, statement.getTableName());
+		operator.setParameter(updateParameter);
 
 		plan = new QueryTree(operator);
 

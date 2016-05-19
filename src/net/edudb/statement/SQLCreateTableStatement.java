@@ -15,12 +15,20 @@ import gudusoft.gsqlparser.nodes.TColumnDefinitionList;
 import gudusoft.gsqlparser.stmt.TCreateTableSqlStatement;
 
 /**
+ * Holds information about the SQL CREATE TABLE statement.
  * 
  * @author Ahmed Abdul Badie
  *
  */
 public class SQLCreateTableStatement implements SQLStatement {
 
+	/**
+	 * <b>ATTENTION</b><br>
+	 * <br>
+	 * 
+	 * Do not access `statement` from concurrent threads as it will cause
+	 * exceptions.
+	 */
 	private TCreateTableSqlStatement statement;
 	private String columnList;
 	private String tableName;
@@ -43,14 +51,26 @@ public class SQLCreateTableStatement implements SQLStatement {
 		}
 	}
 
+	/**
+	 * 
+	 * @return String containing a list of column names with their types.
+	 */
 	public String getColumnList() {
 		return columnList;
 	}
 
+	/**
+	 * 
+	 * @return List of column names.
+	 */
 	public String[] getColumnNames() {
 		return columnNames;
 	}
 
+	/**
+	 * 
+	 * @return List of data type names.
+	 */
 	public String[] getDataTypeNames() {
 		return dataTypeNames;
 	}

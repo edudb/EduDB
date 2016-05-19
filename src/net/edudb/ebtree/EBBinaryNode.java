@@ -18,12 +18,34 @@ package net.edudb.ebtree;
  */
 public interface EBBinaryNode extends EBNode {
 
+	/**
+	 * Sets the left child of a binary node.
+	 * 
+	 * @param child
+	 *            The left child to be set.
+	 */
 	public void setLeftChild(EBNode child);
 
+	/**
+	 * Sets the right child of a binary node.
+	 * 
+	 * @param child
+	 *            The right child to be set.
+	 */
 	public void setRightChild(EBNode child);
 
+	/**
+	 * Returns the left child of the node.
+	 * 
+	 * @return The left child of the node.
+	 */
 	public EBNode getLeftChild();
 
+	/**
+	 * Returns the right child of the node.
+	 * 
+	 * @return The right child of the node.
+	 */
 	public EBNode getRightChild();
 
 }

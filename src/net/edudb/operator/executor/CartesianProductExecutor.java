@@ -17,6 +17,12 @@ import net.edudb.relation.RelationIterator;
 import net.edudb.relation.VolatileRelation;
 import net.edudb.structure.Record;
 
+/**
+ * Executes the relational algebra CartesianProduct operator.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class CartesianProductExecutor extends PostOrderOperatorExecutor implements OperatorExecutionChain {
 	private OperatorExecutionChain nextElement;
 
@@ -45,7 +51,7 @@ public class CartesianProductExecutor extends PostOrderOperatorExecutor implemen
 					Record resultRecord = leftRecord.join(rightRecord);
 					resultRelation.addRecord(resultRecord);
 				}
-				 rightIterator = rightRelation.getIterator();
+				rightIterator = rightRelation.getIterator();
 			}
 
 			return resultRelation;

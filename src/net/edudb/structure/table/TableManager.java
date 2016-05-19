@@ -10,15 +10,17 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.structure.table;
 
-import java.io.IOException;
+import java.io.File;
 import java.util.HashMap;
 import net.edudb.engine.Config;
+import net.edudb.engine.FileManager;
+import net.edudb.statistics.Schema;
 
 /**
  * 
- * TableManager is a wrapper class around TableAbstractFactory. It handles the
- * reading and writing of tables using the default file type defined in
- * net.edudb.engine.Config.
+ * TableManager is a singleton that is a wrapper class around
+ * TableAbstractFactory. It handles the reading and writing of tables by
+ * contacting the File Manager.
  * 
  * @author Ahmed Abdul Badie
  *
@@ -36,6 +38,14 @@ public class TableManager {
 		return instance;
 	}
 
+	/**
+	 * Reads a table from the disk if it is not available in the table buffer
+	 * pool.
+	 * 
+	 * @param tableName
+	 *            Name of the table to read.
+	 * @return The read table.
+	 */
 	public synchronized Table read(String tableName) {
 		Table table = null;
 
@@ -45,33 +55,68 @@ public class TableManager {
 			return table;
 		}
 
-		TableAbstractFactory tableFactory = new TableReaderFactory();
-		TableReader tableReader = tableFactory.getReader(Config.tableType());
+		table = FileManager.getInstance().readTable(tableName);
 
-		try {
-			table = tableReader.read(tableName);
-			tableBuffer.put(tableName, table);
-		} catch (ClassNotFoundException | IOException e) {
-			e.printStackTrace();
-		}
+		// TableAbstractFactory tableFactory = new TableReaderFactory();
+		// TableReader tableReader = tableFactory.getReader(Config.tableType());
+		//
+		// try {
+		// table = tableReader.read(tableName);
+		tableBuffer.put(tableName, table);
+		// } catch (ClassNotFoundException | IOException e) {
+		// e.printStackTrace();
+		// }
 		return table;
 	}
 
+	/**
+	 * Adds the table to the buffer pool and writes it to disk.
+	 * 
+	 * @param table
+	 *            The table to write.
+	 */
 	public synchronized void write(Table table) {
-		TableAbstractFactory tableFactory = new TableWriterFactory();
-		TableWriter tableWriter = tableFactory.getWriter(Config.tableType());
-
-		try {
-			tableBuffer.put(table.getName(), table);
-			tableWriter.write(table);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		// TableAbstractFactory tableFactory = new TableWriterFactory();
+		// TableWriter tableWriter = tableFactory.getWriter(Config.tableType());
+		//
+		// try {
+		tableBuffer.put(table.getName(), table);
+		FileManager.getInstance().writeTable(table);
+		// tableWriter.write(table);
+		// } catch (IOException e) {
+		// e.printStackTrace();
+		// }
 	}
 
+	/**
+	 * Writes all the tables to disk. Used when closing the database for the
+	 * data to be persisted.
+	 */
 	public void writeAll() {
 		for (Table table : tableBuffer.values()) {
 			this.write(table);
 		}
+	}
+
+	/**
+	 * Deletes the table by deleting its pages from disk, removing the table
+	 * from the schema file, and removing the table from disk.
+	 * 
+	 * @param table
+	 *            The table to delete.
+	 */
+	public void delete(Table table) {
+		table.deletePages();
+
+		String path = Config.tablesPath() + table.getName() + ".table";
+		File file = new File(path);
+
+		if (file.exists()) {
+			file.delete();
+		}
+
+		Schema.getInstance().removeTable(table.getName());
+
+		tableBuffer.remove(table.getName());
 	}
 }

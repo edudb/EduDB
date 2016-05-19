@@ -14,6 +14,12 @@ import net.edudb.ebtree.EBNode;
 import net.edudb.operator.parameter.OperatorParameter;
 import net.edudb.query.UnaryQueryNode;
 
+/**
+ * An operator, with no children, that is used to create a table in a database.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class CreateTableOperator implements Operator, UnaryQueryNode {
 	private OperatorParameter parameter;
 	private EBNode parent;

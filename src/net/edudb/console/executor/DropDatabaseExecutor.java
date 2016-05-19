@@ -15,12 +15,23 @@ import java.util.regex.Matcher;
 import net.edudb.engine.DatabaseSystem;
 import net.edudb.engine.Utility;
 
+/**
+ * Drops a database from the system.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class DropDatabaseExecutor implements ConsoleExecutorChain {
 	private ConsoleExecutorChain nextElement;
+	/**
+	 * Matches strings of the form: <br><br>
+	 * <b>DROP DATABASE database_name;</b><br><br>
+	 * and captures <b>database_name</b> in the matcher's group one.
+	 */
 	private String regex = "\\A(?:(?i)drop)\\s+(?:(?i)database)\\s+(\\D\\w*)\\s*;?\\z";
 
 	@Override
-	public void setNextInChain(ConsoleExecutorChain chainElement) {
+	public void setNextElementInChain(ConsoleExecutorChain chainElement) {
 		this.nextElement = chainElement;
 	}
 

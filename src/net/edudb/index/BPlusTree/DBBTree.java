@@ -12,7 +12,7 @@ package net.edudb.index.BPlusTree;
 
 import net.edudb.data_type.IntegerType;
 import net.edudb.db_operator.DBIterator;
-import net.edudb.file_utility.FileManager;
+import net.edudb.engine.FileManager;
 import net.edudb.server.ServerWriter;
 import net.edudb.statistics.Schema;
 import net.edudb.structure.Column;

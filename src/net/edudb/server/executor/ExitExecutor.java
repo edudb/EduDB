@@ -14,6 +14,7 @@ import net.edudb.console.executor.ConsoleExecutorChain;
 import net.edudb.server.ServerWriter;
 
 /**
+ * Handles exit command passed from the client.
  * 
  * @author Ahmed Abdul Badie
  *
@@ -22,7 +23,7 @@ public class ExitExecutor implements ConsoleExecutorChain {
 	private ConsoleExecutorChain nextElement;
 
 	@Override
-	public void setNextInChain(ConsoleExecutorChain chainElement) {
+	public void setNextElementInChain(ConsoleExecutorChain chainElement) {
 		this.nextElement = chainElement;
 	}
 

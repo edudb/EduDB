@@ -14,6 +14,12 @@ import net.edudb.query.PostOrderTreeExecutor;
 import net.edudb.query.QueryTree;
 import net.edudb.relation.Relation;
 
+/**
+ * A transaction that is executed in-order.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class SynchronizedTransaction extends Transaction {
 
 	public SynchronizedTransaction(QueryTree plan) {

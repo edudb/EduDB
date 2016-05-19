@@ -26,6 +26,12 @@ import net.edudb.structure.Record;
 import net.edudb.structure.TableRecord;
 import net.edudb.structure.table.Table;
 
+/**
+ * Executes the SQL INSERT INTO statement.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class InsertExecutor extends PostOrderOperatorExecutor implements OperatorExecutionChain {
 	private OperatorExecutionChain nextElement;
 
@@ -44,15 +50,16 @@ public class InsertExecutor extends PostOrderOperatorExecutor implements Operato
 			SQLInsertStatement statement = parameter.getStatement();
 
 			DataTypeFactory typeFactory = new DataTypeFactory();
-			
+
 			LinkedHashMap<String, String> columnTypes = table.getColumnTypes();
-			
+
 			ArrayList<Column> columns = Schema.getInstance().getColumns(table.getName());
 			ArrayList<String> values = statement.getValueList();
 			LinkedHashMap<Column, DataType> data = new LinkedHashMap<>();
 			int size = values.size();
 			for (int i = 0; i < size; i++) {
-				data.put(columns.get(i), typeFactory.makeType(columnTypes.get(columns.get(i).getName()), values.get(i)));
+				data.put(columns.get(i),
+						typeFactory.makeType(columnTypes.get(columns.get(i).getName()), values.get(i)));
 			}
 
 			Record record = new TableRecord(data);

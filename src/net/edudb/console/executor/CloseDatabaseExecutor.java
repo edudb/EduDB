@@ -15,12 +15,24 @@ import java.util.regex.Matcher;
 import net.edudb.engine.DatabaseSystem;
 import net.edudb.engine.Utility;
 
+/**
+ * Closes the current open database.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class CloseDatabaseExecutor implements ConsoleExecutorChain {
 	private ConsoleExecutorChain nextElement;
+	/**
+	 * Matches strings of the form: <br>
+	 * <br>
+	 * <b>CLOSE DATABASE;<b><br>
+	 * <br>
+	 */
 	private String regex = "\\A(?:(?i)close)\\s+(?:(?i)database)\\s*;?\\z";
 
 	@Override
-	public void setNextInChain(ConsoleExecutorChain chainElement) {
+	public void setNextElementInChain(ConsoleExecutorChain chainElement) {
 		this.nextElement = chainElement;
 	}
 

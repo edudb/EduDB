@@ -64,6 +64,10 @@ public class Column implements Serializable {
 										// column.tableName.equals(tableName);
 	}
 
+	public void setOrder(int order) {
+		this.order = order;
+	}
+
 	public int getOrder() {
 		return order;
 	}

@@ -13,6 +13,12 @@ package net.edudb.query;
 import net.edudb.ebtree.EBNode;
 import net.edudb.ebtree.EBTree;
 
+/**
+ * A tree that has relational algebra operators as its nodes.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class QueryTree extends EBTree {
 
 	public QueryTree() {

@@ -11,12 +11,18 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.expression;
 
 import java.util.LinkedHashMap;
-
 import net.edudb.data_type.DataType;
 import net.edudb.ebtree.EBNode;
 import net.edudb.ebtree.EBTree;
 import net.edudb.structure.Column;
 
+/**
+ * A tree that consists of binary expression nodes. Used for expression trees
+ * that are evaluated against records.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class BinaryExpressionTree extends EBTree implements ExpressionTree {
 
 	public BinaryExpressionTree(BinaryExpressionNode root) {

@@ -38,7 +38,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 
 			Server.getExecutionChain().execute(s);
 
-			 ServerWriter.getInstance().writeln("[edudb::endofstring]");
+			ServerWriter.getInstance().writeln("[edudb::endofstring]");
 
 		} finally {
 			ReferenceCountUtil.release(msg);

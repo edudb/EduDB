@@ -10,31 +10,51 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.server.executor;
 
+import java.util.regex.Matcher;
 import net.edudb.console.executor.ConsoleExecutorChain;
+import net.edudb.engine.Utility;
 import net.edudb.server.ServerWriter;
 
 /**
+ * Handles the initialization of the connection with the client.
  * 
  * @author Ahmed Abdul Badie
  *
  */
 public class InitializeExecutor implements ConsoleExecutorChain {
 	private ConsoleExecutorChain nextElement;
+	/**
+	 * Matches strings of the form: <br>
+	 * <br>
+	 * <b>[edudb::username::password]</b><br>
+	 * <br>
+	 * and captures <b>username</b> and <b>password</b> in the matcher's groups
+	 * one and two, respectively.
+	 */
+	private String regex = "\\A\\[edudb\\:\\:(\\w+)\\:(\\w+)\\]\\z";
 
 	@Override
-	public void setNextInChain(ConsoleExecutorChain chainElement) {
+	public void setNextElementInChain(ConsoleExecutorChain chainElement) {
 		this.nextElement = chainElement;
 	}
 
 	@Override
 	public void execute(String string) {
-		if (string.equalsIgnoreCase("[edudb::init]")) {
-			/**
-			 * Write anything to the client to initialize a connection with it.
-			 * 
-			 */
-			ServerWriter.getInstance().write(" \b");
-			return;
+		if (string.toLowerCase().startsWith("[edudb::")) {
+			Matcher matcher = Utility.getMatcher(string, regex);
+			if (matcher.matches()) {
+				/**
+				 * Write anything to the client to initialize a connection with
+				 * it.
+				 * 
+				 */
+				if (matcher.group(1).equals("admin") && matcher.group(2).equals("admin")) {
+					ServerWriter.getInstance().write("[edudb::init]");
+				} else {
+					ServerWriter.getInstance().write("[edudb::mismatch]");
+				}
+				return;
+			}
 		}
 		nextElement.execute(string);
 	}

@@ -19,9 +19,7 @@ import java.io.Serializable;
  * 
  */
 public class IntegerType extends DataType implements Serializable {
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 3302671401075163802L;
 	/**
 	 * @uml.property name="integer"

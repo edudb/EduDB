@@ -17,11 +17,14 @@ import net.edudb.engine.Utility;
 import net.edudb.server.ServerWriter;
 import net.edudb.structure.Record;
 
+/**
+ * A page that is saved to disk as binary data.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class BinaryPage implements Page, Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 4813060042690551966L;
 
 	/**
@@ -57,7 +60,7 @@ public class BinaryPage implements Page, Serializable {
 	public String getName() {
 		return name;
 	}
-	
+
 	@Override
 	public Record getRecord(int index) {
 		return records[index];
@@ -98,18 +101,20 @@ public class BinaryPage implements Page, Serializable {
 	@Override
 	public void open() {
 		openCount++;
+		System.out.println("BinaryPage (open): " + "Opened page: " + this.name);
 	}
 
 	@Override
 	public void close() {
 		openCount--;
+		System.out.println("BinaryPage (open): " + "Closed page: " + this.name);
 	}
 
 	@Override
 	public boolean isOpen() {
 		return openCount > 0;
 	}
-	
+
 	@Override
 	public void print() {
 		for (int i = 0; i < nextLocation; ++i) {

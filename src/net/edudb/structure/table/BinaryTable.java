@@ -41,6 +41,11 @@ public class BinaryTable implements Table, Serializable {
 	public synchronized PageManager getPageManager() {
 		return pageManager;
 	}
+	
+	@Override
+	public void deletePages() {
+		this.pageManager.deletePages();
+	}
 
 	@Override
 	public String getName() {

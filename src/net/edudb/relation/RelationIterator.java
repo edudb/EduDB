@@ -13,21 +13,37 @@ package net.edudb.relation;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import net.edudb.engine.BufferManager;
+import net.edudb.buffer.BufferManager;
 import net.edudb.page.Page;
 import net.edudb.structure.Record;
 
+/**
+ * Iterates over a relation's records.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class RelationIterator implements Iterator<Record> {
 
 	private ArrayList<String> pageNames;
+	/**
+	 * The current open page.
+	 */
 	private Page currentPage;
+	/**
+	 * The index of the current page in the pageNames ArrayList.
+	 */
 	private int currentPageIndex;
+	/**
+	 * The index of the current record in the page.
+	 */
 	private int currentIndex;
 
 	public RelationIterator(ArrayList<String> pageNames) {
 		this.pageNames = pageNames;
 		if (this.pageNames.size() > 0) {
 			this.currentPage = BufferManager.getInstance().read(pageNames.get(currentPageIndex++));
+			this.currentPage.open();
 			this.currentIndex = 0;
 		}
 	}
@@ -53,18 +69,30 @@ public class RelationIterator implements Iterator<Record> {
 				this.currentIndex = 0;
 			}
 		}
+		/**
+		 * This loop is used to skip through the deleted records.
+		 */
 		for (int i = currentIndex; i < currentPage.size(); i++) {
+			/**
+			 * Records is not deleted; should be returned.
+			 */
 			if (!currentPage.getRecord(i).isDeleted()) {
 				break;
 			}
 			currentIndex++;
 		}
-		return currentIndex < currentPage.size();
+		if (currentIndex < currentPage.size()) {
+			return true;
+		} else {
+			this.currentPage.close();
+			return false;
+		}
 	}
 
 	@Override
 	public Record next() {
 		if (!hasNext()) {
+			this.currentPage.close();
 			return null;
 		}
 		return currentPage.getRecord(currentIndex++);

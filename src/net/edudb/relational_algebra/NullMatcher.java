@@ -10,6 +10,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.relational_algebra;
 
+/**
+ * A matcher that is placed at the end of the chain. Reaching this executor
+ * means that the given relational algebra formula is not supported.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class NullMatcher implements RAMatcherChain {
 
 	@Override

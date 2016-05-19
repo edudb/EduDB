@@ -14,6 +14,12 @@ import net.edudb.query.QueryTree;
 import net.edudb.relational_algebra.Translator;
 import net.edudb.statement.SQLStatement;
 
+/**
+ * A plan to select data from a table or tables.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class SelectPlan implements Plan {
 
 	@Override

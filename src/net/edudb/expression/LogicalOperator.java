@@ -11,11 +11,24 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.expression;
 
 import java.util.LinkedHashMap;
-
 import net.edudb.data_type.DataType;
 import net.edudb.ebtree.EBNode;
 import net.edudb.structure.Column;
 
+/**
+ * An operator, with two children, that evaluates its children expressions given
+ * a logical operator. For example, if an <i><b>AND</b></i> logical operator has
+ * two children expressions <b>A</b> and <b>B</b> where <b>A</b> is <i>col =
+ * val</i> and <b>B</b> is <i>col > val</i>, then the whole expression is
+ * evaluated as <i>col = val <b>AND</b> col > val</i>.<br>
+ * <br>
+ * 
+ * Currently supported logical operators: <b>AND</b> and <b>OR</b>.
+ * 
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public abstract class LogicalOperator implements BinaryExpressionNode {
 
 	protected BinaryExpressionNode parent;

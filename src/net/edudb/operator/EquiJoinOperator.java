@@ -15,6 +15,13 @@ import net.edudb.operator.parameter.OperatorParameter;
 import net.edudb.query.BinaryQueryNode;
 import net.edudb.query.QueryNode;
 
+/**
+ * A relational algebra operator, with two children, that joins two relations on
+ * columns that have equal values.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class EquiJoinOperator implements Operator, BinaryQueryNode {
 	private OperatorParameter parameter;
 	private QueryNode parent;

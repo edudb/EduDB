@@ -12,11 +12,17 @@ package net.edudb.console.executor;
 
 import net.edudb.engine.DatabaseSystem;
 
+/**
+ * Exits the system.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class ExitExecutor implements ConsoleExecutorChain {
 	private ConsoleExecutorChain nextElement;
 
 	@Override
-	public void setNextInChain(ConsoleExecutorChain chainElement) {
+	public void setNextElementInChain(ConsoleExecutorChain chainElement) {
 		this.nextElement = chainElement;
 	}
 

@@ -13,8 +13,18 @@ package net.edudb.relation;
 import net.edudb.server.ServerWriter;
 import net.edudb.structure.table.Table;
 
+/**
+ * Holds records returned from the execution of relational algebra operators.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public interface Relation extends Table {
 
+	/**
+	 * 
+	 * @return An iterator that iterates over the relation's records.
+	 */
 	public RelationIterator getIterator();
 
 	/**

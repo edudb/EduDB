@@ -10,6 +10,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.operator.executor;
 
+/**
+ * Executes the relational algebra Filter operator.
+ */
 import net.edudb.expression.BinaryExpressionTree;
 import net.edudb.expression.ExpressionTree;
 import net.edudb.operator.FilterOperator;

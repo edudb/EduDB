@@ -10,15 +10,32 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.statement;
 
+import java.util.HashMap;
+
 import gudusoft.gsqlparser.TCustomSqlStatement;
+import gudusoft.gsqlparser.nodes.TParseTreeNode;
 import gudusoft.gsqlparser.stmt.TUpdateSqlStatement;
 
+/**
+ * Holds information about the SQL UPDATE statement.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class SQLUpdateStatement implements SQLStatement {
 
+	/**
+	 * <b>ATTENTION</b><br>
+	 * <br>
+	 * 
+	 * Do not access `statement` from concurrent threads as it will cause
+	 * exceptions.
+	 */
 	private TUpdateSqlStatement statement;
 	private String tableName;
 	private String statementString;
 	private String whereClause;
+	private HashMap<String, String> assignments;
 
 	public SQLUpdateStatement(TCustomSqlStatement tCustomSqlStatement) {
 		this.statement = (TUpdateSqlStatement) tCustomSqlStatement;
@@ -27,14 +44,23 @@ public class SQLUpdateStatement implements SQLStatement {
 		if (statement.getWhereClause() != null) {
 			this.whereClause = statement.getWhereClause().toString();
 		}
-	}
-
-	public TUpdateSqlStatement getStatement() {
-		return statement;
+		this.assignments = new HashMap<>();
+		for (int i = 0; i < statement.getResultColumnList().size(); i++) {
+			TParseTreeNode assignment = statement.getResultColumnList().elementAt(i);
+			this.assignments.put(assignment.getStartToken().toString(), assignment.getEndToken().toString());
+		}
 	}
 
 	public String getWhereClause() {
 		return whereClause;
+	}
+
+	/**
+	 *  
+	 * @return Column-value pairs. 
+	 */
+	public HashMap<String, String> getAssignemnts() {
+		return assignments;
 	}
 
 	@Override

@@ -10,12 +10,16 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.operator.executor;
 
+/**
+ * Executes the relational algebra EquiJoin operator.
+ */
 import net.edudb.expression.Expression;
 import net.edudb.operator.EquiJoinOperator;
 import net.edudb.operator.Operator;
 import net.edudb.relation.Relation;
 import net.edudb.relation.RelationIterator;
 import net.edudb.relation.VolatileRelation;
+import net.edudb.structure.Column;
 import net.edudb.structure.Record;
 
 public class EquiJoinExecutor extends PostOrderOperatorExecutor implements OperatorExecutionChain {
@@ -34,6 +38,7 @@ public class EquiJoinExecutor extends PostOrderOperatorExecutor implements Opera
 			Relation rightRelation = getChain().execute((Operator) equiOperator.getRightChild());
 
 			Expression expression = (Expression) equiOperator.getParameter();
+			Column rightColumn = expression.getRightColumn();
 
 			Relation resultRelation = new VolatileRelation();
 
@@ -46,7 +51,7 @@ public class EquiJoinExecutor extends PostOrderOperatorExecutor implements Opera
 				while (rightIterator.hasNext()) {
 					rightRecord = rightIterator.next();
 					if (leftRecord.equates(rightRecord, expression)) {
-						Record resultRecord = leftRecord.join(rightRecord);
+						Record resultRecord = leftRecord.equiJoin(rightRecord, rightColumn);
 						resultRelation.addRecord(resultRecord);
 					}
 				}

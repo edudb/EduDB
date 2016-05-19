@@ -89,7 +89,8 @@ public class TableRecord implements Record, Serializable {
 		LinkedHashMap<Column, DataType> data = record.getData();
 		final int size = getData().size();
 		data.forEach((key, value) -> {
-			resultRecord.addValue(new Column(key.getOrder() + size, key.getName(), key.getTableName(), key.getTypeName()), value);
+			resultRecord.addValue(
+					new Column(key.getOrder() + size, key.getName(), key.getTableName(), key.getTypeName()), value);
 		});
 
 		return resultRecord;
@@ -101,6 +102,23 @@ public class TableRecord implements Record, Serializable {
 		DataType rightValue = record.getData().get(expression.getRightColumn());
 
 		return leftValue.compareTo(rightValue) == 0;
+	}
+
+	@Override
+	public Record equiJoin(Record record, Column column) {
+		Record joinedRecord = this.join(record);
+		LinkedHashMap<Column, DataType> data = joinedRecord.getData();
+		int columnToRemoveOrder = this.data.size() + column.getOrder();
+
+		data.remove(new Column(columnToRemoveOrder));
+
+		data.forEach((key, value) -> {
+			if (key.getOrder() > columnToRemoveOrder) {
+				key.setOrder(key.getOrder() - 1);
+			}
+		});
+
+		return joinedRecord;
 	}
 
 	@Override

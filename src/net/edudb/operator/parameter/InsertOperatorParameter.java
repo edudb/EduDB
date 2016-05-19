@@ -13,6 +13,12 @@ package net.edudb.operator.parameter;
 import net.edudb.statement.SQLInsertStatement;
 import net.edudb.structure.table.Table;
 
+/**
+ * The parameter associated with the insert operator.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class InsertOperatorParameter implements OperatorParameter {
 	private Table table;
 	private SQLInsertStatement statement;
@@ -21,7 +27,6 @@ public class InsertOperatorParameter implements OperatorParameter {
 		this.table = table;
 		this.statement = statement;
 	}
-
 	public Table getTable() {
 		return table;
 	}

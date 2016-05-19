@@ -12,11 +12,17 @@ package net.edudb.console.executor;
 
 import net.edudb.console.DatabaseConsole;
 
+/**
+ * Prints EduDB's supported commands.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class HelpExecutor implements ConsoleExecutorChain {
 	private ConsoleExecutorChain nextChainElement;
 
 	@Override
-	public void setNextInChain(ConsoleExecutorChain chainElement) {
+	public void setNextElementInChain(ConsoleExecutorChain chainElement) {
 		this.nextChainElement = chainElement;
 	}
 

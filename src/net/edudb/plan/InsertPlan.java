@@ -23,16 +23,21 @@ import net.edudb.structure.table.Table;
 import net.edudb.structure.table.TableManager;
 
 /**
+ * A plan to insert data into a table.
+ * 
  * Created by mohamed on 4/9/14.
+ * 
+ * @author Ahmed Abdul Badie
  */
 public class InsertPlan implements Plan {
+
 	@Override
 	public QueryTree makePlan(SQLStatement sqlStatement) {
 		SQLInsertStatement statement = (SQLInsertStatement) sqlStatement;
 		String tableName = statement.getTableName();
 
 		if (!Schema.getInstance().chekTableExists(tableName)) {
-			ServerWriter.getInstance().writeln("InsertPlan (makePlan): " + "Table '" + tableName + "' does not exist");
+			ServerWriter.getInstance().writeln("Table '" + tableName + "' does not exist");
 			return null;
 		}
 

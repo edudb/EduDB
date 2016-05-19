@@ -10,13 +10,35 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.operator.executor;
 
+/**
+ * An interface, that implements the Chain of Responsibility design pattern, that
+ * is used to execute relational algebra operators.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 import net.edudb.operator.Operator;
 import net.edudb.relation.Relation;
 
 public interface OperatorExecutionChain {
-	
+
+	/**
+	 * Connects an existing executor chain with the argument chain element.
+	 * 
+	 * @param chainElement
+	 *            The {@link OperatorExecutionChain} to be set next in the
+	 *            chain.
+	 */
 	public void setNextElementInChain(OperatorExecutionChain chainElement);
-	
+
+	/**
+	 * Executes the passed command. Classes that implement the
+	 * {@link OperatorExecutionChain} interface handles the execution of the
+	 * relational algerba operators according to their functionality.
+	 * 
+	 * @param operator
+	 *            The operator to execute.
+	 */
 	public Relation execute(Operator operator);
 
 }

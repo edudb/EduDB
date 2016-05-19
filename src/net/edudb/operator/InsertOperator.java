@@ -14,6 +14,12 @@ import net.edudb.ebtree.EBNode;
 import net.edudb.operator.parameter.OperatorParameter;
 import net.edudb.query.UnaryQueryNode;
 
+/**
+ * An operator, with one child, that inserts data to its child relation.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class InsertOperator implements Operator, UnaryQueryNode {
 	private OperatorParameter parameter;
 	private EBNode parent;

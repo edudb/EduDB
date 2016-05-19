@@ -10,22 +10,40 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.transcation;
 
+/**
+ * A singleton that handles the execution of transactions.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class TransactionManager {
-	
+
 	private static TransactionManager instance = new TransactionManager();
-	
+
 	private TransactionManager() {
 	}
-	
+
 	public static TransactionManager getInstance() {
 		return instance;
 	}
 
+	/**
+	 * Executes a concurrent transaction.
+	 * 
+	 * @param transaction
+	 *            The concurrent transaction to execute.
+	 */
 	public void execute(ConcurrentTransaction transaction) {
 		Thread thread = new Thread(transaction);
 		thread.start();
 	}
-	
+
+	/**
+	 * Executes a synchronized transaction.
+	 * 
+	 * @param transaction
+	 *            The synchronized transaction to execute.
+	 */
 	public void execute(SynchronizedTransaction transaction) {
 		transaction.run();
 	}

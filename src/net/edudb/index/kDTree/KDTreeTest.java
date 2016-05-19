@@ -11,7 +11,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.index.kDTree;
 
 import org.junit.Test;
-
 import net.edudb.data_type.DBType;
 import net.edudb.data_type.DataType;
 import net.edudb.data_type.IntegerType;

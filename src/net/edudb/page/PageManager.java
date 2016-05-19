@@ -10,22 +10,22 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.page;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
-import net.edudb.engine.BufferManager;
+
+import net.edudb.buffer.BufferManager;
 import net.edudb.engine.Config;
 import net.edudb.structure.Record;
 
 /**
+ * A structure that manages pages.
  * 
  * @author Ahmed Abdul Badie
  *
  */
 public class PageManager implements Pageable, Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -6801103344946561955L;
 
 	/**
@@ -51,6 +51,18 @@ public class PageManager implements Pageable, Serializable {
 		this.pageNames.add(pageName);
 	}
 
+	@Override
+	public void deletePages() {
+		for (String pageName : pageNames) {
+			File page = new File(Config.tablesPath() + pageName + ".block");
+			if (page.exists()) {
+				page.delete();
+			}
+		}
+
+		pageNames.clear();
+	}
+
 	private synchronized Page createPage() {
 		PageFactory pageFactory = new PageFactory();
 		Page page = pageFactory.makePage(Config.blockType());
@@ -60,7 +72,7 @@ public class PageManager implements Pageable, Serializable {
 	}
 
 	/**
-	 * 
+	 * Adds a record to the last page.
 	 * 
 	 * @param record
 	 *            Record to be added to a page.
@@ -81,7 +93,7 @@ public class PageManager implements Pageable, Serializable {
 			BufferManager.getInstance().write(newPage);
 		}
 		page.close();
-//		BufferManager.getInstance().write(page);
+		// BufferManager.getInstance().write(page);
 	}
 
 	public void print() {

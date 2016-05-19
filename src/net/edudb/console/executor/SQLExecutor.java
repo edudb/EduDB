@@ -16,6 +16,7 @@ import net.edudb.parser.Parser;
 import net.edudb.server.ServerWriter;
 
 /**
+ * Handles the parsing and execution of an SQL query.
  * 
  * @author Ahmed Abdul Badie
  *
@@ -23,7 +24,7 @@ import net.edudb.server.ServerWriter;
 public class SQLExecutor implements ConsoleExecutorChain {
 
 	@Override
-	public void setNextInChain(ConsoleExecutorChain chainElement) {
+	public void setNextElementInChain(ConsoleExecutorChain chainElement) {
 	}
 
 	@Override
@@ -39,8 +40,5 @@ public class SQLExecutor implements ConsoleExecutorChain {
 		} catch (TranslationException e) {
 			e.printStackTrace();
 		}
-//		if (ServerWriter.getInstance().getContext() != null) {
-//			ServerWriter.getInstance().writeln("[edudb::endofstring]");
-//		}
 	}
 }

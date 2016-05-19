@@ -10,19 +10,28 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.operator.executor;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
-
 import net.edudb.data_type.DataType;
-import net.edudb.data_type.IntegerType;
+import net.edudb.data_type.DataTypeFactory;
 import net.edudb.expression.BinaryExpressionTree;
 import net.edudb.expression.ExpressionTree;
 import net.edudb.operator.Operator;
 import net.edudb.operator.UpdateTableOperator;
+import net.edudb.operator.parameter.UpdateTableOperatorParameter;
 import net.edudb.relation.Relation;
 import net.edudb.relation.RelationIterator;
+import net.edudb.statistics.Schema;
 import net.edudb.structure.Column;
 import net.edudb.structure.Record;
 
+/**
+ * Executes the SQL UPDATE statement.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class UpdateTableExecutor extends PostOrderOperatorExecutor implements OperatorExecutionChain {
 	private OperatorExecutionChain nextElement;
 
@@ -35,11 +44,24 @@ public class UpdateTableExecutor extends PostOrderOperatorExecutor implements Op
 	public Relation execute(Operator operator) {
 		if (operator instanceof UpdateTableOperator) {
 			UpdateTableOperator update = (UpdateTableOperator) operator;
-			ExpressionTree tree = (ExpressionTree) update.getParameter();
-			Relation relation = getChain().execute((Operator) update.getChild());
+			UpdateTableOperatorParameter parameter = (UpdateTableOperatorParameter) update.getParameter();
+
+			HashMap<String, String> assignments = parameter.getAssignmentList();
+			ExpressionTree tree = parameter.getExpressionTree();
+			String tableName = parameter.getTableName();
 
 			LinkedHashMap<Column, DataType> data = new LinkedHashMap<>();
-			data.put(new Column(1), new IntegerType(0));
+			DataTypeFactory typeFactory = new DataTypeFactory();
+			ArrayList<Column> columns = Schema.getInstance().getColumns(tableName);
+			for (Column column : columns) {
+				String columnName = column.getName();
+				String assignmentValue = assignments.get(columnName);
+				if (assignments.get(columnName) != null) {
+					data.put(column, typeFactory.makeType(column.getTypeName(), assignmentValue));
+				}
+			}
+
+			Relation relation = getChain().execute((Operator) update.getChild());
 
 			RelationIterator iterator = relation.getIterator();
 			while (iterator.hasNext()) {

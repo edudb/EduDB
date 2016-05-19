@@ -18,6 +18,12 @@ import net.edudb.relation.RelationIterator;
 import net.edudb.relation.VolatileRelation;
 import net.edudb.structure.Record;
 
+/**
+ * Executes the relational algebra Project operator.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class ProjectExecutor extends PostOrderOperatorExecutor implements OperatorExecutionChain {
 	private OperatorExecutionChain nextElement;
 
@@ -33,11 +39,11 @@ public class ProjectExecutor extends PostOrderOperatorExecutor implements Operat
 			ProjectOperatorParameter projectedColumns = (ProjectOperatorParameter) projectOperator.getParameter();
 			Relation relation = getChain().execute((Operator) projectOperator.getChild());
 
-			RelationIterator ri = relation.getIterator();
+			RelationIterator relationIterator = relation.getIterator();
 			Relation resultRelation = new VolatileRelation();
 
-			while (ri.hasNext()) {
-				Record r = (Record) ri.next();
+			while (relationIterator.hasNext()) {
+				Record r = (Record) relationIterator.next();
 				resultRelation.addRecord(r.project(projectedColumns.getProjectedColumns()));
 			}
 

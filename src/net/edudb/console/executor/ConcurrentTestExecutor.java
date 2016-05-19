@@ -18,39 +18,45 @@ import net.edudb.relation.VolatileRelation;
 import net.edudb.structure.table.Table;
 import net.edudb.structure.table.TableManager;
 
+/**
+ * Test class used to test concurrent transactions.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class ConcurrentTestExecutor implements ConsoleExecutorChain {
 	private ConsoleExecutorChain nextChainElement;
 
 	@Override
-	public void setNextInChain(ConsoleExecutorChain chainElement) {
+	public void setNextElementInChain(ConsoleExecutorChain chainElement) {
 		this.nextChainElement = chainElement;
 	}
 
 	@Override
 	public void execute(String string) {
 		if (string.equalsIgnoreCase("test")) {
-//			Parser parser = new Parser();
-//			try {
-//				parser.parseSQL("create table test (a integer, b integer)");
-//				parser.parseSQL("create table test2 (c integer, d integer)");
-//				Thread.sleep(1000);
-//				for (int i = 0; i < 10; i++) {
-//					parser.parseSQL("insert into test values(" + (i + 1) + ", " + (i + 1) + ")");
-//					parser.parseSQL("insert into test2 values(" + (i + 1) + ", " + (i + 1) + ")");
-//				}
-//
-//			} catch (TranslationException | InterruptedException e) {
-//				e.printStackTrace();
-//			}
+			Parser parser = new Parser();
+			try {
+				parser.parseSQL("create table test (a integer, b integer)");
+				parser.parseSQL("create table test2 (c integer, d integer)");
+				Thread.sleep(1000);
+				for (int i = 0; i < 10; i++) {
+					parser.parseSQL("insert into test values(" + (i + 1) + ", " + (i + 1) + ")");
+					parser.parseSQL("insert into test2 values(" + (i + 1) + ", " + (i + 1) + ")");
+				}
 
-			Table table = TableManager.getInstance().read("test");
-			
-			Relation r = new VolatileRelation(table);
-			RelationIterator rit = r.getIterator();
-			
-			while(rit.hasNext()) {
-				System.out.println(rit.next());
+			} catch (TranslationException | InterruptedException e) {
+				e.printStackTrace();
 			}
+
+//			Table table = TableManager.getInstance().read("test");
+//			
+//			Relation r = new VolatileRelation(table);
+//			RelationIterator rit = r.getIterator();
+//			
+//			while(rit.hasNext()) {
+//				System.out.println(rit.next());
+//			}
 			
 			return;
 		}

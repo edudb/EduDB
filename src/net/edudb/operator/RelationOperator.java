@@ -16,7 +16,7 @@ import net.edudb.query.UnaryQueryNode;
 
 /**
  * Operator that relates to a relation. It has no children because it is the
- * leaf in the query tree.
+ * leaf node in the query tree.
  * 
  * @author Ahmed Abdul Badie
  *

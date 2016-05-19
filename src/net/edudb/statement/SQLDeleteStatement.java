@@ -10,10 +10,24 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.statement;
 
+/**
+ * Holds information about the SQL DELETE statement.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 import gudusoft.gsqlparser.TCustomSqlStatement;
 import gudusoft.gsqlparser.stmt.TDeleteSqlStatement;
 
 public class SQLDeleteStatement implements SQLStatement {
+	
+	/**
+	 * <b>ATTENTION</b><br>
+	 * <br>
+	 * 
+	 * Do not access `statement` from concurrent threads as it will cause
+	 * exceptions.
+	 */
 	private TDeleteSqlStatement statement;
 	private String tableName;
 	private String statementString;

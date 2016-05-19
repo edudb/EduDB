@@ -13,37 +13,37 @@ package net.edudb.index.PartitionedHashTable;
 import java.util.ArrayList;
 
 /**
+ * The list that contains the buckets.
  * 
  * @author Ahmed Abdul Badie
  *
  */
 
 public class EBBucketList implements EBPartitionedHashIndex {
-	
+
 	/**
 	 * ArrayList of connected buckets
 	 */
 	private ArrayList<EBBucket> buckets;
-	
+
 	/**
 	 * The current bucket to insert into
 	 */
 	private EBBucket currentBucket;
-	
+
 	/**
 	 * Number of indexes the bucket can hold
 	 */
 	private int bucketCapacity;
-	
+
 	public EBBucketList(int bucketCapacity) {
-		// TODO Auto-generated constructor stub
 		this.bucketCapacity = bucketCapacity;
 		this.buckets = new ArrayList<EBBucket>();
 		EBBucket bucket = new EBBucket(this.bucketCapacity);
 		this.currentBucket = bucket;
 		buckets.add(bucket);
 	}
-	
+
 	/**
 	 * 
 	 * @return Number of buckets in the list

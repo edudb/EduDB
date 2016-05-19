@@ -18,7 +18,18 @@ package net.edudb.ebtree;
  */
 public interface EBNode {
 
+	/**
+	 * Sets a given parent to the node.
+	 * 
+	 * @param parent
+	 *            The parent to set.
+	 */
 	public void setParent(EBNode parent);
 
+	/**
+	 * Returns the parent of the node.
+	 * 
+	 * @return The parent of the node.
+	 */
 	public EBNode getParent();
 }

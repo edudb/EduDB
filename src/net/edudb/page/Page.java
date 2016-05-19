@@ -12,7 +12,13 @@ package net.edudb.page;
 
 import net.edudb.structure.Record;
 
-public interface Page extends Recordable {
+/**
+ * A structure that is composed of multiple records.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
+public interface Page {
 
 	/**
 	 * 
@@ -54,8 +60,16 @@ public interface Page extends Recordable {
 	 */
 	public int size();
 
+	/**
+	 * 
+	 * @return Page is full.
+	 */
 	public boolean isFull();
 
+	/**
+	 * 
+	 * @return Page has no records.
+	 */
 	public boolean isEmpty();
 
 	/**

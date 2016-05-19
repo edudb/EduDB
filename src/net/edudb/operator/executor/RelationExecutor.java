@@ -18,6 +18,12 @@ import net.edudb.relation.VolatileRelation;
 import net.edudb.structure.table.Table;
 import net.edudb.structure.table.TableManager;
 
+/**
+ * Executes the relational algebra Relation operator.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class RelationExecutor extends PostOrderOperatorExecutor implements OperatorExecutionChain {
 
 	private OperatorExecutionChain nextElement;
@@ -30,7 +36,6 @@ public class RelationExecutor extends PostOrderOperatorExecutor implements Opera
 	@Override
 	public Relation execute(Operator operator) {
 		if (operator instanceof RelationOperator) {
-			// Table table = (Table) operator.getParameter();
 			RelationOperatorParameter parameter = (RelationOperatorParameter) operator.getParameter();
 			Table table = TableManager.getInstance().read(parameter.getTableName());
 			Relation relation = new VolatileRelation(table);

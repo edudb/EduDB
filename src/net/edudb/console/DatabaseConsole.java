@@ -37,6 +37,11 @@ public class DatabaseConsole {
 		return instance;
 	}
 
+	/**
+	 * Reads a line from the console.
+	 * 
+	 * @return The read line.
+	 */
 	public String readLine() {
 		try {
 			return consoleReader.readLine();
@@ -46,10 +51,19 @@ public class DatabaseConsole {
 		return null;
 	}
 
+	/**
+	 * Sets the console prompt.
+	 * 
+	 * @param prompt
+	 *            The prompt to set.
+	 */
 	public void setPrompt(String prompt) {
 		consoleReader.setPrompt(prompt);
 	}
 
+	/**
+	 * Clears the console screen.
+	 */
 	public void clearScreen() {
 		try {
 			consoleReader.clearScreen();
@@ -66,6 +80,9 @@ public class DatabaseConsole {
 		}
 	}
 
+	/**
+	 * Prints EduDB's supported commands.
+	 */
 	public void printHelp() {
 		String supportedCommands[] = new String[] { "\tclear", "\texit" };
 		this.writeln("Supported commands:");
@@ -74,14 +91,29 @@ public class DatabaseConsole {
 		}
 	}
 
+	/**
+	 * Writes to the system's console.
+	 * 
+	 * @param object
+	 *            Object to write.
+	 */
 	public void write(Object object) {
 		System.out.print(object);
 	}
 
+	/**
+	 * Writes a line to the system's console.
+	 * 
+	 * @param object
+	 *            Object to write.
+	 */
 	public void writeln(Object object) {
 		System.out.println(object);
 	}
 
+	/**
+	 * Starts an instance of the console.
+	 */
 	public void start() {
 
 		ConsoleExecutorChain chain = DatabaseConsole.getExecutionChain();
@@ -106,25 +138,31 @@ public class DatabaseConsole {
 	 */
 	public static ConsoleExecutorChain connectChain(ConsoleExecutorChain[] chainElements) {
 		for (int i = 0; i < chainElements.length - 1; i++) {
-			chainElements[i].setNextInChain(chainElements[i + 1]);
+			chainElements[i].setNextElementInChain(chainElements[i + 1]);
 		}
 		return chainElements[0];
 	}
 
+	/**
+	 * Sets the console's execution chain.
+	 * 
+	 * @return Console's execution chain.
+	 */
 	public static ConsoleExecutorChain getExecutionChain() {
 		ConsoleExecutorChain clear = new ClearExecutor();
 		ConsoleExecutorChain exit = new ExitExecutor();
 		ConsoleExecutorChain help = new HelpExecutor();
 		ConsoleExecutorChain copy = new CopyExecutor();
-		ConsoleExecutorChain test = new ConcurrentTestExecutor();
+//		ConsoleExecutorChain test = new ConcurrentTestExecutor();
 		ConsoleExecutorChain open = new OpenDatabaseExecutor();
 		ConsoleExecutorChain close = new CloseDatabaseExecutor();
+		ConsoleExecutorChain dropTable = new DropTableExecutor();
 		ConsoleExecutorChain create = new CreateDatabaseExecutor();
 		ConsoleExecutorChain drop = new DropDatabaseExecutor();
 		ConsoleExecutorChain sql = new SQLExecutor();
 
-		return DatabaseConsole.connectChain(
-				new ConsoleExecutorChain[] { clear, exit, help, copy, test, open, close, create, drop, sql });
+		return DatabaseConsole.connectChain(new ConsoleExecutorChain[] { clear, exit, help, copy, /*test,*/ open, close,
+				dropTable, create, drop, sql });
 	}
 
 }

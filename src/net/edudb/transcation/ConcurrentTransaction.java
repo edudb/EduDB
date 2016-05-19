@@ -14,6 +14,12 @@ import net.edudb.query.PostOrderTreeExecutor;
 import net.edudb.query.QueryTree;
 import net.edudb.relation.Relation;
 
+/**
+ * A transaction that is executed concurrently by being added to a thread.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class ConcurrentTransaction extends Transaction implements Runnable {
 
 	public ConcurrentTransaction(QueryTree plan) {

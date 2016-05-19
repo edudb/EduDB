@@ -16,15 +16,21 @@ import net.edudb.page.PageManager;
 import net.edudb.structure.Record;
 import net.edudb.structure.table.Table;
 
+/**
+ * A relation that is not intended to be saved to disk.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class VolatileRelation implements Relation {
-	
+
 	private Table table;
 	private PageManager pageManager;
-	
+
 	public VolatileRelation() {
 		this.pageManager = new PageManager();
 	}
-	
+
 	public VolatileRelation(Table table) {
 		this.table = table;
 		this.pageManager = table.getPageManager();
@@ -52,7 +58,12 @@ public class VolatileRelation implements Relation {
 	public void addRecord(Record record) {
 		pageManager.addRecord(record);
 	}
-	
+
+	@Override
+	public void deletePages() {
+		this.pageManager.deletePages();
+	}
+
 	@Override
 	public void setColumnTypes(LinkedHashMap<String, String> columnTypes) {
 		if (table == null) {
@@ -60,7 +71,7 @@ public class VolatileRelation implements Relation {
 		}
 		table.setColumnTypes(columnTypes);
 	}
-	
+
 	@Override
 	public LinkedHashMap<String, String> getColumnTypes() {
 		if (table == null) {

@@ -19,9 +19,17 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
+import net.edudb.buffer.BufferManager;
 import net.edudb.server.ServerWriter;
 import net.edudb.structure.table.TableManager;
 
+/**
+ * 
+ * Manages the system's databases and their required files and directories.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class DatabaseSystem {
 
 	private static DatabaseSystem instance = new DatabaseSystem();
@@ -43,21 +51,46 @@ public class DatabaseSystem {
 		createDatabasesDirectory();
 	}
 
+	/**
+	 * Initialized the required directories for the database to be able to
+	 * function properly. These are the directories where files are saved to
+	 * disk.
+	 * 
+	 * @param databaseName
+	 *            The name of the database to initialize its directories.
+	 */
 	private void initializeDatabaseDirectories(String databaseName) {
 		createTablesDirectory(databaseName);
 		createBlocksDirectory(databaseName);
-		createIndexesDirectory(databaseName);
+		/**
+		 * Used to create index directory
+		 */
+		// createIndexesDirectory(databaseName);
 		createSchemaFile(databaseName);
 	}
 
+	/**
+	 * 
+	 * @return The name of the current open database.
+	 */
 	public String getDatabaseName() {
 		return this.databaseName;
 	}
 
+	/**
+	 * 
+	 * @return Whether the system has an open database.
+	 */
 	public boolean databaseIsOpen() {
 		return this.databaseIsOpen;
 	}
 
+	/**
+	 * Opens a given database if it is available.
+	 * 
+	 * @param databaseName
+	 *            The name of the database to open.
+	 */
 	public void open(String databaseName) {
 		if (databaseExists(databaseName)) {
 			this.databaseName = databaseName;
@@ -69,6 +102,9 @@ public class DatabaseSystem {
 		}
 	}
 
+	/**
+	 * Closes the current open database, if any.
+	 */
 	public void close() {
 		if (!databaseIsOpen) {
 			ServerWriter.getInstance().writeln("No open database");
@@ -86,6 +122,12 @@ public class DatabaseSystem {
 		ServerWriter.getInstance().writeln("Closed database '" + dbName + "'");
 	}
 
+	/**
+	 * Creates a new database in the system iff it does not exist.
+	 * 
+	 * @param databaseName
+	 *            The name of the database to create.
+	 */
 	public void createDatabase(String databaseName) {
 		if (databaseExists(databaseName)) {
 			ServerWriter.getInstance().writeln("Database '" + databaseName + "' does exist");
@@ -99,6 +141,13 @@ public class DatabaseSystem {
 		open(databaseName);
 	}
 
+	/**
+	 * Drops a database from the system iff it does exist.
+	 * 
+	 * @param databaseName
+	 *            The name of the database to drop.
+	 * @throws IOException
+	 */
 	public void dropDatabase(String databaseName) throws IOException {
 		if (!databaseExists(databaseName)) {
 			ServerWriter.getInstance().writeln("Database '" + databaseName + "' does not exist");
@@ -126,10 +175,20 @@ public class DatabaseSystem {
 		ServerWriter.getInstance().writeln("Dropped database '" + databaseName + "'");
 	}
 
+	/**
+	 * Checks whether the given database exists in the system.
+	 * 
+	 * @param databaseName
+	 *            The name of the database to check.
+	 * @return The availability of the database.
+	 */
 	private boolean databaseExists(String databaseName) {
 		return new File(Config.absolutePath() + databasesString + "/" + databaseName).exists();
 	}
 
+	/**
+	 * Creates the database's root directory.
+	 */
 	private void createDatabasesDirectory() {
 		File databases = new File(Config.absolutePath() + databasesString);
 		if (!databases.exists()) {
@@ -137,6 +196,12 @@ public class DatabaseSystem {
 		}
 	}
 
+	/**
+	 * Creates the database's tables directory.
+	 * 
+	 * @param databaseName
+	 *            The name of the database.
+	 */
 	private void createTablesDirectory(String databaseName) {
 		File tables = new File(Config.absolutePath() + databasesString + "/" + databaseName + "/tables");
 		if (!tables.exists()) {
@@ -144,6 +209,12 @@ public class DatabaseSystem {
 		}
 	}
 
+	/**
+	 * Creates the database's pages directory.
+	 * 
+	 * @param databaseName
+	 *            The name of the database.
+	 */
 	private void createBlocksDirectory(String databaseName) {
 		File blocks = new File(Config.absolutePath() + databasesString + "/" + databaseName + "/blocks");
 		if (!blocks.exists()) {
@@ -151,13 +222,23 @@ public class DatabaseSystem {
 		}
 	}
 
-	private void createIndexesDirectory(String databaseName) {
-		File indexes = new File(Config.absolutePath() + databasesString + "/" + databaseName + "/indexes");
-		if (!indexes.exists()) {
-			indexes.mkdir();
-		}
-	}
+	/**
+	 * This method is documented since the indx is not yet supported
+	 */
+	// private void createIndexesDirectory(String databaseName) {
+	// File indexes = new File(Config.absolutePath() + databasesString + "/" +
+	// databaseName + "/indexes");
+	// if (!indexes.exists()) {
+	// indexes.mkdir();
+	// }
+	// }
 
+	/**
+	 * Creates the database's schema file.
+	 * 
+	 * @param databaseName
+	 *            The name of the database.
+	 */
 	private void createSchemaFile(String databaseName) {
 		File schema = new File(Config.absolutePath() + databasesString + "/" + databaseName + "/schema.txt");
 		if (!schema.exists()) {
@@ -169,9 +250,22 @@ public class DatabaseSystem {
 		}
 	}
 
+	/**
+	 * Exits the system.
+	 * 
+	 * @param status
+	 *            The status of the exit.
+	 */
 	public void exit(int status) {
 		if (databaseIsOpen) {
 			close();
+		}
+
+		/**
+		 * Writes exit to the client to close the connection.
+		 */
+		if (ServerWriter.getInstance().getContext() != null) {
+			ServerWriter.getInstance().writeln("[edudb::exit]");
 		}
 		System.exit(status);
 	}

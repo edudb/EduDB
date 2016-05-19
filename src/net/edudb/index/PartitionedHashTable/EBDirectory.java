@@ -12,9 +12,8 @@ package net.edudb.index.PartitionedHashTable;
 
 import java.util.ArrayList;
 
-import net.edudb.server.ServerWriter;
-
 /**
+ * Holds pointers to bucket lists.
  * 
  * @author Ahmed Abdul Badie
  *
@@ -229,7 +228,6 @@ public class EBDirectory implements EBPartitionedHashIndex {
 		}
 		if (!isUniqueEntry(oldIndex) || !areEquivalentHashes(oldIndex, newIndex)) {
 			ArrayList<EBIndex> indexList = this.getIndex(oldIndex);
-//			ServerWriter.getInstance().write(indexList.get(0));
 			for (EBIndex ebIndex : indexList) {
 				ebIndex.setValues(newIndex.getValues());
 				this.addIndex(ebIndex);

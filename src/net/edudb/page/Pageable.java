@@ -12,6 +12,12 @@ package net.edudb.page;
 
 import java.util.ArrayList;
 
+/**
+ * A structure that is composed of multiple pages. E.g. database tables.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public interface Pageable {
 
 	/**
@@ -27,5 +33,10 @@ public interface Pageable {
 	 *            Name of the page to add.
 	 */
 	public void addPageName(String pageName);
+	
+	/**
+	 * Deletes the pages from disk.
+	 */
+	public void deletePages();
 
 }

@@ -10,6 +10,14 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.operator.executor;
 
+/**
+ * Executes a query tree in a post-order strategy. If a tree node is not a leaf,
+ * its left child is executed before its right child. This approach is achieved
+ * recursively.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class PostOrderOperatorExecutor {
 
 	public OperatorExecutionChain getChain() {

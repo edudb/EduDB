@@ -12,11 +12,17 @@ package net.edudb.console.executor;
 
 import net.edudb.console.DatabaseConsole;
 
+/**
+ * Clears the console screen.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class ClearExecutor implements ConsoleExecutorChain {
 	private ConsoleExecutorChain nextChainElement;
-	
+
 	@Override
-	public void setNextInChain(ConsoleExecutorChain chainElement) {
+	public void setNextElementInChain(ConsoleExecutorChain chainElement) {
 		this.nextChainElement = chainElement;
 	}
 

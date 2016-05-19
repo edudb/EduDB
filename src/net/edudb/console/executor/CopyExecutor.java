@@ -18,7 +18,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import net.edudb.data_type.DataType;
-import net.edudb.data_type.IntegerType;
+import net.edudb.data_type.DataTypeFactory;
 import net.edudb.engine.Utility;
 import net.edudb.server.ServerWriter;
 import net.edudb.statistics.Schema;
@@ -29,16 +29,25 @@ import net.edudb.structure.table.Table;
 import net.edudb.structure.table.TableManager;
 
 /**
+ * Handles the copy command.
  * 
  * @author Ahmed Abdul Badie
  *
  */
 public class CopyExecutor implements ConsoleExecutorChain {
 	private ConsoleExecutorChain nextElement;
+	/**
+	 * Matches strings of the form: <br>
+	 * <br>
+	 * <b>COPY table_name FROM 'file_path' DELIMITER 'delimiter';</b><br>
+	 * <br>
+	 * and captures <b>table_name</b>, <b>file_path</b>, and <b>delimiter</b> in
+	 * the matcher's groups one, two, and three, respectively.
+	 */
 	String regex = "\\A(?:(?i)copy)\\s+(\\D\\w*)\\s+(?:(?i)from)\\s+\\'(.+)\\'\\s+(?:(?i)delimiter)\\s+\\'(.+)\\'\\s*\\;?\\z";
 
 	@Override
-	public void setNextInChain(ConsoleExecutorChain chainElement) {
+	public void setNextElementInChain(ConsoleExecutorChain chainElement) {
 		this.nextElement = chainElement;
 	}
 
@@ -54,17 +63,28 @@ public class CopyExecutor implements ConsoleExecutorChain {
 				}
 				Table table = TableManager.getInstance().read(tableName);
 				ArrayList<Column> columns = Schema.getInstance().getColumns(tableName);
+				DataTypeFactory typeFactory = new DataTypeFactory();
 
-				String path = matcher.group(2);
+				String filePath = matcher.group(2);
 				int count = 0;
 				try {
-					List<String> lines = Files.readAllLines(Paths.get(path));
+					List<String> lines = Files.readAllLines(Paths.get(filePath)); // Reads
+																					// lines
+																					// from
+																					// the
+																					// file.
 					for (int i = 0; i < lines.size(); i++) {
-						String[] values = lines.get(i).split(matcher.group(3));
+						String[] values = lines.get(i).split(matcher.group(3)); // Splits
+																				// the
+																				// line
+																				// around
+																				// the
+																				// delimiter.
 						LinkedHashMap<Column, DataType> data = new LinkedHashMap<>();
 						int size = values.length;
 						for (int j = 0; j < size; j++) {
-							data.put(columns.get(j), new IntegerType(Integer.parseInt(values[j])));
+							Column column = columns.get(j);
+							data.put(column, typeFactory.makeType(column.getTypeName(), values[j]));
 						}
 
 						Record record = new TableRecord(data);
@@ -78,7 +98,7 @@ public class CopyExecutor implements ConsoleExecutorChain {
 			} else {
 				ServerWriter.getInstance().writeln("Unknown command 'copy'");
 			}
-			
+
 			return;
 		}
 		nextElement.execute(string);

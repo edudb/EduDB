@@ -18,7 +18,17 @@ package net.edudb.ebtree;
  */
 public interface EBUnaryNode extends EBNode {
 
+	/**
+	 * Sets the child of a unary node.
+	 * 
+	 * @param child
+	 *            The child to set.
+	 */
 	public void setChild(EBNode child);
 
+	/**
+	 * 
+	 * @return The child of the node.
+	 */
 	public EBNode getChild();
 }

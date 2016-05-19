@@ -13,6 +13,7 @@ package net.edudb.statement;
 import gudusoft.gsqlparser.TCustomSqlStatement;
 
 /**
+ * A factory that creates SQL statements supported by EduDB.
  * 
  * @author Ahmed Abdul Badie
  *
@@ -20,11 +21,12 @@ import gudusoft.gsqlparser.TCustomSqlStatement;
 public class SQLStatementFactory {
 
 	/**
+	 * Creates an instance of a supported SQL statement.
 	 * 
 	 * @param tCustomSqlStatement
 	 *            Custom statement the GSP outputs when parsing the SQL string.
-	 * @return SQLStatement Object that is responsible for the supported SQL
-	 *         statements.
+	 * @return SQLStatement object that contains information about the supported
+	 *         SQL statements.
 	 */
 	public SQLStatement makeSQLStatement(TCustomSqlStatement tCustomSqlStatement) {
 		switch (tCustomSqlStatement.sqlstatementtype) {

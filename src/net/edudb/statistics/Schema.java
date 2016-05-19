@@ -10,12 +10,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.statistics;
 
-import net.edudb.file_utility.FileManager;
-import net.edudb.server.ServerWriter;
+import net.edudb.engine.FileManager;
 import net.edudb.structure.Column;
 import net.edudb.structure.table.Table;
 import net.edudb.structure.table.TableManager;
-
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -29,7 +28,7 @@ import com.google.common.collect.Iterables;
 public class Schema {
 
 	private static Schema instance = new Schema();
-	private static HashMap<String, ArrayList<String>> schema;
+	private HashMap<String, ArrayList<String>> schema;
 
 	private Schema() {
 		schema = new HashMap<>();
@@ -40,11 +39,18 @@ public class Schema {
 		return instance;
 	}
 
+	/**
+	 * Checks the availability of the given table in the database's schema.
+	 * 
+	 * @param tableName
+	 *            The name of the table to check.
+	 * @return The availability of the table.
+	 */
 	public boolean chekTableExists(String tableName) {
 		return schema.get(tableName) != null;
 	}
 
-	private static void setSchema() {
+	private void setSchema() {
 		ArrayList<String> lines = FileManager.readFile(FileManager.getSchema());
 		for (String line : lines) {
 			putTable(line);
@@ -52,10 +58,11 @@ public class Schema {
 	}
 
 	/**
-	 * get column list of table
+	 * Returns the columns of the required table.
 	 * 
 	 * @param tableName
-	 * @return
+	 *            The name of the required table.
+	 * @return Columns of the required table as an {@link ArrayList}.
 	 */
 	public ArrayList<Column> getColumns(String tableName) {
 		ArrayList<Column> columns = new ArrayList<>();
@@ -71,7 +78,7 @@ public class Schema {
 	}
 
 	// add table to schema object
-	private static void putTable(String line) {
+	private void putTable(String line) {
 		String[] tokens = line.split(" ");
 		String TableName = tokens[0];
 		ArrayList<String> columns = new ArrayList<String>();
@@ -86,8 +93,29 @@ public class Schema {
 	public void addTable(String line) {
 		putTable(line);
 		line += System.lineSeparator();
-		ServerWriter.getInstance().writeln("Schema (addTable):" + "new table");
 		FileManager.addToFile(FileManager.getSchema(), line);
+	}
+
+	public void removeTable(String tableName) {
+
+		ArrayList<String> schema = FileManager.readFile(FileManager.getSchema());
+
+		String schemaData = "";
+
+		for (String string : schema) {
+			if (!string.startsWith(tableName)) {
+				schemaData += string + "\r\n";
+			}
+		}
+
+		File file = new File(FileManager.getSchema());
+		if (file.exists()) {
+			file.delete();
+		}
+
+		this.schema.remove(tableName);
+
+		FileManager.writeToFile(schemaData, FileManager.getSchema());
 	}
 
 	public HashMap<String, ArrayList<String>> getSchema() {

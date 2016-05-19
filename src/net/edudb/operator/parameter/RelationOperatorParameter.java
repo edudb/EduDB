@@ -11,6 +11,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.operator.parameter;
 
 /**
+ * The parameter associated with the relation operator.
  * 
  * @author Ahmed Abdul Badie
  *

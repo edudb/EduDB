@@ -12,8 +12,20 @@ package net.edudb.query;
 
 import net.edudb.relation.Relation;
 
+/**
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public interface QueryTreeExecutor {
-	
+
+	/**
+	 * Executes a query tree.
+	 * 
+	 * @param queryTree
+	 *            The query tree to execute.
+	 * @return A relation that holds records resulted from the execution.
+	 */
 	public Relation execute(QueryTree queryTree);
-	
+
 }

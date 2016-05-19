@@ -15,12 +15,25 @@ import java.util.regex.Matcher;
 import net.edudb.engine.DatabaseSystem;
 import net.edudb.engine.Utility;
 
+/**
+ * Creates a new database in the system.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class CreateDatabaseExecutor implements ConsoleExecutorChain {
 	private ConsoleExecutorChain nextElement;
+	/**
+	 * Matches strings of the form: <br>
+	 * <br>
+	 * <b>CREATE DATABASE database_name;</b> <br>
+	 * <br>
+	 * and captures the <b>database_name</b> in the matcher's group one.
+	 */
 	private String regex = "\\A(?:(?i)create)\\s+(?:(?i)database)\\s+(\\D\\w*)\\s*;?\\z";
 
 	@Override
-	public void setNextInChain(ConsoleExecutorChain chainElement) {
+	public void setNextElementInChain(ConsoleExecutorChain chainElement) {
 		this.nextElement = chainElement;
 	}
 

@@ -19,8 +19,25 @@ import net.edudb.operator.EquiJoinOperator;
 import net.edudb.operator.RelationOperator;
 import net.edudb.structure.Column;
 
+/**
+ * Matches the relational algebra EqJoin formula.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class EquiJoinMatcher implements RAMatcherChain {
 	private RAMatcherChain nextElement;
+	/**
+	 * Matches strings of the form: <br>
+	 * <br>
+	 * <b>EqJoin(arg0, arg1, arg2, arg3)</b> <br>
+	 * <br>
+	 * and captures <b>arg0</b>, <b>arg1</b>, <b>arg2</b>, and <b>arg3</b> in
+	 * the matcher's groups one, two, three, and four, respectively. <b>arg0</b>
+	 * is the left relational algebra formula, <b>arg1</b> is the right
+	 * relation, <b>arg2</b> is the left formula's column, and <b>arg3</b> is
+	 * the right relation's column.
+	 */
 	private String regex = "\\AEqJoin\\((.*\\)),(.*)\\,(\\d+)\\,(\\d+)\\)\\z";
 
 	@Override

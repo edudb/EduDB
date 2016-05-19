@@ -18,6 +18,7 @@ import io.netty.channel.ChannelHandlerContext;
 import net.edudb.console.DatabaseConsole;
 
 /**
+ * A singleton that handles writing to the client.
  * 
  * @author Ahmed Abdul Badie
  *
@@ -41,6 +42,12 @@ public class ServerWriter {
 		return context;
 	}
 
+	/**
+	 * Writes to the client iff the context is not null.
+	 * 
+	 * @param object
+	 *            Object to write.
+	 */
 	public void write(Object obj) {
 		if (context != null) {
 			ByteBuf buf = Unpooled.copiedBuffer(obj.toString(), Charsets.UTF_8);
@@ -51,6 +58,12 @@ public class ServerWriter {
 		}
 	}
 
+	/**
+	 * Writes a line to the client iff the context is not null.
+	 * 
+	 * @param object
+	 *            Object to write.
+	 */
 	public void writeln(Object obj) {
 		if (context != null) {
 			ByteBuf buf = Unpooled.copiedBuffer(obj.toString() + "\r\n", Charsets.UTF_8);

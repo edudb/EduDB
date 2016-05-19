@@ -10,11 +10,14 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.exception;
 
+/**
+ * An exception in which the value of a given data type is not valid.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class InvalidTypeValueException extends Exception {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 2439897185322277576L;
 
 	public InvalidTypeValueException(String message) {

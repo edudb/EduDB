@@ -15,12 +15,25 @@ import java.util.regex.Matcher;
 import net.edudb.engine.DatabaseSystem;
 import net.edudb.engine.Utility;
 
+/**
+ * Opens an available database.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class OpenDatabaseExecutor implements ConsoleExecutorChain {
 	private ConsoleExecutorChain nextElement;
+	/**
+	 * Matches strings of the form: <br>
+	 * <br>
+	 * <b>OPEN DATABASE database_name;</b><br>
+	 * <br>
+	 * and captures <b>database_name</b> in the matcher's group one.
+	 */
 	private String regex = "\\A(?:(?i)open)\\s+(?:(?i)database)\\s+(\\D\\w*)\\s*;?\\z";
 
 	@Override
-	public void setNextInChain(ConsoleExecutorChain chainElement) {
+	public void setNextElementInChain(ConsoleExecutorChain chainElement) {
 		this.nextElement = chainElement;
 	}
 
@@ -30,6 +43,7 @@ public class OpenDatabaseExecutor implements ConsoleExecutorChain {
 			Matcher matcher = Utility.getMatcher(string, regex);
 			if (matcher.matches()) {
 				DatabaseSystem.getInstance().open(matcher.group(1));
+
 				return;
 			}
 		}

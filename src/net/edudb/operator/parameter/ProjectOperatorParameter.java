@@ -10,6 +10,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.operator.parameter;
 
+/**
+ * The parameter associated with the project operator.
+ * 
+ * @author Ahmed Abdul Badie
+ *
+ */
 public class ProjectOperatorParameter implements OperatorParameter {
 	private Integer[] projectedColumns;
 	

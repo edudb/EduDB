@@ -13,7 +13,7 @@ package net.edudb.ebtree;
 import java.util.ArrayList;
 
 /**
- * A custom-made tree that is used to build query and expression trees. 
+ * A custom-made tree that is used to build query and expression trees.
  * 
  * @author Ahmed Abdul Badie
  *
@@ -31,18 +31,27 @@ public abstract class EBTree {
 		this.levels = 1;
 	}
 
+	/**
+	 * 
+	 * @return The levels of the tree.
+	 */
 	public int getLevels() {
 		return levels;
 	}
 
+	/**
+	 * 
+	 * @return The root of the tree.
+	 */
 	public EBNode getRoot() {
 		return root;
 	}
 
 	/**
-	 * Sets the root iff the root is null
+	 * Sets the root iff the root is null.
 	 * 
 	 * @param root
+	 *            The root to be set.
 	 */
 	public void setRoot(EBNode root) {
 		if (this.root == null) {
@@ -63,11 +72,11 @@ public abstract class EBTree {
 
 	/**
 	 * A new tree is constructed from the input ArrayList using
-	 * {@link #addNode(EBNode) addNode}
+	 * {@link #addNode(EBNode) addNode}.
 	 * 
 	 * @param nodes
-	 *            ArrayList of nodes used to construct the tree
-	 * @return The tree constructed using the nodes
+	 *            ArrayList of nodes used to construct the tree.
+	 * @return The tree constructed using the nodes.
 	 */
 	public void constructTree(ArrayList<EBNode> nodes) {
 		if (nodes.size() == 0) {

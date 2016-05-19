@@ -17,12 +17,25 @@ package net.edudb.data_type;
  */
 public abstract class DataType implements Comparable<DataType> {
 
+	/**
+	 * This method is used in the {@link net.edudb.index.kDTree}.
+	 * 
+	 * @param dataType
+	 * @return
+	 */
 	public abstract double diff(DataType dataType);
 
 	public abstract int compareTo(DataType dataType);
 
 	public abstract String toString();
 
+	/**
+	 * Checks whether a given type is supported.
+	 * 
+	 * @param typeName
+	 *            The type to check if it is supported.
+	 * @return The support state of the given type.
+	 */
 	public static boolean isSupported(String typeName) {
 		switch (typeName.toLowerCase()) {
 		case "bool":
