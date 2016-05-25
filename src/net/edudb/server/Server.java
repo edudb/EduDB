@@ -39,6 +39,7 @@ import net.edudb.console.executor.DropDatabaseExecutor;
 import net.edudb.console.executor.DropTableExecutor;
 import net.edudb.console.executor.OpenDatabaseExecutor;
 import net.edudb.console.executor.SQLExecutor;
+import net.edudb.engine.Config;
 import net.edudb.engine.DatabaseSystem;
 import net.edudb.server.executor.*;
 
@@ -103,17 +104,29 @@ public class Server {
 			MenuItem clientItem = new MenuItem("Open client");
 			ActionListener clientListener = new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					String url = ClassLoader.getSystemClassLoader().getResource(".").getPath();
-					String path = url + "edudb-client";
+					String cli = "";
+					String argument = "";
+					String command = "";
+					String path = Config.absolutePath() + "edudb-client";
 
-					String command = null;
+					// String command = null;
+					ProcessBuilder pb;
 					if (System.getProperty("os.name").startsWith("Windows")) {
-						command = "cmd /c start " + path.substring(1);
+						// command = "cmd /c start " + path.substring(1);
+						cli = "cmd";
+						argument = "/c";
+						command = "start";
+						path = path.substring(1);
+						pb = new ProcessBuilder(cli, argument, path);
 					} else {
-						command = "/usr/bin/open -a Terminal " + path;
+						// command = "/usr/bin/open -a Terminal " + path;
+						cli = "/usr/bin/open";
+						argument = "-a";
+						command = "Terminal";
+						pb = new ProcessBuilder(cli, argument, command, path);
 					}
 					try {
-						Runtime.getRuntime().exec(command);
+						Process p = pb.start();
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}

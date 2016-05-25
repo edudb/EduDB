@@ -41,4 +41,4 @@ if [[ "$_java" ]]; then
     fi
 fi
 
-exec java -jar `dirname $0`/edudb.jar
+exec java -jar "`dirname "$0"`/edudb.jar"
