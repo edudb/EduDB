@@ -19,7 +19,7 @@ package net.edudb.statement;
 import gudusoft.gsqlparser.TCustomSqlStatement;
 import gudusoft.gsqlparser.stmt.TDeleteSqlStatement;
 
-public class SQLDeleteStatement implements SQLStatement {
+public class SQLDeleteStatement extends SQLStatement {
 	
 	/**
 	 * <b>ATTENTION</b><br>

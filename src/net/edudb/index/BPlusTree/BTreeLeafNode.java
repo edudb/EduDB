@@ -10,10 +10,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.index.BPlusTree;
 
-import net.edudb.db_operator.DBCond;
-import net.edudb.db_operator.SelectColumns;
-import net.edudb.structure.DBRecord;
-
 import java.util.ArrayList;
 
 /**
@@ -207,41 +203,41 @@ class BTreeLeafNode<TKey extends Comparable<TKey>, TValue> extends BTreeNode<TKe
 		return this;
 	}
 
-	@Override
-	public String project(SelectColumns columns) {
-		String out = "";
-		for (int index = 0; index < this.getKeyCount(); ++index) {
-			if (filters.size() != 0) {
-				if (!filters.get(index)) {
-					continue;
-				}
-			}
-			TValue value = this.getValue(index);
-			if (value instanceof DBRecord) {
-				DBRecord record = (DBRecord) value;
-				String inc = record.project(columns);
-				out += inc + "\n";
-			} else {
-				out += this.getValue(index).toString() + " ";
-			}
-		}
-		filters = new ArrayList<>();
-		return out;
-	}
+	// @Override
+	// public String project(SelectColumns columns) {
+	// String out = "";
+	// for (int index = 0; index < this.getKeyCount(); ++index) {
+	// if (filters.size() != 0) {
+	// if (!filters.get(index)) {
+	// continue;
+	// }
+	// }
+	// TValue value = this.getValue(index);
+	// if (value instanceof DBRecord) {
+	// DBRecord record = (DBRecord) value;
+	// String inc = record.project(columns);
+	// out += inc + "\n";
+	// } else {
+	// out += this.getValue(index).toString() + " ";
+	// }
+	// }
+	// filters = new ArrayList<>();
+	// return out;
+	// }
 
-	@Override
-	public void filter(ArrayList<DBCond> conditions) {
-		for (int index = 0; index < this.getKeyCount(); ++index) {
-			TValue value = this.getValue(index);
-			if (value instanceof DBRecord) {
-				DBRecord record = (DBRecord) value;
-				String inc = record.evaluate(conditions);
-				if (inc.equals("")) {
-					filters.add(false);
-				} else {
-					filters.add(true);
-				}
-			}
-		}
-	}
+	// @Override
+	// public void filter(ArrayList<DBCond> conditions) {
+	// for (int index = 0; index < this.getKeyCount(); ++index) {
+	// TValue value = this.getValue(index);
+	// if (value instanceof DBRecord) {
+	// DBRecord record = (DBRecord) value;
+	// String inc = record.evaluate(conditions);
+	// if (inc.equals("")) {
+	// filters.add(false);
+	// } else {
+	// filters.add(true);
+	// }
+	// }
+	// }
+	// }
 }

@@ -22,7 +22,7 @@ import gudusoft.gsqlparser.stmt.TUpdateSqlStatement;
  * @author Ahmed Abdul Badie
  *
  */
-public class SQLUpdateStatement implements SQLStatement {
+public class SQLUpdateStatement extends SQLStatement {
 
 	/**
 	 * <b>ATTENTION</b><br>

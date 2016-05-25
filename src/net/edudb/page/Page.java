@@ -18,13 +18,13 @@ import net.edudb.structure.Record;
  * @author Ahmed Abdul Badie
  *
  */
-public interface Page {
+public abstract class Page {
 
 	/**
 	 * 
 	 * @return Name of the page.
 	 */
-	public String getName();
+	public abstract String getName();
 
 	/**
 	 * 
@@ -32,13 +32,13 @@ public interface Page {
 	 *            Index of record to return.
 	 * @return The required record.
 	 */
-	public Record getRecord(int index);
+	public abstract Record getRecord(int index);
 
 	/**
 	 * 
 	 * @return Records inside the page.
 	 */
-	public Record[] getRecords();
+	public abstract Record[] getRecords();
 
 	/**
 	 * Adds a record to the page.
@@ -46,47 +46,47 @@ public interface Page {
 	 * @param record
 	 *            Record to be added to the page.
 	 */
-	public void addRecord(Record record);
+	public abstract void addRecord(Record record);
 
 	/**
 	 * 
 	 * @return Number of records the page can hold.
 	 */
-	public int capacity();
+	public abstract int capacity();
 
 	/**
 	 * 
 	 * @return Number of records in the page.
 	 */
-	public int size();
+	public abstract int size();
 
 	/**
 	 * 
 	 * @return Page is full.
 	 */
-	public boolean isFull();
+	public abstract boolean isFull();
 
 	/**
 	 * 
 	 * @return Page has no records.
 	 */
-	public boolean isEmpty();
+	public abstract boolean isEmpty();
 
 	/**
 	 * Increments the open count.
 	 */
-	public void open();
+	public abstract void open();
 
 	/**
 	 * Decrements the open count;
 	 */
-	public void close();
+	public abstract void close();
 
-	public boolean isOpen();
+	public abstract boolean isOpen();
 
 	/**
 	 * Prints the records to the console.
 	 */
-	public void print();
+	public abstract void print();
 
 }

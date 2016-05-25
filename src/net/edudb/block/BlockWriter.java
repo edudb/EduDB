@@ -20,7 +20,7 @@ import net.edudb.page.Page;
  * @author Ahmed Abdul Badie
  *
  */
-public interface BlockWriter {
+public abstract class BlockWriter {
 
 	/**
 	 * Writes a page to disk.
@@ -29,6 +29,6 @@ public interface BlockWriter {
 	 *            The page to write to disk.
 	 * @throws IOException
 	 */
-	public void write(Page page) throws IOException;
+	public abstract void write(Page page) throws IOException;
 
 }

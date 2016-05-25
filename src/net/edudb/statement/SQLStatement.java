@@ -18,20 +18,20 @@ import net.edudb.operator.parameter.OperatorParameter;
  * @author Ahmed Abdul Badie
  *
  */
-public interface SQLStatement extends OperatorParameter {
+public abstract class SQLStatement implements OperatorParameter {
 
 	/**
 	 * 
 	 * @return The target table's name of the SQL statement.
 	 */
-	public String getTableName();
+	public abstract String getTableName();
 
 	/**
 	 * 
 	 * @return The type of the SQL statement.
 	 */
-	public SQLStatementType statementType();
+	public abstract SQLStatementType statementType();
 
-	public String toString();
+	public abstract String toString();
 
 }

@@ -23,7 +23,7 @@ import net.edudb.structure.Record;
  * @author Ahmed Abdul Badie
  *
  */
-public class BinaryPage implements Page, Serializable {
+public class BinaryPage extends Page implements Serializable {
 
 	private static final long serialVersionUID = 4813060042690551966L;
 

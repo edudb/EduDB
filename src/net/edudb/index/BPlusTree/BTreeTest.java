@@ -8,11 +8,10 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-
 package net.edudb.index.BPlusTree;
 
 public class BTreeTest {
-	public static void main(String args[]){
+	public static void main(String args[]) {
 		IntegerBTree tree = new IntegerBTree();
 
 		tree.insert(10);
@@ -20,9 +19,9 @@ public class BTreeTest {
 		tree.insert(23);
 		tree.insert(33);
 		tree.insert(12);
-		
+
 		tree.insert(50);
-		
+
 		tree.insert(15);
 		tree.insert(18);
 		tree.insert(20);
@@ -31,18 +30,17 @@ public class BTreeTest {
 		tree.insert(45);
 		tree.insert(47);
 		tree.insert(52);
-		
+
 		tree.insert(30);
-		
+
 		tree.insert(19);
 		tree.insert(22);
-		
+
 		tree.insert(11);
 		tree.insert(13);
 		tree.insert(16);
 		tree.insert(17);
-		
-		
+
 		tree.insert(1);
 		tree.insert(2);
 		tree.insert(3);
@@ -52,20 +50,19 @@ public class BTreeTest {
 		tree.insert(7);
 		tree.insert(8);
 		tree.insert(9);
-		
+
 		tree.print();
-        //DBBTreeIterator iterator = new DBBTreeIterator(tree);
-        //iterator.print();
+		// DBBTreeIterator iterator = new DBBTreeIterator(tree);
+		// iterator.print();
 		return;
 	}
 }
-
 
 class IntegerBTree extends BTree<Integer, Integer> {
 	public void insert(int key) {
 		this.insert(key, key);
 	}
-	
+
 	public void remove(int key) {
 		this.delete(key);
 	}

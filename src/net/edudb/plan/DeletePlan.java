@@ -28,7 +28,7 @@ import net.edudb.statistics.Schema;
  * @author Ahmed Abdul Badie
  *
  */
-public class DeletePlan implements Plan {
+public class DeletePlan extends Plan {
 
 	@Override
 	public QueryTree makePlan(SQLStatement sqlStatement) {

@@ -22,7 +22,7 @@ import net.edudb.engine.Config;
  * @author Ahmed Abdul Badie
  *
  */
-public class BinaryTableReader implements TableReader {
+public class BinaryTableReader extends TableReader {
 
 	@Override
 	public Table read(String tableName) throws IOException, ClassNotFoundException {

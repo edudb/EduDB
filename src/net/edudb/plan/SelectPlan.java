@@ -20,7 +20,7 @@ import net.edudb.statement.SQLStatement;
  * @author Ahmed Abdul Badie
  *
  */
-public class SelectPlan implements Plan {
+public class SelectPlan extends Plan {
 
 	@Override
 	public QueryTree makePlan(SQLStatement sqlStatement) {

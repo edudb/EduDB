@@ -22,7 +22,7 @@ import net.edudb.engine.Config;
  * @author Ahmed Abdul Badie
  *
  */
-public class BinaryTableWriter implements TableWriter {
+public class BinaryTableWriter extends TableWriter {
 
 	@Override
 	public void write(Table table) throws IOException {

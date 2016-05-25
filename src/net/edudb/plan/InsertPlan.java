@@ -29,7 +29,7 @@ import net.edudb.structure.table.TableManager;
  * 
  * @author Ahmed Abdul Badie
  */
-public class InsertPlan implements Plan {
+public class InsertPlan extends Plan {
 
 	@Override
 	public QueryTree makePlan(SQLStatement sqlStatement) {

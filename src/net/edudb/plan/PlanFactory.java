@@ -19,7 +19,7 @@ import net.edudb.statement.SQLStatement;
  * 
  * @author Ahmed Abdul Badie
  */
-public class PlanFactory implements Plan {
+public class PlanFactory extends Plan {
 	@Override
 	public QueryTree makePlan(SQLStatement statement) {
 		switch (statement.statementType()) {

@@ -18,7 +18,7 @@ import java.io.IOException;
  * @author Ahmed Abdul Badie
  *
  */
-public interface TableReader {
+public abstract class TableReader {
 
 	/**
 	 * Reads a table's information from disk.
@@ -29,6 +29,6 @@ public interface TableReader {
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	public Table read(String tableName) throws IOException, ClassNotFoundException;
+	public abstract Table read(String tableName) throws IOException, ClassNotFoundException;
 
 }

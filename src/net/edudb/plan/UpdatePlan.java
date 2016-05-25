@@ -29,7 +29,7 @@ import net.edudb.statistics.Schema;
  * @author Ahmed Abdul Badie
  *
  */
-public class UpdatePlan implements Plan {
+public class UpdatePlan extends Plan {
 
 	@Override
 	public QueryTree makePlan(SQLStatement sqlStatement) {
