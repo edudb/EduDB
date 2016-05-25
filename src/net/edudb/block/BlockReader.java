@@ -20,7 +20,7 @@ import net.edudb.page.Page;
  * @author Ahmed Abdul Badie
  *
  */
-public interface BlockReader {
+public abstract class BlockReader {
 
 	/**
 	 * Reads a page from disk.
@@ -31,6 +31,6 @@ public interface BlockReader {
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	public Page read(String blockName) throws IOException, ClassNotFoundException;
+	public abstract Page read(String blockName) throws IOException, ClassNotFoundException;
 
 }

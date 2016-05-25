@@ -20,7 +20,7 @@ import gudusoft.gsqlparser.stmt.TCreateTableSqlStatement;
  * @author Ahmed Abdul Badie
  *
  */
-public class SQLCreateTableStatement implements SQLStatement {
+public class SQLCreateTableStatement extends SQLStatement {
 
 	/**
 	 * <b>ATTENTION</b><br>

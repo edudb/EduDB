@@ -104,21 +104,28 @@ public class TableRecord implements Record, Serializable {
 		return leftValue.compareTo(rightValue) == 0;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Record equiJoin(Record record, Column column) {
 		Record joinedRecord = this.join(record);
-		LinkedHashMap<Column, DataType> data = joinedRecord.getData();
+		LinkedHashMap<Column, DataType> dataClone = (LinkedHashMap<Column, DataType>) joinedRecord.getData().clone();
 		int columnToRemoveOrder = this.data.size() + column.getOrder();
 
-		data.remove(new Column(columnToRemoveOrder));
+		Record resultRecord = new TableRecord();
 
-		data.forEach((key, value) -> {
+		// dataClone.remove(new Column(columnToRemoveOrder));
+
+		dataClone.forEach((key, value) -> {
 			if (key.getOrder() > columnToRemoveOrder) {
-				key.setOrder(key.getOrder() - 1);
+				resultRecord.addValue(
+						new Column(key.getOrder() - 1, key.getName(), key.getTableName(), key.getTypeName()), value);
+			} else if (key.getOrder() < columnToRemoveOrder) {
+				resultRecord.addValue(new Column(key.getOrder(), key.getName(), key.getTableName(), key.getTypeName()),
+						value);
 			}
 		});
 
-		return joinedRecord;
+		return resultRecord;
 	}
 
 	@Override

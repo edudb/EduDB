@@ -70,22 +70,6 @@ public class BufferManager {
 		return page;
 	}
 
-	// /**
-	// * Writes a page from the buffer to disk if available.
-	// *
-	// * @param pageName
-	// * Name of page to write.
-	// */
-	// public synchronized void write(String pageName) {
-	// Page page = null;
-	//
-	// page = pageBuffer.get(pageName);
-	//
-	// if (page != null) {
-	// this.writeToDisk(page);
-	// }
-	// }
-
 	/**
 	 * Writes a page to disk and adds it to the buffer.
 	 * 
@@ -95,10 +79,6 @@ public class BufferManager {
 	public synchronized void write(Page page) {
 		// this.pageBuffer.put(page.getName(), page);
 		replacement.put(page);
-	}
-
-	private synchronized void remove() {
-		replacement.remove();
 	}
 
 	/**
@@ -120,19 +100,6 @@ public class BufferManager {
 	 * @return The page read from disk.
 	 */
 	private Page readFromDisk(String pageName) {
-		// Page page = null;
-		// BlockAbstractFactory blockReaderFactory = new BlockReaderFactory();
-		// BlockReader blockReader =
-		// blockReaderFactory.getReader(Config.blockType());
-		// try {
-		// page = blockReader.read(pageName);
-		// return page;
-		// } catch (ClassNotFoundException | IOException e) {
-		// e.printStackTrace();
-		// }
-		//
-		// return null;
-
 		return FileManager.getInstance().readPage(pageName);
 	}
 
@@ -144,14 +111,9 @@ public class BufferManager {
 	 *            The page to be written to disk.
 	 */
 	private void writeToDisk(Page page) {
-		// BlockAbstractFactory blockFactory = new BlockWriterFactory();
-		// BlockWriter blockWriter = blockFactory.getWriter(Config.blockType());
-		//
-		// try {
-		// blockWriter.write(page);
-		// } catch (IOException e) {
-		// e.printStackTrace();
-		// }
+		if (pageBuffer.get(page) != null) {
+			return;
+		}
 		FileManager.getInstance().writePage(page);
 	}
 

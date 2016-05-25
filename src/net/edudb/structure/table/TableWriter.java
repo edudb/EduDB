@@ -18,7 +18,7 @@ import java.io.IOException;
  * @author Ahmed Abdul Badie
  *
  */
-public interface TableWriter {
+public abstract class TableWriter {
 
 	/**
 	 * Writes a table's information to disk.
@@ -27,6 +27,6 @@ public interface TableWriter {
 	 *            The table's information to write to disk.
 	 * @throws IOException
 	 */
-	public void write(Table table) throws IOException;
+	public abstract void write(Table table) throws IOException;
 
 }

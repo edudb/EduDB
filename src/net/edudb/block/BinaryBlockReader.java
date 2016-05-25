@@ -23,7 +23,7 @@ import net.edudb.page.Page;
  * @author Ahmed Abdul Badie
  *
  */
-public class BinaryBlockReader implements BlockReader {
+public class BinaryBlockReader extends BlockReader {
 
 	@Override
 	public Page read(String blockName) throws IOException, ClassNotFoundException {

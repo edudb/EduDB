@@ -20,7 +20,7 @@ import net.edudb.statement.SQLStatement;
  * 
  * @author Ahmed Abdul Badie
  */
-public interface Plan {
+public abstract class Plan {
 	/**
 	 * Creates a plan that will be executed.
 	 * 
@@ -28,5 +28,5 @@ public interface Plan {
 	 *            The SQL statement to derive the plan from.
 	 * @return The derived plan.
 	 */
-	public QueryTree makePlan(SQLStatement sqlStatement);
+	public abstract QueryTree makePlan(SQLStatement sqlStatement);
 }

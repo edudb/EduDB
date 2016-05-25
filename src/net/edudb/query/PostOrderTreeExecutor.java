@@ -15,6 +15,13 @@ import net.edudb.operator.executor.*;
 import net.edudb.relation.Relation;
 
 /**
+ * This strategy executes each relational operator and returns the result as a
+ * volatile relation which is not intended to be saved to disk. However, there
+ * is a drawback. After executing each operator, the relations are not removed
+ * from memory or disk and therefore are persisted whenever a page is replaced
+ * or the system exits. You can remove the relation after being used to make
+ * sure that they are not persisted to disk.
+ * 
  * @see PostOrderOperatorExecutor
  * 
  * @author Ahmed Abdul Badie

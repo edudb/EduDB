@@ -19,7 +19,7 @@ import gudusoft.gsqlparser.stmt.TSelectSqlStatement;
  * @author Ahmed Abdul Badie
  *
  */
-public class SQLSelectStatement implements SQLStatement {
+public class SQLSelectStatement extends SQLStatement {
 
 	/**
 	 * <b>ATTENTION</b><br>

@@ -23,7 +23,7 @@ import net.edudb.page.Page;
  * @author Ahmed Abdul Badie
  *
  */
-public class BinaryBlockWriter implements BlockWriter {
+public class BinaryBlockWriter extends BlockWriter {
 
 	@Override
 	public void write(Page page) throws IOException {

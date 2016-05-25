@@ -36,6 +36,7 @@ public class FilterExecutor extends PostOrderOperatorExecutor implements Operato
 		if (operator instanceof FilterOperator) {
 			FilterOperator filter = (FilterOperator) operator;
 			ExpressionTree tree = (ExpressionTree) filter.getParameter();
+			
 			Relation relation = getChain().execute((Operator) filter.getChild());
 
 			RelationIterator ri = relation.getIterator();
