@@ -153,7 +153,6 @@ public class DatabaseConsole {
 		ConsoleExecutorChain exit = new ExitExecutor();
 		ConsoleExecutorChain help = new HelpExecutor();
 		ConsoleExecutorChain copy = new CopyExecutor();
-//		ConsoleExecutorChain test = new ConcurrentTestExecutor();
 		ConsoleExecutorChain open = new OpenDatabaseExecutor();
 		ConsoleExecutorChain close = new CloseDatabaseExecutor();
 		ConsoleExecutorChain dropTable = new DropTableExecutor();
@@ -161,7 +160,7 @@ public class DatabaseConsole {
 		ConsoleExecutorChain drop = new DropDatabaseExecutor();
 		ConsoleExecutorChain sql = new SQLExecutor();
 
-		return DatabaseConsole.connectChain(new ConsoleExecutorChain[] { clear, exit, help, copy, /*test,*/ open, close,
+		return DatabaseConsole.connectChain(new ConsoleExecutorChain[] { clear, exit, help, copy, open, close,
 				dropTable, create, drop, sql });
 	}
 

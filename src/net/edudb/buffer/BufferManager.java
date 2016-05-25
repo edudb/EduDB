@@ -51,20 +51,15 @@ public class BufferManager {
 	 * @return Page The read page.
 	 */
 	public synchronized Page read(String pageName) {
-
 		Page page = replacement.read(pageName);
 
-		// page = pageBuffer.get(pageName);
 		if (page != null) {
-			// pageBuffer.put(page.getName(),
-			// pageBuffer.remove(page.getName()));
 			return page;
 		}
 
 		page = this.readFromDisk(pageName);
 
 		if (page != null) {
-			// pageBuffer.put(pageName, page);
 			replacement.put(page);
 		}
 		return page;
@@ -77,7 +72,6 @@ public class BufferManager {
 	 *            The page to write.
 	 */
 	public synchronized void write(Page page) {
-		// this.pageBuffer.put(page.getName(), page);
 		replacement.put(page);
 	}
 
