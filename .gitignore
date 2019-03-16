@@ -26,7 +26,8 @@ $RECYCLE.BIN/
 .LSOverride
 
 # Icon must ends with two \r.
-Icon
+Icon
+
 
 # Thumbnails
 ._*
@@ -35,3 +36,9 @@ Icon
 .Spotlight-V100
 .Trashes
 /bin/
+
+# Data
+/out/
+
+# Local IntelliJ Project Folder
+/.idea/
