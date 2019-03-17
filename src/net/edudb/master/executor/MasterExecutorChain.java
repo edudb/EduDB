@@ -8,46 +8,32 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.master;
-
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.util.ReferenceCountUtil;
+package net.edudb.master.executor;
 
 /**
- *
- * Handles a server-side channel.
+ * An interface, that implements the Chain of Responsibility design pattern, that
+ * is used to execute commands received at the master node.
  *
  * @author Fady Sameh
  *
  */
-public class MasterHandler extends ChannelInboundHandlerAdapter {
+public interface MasterExecutorChain {
 
-    @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        ByteBuf in = (ByteBuf) msg;
+    /**
+     * Connects an existing executor chain with the argument chain element.
+     *
+     * @param chainElement
+     *            The {@link MasterExecutorChain} to be set next in the chain.
+     */
+    public void setNextElementInChain(MasterExecutorChain chainElement);
 
-        String s = "";
-        try {
-            while (in.isReadable()) {
-                s += (char) in.readByte();
-            }
-
-            MasterWriter.getInstance().setContext(ctx);
-            MasterWriter.getInstance().write("[edudb::init]");
-            Master.getExecutionChain().execute(s);
-            MasterWriter.getInstance().writeln("[edudb::endofstring]");
-
-        } finally {
-            ReferenceCountUtil.release(msg);
-        }
-    }
-
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) { // (4)
-        // Close the connection when an exception is raised.
-        cause.printStackTrace();
-        ctx.close();
-    }
+    /**
+     * Executes the passed command. Classes that implement the
+     * {@link MasterExecutorChain} interface handles the execution of the
+     * passed command according to their functionality.
+     *
+     * @param string
+     *            The command to execute.
+     */
+    public void execute(String string);
 }

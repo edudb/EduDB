@@ -18,6 +18,8 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import net.edudb.master.executor.MasterExecutorChain;
+import net.edudb.master.executor.InitializeExecutor;
 
 /**
  *
@@ -55,6 +57,18 @@ public class Master {
             workerGroup.shutdownGracefully();
             bossGroup.shutdownGracefully();
         }
+    }
+
+    public  static MasterExecutorChain getExecutionChain() {
+        MasterExecutorChain init = new InitializeExecutor();
+        return connectChain(new MasterExecutorChain[] {init});
+    }
+
+    public static MasterExecutorChain connectChain(MasterExecutorChain[] chainElements) {
+        for (int i = 0; i < chainElements.length - 1; i++) {
+            chainElements[i].setNextElementInChain(chainElements[i + 1]);
+        }
+        return chainElements[0];
     }
 
     public static void main(String[] args) throws Exception {
