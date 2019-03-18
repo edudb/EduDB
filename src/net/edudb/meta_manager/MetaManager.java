@@ -86,6 +86,27 @@ public class MetaManager implements MetaDAO, Runnable {
         }
     }
 
+    public void initializeTables() throws InterruptedException {
+        createMetaDatabase();
+        Thread.sleep(500);
+        openMetaDatabase();
+        Thread.sleep(500);
+        createWorkersTable();
+    }
+
+    private void createMetaDatabase() {
+
+        MetaWriter.getInstance().writeln("create database metadata");
+    }
+
+    private void openMetaDatabase() {
+        MetaWriter.getInstance().writeln("open database metadata");
+    }
+
+    private void createWorkersTable() {
+        MetaWriter.getInstance().writeln("create table workers (host Varchar, port Integer)");
+    }
+
     public void setConnected(boolean connected) { this.connected = connected; }
 
     public boolean isConnected() { return this.connected; }

@@ -13,7 +13,6 @@ package net.edudb.master.executor;
 import net.edudb.engine.Utility;
 import java.util.regex.Matcher;
 import net.edudb.master.MasterWriter;
-import net.edudb.meta_manager.MetaDAO;
 import net.edudb.meta_manager.MetaManager;
 
 /**
@@ -67,6 +66,6 @@ public class InitializeExecutor implements MasterExecutorChain {
             }
         }
         //MasterWriter.getInstance().write("[edudb::mismatch]");
-        //nextElement.execute(string);
+        nextElement.execute(string);
     }
 }

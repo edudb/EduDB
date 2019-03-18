@@ -30,8 +30,8 @@ public class MetaHandler extends ChannelInboundHandlerAdapter {
                 s += (char) in.readByte();
             }
 
-            System.out.println("Message from meta database");
-            System.out.println(s);
+//            System.out.println("Message from meta database");
+//            System.out.println(s);
 
             MetaWriter.getInstance().setContext(ctx);
             if (s.contains("[edudb::init]")) {
