@@ -8,45 +8,53 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.master;
+package net.edudb.meta_manager;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.util.ReferenceCountUtil;
 
 /**
- *
- * Handles a server-side channel.
  *
  * @author Fady Sameh
  *
  */
-public class MasterHandler extends ChannelInboundHandlerAdapter {
+public class MetaHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         ByteBuf in = (ByteBuf) msg;
-
         String s = "";
         try {
             while (in.isReadable()) {
                 s += (char) in.readByte();
             }
 
-            MasterWriter.getInstance().setContext(ctx);
-            Master.getExecutionChain().execute(s);
-            MasterWriter.getInstance().writeln("[edudb::endofstring]");
+            System.out.println("Message from meta database");
+            System.out.println(s);
+
+            MetaWriter.getInstance().setContext(ctx);
+            if (s.contains("[edudb::init]")) {
+                MetaManager.getInstance().setConnected(true);
+            } else if (s.contains("[edudb::mismatch]")) {
+                System.out.println("Wrong username and/or password\nExiting...");
+                //exit();
+            } else if (s.contains("[edudb::exit]")) {
+                System.out.println("The server went away");
+                //exit();
+            } else if (s.contains("[edudb::endofstring]")) {
+                s = s.replace("[edudb::endofstring]\r\n", "");
+
+                if (s.length() > 0) {
+                    System.out.print(s);
+                }
+                //setReceiving(false);
+            } else {
+                System.out.print(s);
+            }
 
         } finally {
-            ReferenceCountUtil.release(msg);
+            in.release();
         }
-    }
-
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) { // (4)
-        // Close the connection when an exception is raised.
-        cause.printStackTrace();
-        ctx.close();
     }
 }

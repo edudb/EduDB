@@ -13,6 +13,8 @@ package net.edudb.master.executor;
 import net.edudb.engine.Utility;
 import java.util.regex.Matcher;
 import net.edudb.master.MasterWriter;
+import net.edudb.meta_manager.MetaDAO;
+import net.edudb.meta_manager.MetaManager;
 
 /**
  * Handles the initialization of the connection with the client.
@@ -47,14 +49,24 @@ public class InitializeExecutor implements MasterExecutorChain {
                  * it.
                  *
                  */
+
+
                 if (matcher.group(1).equals("admin") && matcher.group(2).equals("admin")) {
                     MasterWriter.getInstance().write("[edudb::init]");
+                    /**
+                     * If master is not connected to meta database, connect
+                     * to it
+                     */
+                    if (!MetaManager.getInstance().isConnected()) {
+                        new Thread(MetaManager.getInstance()).start();
+                    }
                 } else {
                     MasterWriter.getInstance().write("[edudb::mismatch]");
                 }
                 return;
             }
         }
+        //MasterWriter.getInstance().write("[edudb::mismatch]");
         //nextElement.execute(string);
     }
 }

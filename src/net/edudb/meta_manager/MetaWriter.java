@@ -8,45 +8,46 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.master;
+package net.edudb.meta_manager;
 
+import com.google.common.base.Charsets;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.util.ReferenceCountUtil;
 
 /**
- *
- * Handles a server-side channel.
+ * A singleton that handles sending messages to the database server
+ * holding the cluster's meta data
  *
  * @author Fady Sameh
- *
  */
-public class MasterHandler extends ChannelInboundHandlerAdapter {
+public class MetaWriter {
 
-    @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        ByteBuf in = (ByteBuf) msg;
+    private static MetaWriter instance = new MetaWriter();
+    private ChannelHandlerContext context;
 
-        String s = "";
-        try {
-            while (in.isReadable()) {
-                s += (char) in.readByte();
-            }
+    private MetaWriter(){
+    }
 
-            MasterWriter.getInstance().setContext(ctx);
-            Master.getExecutionChain().execute(s);
-            MasterWriter.getInstance().writeln("[edudb::endofstring]");
+    public static MetaWriter getInstance() { return instance; }
 
-        } finally {
-            ReferenceCountUtil.release(msg);
+    public void setContext(ChannelHandlerContext context) {
+        this.context = context;
+    }
+
+    public void writeln(Object obj) {
+        if (context != null) {
+            ByteBuf buf = Unpooled.copiedBuffer(obj.toString() + "\n", Charsets.UTF_8);
+
+            context.writeAndFlush(buf);
         }
     }
 
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) { // (4)
-        // Close the connection when an exception is raised.
-        cause.printStackTrace();
-        ctx.close();
+    public void write(Object obj) {
+        if (context != null) {
+            ByteBuf buf = Unpooled.copiedBuffer(obj.toString(), Charsets.UTF_8);
+
+            context.writeAndFlush(buf);
+        }
     }
 }

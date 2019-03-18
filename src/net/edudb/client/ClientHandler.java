@@ -35,7 +35,8 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			while (in.isReadable()) {
 				s += (char) in.readByte();
 			}
-
+			System.out.println("message from server");
+			System.out.println(s);
 			ClientWriter.getInstance().setContext(ctx);
 			if (s.contains("[edudb::init]")) {
 				Client.getInstance().setConnected(true);
