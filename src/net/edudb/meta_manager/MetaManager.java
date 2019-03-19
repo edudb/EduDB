@@ -21,6 +21,9 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import net.edudb.engine.Utility;
+
+import java.util.Hashtable;
 
 /**
  * A singleton that handles all interactions with database holding
@@ -34,6 +37,12 @@ public class MetaManager implements MetaDAO, Runnable {
     private static MetaManager instance = new MetaManager();
     private int port;
     private boolean connected;
+
+    /**
+     * Used to generate busy waiting until response is received
+     * from the meta data database server
+     */
+    private Hashtable<String, String> pendingRequests;
 
     private MetaHandler metaHandler;
 
@@ -105,6 +114,24 @@ public class MetaManager implements MetaDAO, Runnable {
 
     private void createWorkersTable() {
         MetaWriter.getInstance().writeln("create table workers (host Varchar, port Integer)");
+    }
+
+    /**
+     * This function is for testing purposes only and will be removed
+     * @param s
+     */
+    public String forwardCommand(String s) {
+        String id = Utility.generateUUID();
+        pendingRequests.put(id, null);
+        String command = s + "[id:" + id + "]";
+        MetaWriter.getInstance().writeln(command);
+
+        /**
+         * busy waiting till response is received
+         */
+        while (pendingRequests.get(id) == null);
+
+        return pendingRequests.remove(id);
     }
 
     public void setConnected(boolean connected) { this.connected = connected; }

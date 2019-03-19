@@ -15,6 +15,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
 /**
+ * Handles messages received from the meta data database
+ * server
  *
  * @author Fady Sameh
  *

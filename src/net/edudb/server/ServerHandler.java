@@ -24,6 +24,8 @@ import io.netty.util.ReferenceCountUtil;
  */
 public class ServerHandler extends ChannelInboundHandlerAdapter {
 
+	private String regex = "";
+
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) {
 		ByteBuf in = (ByteBuf) msg;

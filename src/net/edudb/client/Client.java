@@ -76,7 +76,7 @@ public class Client {
 
 	public void start() {
 		this.host = "localhost";
-		this.port = 8080;
+		this.port = 9999;
 		this.username = "admin";
 		this.password = "admin";
 

@@ -35,6 +35,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			while (in.isReadable()) {
 				s += (char) in.readByte();
 			}
+
 			System.out.println("message from server");
 			System.out.println(s);
 			ClientWriter.getInstance().setContext(ctx);
@@ -50,11 +51,11 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 				s = s.replace("[edudb::endofstring]\r\n", "");
 
 				if (s.length() > 0) {
-					System.out.print(s);
+					//System.out.print(s);
 				}
 				setReceiving(false);
 			} else {
-				System.out.print(s);
+				//System.out.print(s);
 			}
 
 		} finally {
