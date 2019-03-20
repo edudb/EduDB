@@ -27,10 +27,10 @@ public class SynchronizedTransaction extends Transaction {
 		this.queryTreeExecutor = new PostOrderTreeExecutor();
 	}
 
-	public void run() {
+	public String run() {
 		Relation relation = queryTreeExecutor.execute(plan);
 
-		Relation.print(relation);
+		return Relation.toString(relation);
 	}
 
 }

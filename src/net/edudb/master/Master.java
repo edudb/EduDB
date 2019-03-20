@@ -18,6 +18,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import net.edudb.master.executor.ForwardToMeta;
 import net.edudb.master.executor.InitializeMetaDataExecutor;
 import net.edudb.master.executor.MasterExecutorChain;
 import net.edudb.master.executor.InitializeExecutor;
@@ -63,8 +64,9 @@ public class Master {
     public  static MasterExecutorChain getExecutionChain() {
         MasterExecutorChain init = new InitializeExecutor();
         MasterExecutorChain initMetaData = new InitializeMetaDataExecutor();
+        MasterExecutorChain forwardToMeta = new ForwardToMeta();
 
-        return connectChain(new MasterExecutorChain[] {init, initMetaData});
+        return connectChain(new MasterExecutorChain[] {init, initMetaData, forwardToMeta});
     }
 
     public static MasterExecutorChain connectChain(MasterExecutorChain[] chainElements) {

@@ -38,11 +38,19 @@ public class MetaManager implements MetaDAO, Runnable {
     private int port;
     private boolean connected;
 
+    public Hashtable<String, String> getPendingRequests() {
+        return pendingRequests;
+    }
+
+    public void setPendingRequests(Hashtable<String, String> pendingRequests) {
+        this.pendingRequests = pendingRequests;
+    }
+
     /**
      * Used to generate busy waiting until response is received
      * from the meta data database server
      */
-    private Hashtable<String, String> pendingRequests;
+    private Hashtable<String, String> pendingRequests = new Hashtable<String, String>();
 
     private MetaHandler metaHandler;
 
@@ -122,14 +130,14 @@ public class MetaManager implements MetaDAO, Runnable {
      */
     public String forwardCommand(String s) {
         String id = Utility.generateUUID();
-        pendingRequests.put(id, null);
-        String command = s + "[id:" + id + "]";
+        pendingRequests.put(id, "");
+        String command = s + "[id::" + id + "]";
         MetaWriter.getInstance().writeln(command);
 
         /**
          * busy waiting till response is received
          */
-        while (pendingRequests.get(id) == null);
+        while (pendingRequests.get(id).equals(""));
 
         return pendingRequests.remove(id);
     }

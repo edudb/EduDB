@@ -38,7 +38,7 @@ public class CopyExecutor implements ConsoleExecutorChain {
 	}
 
 	@Override
-	public void execute(String string) {
+	public String execute(String string) {
 		/**
 		 * The string is passed as a command in the first line and data,
 		 * separated by a delimited, in subsequent lines.
@@ -49,8 +49,8 @@ public class CopyExecutor implements ConsoleExecutorChain {
 			if (matcher.matches()) {
 				String tableName = matcher.group(1);
 				if (!Schema.getInstance().chekTableExists(tableName)) {
-					ServerWriter.getInstance().writeln("Table '" + tableName + "' is not available.");
-					return;
+					//ServerWriter.getInstance().writeln("Table '" + tableName + "' is not available.");
+					return "Table '" + tableName + "' is not available.";
 				}
 				Table table = TableManager.getInstance().read(tableName);
 				ArrayList<Column> columns = Schema.getInstance().getColumns(tableName);
@@ -71,11 +71,11 @@ public class CopyExecutor implements ConsoleExecutorChain {
 					++count;
 				}
 
-				ServerWriter.getInstance().writeln("Copied '" + count + "' records");
-				return;
+				//ServerWriter.getInstance().writeln("Copied '" + count + "' records");
+				return "Copied '" + count + "' records";
 			}
 		}
-		nextElement.execute(string);
+		return nextElement.execute(string);
 	}
 
 }

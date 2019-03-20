@@ -91,24 +91,27 @@ public class DatabaseSystem {
 	 * @param databaseName
 	 *            The name of the database to open.
 	 */
-	public void open(String databaseName) {
+	public String open(String databaseName) {
 		if (databaseExists(databaseName)) {
 			this.databaseName = databaseName;
 			this.databaseIsOpen = true;
 			initializeDatabaseDirectories(this.databaseName);
-			ServerWriter.getInstance().writeln("Opened database '" + databaseName + "'");
+			//ServerWriter.getInstance().writeln("Opened database '" + databaseName + "'");
+			return "Opened database '" + databaseName + "'";
 		} else {
-			ServerWriter.getInstance().writeln("Database '" + databaseName + "' does not exist");
+			//ServerWriter.getInstance().writeln("Database '" + databaseName + "' does not exist");
+			return "Database '" + databaseName + "' does not exist";
 		}
 	}
 
 	/**
 	 * Closes the current open database, if any.
 	 */
-	public void close() {
+	public String close() {
 		if (!databaseIsOpen) {
-			ServerWriter.getInstance().writeln("No open database");
-			return;
+//			ServerWriter.getInstance().writeln("No open database");
+//			return;
+			return "No open database";
 		}
 
 		BufferManager.getInstance().writeAll();
@@ -119,7 +122,8 @@ public class DatabaseSystem {
 		this.databaseName = null;
 		this.databaseIsOpen = false;
 
-		ServerWriter.getInstance().writeln("Closed database '" + dbName + "'");
+		//ServerWriter.getInstance().writeln("Closed database '" + dbName + "'");
+		return "Closed database '" + dbName + "'";
 	}
 
 	/**
@@ -128,17 +132,18 @@ public class DatabaseSystem {
 	 * @param databaseName
 	 *            The name of the database to create.
 	 */
-	public void createDatabase(String databaseName) {
+	public String createDatabase(String databaseName) {
 		if (databaseExists(databaseName)) {
-			ServerWriter.getInstance().writeln("Database '" + databaseName + "' does exist");
-			return;
+			//ServerWriter.getInstance().writeln("Database '" + databaseName + "' does exist");
+			return "Database '" + databaseName + "' does exist";
 		}
 		if (databaseIsOpen) {
 			close();
 		}
 		new File(Config.absolutePath() + databasesString + "/" + databaseName).mkdir();
-		ServerWriter.getInstance().writeln("Created database '" + databaseName + "'");
-		open(databaseName);
+//		ServerWriter.getInstance().writeln("Created database '" + databaseName + "'");
+//		open(databaseName);
+		return "Created database '" + databaseName + "'" + "\r\n" + open(databaseName);
 	}
 
 	/**
@@ -148,10 +153,11 @@ public class DatabaseSystem {
 	 *            The name of the database to drop.
 	 * @throws IOException
 	 */
-	public void dropDatabase(String databaseName) throws IOException {
+	public String dropDatabase(String databaseName) throws IOException {
 		if (!databaseExists(databaseName)) {
-			ServerWriter.getInstance().writeln("Database '" + databaseName + "' does not exist");
-			return;
+//			ServerWriter.getInstance().writeln("Database '" + databaseName + "' does not exist");
+//			return;
+			return "Database '" + databaseName + "' does not exist";
 		}
 		if (databaseIsOpen) {
 			close();
@@ -172,7 +178,8 @@ public class DatabaseSystem {
 			}
 		});
 
-		ServerWriter.getInstance().writeln("Dropped database '" + databaseName + "'");
+		//ServerWriter.getInstance().writeln("Dropped database '" + databaseName + "'");
+		return "Dropped database '" + databaseName + "'";
 	}
 
 	/**

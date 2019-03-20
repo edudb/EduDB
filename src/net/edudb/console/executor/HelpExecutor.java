@@ -27,12 +27,12 @@ public class HelpExecutor implements ConsoleExecutorChain {
 	}
 
 	@Override
-	public void execute(String string) {
+	public String execute(String string) {
 		if (string.equalsIgnoreCase("help")) {
 			DatabaseConsole.getInstance().printHelp();
-			return;
+			return "";
 		}
-		nextChainElement.execute(string);
+		return nextChainElement.execute(string);
 	}
 
 }

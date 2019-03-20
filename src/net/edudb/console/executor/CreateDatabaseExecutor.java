@@ -38,15 +38,15 @@ public class CreateDatabaseExecutor implements ConsoleExecutorChain {
 	}
 
 	@Override
-	public void execute(String string) {
+	public String execute(String string) {
 		if (string.toLowerCase().startsWith("create")) {
 			Matcher matcher = Utility.getMatcher(string, regex);
 			if (matcher.matches()) {
-				DatabaseSystem.getInstance().createDatabase(matcher.group(1));
-				return;
+				return DatabaseSystem.getInstance().createDatabase(matcher.group(1));
+
 			}
 		}
-		nextElement.execute(string);
+		return nextElement.execute(string);
 	}
 
 }

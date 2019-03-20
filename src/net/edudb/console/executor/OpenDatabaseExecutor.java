@@ -38,16 +38,16 @@ public class OpenDatabaseExecutor implements ConsoleExecutorChain {
 	}
 
 	@Override
-	public void execute(String string) {
+	public String execute(String string) {
 		if (string.toLowerCase().startsWith("open")) {
 			Matcher matcher = Utility.getMatcher(string, regex);
 			if (matcher.matches()) {
-				DatabaseSystem.getInstance().open(matcher.group(1));
+				return DatabaseSystem.getInstance().open(matcher.group(1));
 
-				return;
+				//return;
 			}
 		}
-		nextElement.execute(string);
+		return nextElement.execute(string);
 	}
 
 }

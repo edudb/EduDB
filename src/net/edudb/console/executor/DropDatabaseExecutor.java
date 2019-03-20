@@ -36,19 +36,19 @@ public class DropDatabaseExecutor implements ConsoleExecutorChain {
 	}
 
 	@Override
-	public void execute(String string) {
+	public String execute(String string) {
 		if (string.toLowerCase().startsWith("drop")) {
 			Matcher matcher = Utility.getMatcher(string, regex);
 			if (matcher.matches()) {
 				try {
-					DatabaseSystem.getInstance().dropDatabase(matcher.group(1));
+					return DatabaseSystem.getInstance().dropDatabase(matcher.group(1));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				return;
+				return "";
 			}
 		}
-		nextElement.execute(string);
+		return nextElement.execute(string);
 	}
 
 }

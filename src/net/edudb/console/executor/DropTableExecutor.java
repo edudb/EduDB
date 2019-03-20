@@ -40,25 +40,25 @@ public class DropTableExecutor implements ConsoleExecutorChain {
 	}
 
 	@Override
-	public void execute(String string) {
+	public String execute(String string) {
 		if (string.toLowerCase().startsWith("drop")) {
 			Matcher matcher = Utility.getMatcher(string, regex);
 			if (matcher.matches()) {
 				String tableName = matcher.group(1);
 				if (!Schema.getInstance().chekTableExists(tableName)) {
-					ServerWriter.getInstance().writeln("Table '" + tableName + "' does not exist");
-					return;
+					//ServerWriter.getInstance().writeln("Table '" + tableName + "' does not exist");
+					return "Table '" + tableName + "' does not exist";
 				}
 
 				Table table = TableManager.getInstance().read(tableName);
 				TableManager.getInstance().delete(table);
 
-				ServerWriter.getInstance().writeln("Dropped table '" + tableName + "'");
+				//ServerWriter.getInstance().writeln("Dropped table '" + tableName + "'");
 
-				return;
+				return "Dropped table '" + tableName + "'";
 			}
 		}
-		nextElement.execute(string);
+		return nextElement.execute(string);
 	}
 
 }

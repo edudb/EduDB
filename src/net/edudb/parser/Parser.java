@@ -52,27 +52,28 @@ public class Parser {
 	 *            The SQL string to parse.
 	 * @throws TranslationException
 	 */
-	public void parseSQL(String strSQL) throws TranslationException {
+	public String parseSQL(String strSQL) throws TranslationException {
 		sqlparser.setSqltext(strSQL.replace(";", ""));
 		int ret = sqlparser.parse();
 		if (ret == 0) {
 			SQLStatementFactory statementFactory = new SQLStatementFactory();
 			SQLStatement statement = statementFactory.makeSQLStatement(sqlparser.sqlstatements.get(0));
 			if (statement == null) {
-				ServerWriter.getInstance().writeln("Unsupported SQL statement");
-				return;
+				//ServerWriter.getInstance().writeln("Unsupported SQL statement");
+				return "Unsupported SQL statement";
 			}
 
 			QueryTree plan = planFactory.makePlan(statement);
 			if (plan == null) {
-				return;
+				return "";
 			}
 
 			SynchronizedTransaction transaction = new SynchronizedTransaction(plan);
-			TransactionManager.getInstance().execute(transaction);
+			return TransactionManager.getInstance().execute(transaction);
 
 		} else {
-			ServerWriter.getInstance().writeln(sqlparser.getErrormessage());
+			//ServerWriter.getInstance().writeln(sqlparser.getErrormessage());
+			return sqlparser.getErrormessage();
 		}
 	}
 }

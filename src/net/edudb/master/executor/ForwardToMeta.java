@@ -1,5 +1,6 @@
 package net.edudb.master.executor;
 
+import net.edudb.master.MasterWriter;
 import net.edudb.meta_manager.MetaManager;
 
 /**
@@ -20,5 +21,6 @@ public class ForwardToMeta implements MasterExecutorChain{
     public void execute(String string) {
         MetaManager metaDAO = MetaManager.getInstance();
         String s = metaDAO.forwardCommand(string);
+        MasterWriter.getInstance().writeln(s);
     }
 }

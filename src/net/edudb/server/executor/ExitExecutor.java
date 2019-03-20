@@ -28,12 +28,12 @@ public class ExitExecutor implements ConsoleExecutorChain {
 	}
 
 	@Override
-	public void execute(String string) {
+	public String execute(String string) {
 		if (string.equalsIgnoreCase("exit")) {
 			ServerWriter.getInstance().getContext().close();
-			return;
+			return "";
 		}
-		nextElement.execute(string);
+		return nextElement.execute(string);
 	}
 
 }

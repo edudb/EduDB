@@ -27,11 +27,11 @@ public class ExitExecutor implements ConsoleExecutorChain {
 	}
 
 	@Override
-	public void execute(String string) {
+	public String execute(String string) {
 		if (string.equalsIgnoreCase("exit")) {
 			DatabaseSystem.getInstance().exit(0);
-			return;
+			return "";
 		}
-		nextElement.execute(string);
+		return nextElement.execute(string);
 	}
 }

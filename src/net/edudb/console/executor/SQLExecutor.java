@@ -28,17 +28,18 @@ public class SQLExecutor implements ConsoleExecutorChain {
 	}
 
 	@Override
-	public void execute(String string) {
+	public String execute(String string) {
 		if (!DatabaseSystem.getInstance().databaseIsOpen()) {
-			ServerWriter.getInstance().writeln("You must open a database first");
-			return;
+			//ServerWriter.getInstance().writeln("You must open a database first");
+			return "You must open a database first";
 		}
 
 		Parser parser = new Parser();
 		try {
-			parser.parseSQL(string);
+			return parser.parseSQL(string);
 		} catch (TranslationException e) {
 			e.printStackTrace();
 		}
+		return "";
 	}
 }

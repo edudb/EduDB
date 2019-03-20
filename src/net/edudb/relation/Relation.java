@@ -42,4 +42,18 @@ public interface Relation extends Table {
 		}
 	}
 
+	public static String toString(Relation relation) {
+		if (relation == null) {
+			return "";
+		}
+
+		String stringRelation = "";
+		RelationIterator relationIterator = relation.getIterator();
+		while (relationIterator.hasNext()) {
+			stringRelation += relationIterator.next() + "\r\n";
+		}
+
+		return stringRelation;
+	}
+
 }

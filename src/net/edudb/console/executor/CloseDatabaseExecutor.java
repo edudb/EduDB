@@ -37,15 +37,14 @@ public class CloseDatabaseExecutor implements ConsoleExecutorChain {
 	}
 
 	@Override
-	public void execute(String string) {
+	public String execute(String string) {
 		if (string.toLowerCase().startsWith("close")) {
 			Matcher matcher = Utility.getMatcher(string, regex);
 			if (matcher.matches()) {
-				DatabaseSystem.getInstance().close();
-				return;
+				return DatabaseSystem.getInstance().close();
 			}
 		}
-		nextElement.execute(string);
+		return nextElement.execute(string);
 	}
 
 }

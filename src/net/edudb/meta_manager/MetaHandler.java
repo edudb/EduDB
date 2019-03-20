@@ -13,6 +13,9 @@ package net.edudb.meta_manager;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import net.edudb.engine.Utility;
+
+import java.util.regex.Matcher;
 
 /**
  * Handles messages received from the meta data database
@@ -23,6 +26,12 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
  */
 public class MetaHandler extends ChannelInboundHandlerAdapter {
 
+    /**
+     * This regex is used is to extract the message id from the incoming
+     * message.
+     */
+    private String regex = "(\\[id::(.+?)\\])";
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         ByteBuf in = (ByteBuf) msg;
@@ -32,8 +41,8 @@ public class MetaHandler extends ChannelInboundHandlerAdapter {
                 s += (char) in.readByte();
             }
 
-//            System.out.println("Message from meta database");
-//            System.out.println(s);
+            System.out.println("Message from meta database");
+            System.out.println(s);
 
             MetaWriter.getInstance().setContext(ctx);
             if (s.contains("[edudb::init]")) {
@@ -47,14 +56,24 @@ public class MetaHandler extends ChannelInboundHandlerAdapter {
             } else if (s.contains("[edudb::endofstring]")) {
                 s = s.replace("[edudb::endofstring]\r\n", "");
 
-                if (s.length() > 0) {
-                    System.out.print(s);
-                }
-                //setReceiving(false);
-            } else {
-                System.out.print(s);
+
             }
 
+
+
+            if (s.length() > 0) {
+                Matcher matcher = Utility.getMatcher(s, regex);
+
+                String messageID = "";
+
+                if (matcher.find()) {
+                    messageID = matcher.group(2);
+                    System.out.println("id " + messageID);
+                    s = matcher.replaceAll("");
+
+                    MetaManager.getInstance().getPendingRequests().put(messageID, s);
+                }
+            }
         } finally {
             in.release();
         }

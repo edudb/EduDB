@@ -39,7 +39,7 @@ public class InitializeExecutor implements ConsoleExecutorChain {
 	}
 
 	@Override
-	public void execute(String string) {
+	public String execute(String string) {
 		if (string.toLowerCase().startsWith("[edudb::")) {
 			Matcher matcher = Utility.getMatcher(string, regex);
 			if (matcher.matches()) {
@@ -49,14 +49,16 @@ public class InitializeExecutor implements ConsoleExecutorChain {
 				 * 
 				 */
 				if (matcher.group(1).equals("admin") && matcher.group(2).equals("admin")) {
-					ServerWriter.getInstance().write("[edudb::init]");
+					//ServerWriter.getInstance().write("[edudb::init]");
+					return "[edudb::init]";
 				} else {
-					ServerWriter.getInstance().write("[edudb::mismatch]");
+					//ServerWriter.getInstance().write("[edudb::mismatch]");
+					return "[edudb::mismatch]";
 				}
-				return;
+
 			}
 		}
-		nextElement.execute(string);
+		return nextElement.execute(string);
 	}
 
 }

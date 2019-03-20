@@ -27,12 +27,12 @@ public class ClearExecutor implements ConsoleExecutorChain {
 	}
 
 	@Override
-	public void execute(String string) {
+	public String execute(String string) {
 		if (string.equalsIgnoreCase("clear")) {
 			DatabaseConsole.getInstance().clearScreen();
 			DatabaseConsole.getInstance().flush();
-			return;
+			return "";
 		}
-		nextChainElement.execute(string);
+		return nextChainElement.execute(string);
 	}
 }

@@ -35,6 +35,6 @@ public interface ConsoleExecutorChain {
 	 * @param string
 	 *            The command to execute.
 	 */
-	public void execute(String string);
+	public String execute(String string);
 
 }
