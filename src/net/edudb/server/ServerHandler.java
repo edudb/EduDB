@@ -15,6 +15,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.ReferenceCountUtil;
 import net.edudb.engine.Utility;
+import net.edudb.response.Response;
 
 import java.util.regex.Matcher;
 
@@ -66,10 +67,11 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 			if (messageID.length() > 0) {
 				result += messageID;
 			}
+			Response response = new Response(result, null, null);
 
-			ServerWriter.getInstance().writeln(result);
+			ServerWriter.getInstance().writeln(response);
 
-			ServerWriter.getInstance().writeln("[edudb::endofstring]");
+			//ServerWriter.getInstance().writeln("[edudb::endofstring]");
 
 		} finally {
 			ReferenceCountUtil.release(msg);

@@ -18,6 +18,8 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.serialization.ClassResolvers;
+import io.netty.handler.codec.serialization.ObjectDecoder;
 import jline.console.ConsoleReader;
 //import jline.console.UserInterruptException;
 import net.edudb.client.console.Console;
@@ -76,7 +78,7 @@ public class Client {
 
 	public void start() {
 		this.host = "localhost";
-		this.port = 8080;
+		this.port = 9999;
 		this.username = "admin";
 		this.password = "admin";
 
@@ -113,7 +115,7 @@ public class Client {
 			b.handler(new ChannelInitializer<SocketChannel>() {
 				@Override
 				public void initChannel(SocketChannel ch) throws Exception {
-					ch.pipeline().addLast(clientHandler);
+					ch.pipeline().addLast(new ObjectDecoder(ClassResolvers.cacheDisabled(null)) , clientHandler);
 				}
 			});
 

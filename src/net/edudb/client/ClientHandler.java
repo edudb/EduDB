@@ -13,6 +13,7 @@ package net.edudb.client;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import net.edudb.response.Response;
 
 /**
  * 
@@ -29,38 +30,43 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) {
-		ByteBuf in = (ByteBuf) msg;
-		String s = "";
-		try {
-			while (in.isReadable()) {
-				s += (char) in.readByte();
-			}
-
-			System.out.println("message from server");
-			System.out.println(s);
-			ClientWriter.getInstance().setContext(ctx);
-			if (s.contains("[edudb::init]")) {
-				Client.getInstance().setConnected(true);
-			} else if (s.contains("[edudb::mismatch]")) {
-				System.out.println("Wrong username and/or password\nExiting...");
-				exit();
-			} else if (s.contains("[edudb::exit]")) {
-				System.out.println("The server went away");
-				exit();
-			} else if (s.contains("[edudb::endofstring]")) {
-				s = s.replace("[edudb::endofstring]\r\n", "");
-
-				if (s.length() > 0) {
-					//System.out.print(s);
-				}
-				setReceiving(false);
-			} else {
-				//System.out.print(s);
-			}
-
-		} finally {
-			in.release();
-		}
+		Response response = (Response) msg;
+		System.out.println(response.getMessage());
+		Client.getInstance().setConnected(true);
+		ClientWriter.getInstance().setContext(ctx);
+		setReceiving(false);
+//		ByteBuf in = (ByteBuf) msg;
+//		String s = "";
+//		try {
+//			while (in.isReadable()) {
+//				s += (char) in.readByte();
+//			}
+//
+//			System.out.println("message from server");
+//			System.out.println(s);
+//			ClientWriter.getInstance().setContext(ctx);
+//			if (s.contains("[edudb::init]")) {
+//				Client.getInstance().setConnected(true);
+//			} else if (s.contains("[edudb::mismatch]")) {
+//				System.out.println("Wrong username and/or password\nExiting...");
+//				exit();
+//			} else if (s.contains("[edudb::exit]")) {
+//				System.out.println("The server went away");
+//				exit();
+//			} else if (s.contains("[edudb::endofstring]")) {
+//				s = s.replace("[edudb::endofstring]\r\n", "");
+//
+//				if (s.length() > 0) {
+//					//System.out.print(s);
+//				}
+//				setReceiving(false);
+//			} else {
+//				//System.out.print(s);
+//			}
+//
+//		} finally {
+//			in.release();
+//		}
 	}
 
 	@Override
