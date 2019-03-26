@@ -10,8 +10,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.response;
 
 import net.edudb.relation.Relation;
+import net.edudb.structure.Record;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * From this class, the response objects sent from
@@ -22,13 +24,25 @@ import java.io.Serializable;
 public class Response implements Serializable {
 
     private String message;
-    private Relation relation;
+    private ArrayList<Record> records;
     private String id;
 
-    public Response(String message, Relation relation, String id) {
+    public Response(String message, ArrayList<Record> records, String id) {
         this.message = message;
-        this.relation = relation;
+        this.records = records;
         this.id = id;
+    }
+
+    public ArrayList<Record> getRecords() {
+        return records;
+    }
+
+    public void setRecords(ArrayList<Record> records) {
+        this.records = records;
+    }
+
+    public Response(String message) {
+        this.message = message;
     }
 
     public String getMessage() {
@@ -39,14 +53,6 @@ public class Response implements Serializable {
         this.message = message;
     }
 
-    public Relation getRelation() {
-        return relation;
-    }
-
-    public void setRelation(Relation relation) {
-        this.relation = relation;
-    }
-
     public String getId() {
         return id;
     }
@@ -54,6 +60,5 @@ public class Response implements Serializable {
     public void setId(String id) {
         this.id = id;
     }
-
 
 }

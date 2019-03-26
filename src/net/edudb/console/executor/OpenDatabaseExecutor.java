@@ -14,6 +14,7 @@ import java.util.regex.Matcher;
 
 import net.edudb.engine.DatabaseSystem;
 import net.edudb.engine.Utility;
+import net.edudb.response.Response;
 
 /**
  * Opens an available database.
@@ -38,11 +39,11 @@ public class OpenDatabaseExecutor implements ConsoleExecutorChain {
 	}
 
 	@Override
-	public String execute(String string) {
+	public Response execute(String string) {
 		if (string.toLowerCase().startsWith("open")) {
 			Matcher matcher = Utility.getMatcher(string, regex);
 			if (matcher.matches()) {
-				return DatabaseSystem.getInstance().open(matcher.group(1));
+				return new Response(DatabaseSystem.getInstance().open(matcher.group(1)));
 
 				//return;
 			}

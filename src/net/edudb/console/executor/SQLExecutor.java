@@ -13,7 +13,7 @@ package net.edudb.console.executor;
 import adipe.translate.TranslationException;
 import net.edudb.engine.DatabaseSystem;
 import net.edudb.parser.Parser;
-import net.edudb.server.ServerWriter;
+import net.edudb.response.Response;
 
 /**
  * Handles the parsing and execution of an SQL query.
@@ -28,10 +28,10 @@ public class SQLExecutor implements ConsoleExecutorChain {
 	}
 
 	@Override
-	public String execute(String string) {
+	public Response execute(String string) {
 		if (!DatabaseSystem.getInstance().databaseIsOpen()) {
 			//ServerWriter.getInstance().writeln("You must open a database first");
-			return "You must open a database first";
+			return new Response("You must open a database first");
 		}
 
 		Parser parser = new Parser();
@@ -40,6 +40,6 @@ public class SQLExecutor implements ConsoleExecutorChain {
 		} catch (TranslationException e) {
 			e.printStackTrace();
 		}
-		return "";
+		return new Response("");
 	}
 }

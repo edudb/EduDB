@@ -11,6 +11,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.console.executor;
 
 import net.edudb.console.DatabaseConsole;
+import net.edudb.response.Response;
 
 /**
  * Prints EduDB's supported commands.
@@ -27,10 +28,10 @@ public class HelpExecutor implements ConsoleExecutorChain {
 	}
 
 	@Override
-	public String execute(String string) {
+	public Response execute(String string) {
 		if (string.equalsIgnoreCase("help")) {
 			DatabaseConsole.getInstance().printHelp();
-			return "";
+			return new Response("");
 		}
 		return nextChainElement.execute(string);
 	}

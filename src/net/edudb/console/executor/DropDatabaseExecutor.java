@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import net.edudb.engine.DatabaseSystem;
 import net.edudb.engine.Utility;
+import net.edudb.response.Response;
 
 /**
  * Drops a database from the system.
@@ -36,16 +37,16 @@ public class DropDatabaseExecutor implements ConsoleExecutorChain {
 	}
 
 	@Override
-	public String execute(String string) {
+	public Response execute(String string) {
 		if (string.toLowerCase().startsWith("drop")) {
 			Matcher matcher = Utility.getMatcher(string, regex);
 			if (matcher.matches()) {
 				try {
-					return DatabaseSystem.getInstance().dropDatabase(matcher.group(1));
+					return new Response(DatabaseSystem.getInstance().dropDatabase(matcher.group(1)));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				return "";
+				return new Response("");
 			}
 		}
 		return nextElement.execute(string);

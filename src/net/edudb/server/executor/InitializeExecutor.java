@@ -13,6 +13,7 @@ package net.edudb.server.executor;
 import java.util.regex.Matcher;
 import net.edudb.console.executor.ConsoleExecutorChain;
 import net.edudb.engine.Utility;
+import net.edudb.response.Response;
 import net.edudb.server.ServerWriter;
 
 /**
@@ -39,7 +40,7 @@ public class InitializeExecutor implements ConsoleExecutorChain {
 	}
 
 	@Override
-	public String execute(String string) {
+	public Response execute(String string) {
 		if (string.toLowerCase().startsWith("[edudb::")) {
 			Matcher matcher = Utility.getMatcher(string, regex);
 			if (matcher.matches()) {
@@ -50,10 +51,10 @@ public class InitializeExecutor implements ConsoleExecutorChain {
 				 */
 				if (matcher.group(1).equals("admin") && matcher.group(2).equals("admin")) {
 					//ServerWriter.getInstance().write("[edudb::init]");
-					return "[edudb::init]";
+					return new Response("[edudb::init]");
 				} else {
 					//ServerWriter.getInstance().write("[edudb::mismatch]");
-					return "[edudb::mismatch]";
+					return new Response("[edudb::mismatch]");
 				}
 
 			}

@@ -10,6 +10,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.console.executor;
 
+import net.edudb.response.Response;
+
 /**
  * An interface, that implements the Chain of Responsibility design pattern, that
  * is used to execute commands passed from the console.
@@ -35,6 +37,6 @@ public interface ConsoleExecutorChain {
 	 * @param string
 	 *            The command to execute.
 	 */
-	public String execute(String string);
+	public Response execute(String string);
 
 }
