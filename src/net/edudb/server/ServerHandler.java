@@ -16,6 +16,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.ReferenceCountUtil;
 import net.edudb.engine.Utility;
 import net.edudb.relation.Relation;
+import net.edudb.request.Request;
 import net.edudb.response.Response;
 
 import java.util.regex.Matcher;
@@ -37,13 +38,11 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) {
-		ByteBuf in = (ByteBuf) msg;
+		System.out.println("inside server channel read");
 
 		String s = "";
+		s = ((Request)msg).getCommand();
 		try {
-			while (in.isReadable()) {
-				s += (char) in.readByte();
-			}
 
 			System.out.println("Incoming string " + s);
 			Matcher matcher = Utility.getMatcher(s, regex);

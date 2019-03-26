@@ -31,6 +31,8 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.serialization.ClassResolvers;
+import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 import net.edudb.console.DatabaseConsole;
 import net.edudb.console.executor.CloseDatabaseExecutor;
@@ -66,7 +68,10 @@ public class Server {
 					.childHandler(new ChannelInitializer<SocketChannel>() {
 						@Override
 						public void initChannel(SocketChannel ch) throws Exception {
-							ch.pipeline().addLast(new ObjectEncoder(), new ServerHandler());
+							ch.pipeline().addLast(
+									new ObjectDecoder(2147483647, ClassResolvers.softCachingResolver(null)),
+									new ObjectEncoder(),
+									new ServerHandler());
 						}
 					}).option(ChannelOption.SO_BACKLOG, 128).childOption(ChannelOption.SO_KEEPALIVE, true);
 			// Bind and start to accept incoming connections.
