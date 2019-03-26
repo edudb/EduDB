@@ -17,6 +17,7 @@ import adipe.translate.TranslationException;
 import net.edudb.ebtree.EBNode;
 import net.edudb.ebtree.EBTree;
 import net.edudb.query.QueryTree;
+import net.edudb.response.Response;
 import net.edudb.server.ServerWriter;
 import net.edudb.statistics.Schema;
 import ra.Term;
@@ -79,7 +80,7 @@ public class Translator {
 				nodes.add(result.getNode());
 				relationAlgebra = result.getString();
 			} else {
-				ServerWriter.getInstance().writeln("No Match");
+				ServerWriter.getInstance().write(new Response("No Match"));
 				break;
 			}
 		}

@@ -61,7 +61,7 @@ public class ServerWriter {
 
 	/**
 	 * Writes a line to the client iff the context is not null.
-	 * 
+	 *
 	 * @param obj
 	 *            Object to write.
 	 */

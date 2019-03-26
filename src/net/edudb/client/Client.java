@@ -115,7 +115,7 @@ public class Client {
 			b.handler(new ChannelInitializer<SocketChannel>() {
 				@Override
 				public void initChannel(SocketChannel ch) throws Exception {
-					ch.pipeline().addLast(new ObjectDecoder(1024*1024,ClassResolvers.softCachingResolver(null)) , clientHandler);
+					ch.pipeline().addLast(new ObjectDecoder(2147483647,ClassResolvers.softCachingResolver(null)) , clientHandler);
 				}
 			});
 

@@ -10,10 +10,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.client;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import net.edudb.relation.Relation;
 import net.edudb.response.Response;
 
 /**
@@ -32,16 +30,31 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) {
 		System.out.println("response arrived");
-		Response response = (Response) msg;
+		if (msg instanceof Response) {
+			Response response = (Response) msg;
+			//System.out.println(response.getMessage());
+			if (response.getMessage().equals("relation")) {
+				//System.out.println("test");
+				if (response.getRecords() != null)
+					System.out.println(response.getRecords().toString());
+			}
+			else {
+				//System.out.println("test2");
+				System.out.println(response.getMessage());
+			}
 
-		if (response.getMessage().equals("relation"))
-			System.out.println(response.getRecords().toString());
-		else
-			System.out.println(response.getMessage());
+			Client.getInstance().setConnected(true);
+			ClientWriter.getInstance().setContext(ctx);
+			setReceiving(false);
+		}
+		else {
+			String response = (String) msg;
+			System.out.println(response);
+			Client.getInstance().setConnected(true);
+			ClientWriter.getInstance().setContext(ctx);
+			setReceiving(false);
+		}
 
-		Client.getInstance().setConnected(true);
-		ClientWriter.getInstance().setContext(ctx);
-		setReceiving(false);
 //		ByteBuf in = (ByteBuf) msg;
 //		String s = "";
 //		try {
