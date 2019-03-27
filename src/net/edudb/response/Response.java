@@ -27,6 +27,10 @@ public class Response implements Serializable {
     private ArrayList<Record> records;
     private String id;
 
+    public Response(String message) {
+        this.message = message;
+    }
+
     public Response(String message, ArrayList<Record> records, String id) {
         this.message = message;
         this.records = records;
@@ -39,10 +43,6 @@ public class Response implements Serializable {
 
     public void setRecords(ArrayList<Record> records) {
         this.records = records;
-    }
-
-    public Response(String message) {
-        this.message = message;
     }
 
     public String getMessage() {

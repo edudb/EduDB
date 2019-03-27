@@ -21,7 +21,12 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.serialization.ClassResolvers;
+import io.netty.handler.codec.serialization.ObjectDecoder;
+import io.netty.handler.codec.serialization.ObjectEncoder;
 import net.edudb.engine.Utility;
+import net.edudb.request.Request;
+import net.edudb.response.Response;
 
 import java.util.Hashtable;
 
@@ -36,23 +41,19 @@ public class MetaManager implements MetaDAO, Runnable {
 
     private static MetaManager instance = new MetaManager();
     private int port;
-    private boolean connected;
-
-    public Hashtable<String, String> getPendingRequests() {
-        return pendingRequests;
-    }
-
-    public void setPendingRequests(Hashtable<String, String> pendingRequests) {
-        this.pendingRequests = pendingRequests;
-    }
-
     /**
      * Used to generate busy waiting until response is received
      * from the meta data database server
      */
-    private Hashtable<String, String> pendingRequests = new Hashtable<String, String>();
-
+    private Hashtable<String, Response> pendingRequests = new Hashtable<String, Response>();
+    private boolean connected;
     private MetaHandler metaHandler;
+
+
+
+    public void setPendingRequests(Hashtable<String, Response> pendingRequests) {
+        this.pendingRequests = pendingRequests;
+    }
 
     private MetaManager () {
         this.metaHandler = new MetaHandler();
@@ -72,7 +73,10 @@ public class MetaManager implements MetaDAO, Runnable {
             b.handler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 public void initChannel(SocketChannel ch) throws Exception {
-                    ch.pipeline().addLast(metaHandler);
+                    ch.pipeline().addLast(
+                            new ObjectDecoder(2147483647, ClassResolvers.softCachingResolver(null)),
+                            new ObjectEncoder(),
+                            metaHandler);
                 }
             });
 
@@ -80,8 +84,8 @@ public class MetaManager implements MetaDAO, Runnable {
             ChannelFuture f = b.connect("localhost", port).sync();
 
 //			clientHandler.setReceiving(true);
-            ByteBuf buf = Unpooled.copiedBuffer("[edudb::admin:admin]", Charsets.UTF_8);
-            ChannelFuture future = f.channel().writeAndFlush(buf);
+           // ByteBuf buf = Unpooled.copiedBuffer(, Charsets.UTF_8);
+            ChannelFuture future = f.channel().writeAndFlush(new Request(null,"[edudb::admin:admin]"));
 
             while (!connected) {
                 Thread.sleep(10);
@@ -113,31 +117,36 @@ public class MetaManager implements MetaDAO, Runnable {
 
     private void createMetaDatabase() {
 
-        MetaWriter.getInstance().writeln("create database metadata");
+        MetaWriter.getInstance().writeln(new Request(null, "create database metadata"));
     }
 
     private void openMetaDatabase() {
-        MetaWriter.getInstance().writeln("open database metadata");
+        MetaWriter.getInstance().writeln(new Request(null, "open database metadata"));
     }
 
     private void createWorkersTable() {
-        MetaWriter.getInstance().writeln("create table workers (host Varchar, port Integer)");
+        MetaWriter.getInstance().writeln(new Request(null, "create table workers (host Varchar, port Integer)"));
     }
 
     /**
      * This function is for testing purposes only and will be removed
      * @param s
      */
-    public String forwardCommand(String s) {
+    public Response forwardCommand(String s) {
+        System.out.println("inside forward command");
+        System.out.println(s);
+        System.out.println("------------------");
         String id = Utility.generateUUID();
-        pendingRequests.put(id, "");
-        String command = s + "[id::" + id + "]";
-        MetaWriter.getInstance().writeln(command);
+        Request request = new Request(id, s);
+        MetaWriter.getInstance().write(request);
 
         /**
          * busy waiting till response is received
          */
-        while (pendingRequests.get(id).equals(""));
+        while (pendingRequests.get(id) == null);
+
+        System.out.println("Response arrived at forwardCommand");
+        System.out.println(pendingRequests.get(id).getMessage());
 
         return pendingRequests.remove(id);
     }
@@ -145,4 +154,8 @@ public class MetaManager implements MetaDAO, Runnable {
     public void setConnected(boolean connected) { this.connected = connected; }
 
     public boolean isConnected() { return this.connected; }
+
+    public Hashtable<String, Response> getPendingRequests() {
+        return pendingRequests;
+    }
 }

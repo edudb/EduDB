@@ -18,6 +18,9 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.serialization.ClassResolvers;
+import io.netty.handler.codec.serialization.ObjectDecoder;
+import io.netty.handler.codec.serialization.ObjectEncoder;
 import net.edudb.master.executor.ForwardToMeta;
 import net.edudb.master.executor.InitializeMetaDataExecutor;
 import net.edudb.master.executor.MasterExecutorChain;
@@ -43,7 +46,10 @@ public class Master {
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         public void initChannel(SocketChannel ch) throws Exception {
-                            ch.pipeline().addLast(new MasterHandler());
+                            ch.pipeline().addLast(
+                                    new ObjectDecoder(2147483647, ClassResolvers.softCachingResolver(null)),
+                                    new ObjectEncoder(),
+                                    new MasterHandler());
                         }
                     }).option(ChannelOption.SO_BACKLOG, 128).childOption(ChannelOption.SO_KEEPALIVE, true);
             // Bind and start to accept incoming connections.

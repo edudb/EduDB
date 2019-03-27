@@ -37,14 +37,14 @@ public class MasterWriter {
     /**
      * Writes to the client iff the context is not null.
      *
-     * @param object
+     * @param obj
      *            Object to write.
      */
     public void write(Object obj) {
         if (context != null) {
-            ByteBuf buf = Unpooled.copiedBuffer(obj.toString(), Charsets.UTF_8);
+           // ByteBuf buf = Unpooled.copiedBuffer(obj.toString(), Charsets.UTF_8);
 
-            context.writeAndFlush(buf);
+            context.writeAndFlush(obj);
         }
 //        } else {
 //            DatabaseConsole.getInstance().write(obj);
@@ -54,14 +54,14 @@ public class MasterWriter {
     /**
      * Writes a line to the client iff the context is not null.
      *
-     * @param object
+     * @param obj
      *            Object to write.
      */
     public void writeln(Object obj) {
         if (context != null) {
-            ByteBuf buf = Unpooled.copiedBuffer(obj.toString() + "\r\n", Charsets.UTF_8);
+           // ByteBuf buf = Unpooled.copiedBuffer(obj.toString() + "\r\n", Charsets.UTF_8);
 
-            context.writeAndFlush(buf);
+            context.writeAndFlush(obj);
         }
 //        } else {
 //            DatabaseConsole.getInstance().writeln(obj);

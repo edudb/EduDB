@@ -10,12 +10,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.meta_manager;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import net.edudb.engine.Utility;
-
-import java.util.regex.Matcher;
+import net.edudb.response.Response;
 
 /**
  * Handles messages received from the meta data database
@@ -34,48 +31,16 @@ public class MetaHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        ByteBuf in = (ByteBuf) msg;
-        String s = "";
-        try {
-            while (in.isReadable()) {
-                s += (char) in.readByte();
+
+        MetaWriter.getInstance().setContext(ctx);
+        MetaManager.getInstance().setConnected(true);
+        if (msg instanceof Response) {
+            Response response = (Response)msg;
+            if (response.getId() != null
+                && !response.getId().equals("")) {
+                MetaManager.getInstance().getPendingRequests().put(response.getId(), response);
             }
-
-            System.out.println("Message from meta database");
-            System.out.println(s);
-
-            MetaWriter.getInstance().setContext(ctx);
-            if (s.contains("[edudb::init]")) {
-                MetaManager.getInstance().setConnected(true);
-            } else if (s.contains("[edudb::mismatch]")) {
-                System.out.println("Wrong username and/or password\nExiting...");
-                //exit();
-            } else if (s.contains("[edudb::exit]")) {
-                System.out.println("The server went away");
-                //exit();
-            } else if (s.contains("[edudb::endofstring]")) {
-                s = s.replace("[edudb::endofstring]\r\n", "");
-
-
-            }
-
-
-
-            if (s.length() > 0) {
-                Matcher matcher = Utility.getMatcher(s, regex);
-
-                String messageID = "";
-
-                if (matcher.find()) {
-                    messageID = matcher.group(2);
-                    System.out.println("id " + messageID);
-                    s = matcher.replaceAll("");
-
-                    MetaManager.getInstance().getPendingRequests().put(messageID, s);
-                }
-            }
-        } finally {
-            in.release();
         }
+
     }
 }

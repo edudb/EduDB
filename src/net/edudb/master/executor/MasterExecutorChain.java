@@ -10,6 +10,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.master.executor;
 
+import net.edudb.response.Response;
+
 /**
  * An interface, that implements the Chain of Responsibility design pattern, that
  * is used to execute commands received at the master node.

@@ -14,6 +14,8 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.ReferenceCountUtil;
+import net.edudb.request.Request;
+import net.edudb.response.Response;
 
 /**
  *
@@ -26,17 +28,12 @@ public class MasterHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        ByteBuf in = (ByteBuf) msg;
-
-        String s = "";
+        Request request = (Request)msg;
         try {
-            while (in.isReadable()) {
-                s += (char) in.readByte();
-            }
-
+            String s = request.getCommand();
             MasterWriter.getInstance().setContext(ctx);
             Master.getExecutionChain().execute(s);
-            MasterWriter.getInstance().writeln("[edudb::endofstring]");
+            //MasterWriter.getInstance().writeln("[edudb::endofstring]");
 
         } finally {
             ReferenceCountUtil.release(msg);

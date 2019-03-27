@@ -14,6 +14,7 @@ import com.google.common.base.Charsets;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
+import net.edudb.request.Request;
 
 /**
  * A singleton that handles sending messages to the database server
@@ -36,18 +37,22 @@ public class MetaWriter {
     }
 
     public void writeln(Object obj) {
+        System.out.println("inside meta write");
+        System.out.println(((Request)obj).getCommand());
         if (context != null) {
-            ByteBuf buf = Unpooled.copiedBuffer(obj.toString() + "\n", Charsets.UTF_8);
+            //ByteBuf buf = Unpooled.copiedBuffer(obj.toString() + "\n", Charsets.UTF_8);
 
-            context.writeAndFlush(buf);
+            context.writeAndFlush(obj);
         }
     }
 
     public void write(Object obj) {
+        System.out.println("inside meta write");
+        System.out.println(((Request)obj).getCommand());
         if (context != null) {
-            ByteBuf buf = Unpooled.copiedBuffer(obj.toString(), Charsets.UTF_8);
+            //ByteBuf buf = Unpooled.copiedBuffer(obj.toString(), Charsets.UTF_8);
 
-            context.writeAndFlush(buf);
+            context.writeAndFlush(obj);
         }
     }
 }

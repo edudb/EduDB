@@ -40,8 +40,8 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 	public void channelRead(ChannelHandlerContext ctx, Object msg) {
 		System.out.println("inside server channel read");
 
-		String s = "";
-		s = ((Request)msg).getCommand();
+		Request request = (Request)msg;
+		String s = request.getCommand();
 		try {
 
 			System.out.println("Incoming string " + s);
@@ -49,16 +49,9 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 
 			String messageID = "";
 
-			if (matcher.find()) {
-				messageID = matcher.group(1);
-				System.out.println("id " + messageID);
-				s = matcher.replaceAll("");
-			}
-			else {
-				System.out.println("doesn't match");
-			}
-
-			System.out.println("message after extracting id: " + s);
+			if (request.getId() != null
+				&& !request.getId().equals(""))
+				messageID = request.getId();
 
 			ServerWriter.getInstance().setContext(ctx);
 

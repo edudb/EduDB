@@ -31,6 +31,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 	public void channelRead(ChannelHandlerContext ctx, Object msg) {
 		System.out.println("response arrived");
 		if (msg instanceof Response) {
+			System.out.println("Object");
 			Response response = (Response) msg;
 			//System.out.println(response.getMessage());
 			if (response.getMessage().equals("relation")) {
@@ -48,6 +49,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			setReceiving(false);
 		}
 		else {
+			System.out.println("object");
 			String response = (String) msg;
 			System.out.println(response);
 			Client.getInstance().setConnected(true);

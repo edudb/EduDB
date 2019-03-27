@@ -12,6 +12,7 @@ package net.edudb.master.executor;
 
 import net.edudb.engine.Utility;
 import net.edudb.meta_manager.MetaManager;
+import net.edudb.response.Response;
 
 import java.util.regex.Matcher;
 
@@ -40,7 +41,6 @@ public class InitializeMetaDataExecutor implements MasterExecutorChain {
             } catch (InterruptedException e) {
 
             }
-
         } else {
             nextElement.execute(string);
         }
