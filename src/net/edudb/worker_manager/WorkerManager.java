@@ -8,16 +8,10 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.meta_manager;
+package net.edudb.worker_manager;
 
-import com.google.common.base.Charsets;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -31,39 +25,28 @@ import net.edudb.response.Response;
 import java.util.Hashtable;
 
 /**
- * A singleton that handles all interactions with database holding
- * all the cluster's meta data.
+ * This class handles a connection to a worker node
  *
  * @author Fady Sameh
- *
  */
-public class MetaManager implements MetaDAO, Runnable {
+public class WorkerManager implements Runnable, HandlerListener {
 
-    private static MetaManager instance = new MetaManager();
     private int port;
-    /**
-     * Used to generate busy waiting until response is received
-     * from the meta data database server
-     */
+    private String host;
     private Hashtable<String, Response> pendingRequests = new Hashtable<String, Response>();
-    private boolean connected;
-    private MetaHandler metaHandler;
+    private boolean connected = false;
+    private WorkerWriter workerWriter;
+    private WorkerHandler workerHandler;
 
-
-
-    public void setPendingRequests(Hashtable<String, Response> pendingRequests) {
-        this.pendingRequests = pendingRequests;
+    public WorkerManager(int port, String host) {
+        this.port = port;
+        this.host = host;
+        this.workerWriter = new WorkerWriter();
+        this.workerHandler = new WorkerHandler(this);
     }
-
-    private MetaManager () {
-        this.metaHandler = new MetaHandler();
-        this.port = 9999;
-    }
-
-    public static MetaManager getInstance() { return instance; };
 
     public void run() {
-        System.out.println("meta manager started");
+
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
             Bootstrap b = new Bootstrap();
@@ -76,15 +59,15 @@ public class MetaManager implements MetaDAO, Runnable {
                     ch.pipeline().addLast(
                             new ObjectDecoder(2147483647, ClassResolvers.softCachingResolver(null)),
                             new ObjectEncoder(),
-                            metaHandler);
+                            workerHandler);
                 }
             });
 
             // Start the client.
-            ChannelFuture f = b.connect("localhost", port).sync();
+            ChannelFuture f = b.connect(host, port).sync();
 
 //			clientHandler.setReceiving(true);
-           // ByteBuf buf = Unpooled.copiedBuffer(, Charsets.UTF_8);
+            // ByteBuf buf = Unpooled.copiedBuffer(, Charsets.UTF_8);
             ChannelFuture future = f.channel().writeAndFlush(new Request(null,"[edudb::admin:admin]"));
 
             while (!connected) {
@@ -105,60 +88,30 @@ public class MetaManager implements MetaDAO, Runnable {
             System.err.println("Could not connect to the server. Please make sure that it is running.\nExiting...");
             workerGroup.shutdownGracefully();
         }
+
     }
 
-    public void initializeTables() throws InterruptedException {
-        createMetaDatabase();
-        openMetaDatabase();
-        createWorkersTable();
-    }
+    private void setConnected(Boolean connected) { this.connected = connected; }
 
-    private void createMetaDatabase() {
-
-        forwardCommand("create database metadata");
-    }
-
-    private void openMetaDatabase() {
-
-        forwardCommand("open database metadata");
-    }
-
-    private void createWorkersTable() {
-
-        forwardCommand("create table workers (host Varchar, port Integer)");
-    }
-
-    /**
-     * This function is responsible for sending commands
-     * to the meta database
-     *
-     * @param command
-     * The command to be sent to the meta database
-     */
-    public Response forwardCommand(String command) {
-        System.out.println("inside forward command");
-        System.out.println(command);
-        System.out.println("------------------");
+    private Response forwardToWorker(String command) {
         String id = Utility.generateUUID();
         Request request = new Request(id, command);
-        MetaWriter.getInstance().write(request);
+        workerWriter.write(request);
 
         /**
          * busy waiting till response is received
          */
         while (pendingRequests.get(id) == null);
 
-        System.out.println("Response arrived at forwardCommand");
-        System.out.println(pendingRequests.get(id).getMessage());
-
         return pendingRequests.remove(id);
     }
 
-    public void setConnected(boolean connected) { this.connected = connected; }
-
-    public boolean isConnected() { return this.connected; }
-
-    public Hashtable<String, Response> getPendingRequests() {
-        return pendingRequests;
+    public void onResponseArrival(ChannelHandlerContext ctx, Response response) {
+        workerWriter.setContext(ctx);
+        setConnected(true);
+        if (response.getId() != null
+                && !response.getId().equals("")) {
+            pendingRequests.put(response.getId(), response);
+        }
     }
 }

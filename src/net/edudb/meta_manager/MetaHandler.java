@@ -23,19 +23,14 @@ import net.edudb.response.Response;
  */
 public class MetaHandler extends ChannelInboundHandlerAdapter {
 
-    /**
-     * This regex is used is to extract the message id from the incoming
-     * message.
-     */
-    private String regex = "(\\[id::(.+?)\\])";
-
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
 
-        MetaWriter.getInstance().setContext(ctx);
-        MetaManager.getInstance().setConnected(true);
+
         if (msg instanceof Response) {
             Response response = (Response)msg;
+            MetaWriter.getInstance().setContext(ctx);
+            MetaManager.getInstance().setConnected(true);
             if (response.getId() != null
                 && !response.getId().equals("")) {
                 MetaManager.getInstance().getPendingRequests().put(response.getId(), response);
