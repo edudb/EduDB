@@ -7,45 +7,58 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+package net.edudb.response;
 
-package net.edudb.console.executor;
+import net.edudb.relation.Relation;
+import net.edudb.structure.Record;
 
-import java.util.regex.Matcher;
-
-import net.edudb.engine.DatabaseSystem;
-import net.edudb.engine.Utility;
-import net.edudb.response.Response;
+import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
- * Closes the current open database.
- * 
- * @author Ahmed Abdul Badie
+ * From this class, the response objects sent from
+ * the server to the client are instantiated
  *
+ * @author Fady Sameh
  */
-public class CloseDatabaseExecutor implements ConsoleExecutorChain {
-	private ConsoleExecutorChain nextElement;
-	/**
-	 * Matches strings of the form: <br>
-	 * <br>
-	 * <b>CLOSE DATABASE;<b><br>
-	 * <br>
-	 */
-	private String regex = "\\A(?:(?i)close)\\s+(?:(?i)database)\\s*;?\\z";
+public class Response implements Serializable {
 
-	@Override
-	public void setNextElementInChain(ConsoleExecutorChain chainElement) {
-		this.nextElement = chainElement;
-	}
+    private String message;
+    private ArrayList<Record> records;
+    private String id;
 
-	@Override
-	public Response execute(String string) {
-		if (string.toLowerCase().startsWith("close")) {
-			Matcher matcher = Utility.getMatcher(string, regex);
-			if (matcher.matches()) {
-				return new Response(DatabaseSystem.getInstance().close());
-			}
-		}
-		return nextElement.execute(string);
-	}
+    public Response(String message) {
+        this.message = message;
+    }
+
+    public Response(String message, ArrayList<Record> records, String id) {
+        this.message = message;
+        this.records = records;
+        this.id = id;
+    }
+
+    public ArrayList<Record> getRecords() {
+        return records;
+    }
+
+    public void setRecords(ArrayList<Record> records) {
+        this.records = records;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
 }

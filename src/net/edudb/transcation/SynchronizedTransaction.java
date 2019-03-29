@@ -13,6 +13,7 @@ package net.edudb.transcation;
 import net.edudb.query.PostOrderTreeExecutor;
 import net.edudb.query.QueryTree;
 import net.edudb.relation.Relation;
+import net.edudb.response.Response;
 
 /**
  * A transaction that is executed in-order.
@@ -27,10 +28,10 @@ public class SynchronizedTransaction extends Transaction {
 		this.queryTreeExecutor = new PostOrderTreeExecutor();
 	}
 
-	public void run() {
+	public Response run() {
 		Relation relation = queryTreeExecutor.execute(plan);
 
-		Relation.print(relation);
+		return new Response("relation", Relation.toRecords(relation), null);
 	}
 
 }

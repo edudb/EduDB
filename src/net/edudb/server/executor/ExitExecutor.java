@@ -11,6 +11,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.server.executor;
 
 import net.edudb.console.executor.ConsoleExecutorChain;
+import net.edudb.response.Response;
 import net.edudb.server.ServerWriter;
 
 /**
@@ -28,12 +29,12 @@ public class ExitExecutor implements ConsoleExecutorChain {
 	}
 
 	@Override
-	public void execute(String string) {
+	public Response execute(String string) {
 		if (string.equalsIgnoreCase("exit")) {
 			ServerWriter.getInstance().getContext().close();
-			return;
+			return new Response("");
 		}
-		nextElement.execute(string);
+		return nextElement.execute(string);
 	}
 
 }

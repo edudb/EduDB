@@ -8,44 +8,27 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.console.executor;
+package net.edudb.worker_manager;
 
-import java.util.regex.Matcher;
-
-import net.edudb.engine.DatabaseSystem;
-import net.edudb.engine.Utility;
-import net.edudb.response.Response;
+import io.netty.channel.ChannelHandlerContext;
 
 /**
- * Closes the current open database.
- * 
- * @author Ahmed Abdul Badie
+ * This class handles sending requests to
+ * a worker node
  *
+ * @author Fady Sameh
  */
-public class CloseDatabaseExecutor implements ConsoleExecutorChain {
-	private ConsoleExecutorChain nextElement;
-	/**
-	 * Matches strings of the form: <br>
-	 * <br>
-	 * <b>CLOSE DATABASE;<b><br>
-	 * <br>
-	 */
-	private String regex = "\\A(?:(?i)close)\\s+(?:(?i)database)\\s*;?\\z";
+public class WorkerWriter {
 
-	@Override
-	public void setNextElementInChain(ConsoleExecutorChain chainElement) {
-		this.nextElement = chainElement;
-	}
+    private ChannelHandlerContext context;
 
-	@Override
-	public Response execute(String string) {
-		if (string.toLowerCase().startsWith("close")) {
-			Matcher matcher = Utility.getMatcher(string, regex);
-			if (matcher.matches()) {
-				return new Response(DatabaseSystem.getInstance().close());
-			}
-		}
-		return nextElement.execute(string);
-	}
+    public void setContext(ChannelHandlerContext context) {
+        this.context = context;
+    }
 
+    public void write(Object obj) {
+        if (context != null) {
+            context.writeAndFlush(obj);
+        }
+    }
 }

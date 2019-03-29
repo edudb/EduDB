@@ -7,45 +7,40 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+package net.edudb.request;
 
-package net.edudb.console.executor;
-
-import java.util.regex.Matcher;
-
-import net.edudb.engine.DatabaseSystem;
-import net.edudb.engine.Utility;
-import net.edudb.response.Response;
+import java.io.Serializable;
 
 /**
- * Closes the current open database.
- * 
- * @author Ahmed Abdul Badie
+ * From this class, the request objects sent from
+ * the client to the server are instantiated
  *
+ * @author Fady Sameh
  */
-public class CloseDatabaseExecutor implements ConsoleExecutorChain {
-	private ConsoleExecutorChain nextElement;
-	/**
-	 * Matches strings of the form: <br>
-	 * <br>
-	 * <b>CLOSE DATABASE;<b><br>
-	 * <br>
-	 */
-	private String regex = "\\A(?:(?i)close)\\s+(?:(?i)database)\\s*;?\\z";
+public class Request implements Serializable {
 
-	@Override
-	public void setNextElementInChain(ConsoleExecutorChain chainElement) {
-		this.nextElement = chainElement;
-	}
+    private String id;
+    private String command;
 
-	@Override
-	public Response execute(String string) {
-		if (string.toLowerCase().startsWith("close")) {
-			Matcher matcher = Utility.getMatcher(string, regex);
-			if (matcher.matches()) {
-				return new Response(DatabaseSystem.getInstance().close());
-			}
-		}
-		return nextElement.execute(string);
-	}
+    public Request(String id, String command) {
+        this.id = id;
+        this.command = command;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getCommand() {
+        return command;
+    }
+
+    public void setCommand(String command) {
+        this.command = command;
+    }
 
 }

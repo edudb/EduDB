@@ -10,6 +10,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.relation;
 
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 
 import net.edudb.page.PageManager;
@@ -22,7 +23,7 @@ import net.edudb.structure.table.Table;
  * @author Ahmed Abdul Badie
  *
  */
-public class VolatileRelation implements Relation {
+public class VolatileRelation implements Relation, Serializable {
 
 	private Table table;
 	private PageManager pageManager;

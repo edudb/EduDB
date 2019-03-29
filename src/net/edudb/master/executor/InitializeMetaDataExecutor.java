@@ -8,44 +8,43 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.console.executor;
+package net.edudb.master.executor;
+
+import net.edudb.engine.Utility;
+import net.edudb.master.MasterWriter;
+import net.edudb.meta_manager.MetaManager;
+import net.edudb.response.Response;
 
 import java.util.regex.Matcher;
 
-import net.edudb.engine.DatabaseSystem;
-import net.edudb.engine.Utility;
-import net.edudb.response.Response;
-
 /**
- * Closes the current open database.
- * 
- * @author Ahmed Abdul Badie
+ * Handles the initialization of meta data tables in the meta data
+ * server.
+ *
+ * @author FadySameh
  *
  */
-public class CloseDatabaseExecutor implements ConsoleExecutorChain {
-	private ConsoleExecutorChain nextElement;
-	/**
-	 * Matches strings of the form: <br>
-	 * <br>
-	 * <b>CLOSE DATABASE;<b><br>
-	 * <br>
-	 */
-	private String regex = "\\A(?:(?i)close)\\s+(?:(?i)database)\\s*;?\\z";
+public class InitializeMetaDataExecutor implements MasterExecutorChain {
 
-	@Override
-	public void setNextElementInChain(ConsoleExecutorChain chainElement) {
-		this.nextElement = chainElement;
-	}
+    private MasterExecutorChain nextElement;
+    private String regex = "init\\s+metadata";
 
-	@Override
-	public Response execute(String string) {
-		if (string.toLowerCase().startsWith("close")) {
-			Matcher matcher = Utility.getMatcher(string, regex);
-			if (matcher.matches()) {
-				return new Response(DatabaseSystem.getInstance().close());
-			}
-		}
-		return nextElement.execute(string);
-	}
+    @Override
+    public void setNextElementInChain(MasterExecutorChain chainElement) {
+        this.nextElement = chainElement;
+    }
 
+    public void execute(String string) {
+        Matcher matcher = Utility.getMatcher(string, regex);
+        if (matcher.matches()) {
+            try {
+                MetaManager.getInstance().initializeTables();
+                MasterWriter.getInstance().write(new Response("Meta data created successfully"));
+            } catch (InterruptedException e) {
+
+            }
+        } else {
+            nextElement.execute(string);
+        }
+    }
 }

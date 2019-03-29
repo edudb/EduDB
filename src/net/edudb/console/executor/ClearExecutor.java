@@ -11,6 +11,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.console.executor;
 
 import net.edudb.console.DatabaseConsole;
+import net.edudb.response.Response;
 
 /**
  * Clears the console screen.
@@ -27,12 +28,12 @@ public class ClearExecutor implements ConsoleExecutorChain {
 	}
 
 	@Override
-	public void execute(String string) {
+	public Response execute(String string) {
 		if (string.equalsIgnoreCase("clear")) {
 			DatabaseConsole.getInstance().clearScreen();
 			DatabaseConsole.getInstance().flush();
-			return;
+			return new Response("");
 		}
-		nextChainElement.execute(string);
+		return nextChainElement.execute(string);
 	}
 }

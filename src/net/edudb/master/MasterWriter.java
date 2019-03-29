@@ -8,70 +8,63 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.server;
+package net.edudb.master;
 
 import com.google.common.base.Charsets;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import net.edudb.console.DatabaseConsole;
-import net.edudb.response.Response;
 
 /**
  * A singleton that handles writing to the client.
- * 
- * @author Ahmed Abdul Badie
+ *
+ * @author Fady Sameh
  *
  */
-public class ServerWriter {
-	private static ServerWriter instance = new ServerWriter();
-	private ChannelHandlerContext context;
+public class MasterWriter {
+    private static MasterWriter instance = new MasterWriter();
+    private ChannelHandlerContext context;
 
-	private ServerWriter() {
-	}
+    private MasterWriter() {}
 
-	public static ServerWriter getInstance() {
-		return instance;
-	}
+    public static MasterWriter getInstance() { return instance; }
 
-	public void setContext(ChannelHandlerContext context) {
-		this.context = context;
-	}
+    public void setContext(ChannelHandlerContext context) {
+        this.context = context;
+    }
 
-	public ChannelHandlerContext getContext() {
-		return context;
-	}
+    /**
+     * Writes to the client iff the context is not null.
+     *
+     * @param obj
+     *            Object to write.
+     */
+    public void write(Object obj) {
+        if (context != null) {
+           // ByteBuf buf = Unpooled.copiedBuffer(obj.toString(), Charsets.UTF_8);
 
-	/**
-	 * Writes to the client iff the context is not null.
-	 * 
-	 * @param obj
-	 *            Object to write.
-	 */
-	public void write(Object obj) {
-		if (context != null) {
-			ByteBuf buf = Unpooled.copiedBuffer(obj.toString(), Charsets.UTF_8);
+            context.writeAndFlush(obj);
+        }
+//        } else {
+//            DatabaseConsole.getInstance().write(obj);
+//        }
+    }
 
-			context.writeAndFlush(obj);
-		} else {
-			DatabaseConsole.getInstance().write(obj);
-		}
-	}
+    /**
+     * Writes a line to the client iff the context is not null.
+     *
+     * @param obj
+     *            Object to write.
+     */
+    public void writeln(Object obj) {
+        if (context != null) {
+           // ByteBuf buf = Unpooled.copiedBuffer(obj.toString() + "\r\n", Charsets.UTF_8);
 
-	/**
-	 * Writes a line to the client iff the context is not null.
-	 *
-	 * @param obj
-	 *            Object to write.
-	 */
-	public void writeln(Object obj) {
-		if (context != null) {
-			ByteBuf buf = Unpooled.copiedBuffer(obj.toString() + "\r\n", Charsets.UTF_8);
-
-			context.writeAndFlush(obj);
-		} else {
-			DatabaseConsole.getInstance().writeln(obj);
-		}
-	}
+            context.writeAndFlush(obj);
+        }
+//        } else {
+//            DatabaseConsole.getInstance().writeln(obj);
+//        }
+    }
 }

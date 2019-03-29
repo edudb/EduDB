@@ -15,6 +15,7 @@ import gudusoft.gsqlparser.EDbVendor;
 import gudusoft.gsqlparser.TGSqlParser;
 import net.edudb.plan.PlanFactory;
 import net.edudb.query.QueryTree;
+import net.edudb.response.Response;
 import net.edudb.server.ServerWriter;
 import net.edudb.statement.SQLStatement;
 import net.edudb.statement.SQLStatementFactory;
@@ -52,27 +53,28 @@ public class Parser {
 	 *            The SQL string to parse.
 	 * @throws TranslationException
 	 */
-	public void parseSQL(String strSQL) throws TranslationException {
+	public Response parseSQL(String strSQL) throws TranslationException {
 		sqlparser.setSqltext(strSQL.replace(";", ""));
 		int ret = sqlparser.parse();
 		if (ret == 0) {
 			SQLStatementFactory statementFactory = new SQLStatementFactory();
 			SQLStatement statement = statementFactory.makeSQLStatement(sqlparser.sqlstatements.get(0));
 			if (statement == null) {
-				ServerWriter.getInstance().writeln("Unsupported SQL statement");
-				return;
+				//ServerWriter.getInstance().writeln("Unsupported SQL statement");
+				return new Response("Unsupported SQL statement");
 			}
 
 			QueryTree plan = planFactory.makePlan(statement);
 			if (plan == null) {
-				return;
+				return new Response("");
 			}
 
 			SynchronizedTransaction transaction = new SynchronizedTransaction(plan);
-			TransactionManager.getInstance().execute(transaction);
+			return TransactionManager.getInstance().execute(transaction);
 
 		} else {
-			ServerWriter.getInstance().writeln(sqlparser.getErrormessage());
+			//ServerWriter.getInstance().writeln(sqlparser.getErrormessage());
+			return new Response(sqlparser.getErrormessage());
 		}
 	}
 }
