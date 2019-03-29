@@ -21,6 +21,7 @@ import io.netty.handler.codec.serialization.ObjectEncoder;
 import net.edudb.engine.Utility;
 import net.edudb.request.Request;
 import net.edudb.response.Response;
+import net.edudb.workers_manager.WorkersManager;
 
 import java.util.Hashtable;
 
@@ -34,6 +35,7 @@ public class WorkerManager implements Runnable, HandlerListener {
     private int port;
     private String host;
     private Hashtable<String, Response> pendingRequests = new Hashtable<String, Response>();
+
     private boolean connected = false;
     private WorkerWriter workerWriter;
     private WorkerHandler workerHandler;
@@ -68,7 +70,7 @@ public class WorkerManager implements Runnable, HandlerListener {
 
 //			clientHandler.setReceiving(true);
             // ByteBuf buf = Unpooled.copiedBuffer(, Charsets.UTF_8);
-            ChannelFuture future = f.channel().writeAndFlush(new Request(null,"[edudb::admin:admin]"));
+            ChannelFuture future = f.channel().writeAndFlush(new Request("init","[edudb::admin:admin]"));
 
             while (!connected) {
                 Thread.sleep(10);
@@ -91,7 +93,23 @@ public class WorkerManager implements Runnable, HandlerListener {
 
     }
 
-    private void setConnected(Boolean connected) { this.connected = connected; }
+
+    public boolean isConnected() {
+        return connected;
+    }
+
+    public void setConnected(boolean connected) {
+        this.connected = connected;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
 
     private Response forwardToWorker(String command) {
         String id = Utility.generateUUID();
@@ -108,9 +126,13 @@ public class WorkerManager implements Runnable, HandlerListener {
 
     public void onResponseArrival(ChannelHandlerContext ctx, Response response) {
         workerWriter.setContext(ctx);
-        setConnected(true);
+
         if (response.getId() != null
                 && !response.getId().equals("")) {
+            if (response.getMessage().equals("[edudb::init]")) {
+                setConnected(true);
+                WorkersManager.getInstance().registerWorker(this);
+            }
             pendingRequests.put(response.getId(), response);
         }
     }

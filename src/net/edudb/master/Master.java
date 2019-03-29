@@ -21,10 +21,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
-import net.edudb.master.executor.ForwardToMeta;
-import net.edudb.master.executor.InitializeMetaDataExecutor;
-import net.edudb.master.executor.MasterExecutorChain;
-import net.edudb.master.executor.InitializeExecutor;
+import net.edudb.master.executor.*;
 
 /**
  *
@@ -70,9 +67,15 @@ public class Master {
     public  static MasterExecutorChain getExecutionChain() {
         MasterExecutorChain init = new InitializeExecutor();
         MasterExecutorChain initMetaData = new InitializeMetaDataExecutor();
+        MasterExecutorChain connectWorker = new ConnectWorkerExecutor();
         MasterExecutorChain forwardToMeta = new ForwardToMeta();
 
-        return connectChain(new MasterExecutorChain[] {init, initMetaData, forwardToMeta});
+        return connectChain(new MasterExecutorChain[] {
+                init,
+                initMetaData,
+                connectWorker,
+                forwardToMeta
+        });
     }
 
     public static MasterExecutorChain connectChain(MasterExecutorChain[] chainElements) {

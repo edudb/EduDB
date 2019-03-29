@@ -57,9 +57,9 @@ public class InitializeExecutor implements MasterExecutorChain {
                      * If master is not connected to meta database, connect
                      * to it
                      */
-                    if (!MetaManager.getInstance().isConnected()) {
-                        new Thread(MetaManager.getInstance()).start();
-                    }
+//                    if (!MetaManager.getInstance().isConnected()) {
+//                        new Thread(MetaManager.getInstance()).start();
+//                    }
                     MasterWriter.getInstance().write(new Response("[edudb::init]"));
                 } else {
                     MasterWriter.getInstance().write(new Response("[edudb::mismatch]"));
@@ -67,6 +67,7 @@ public class InitializeExecutor implements MasterExecutorChain {
             }
         }
         else
+        //MasterWriter.getInstance().write("[edudb::mismatch]");
         nextElement.execute(string);
     }
 }
