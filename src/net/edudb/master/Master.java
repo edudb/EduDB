@@ -71,11 +71,13 @@ public class Master {
         MasterExecutorChain forwardToMeta = new ForwardToMeta();
         MasterExecutorChain createDatabase = new CreateDatabaseExecutor();
         MasterExecutorChain openDatabase = new OpenDatabaseExecutor();
+        MasterExecutorChain closeDatabase = new CloseDatabaseExecutor();
 
         return connectChain(new MasterExecutorChain[] {
                 init,
                 createDatabase,
-                openDatabase
+                openDatabase,
+                closeDatabase
         });
     }
 

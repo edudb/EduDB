@@ -15,15 +15,15 @@ import net.edudb.meta_manager.MetaManager;
 import java.util.regex.Matcher;
 
 /**
- * This executor is responsible for opening a database
+ * This executor is responsible for closing a database
  *
  * @author Fady Sameh
  */
-public class OpenDatabaseExecutor implements MasterExecutorChain {
+public class CloseDatabaseExecutor implements MasterExecutorChain {
 
     private MasterExecutorChain nextElement;
 
-    private String regex = "\\A(?:(?i)open)\\s+(?:(?i)database)\\s+(\\D\\w*)\\s*;?\\z";
+    private String regex = "close\\s+database";
 
     @Override
     public void setNextElementInChain(MasterExecutorChain chainElement) {
@@ -32,14 +32,14 @@ public class OpenDatabaseExecutor implements MasterExecutorChain {
 
     @Override
     public void execute(String string) {
-        if (string.toLowerCase().startsWith("open")) {
+        if (string.toLowerCase().startsWith("close")) {
             Matcher matcher = Utility.getMatcher(string, regex);
             if (matcher.matches()) {
-                MetaManager.getInstance().openDatabase(matcher.group(1));
+                MetaManager.getInstance().closeDatabase();
 
                 //return;
             }
         }
-        nextElement.execute(string);
+        //nextElement.execute(string);
     }
 }
