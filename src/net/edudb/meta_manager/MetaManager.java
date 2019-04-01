@@ -124,6 +124,14 @@ public class MetaManager implements MetaDAO, Runnable {
     public void openDatabase(String databaseName) {
 
         Response response = forwardCommand("open database " + databaseName);
+
+        if (response.getMessage().startsWith("Opened database")) {
+            initializeTables();
+            MasterWriter.getInstance().write(new Response("Opened database '" + databaseName + "'"));
+        }
+        else {
+            MasterWriter.getInstance().write(new Response("Database '" + databaseName + "' does not exist"));
+        }
     }
 
     /**
