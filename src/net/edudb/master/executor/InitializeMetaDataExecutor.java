@@ -35,16 +35,16 @@ public class InitializeMetaDataExecutor implements MasterExecutorChain {
     }
 
     public void execute(String string) {
-        Matcher matcher = Utility.getMatcher(string, regex);
-        if (matcher.matches()) {
-            try {
-                MetaManager.getInstance().initializeTables();
-                MasterWriter.getInstance().write(new Response("Meta data created successfully"));
-            } catch (InterruptedException e) {
-
-            }
-        } else {
-            nextElement.execute(string);
-        }
+//        Matcher matcher = Utility.getMatcher(string, regex);
+//        if (matcher.matches()) {
+//            try {
+//               // MetaManager.getInstance().initializeTables();
+//                MasterWriter.getInstance().write(new Response("Meta data created successfully"));
+//            } catch (InterruptedException e) {
+//
+//            }
+//        } else {
+//            nextElement.execute(string);
+//        }
     }
 }

@@ -25,6 +25,7 @@ import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 import net.edudb.engine.Utility;
+import net.edudb.master.MasterWriter;
 import net.edudb.request.Request;
 import net.edudb.response.Response;
 
@@ -107,20 +108,30 @@ public class MetaManager implements MetaDAO, Runnable {
         }
     }
 
-    public void initializeTables() throws InterruptedException {
-        createMetaDatabase();
-        openMetaDatabase();
+    public void createDatabase(String databaseName) {
+
+        Response response = forwardCommand("create database " + databaseName);
+
+        if (response.getMessage().startsWith("Created database")) {
+            initializeTables();
+            MasterWriter.getInstance().write(new Response("Created database '" + databaseName + "'"));
+        }
+        else {
+            MasterWriter.getInstance().write(new Response("Database '" + databaseName + "' already exists"));
+        }
+    }
+
+    public void openDatabase(String databaseName) {
+
+        Response response = forwardCommand("open database " + databaseName);
+    }
+
+    /**
+     * This method is responsible for creating all the metadata
+     * tables, once a new database is created
+     */
+    private void initializeTables() {
         createWorkersTable();
-    }
-
-    private void createMetaDatabase() {
-
-        forwardCommand("create database metadata");
-    }
-
-    private void openMetaDatabase() {
-
-        forwardCommand("open database metadata");
     }
 
     private void createWorkersTable() {
@@ -129,7 +140,7 @@ public class MetaManager implements MetaDAO, Runnable {
     }
 
     /**
-     * This function is responsible for sending commands
+     * This function is used for sending commands
      * to the meta database
      *
      * @param command
@@ -150,6 +161,7 @@ public class MetaManager implements MetaDAO, Runnable {
 
         System.out.println("Response arrived at forwardCommand");
         System.out.println(pendingRequests.get(id).getMessage());
+        System.out.println(pendingRequests.get(id).getRecords());
 
         return pendingRequests.remove(id);
     }

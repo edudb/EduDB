@@ -69,12 +69,13 @@ public class Master {
         MasterExecutorChain initMetaData = new InitializeMetaDataExecutor();
         MasterExecutorChain connectWorker = new ConnectWorkerExecutor();
         MasterExecutorChain forwardToMeta = new ForwardToMeta();
+        MasterExecutorChain createDatabase = new CreateDatabaseExecutor();
+        MasterExecutorChain openDatabase = new OpenDatabaseExecutor();
 
         return connectChain(new MasterExecutorChain[] {
                 init,
-                initMetaData,
-                connectWorker,
-                forwardToMeta
+                createDatabase,
+                openDatabase
         });
     }
 

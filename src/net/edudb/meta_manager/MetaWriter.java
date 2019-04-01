@@ -37,8 +37,7 @@ public class MetaWriter {
     }
 
     public void writeln(Object obj) {
-        System.out.println("inside meta write");
-        System.out.println(((Request)obj).getCommand());
+
         if (context != null) {
             //ByteBuf buf = Unpooled.copiedBuffer(obj.toString() + "\n", Charsets.UTF_8);
 
@@ -47,8 +46,7 @@ public class MetaWriter {
     }
 
     public void write(Object obj) {
-        System.out.println("inside meta write");
-        System.out.println(((Request)obj).getCommand());
+
         if (context != null) {
             //ByteBuf buf = Unpooled.copiedBuffer(obj.toString(), Charsets.UTF_8);
 

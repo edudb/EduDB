@@ -11,28 +11,19 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.master.executor;
 
 import net.edudb.engine.Utility;
-import java.util.regex.Matcher;
-import net.edudb.master.MasterWriter;
 import net.edudb.meta_manager.MetaManager;
-import net.edudb.response.Response;
+import java.util.regex.Matcher;
 
 /**
- * Handles the initialization of the connection with the client.
+ * This executor is responsible for creating a database
  *
- * @author FadySameh
- *
+ * @author Fady Sameh
  */
-public class InitializeExecutor implements MasterExecutorChain {
+public class CreateDatabaseExecutor implements MasterExecutorChain {
+
     private MasterExecutorChain nextElement;
-    /**
-     * Matches strings of the form: <br>
-     * <br>
-     * <b>[edudb::username::password]</b><br>
-     * <br>
-     * and captures <b>username</b> and <b>password</b> in the matcher's groups
-     * one and two, respectively.
-     */
-    private String regex = "\\A\\[edudb\\:\\:(\\w+)\\:(\\w+)\\]\\z";
+
+    private String regex = "\\A(?:(?i)create)\\s+(?:(?i)database)\\s+(\\D\\w*)\\s*;?\\z";
 
     @Override
     public void setNextElementInChain(MasterExecutorChain chainElement) {
@@ -41,33 +32,14 @@ public class InitializeExecutor implements MasterExecutorChain {
 
     @Override
     public void execute(String string) {
-        if (string.toLowerCase().startsWith("[edudb::")) {
+        if (string.toLowerCase().startsWith("create")) {
             Matcher matcher = Utility.getMatcher(string, regex);
             if (matcher.matches()) {
-                /**
-                 * Write anything to the client to initialize a connection with
-                 * it.
-                 *
-                 */
+                MetaManager.getInstance().createDatabase(matcher.group(1));
 
-
-                if (matcher.group(1).equals("admin") && matcher.group(2).equals("admin")) {
-
-                    /**
-                     * If master is not connected to meta database, connect
-                     * to it
-                     */
-                    if (!MetaManager.getInstance().isConnected()) {
-                        new Thread(MetaManager.getInstance()).start();
-                    }
-                    MasterWriter.getInstance().write(new Response("[edudb::init]"));
-                } else {
-                    MasterWriter.getInstance().write(new Response("[edudb::mismatch]"));
-                }
+                //return;
             }
         }
-        else
-        //MasterWriter.getInstance().write("[edudb::mismatch]");
         nextElement.execute(string);
     }
 }
