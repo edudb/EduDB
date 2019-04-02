@@ -40,6 +40,7 @@ public class CloseDatabaseExecutor implements MasterExecutorChain {
                 //return;
             }
         }
-        //nextElement.execute(string);
+        else
+            nextElement.execute(string);
     }
 }

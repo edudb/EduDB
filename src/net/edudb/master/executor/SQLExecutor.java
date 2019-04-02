@@ -10,37 +10,30 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.master.executor;
 
-import net.edudb.engine.Utility;
-import net.edudb.meta_manager.MetaManager;
-import java.util.regex.Matcher;
+import net.edudb.distributed_parser.DistributedParser;
+import net.edudb.master.MasterWriter;
+import net.edudb.response.Response;
+import net.edudb.statement.SQLStatement;
 
 /**
- * This executor is responsible for opening a database
+ * This executor is responsible for executing SQL statements
  *
  * @author Fady Sameh
  */
-public class OpenDatabaseExecutor implements MasterExecutorChain {
-
-    private MasterExecutorChain nextElement;
-
-    private String regex = "\\A(?:(?i)open)\\s+(?:(?i)database)\\s+(\\D\\w*)\\s*;?\\z";
+public class SQLExecutor implements MasterExecutorChain {
 
     @Override
     public void setNextElementInChain(MasterExecutorChain chainElement) {
-        this.nextElement = chainElement;
     }
 
     @Override
     public void execute(String string) {
-        if (string.toLowerCase().startsWith("open")) {
-            Matcher matcher = Utility.getMatcher(string, regex);
-            if (matcher.matches()) {
-                MetaManager.getInstance().openDatabase(matcher.group(1));
 
-                //return;
-            }
+        DistributedParser parser = new DistributedParser();
+        SQLStatement statement = parser.parseSQL(string.replace(":", ""));
+        if (statement != null) {
+            MasterWriter.getInstance().write(new Response(statement.toString()));
         }
-        else
-            nextElement.execute(string);
+
     }
 }

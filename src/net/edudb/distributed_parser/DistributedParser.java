@@ -8,39 +8,44 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.master.executor;
+package net.edudb.distributed_parser;
 
-import net.edudb.engine.Utility;
-import net.edudb.meta_manager.MetaManager;
-import java.util.regex.Matcher;
+import gudusoft.gsqlparser.EDbVendor;
+import gudusoft.gsqlparser.TGSqlParser;
+import net.edudb.master.MasterWriter;
+import net.edudb.response.Response;
+import net.edudb.statement.SQLStatement;
+import net.edudb.statement.SQLStatementFactory;
 
 /**
- * This executor is responsible for opening a database
+ * This parser is responsible for parsing distributed
+ * queries received at the master node
  *
  * @author Fady Sameh
  */
-public class OpenDatabaseExecutor implements MasterExecutorChain {
+public class DistributedParser {
 
-    private MasterExecutorChain nextElement;
+    TGSqlParser sqlparser;
 
-    private String regex = "\\A(?:(?i)open)\\s+(?:(?i)database)\\s+(\\D\\w*)\\s*;?\\z";
-
-    @Override
-    public void setNextElementInChain(MasterExecutorChain chainElement) {
-        this.nextElement = chainElement;
+    public DistributedParser() {
+        sqlparser = new TGSqlParser(EDbVendor.dbvpostgresql);
     }
 
-    @Override
-    public void execute(String string) {
-        if (string.toLowerCase().startsWith("open")) {
-            Matcher matcher = Utility.getMatcher(string, regex);
-            if (matcher.matches()) {
-                MetaManager.getInstance().openDatabase(matcher.group(1));
+    public SQLStatement parseSQL(String strSQL) {
+        sqlparser.setSqltext(strSQL);
 
-                //return;
-            }
+        int ret = sqlparser.parse();
+        if (ret == 0) {
+            SQLStatementFactory statementFactory = new SQLStatementFactory();
+            SQLStatement statement = statementFactory.makeSQLStatement(sqlparser.sqlstatements.get(0));
+
+            if (statement == null)
+                MasterWriter.getInstance().write(new Response("Unsupported SQL statement"));
+
+            return statement;
+        } else {
+            MasterWriter.getInstance().write(new Response(sqlparser.getErrormessage()));
+            return null;
         }
-        else
-            nextElement.execute(string);
     }
 }
