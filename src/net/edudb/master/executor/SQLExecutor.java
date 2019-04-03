@@ -38,6 +38,9 @@ public class SQLExecutor implements MasterExecutorChain {
         if (statement != null) {
             //MasterWriter.getInstance().write(new Response(statement.toString()));
             QueryTree plan = planFactory.makePlan(statement);
+            if (plan != null) {
+                MasterWriter.getInstance().write(new Response("plan generated"));
+            }
         }
 
     }

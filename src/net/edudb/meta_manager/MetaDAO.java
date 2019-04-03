@@ -10,6 +10,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.meta_manager;
 
+import net.edudb.structure.Record;
+
+import java.util.ArrayList;
+
 /**
  * An interface, that implements the Repository design pattern, that
  * is used to interact with the database storing the cluster's meta
@@ -19,4 +23,14 @@ package net.edudb.meta_manager;
  *
  */
 public interface MetaDAO {
+
+    /**
+     *
+     * @param tableName
+     * The name of the table you want to get the records from
+     *
+     * @return
+     * ArrayList of records from the table
+     */
+    ArrayList<Record> getAll(String tableName);
 }

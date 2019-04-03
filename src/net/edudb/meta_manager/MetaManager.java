@@ -28,7 +28,9 @@ import net.edudb.engine.Utility;
 import net.edudb.master.MasterWriter;
 import net.edudb.request.Request;
 import net.edudb.response.Response;
+import net.edudb.structure.Record;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 /**
@@ -149,12 +151,23 @@ public class MetaManager implements MetaDAO, Runnable {
      * tables, once a new database is created
      */
     private void initializeTables() {
+
         createWorkersTable();
+        createTablesTable();
     }
 
     private void createWorkersTable() {
 
         forwardCommand("create table workers (host Varchar, port Integer)");
+    }
+
+    private void createTablesTable() {
+        forwardCommand("create table tables (name Varchar, metadata Varchar)");
+    }
+
+    public ArrayList<Record> getAll(String tableName) {
+        Response response = forwardCommand("select * from " + tableName);
+        return response.getRecords();
     }
 
     /**
