@@ -8,37 +8,18 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.master.executor;
+package net.edudb.distributed_plan;
 
-import net.edudb.distributed_parser.DistributedParser;
-import net.edudb.distributed_plan.DistributedPlanFactory;
-import net.edudb.master.MasterWriter;
 import net.edudb.query.QueryTree;
-import net.edudb.response.Response;
 import net.edudb.statement.SQLStatement;
 
 /**
- * This executor is responsible for executing SQL statements
+ * A distributed plan that will be executed at the
+ * master node
  *
  * @author Fady Sameh
  */
-public class SQLExecutor implements MasterExecutorChain {
+public abstract class DistributedPlan {
 
-    private DistributedPlanFactory planFactory = new DistributedPlanFactory();
-
-    @Override
-    public void setNextElementInChain(MasterExecutorChain chainElement) {
-    }
-
-    @Override
-    public void execute(String string) {
-
-        DistributedParser parser = new DistributedParser();
-        SQLStatement statement = parser.parseSQL(string.replace(":", ""));
-        if (statement != null) {
-            //MasterWriter.getInstance().write(new Response(statement.toString()));
-            QueryTree plan = planFactory.makePlan(statement);
-        }
-
-    }
+    public abstract QueryTree makePlan(SQLStatement sqlStatement);
 }
