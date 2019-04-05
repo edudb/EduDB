@@ -41,7 +41,7 @@ public class MetadataBuffer {
         if (tables.isEmpty()) {
             MetaDAO metaDAO = MetaManager.getInstance();
             ArrayList<Record> tableRecords = metaDAO.getAll("tables");
-            MasterWriter.getInstance().write(new Response("relation", tableRecords, null));
+            //MasterWriter.getInstance().write(new Response("relation", tableRecords, null));
             if (tableRecords != null) {
                 for (Record table: tableRecords) {
                     for (Column column: table.getData().keySet()) {

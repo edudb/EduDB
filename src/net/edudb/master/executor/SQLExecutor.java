@@ -41,7 +41,7 @@ public class SQLExecutor implements MasterExecutorChain {
             //MasterWriter.getInstance().write(new Response(statement.toString()));
             QueryTree plan = planFactory.makePlan(statement);
             if (plan != null) {
-                MasterWriter.getInstance().write(new Response("plan generated"));
+                //MasterWriter.getInstance().write(new Response("plan generated"));
 
                 SynchronizedTransaction transaction = new SynchronizedTransaction(plan);
                 DistributedTransactionManager.getInstance().execute(transaction);

@@ -35,4 +35,6 @@ public interface MetaDAO {
     ArrayList<Record> getAll(String tableName);
 
     void writeTable(String tableName, String tableMetadata);
+
+    void editTable(String tableName, String distributionMethod, String distributionColumn);
 }

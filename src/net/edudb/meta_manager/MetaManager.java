@@ -163,7 +163,8 @@ public class MetaManager implements MetaDAO, Runnable {
     }
 
     private void createTablesTable() {
-        forwardCommand("create table tables (name Varchar, metadata Varchar)");
+
+        forwardCommand("create table tables (name Varchar, metadata Varchar, distribution_method Varchar, distribution_column Varchar)");
     }
 
     public ArrayList<Record> getAll(String tableName) {
@@ -172,8 +173,20 @@ public class MetaManager implements MetaDAO, Runnable {
     }
 
     public void writeTable(String tableName, String tableMetadata) {
-        forwardCommand("insert into tables values ('" + tableName +"', '" + tableMetadata +"')");
+        forwardCommand("insert into tables values ('" + tableName +"', '" + tableMetadata +"', 'null', 'null')");
         MetadataBuffer.getInstance().getTables().clear();
+        MasterWriter.getInstance().write(new Response("Table '" + tableName + "' created"));
+    }
+
+    public void editTable(String tableName, String distributionMethod, String distributionColumn) {
+        String whereClause = "where name='" + tableName +"'";
+        String updateFields = "set distribution_method='" + distributionMethod + "'"
+                + ((distributionColumn!=null) ? ", distribution_column='" + distributionColumn + "' " : " ");
+        forwardCommand("update tables " + updateFields + whereClause);
+        MetadataBuffer.getInstance().getTables().clear();
+        MasterWriter.getInstance().write(new Response("Distribution method for table '" + tableName
+        + "' updated to " + distributionMethod));
+
     }
 
     /**

@@ -73,12 +73,14 @@ public class Master {
         MasterExecutorChain openDatabase = new OpenDatabaseExecutor();
         MasterExecutorChain closeDatabase = new CloseDatabaseExecutor();
         MasterExecutorChain sqlExecutor = new SQLExecutor();
+        MasterExecutorChain replicateTable = new ReplicateTableExecutor();
 
         return connectChain(new MasterExecutorChain[] {
                 init,
                 createDatabase,
                 openDatabase,
                 closeDatabase,
+                replicateTable,
                 sqlExecutor
         });
     }

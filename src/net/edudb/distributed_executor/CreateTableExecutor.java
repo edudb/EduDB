@@ -44,7 +44,7 @@ public class CreateTableExecutor implements OperatorExecutionChain {
                     return;
                 }
             }
-            MasterWriter.getInstance().write(new Response("Table meta data: " + tableMetadata));
+            //MasterWriter.getInstance().write(new Response("Table meta data: " + tableMetadata));
             MetaManager.getInstance().writeTable(statement.getTableName(), tableMetadata);
         }
         else {
