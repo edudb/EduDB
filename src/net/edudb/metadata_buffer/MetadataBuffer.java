@@ -45,8 +45,10 @@ public class MetadataBuffer {
             if (tableRecords != null) {
                 for (Record table: tableRecords) {
                     for (Column column: table.getData().keySet()) {
-                        if ((column.toString()).equals("name"))
-                            tables.put(column.toString(), table);
+                        if ((column.toString()).equals("name")) {
+                            String tableName = ((VarCharType)table.getData().get(column)).getString();
+                            tables.put(tableName, table);
+                        }
                     }
                 }
             }

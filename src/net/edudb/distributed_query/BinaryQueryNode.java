@@ -8,31 +8,17 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.statement;
+package net.edudb.distributed_query;
 
-import net.edudb.distributed_operator.parameter.DistributedOperatorParameter;
-import net.edudb.operator.parameter.OperatorParameter;
+import net.edudb.ebtree.EBBinaryNode;
 
 /**
- * Holds information about the SQL statements.
+ * A marker interface. A {@link BinaryQueryNode} is a query tree node that has
+ * two children.
  * 
  * @author Ahmed Abdul Badie
  *
  */
-public abstract class SQLStatement implements OperatorParameter, DistributedOperatorParameter {
-
-	/**
-	 * 
-	 * @return The target table's name of the SQL statement.
-	 */
-	public abstract String getTableName();
-
-	/**
-	 * 
-	 * @return The type of the SQL statement.
-	 */
-	public abstract SQLStatementType statementType();
-
-	public abstract String toString();
+public interface BinaryQueryNode extends EBBinaryNode, QueryNode {
 
 }

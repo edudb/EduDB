@@ -8,31 +8,24 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.statement;
+package net.edudb.distributed_query;
 
-import net.edudb.distributed_operator.parameter.DistributedOperatorParameter;
-import net.edudb.operator.parameter.OperatorParameter;
+import net.edudb.relation.Relation;
 
 /**
- * Holds information about the SQL statements.
  * 
  * @author Ahmed Abdul Badie
  *
  */
-public abstract class SQLStatement implements OperatorParameter, DistributedOperatorParameter {
+public interface QueryTreeExecutor {
 
 	/**
+	 * Executes a query tree.
 	 * 
-	 * @return The target table's name of the SQL statement.
+	 * @param queryTree
+	 *            The query tree to execute.
+	 * @return A relation that holds records resulted from the execution.
 	 */
-	public abstract String getTableName();
-
-	/**
-	 * 
-	 * @return The type of the SQL statement.
-	 */
-	public abstract SQLStatementType statementType();
-
-	public abstract String toString();
+	public Relation execute(QueryTree queryTree);
 
 }

@@ -8,31 +8,34 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.statement;
+package net.edudb.distributed_query;
 
-import net.edudb.distributed_operator.parameter.DistributedOperatorParameter;
-import net.edudb.operator.parameter.OperatorParameter;
+import net.edudb.distributed_operator.Operator;
+import net.edudb.distributed_executor.*;
+import net.edudb.relation.Relation;
 
 /**
- * Holds information about the SQL statements.
+ * This strategy executes each relational operator and returns the result as a
+ * volatile relation which is not intended to be saved to disk. However, there
+ * is a drawback. After executing each operator, the relations are not removed
+ * from memory or disk and therefore are persisted whenever a page is replaced
+ * or the system exits. You can remove the relation after being used to make
+ * sure that they are not persisted to disk.
+ * 
+ * @see PostOrderOperatorExecutor
  * 
  * @author Ahmed Abdul Badie
  *
  */
-public abstract class SQLStatement implements OperatorParameter, DistributedOperatorParameter {
+public class PostOrderTreeExecutor implements QueryTreeExecutor {
 
-	/**
-	 * 
-	 * @return The target table's name of the SQL statement.
-	 */
-	public abstract String getTableName();
-
-	/**
-	 * 
-	 * @return The type of the SQL statement.
-	 */
-	public abstract SQLStatementType statementType();
-
-	public abstract String toString();
+	@Override
+	public Relation execute(QueryTree queryTree) {
+		PostOrderOperatorExecutor executor = new PostOrderOperatorExecutor();
+		OperatorExecutionChain chain = executor.getChain();
+		Operator operator = (Operator) queryTree.getRoot();
+		chain.execute(operator);
+		return null;
+	}
 
 }

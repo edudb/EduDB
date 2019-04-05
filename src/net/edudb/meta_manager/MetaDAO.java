@@ -33,4 +33,6 @@ public interface MetaDAO {
      * ArrayList of records from the table
      */
     ArrayList<Record> getAll(String tableName);
+
+    void writeTable(String tableName, String tableMetadata);
 }

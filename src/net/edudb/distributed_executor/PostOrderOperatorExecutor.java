@@ -8,31 +8,25 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.statement;
+package net.edudb.distributed_executor;
 
-import net.edudb.distributed_operator.parameter.DistributedOperatorParameter;
-import net.edudb.operator.parameter.OperatorParameter;
+import net.edudb.distributed_operator.CreateTableOperator;
 
 /**
- * Holds information about the SQL statements.
- * 
- * @author Ahmed Abdul Badie
+ * Executes a query tree in a post-order strategy. If a tree node is not a leaf,
+ * its left child is executed before its right child. This approach is achieved
+ * recursively.
+ *
+ * @author Fady `Sameh
  *
  */
-public abstract class SQLStatement implements OperatorParameter, DistributedOperatorParameter {
+public class PostOrderOperatorExecutor {
 
-	/**
-	 * 
-	 * @return The target table's name of the SQL statement.
-	 */
-	public abstract String getTableName();
-
-	/**
-	 * 
-	 * @return The type of the SQL statement.
-	 */
-	public abstract SQLStatementType statementType();
-
-	public abstract String toString();
+    public OperatorExecutionChain getChain() {
+        OperatorExecutionChain createTable = new CreateTableExecutor();
+        return OperatorExecutionChain.connnectChain(new OperatorExecutionChain[]{
+                createTable
+        });
+    }
 
 }

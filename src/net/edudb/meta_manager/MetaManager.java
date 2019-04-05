@@ -26,6 +26,7 @@ import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 import net.edudb.engine.Utility;
 import net.edudb.master.MasterWriter;
+import net.edudb.metadata_buffer.MetadataBuffer;
 import net.edudb.request.Request;
 import net.edudb.response.Response;
 import net.edudb.structure.Record;
@@ -168,6 +169,11 @@ public class MetaManager implements MetaDAO, Runnable {
     public ArrayList<Record> getAll(String tableName) {
         Response response = forwardCommand("select * from " + tableName);
         return response.getRecords();
+    }
+
+    public void writeTable(String tableName, String tableMetadata) {
+        forwardCommand("insert into tables values ('" + tableName +"', '" + tableMetadata +"')");
+        MetadataBuffer.getInstance().getTables().clear();
     }
 
     /**

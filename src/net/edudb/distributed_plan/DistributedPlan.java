@@ -10,7 +10,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.distributed_plan;
 
-import net.edudb.query.QueryTree;
+import net.edudb.distributed_query.QueryTree;
 import net.edudb.statement.SQLStatement;
 
 /**

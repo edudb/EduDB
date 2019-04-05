@@ -8,31 +8,20 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.statement;
 
-import net.edudb.distributed_operator.parameter.DistributedOperatorParameter;
-import net.edudb.operator.parameter.OperatorParameter;
+package net.edudb.distributed_transaction;
+
+import net.edudb.distributed_query.QueryTree;
+import net.edudb.distributed_query.QueryTreeExecutor;
 
 /**
- * Holds information about the SQL statements.
- * 
- * @author Ahmed Abdul Badie
+ * A transaction is an object that executes a query tree using an execution
+ * strategy. A transaction can either be concurrent or synchronized.
+ *
+ * @author Fady Sameh
  *
  */
-public abstract class SQLStatement implements OperatorParameter, DistributedOperatorParameter {
-
-	/**
-	 * 
-	 * @return The target table's name of the SQL statement.
-	 */
-	public abstract String getTableName();
-
-	/**
-	 * 
-	 * @return The type of the SQL statement.
-	 */
-	public abstract SQLStatementType statementType();
-
-	public abstract String toString();
-
+public abstract class DistributedTransaction {
+    protected QueryTree plan;
+    protected QueryTreeExecutor queryTreeExecutor;
 }

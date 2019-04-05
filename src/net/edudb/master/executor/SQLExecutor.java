@@ -12,8 +12,10 @@ package net.edudb.master.executor;
 
 import net.edudb.distributed_parser.DistributedParser;
 import net.edudb.distributed_plan.DistributedPlanFactory;
+import net.edudb.distributed_transaction.DistributedTransactionManager;
+import net.edudb.distributed_transaction.SynchronizedTransaction;
 import net.edudb.master.MasterWriter;
-import net.edudb.query.QueryTree;
+import net.edudb.distributed_query.QueryTree;
 import net.edudb.response.Response;
 import net.edudb.statement.SQLStatement;
 
@@ -40,6 +42,9 @@ public class SQLExecutor implements MasterExecutorChain {
             QueryTree plan = planFactory.makePlan(statement);
             if (plan != null) {
                 MasterWriter.getInstance().write(new Response("plan generated"));
+
+                SynchronizedTransaction transaction = new SynchronizedTransaction(plan);
+                DistributedTransactionManager.getInstance().execute(transaction);
             }
         }
 

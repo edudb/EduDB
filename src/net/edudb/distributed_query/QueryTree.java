@@ -8,31 +8,40 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.statement;
+package net.edudb.distributed_query;
 
-import net.edudb.distributed_operator.parameter.DistributedOperatorParameter;
-import net.edudb.operator.parameter.OperatorParameter;
+import net.edudb.ebtree.EBNode;
+import net.edudb.ebtree.EBTree;
 
 /**
- * Holds information about the SQL statements.
+ * A tree that has relational algebra operators as its nodes.
  * 
  * @author Ahmed Abdul Badie
  *
  */
-public abstract class SQLStatement implements OperatorParameter, DistributedOperatorParameter {
+public class QueryTree extends EBTree {
 
-	/**
-	 * 
-	 * @return The target table's name of the SQL statement.
-	 */
-	public abstract String getTableName();
+	public QueryTree() {
+	}
 
-	/**
-	 * 
-	 * @return The type of the SQL statement.
-	 */
-	public abstract SQLStatementType statementType();
+	public QueryTree(QueryNode root) {
+		super(root);
+	}
 
-	public abstract String toString();
+	@Override
+	public void addNode(EBNode node) {
+		if (this.root != null) {
+			this.root.setParent(node);
+			if (node instanceof UnaryQueryNode) {
+				((UnaryQueryNode) node).setChild(this.root);
+			} else {
+				((BinaryQueryNode) node).setLeftChild(this.root);
+			}
+			this.root = node;
+			++this.levels;
+			return;
+		}
+		setRoot(node);
+	}
 
 }
