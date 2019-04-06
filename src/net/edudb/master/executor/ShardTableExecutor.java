@@ -23,14 +23,15 @@ import net.edudb.structure.Record;
 import java.util.regex.Matcher;
 
 /**
- * Sets the distribution method of a table to replication
+ * Sets the distribution method of a table to sharding
+ * and sets the distribution column
  *
  * @author Fady Sameh
  */
-public class ReplicateTableExecutor implements MasterExecutorChain {
+public class ShardTableExecutor implements MasterExecutorChain {
 
     private MasterExecutorChain nextElement;
-    private String regex = "replicate table (\\w+)";
+    private String regex = "shard table \\((\\w+), (\\w+)\\)";
 
     @Override
     public void setNextElementInChain(MasterExecutorChain chainElement) {
@@ -38,10 +39,12 @@ public class ReplicateTableExecutor implements MasterExecutorChain {
     }
 
     public void execute(String string) {
-        if (string.startsWith("replicate")) {
+        if (string.startsWith("shard table")) {
             Matcher matcher = Utility.getMatcher(string, regex);
             if (matcher.matches()) {
-                String tableName  = matcher.group(1);
+                String tableName = matcher.group(1);
+                String distributionColumn = matcher.group(2);
+
                 Record table = MetadataBuffer.getInstance().getTables().get(tableName);
 
                 if (table == null) {
@@ -49,17 +52,44 @@ public class ReplicateTableExecutor implements MasterExecutorChain {
                     return;
                 }
 
-                for (Column column: table.getData().keySet())
+                for (Column column: table.getData().keySet()) {
+
+                    /**
+                     * checking that distribution method is not already set
+                     */
                     if (column.toString().equals("distribution_method")) {
-                        String distributionMethod = ((VarCharType)table.getData().get(column)).getString();
+                        String distributionMethod = ((VarCharType) table.getData().get(column)).getString();
                         if (!distributionMethod.equals("null")) {
                             MasterWriter.getInstance().write(new Response("Distribution method for table '" + tableName
                                     + "' has already been set"));
                             return;
                         }
-                        MetaDAO metaDAO = MetaManager.getInstance();
-                        metaDAO.editTable(tableName, "replication", null);
                     }
+
+                    /**
+                     * checking that distribution column is an existing column
+                     */
+                    if (column.toString().equals("metadata")) {
+                        String metadata = ((VarCharType) table.getData().get(column)).getString();
+                        String[] tokens = metadata.split(" ");
+                        boolean isExistingColumn = false;
+
+                        for (int i = 0; i < tokens.length; i+=2)
+                            if (tokens[i].equals(distributionColumn)) {
+                                isExistingColumn = true;
+                                break;
+                            }
+
+                        if (!isExistingColumn) {
+                            MasterWriter.getInstance().write(new Response("Column '" + distributionColumn +"' does not exist in table '"
+                            + tableName + "'"));
+                            return;
+                        }
+                    }
+                }
+
+                MetaDAO metaDAO = MetaManager.getInstance();
+                metaDAO.editTable(tableName, "sharding", distributionColumn);
 
             }
         }

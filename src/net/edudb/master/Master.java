@@ -66,14 +66,12 @@ public class Master {
 
     public  static MasterExecutorChain getExecutionChain() {
         MasterExecutorChain init = new InitializeExecutor();
-        MasterExecutorChain initMetaData = new InitializeMetaDataExecutor();
-        MasterExecutorChain connectWorker = new ConnectWorkerExecutor();
-        MasterExecutorChain forwardToMeta = new ForwardToMeta();
         MasterExecutorChain createDatabase = new CreateDatabaseExecutor();
         MasterExecutorChain openDatabase = new OpenDatabaseExecutor();
         MasterExecutorChain closeDatabase = new CloseDatabaseExecutor();
-        MasterExecutorChain sqlExecutor = new SQLExecutor();
         MasterExecutorChain replicateTable = new ReplicateTableExecutor();
+        MasterExecutorChain shardTable = new ShardTableExecutor();
+        MasterExecutorChain sqlExecutor = new SQLExecutor();
 
         return connectChain(new MasterExecutorChain[] {
                 init,
@@ -81,6 +79,7 @@ public class Master {
                 openDatabase,
                 closeDatabase,
                 replicateTable,
+                shardTable,
                 sqlExecutor
         });
     }
