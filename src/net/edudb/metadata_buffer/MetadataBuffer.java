@@ -11,12 +11,14 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.metadata_buffer;
 
 import net.edudb.data_type.DataType;
+import net.edudb.data_type.IntegerType;
 import net.edudb.data_type.VarCharType;
 import net.edudb.meta_manager.MetaDAO;
 import net.edudb.meta_manager.MetaManager;
 import net.edudb.structure.Column;
 import net.edudb.structure.Record;
 
+import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
@@ -32,7 +34,7 @@ public class MetadataBuffer {
 
     private Hashtable<String, Hashtable<String, DataType>> tables = new Hashtable();
     private Hashtable<String, Record> workers = new Hashtable();
-    private Hashtable<String, Record> shards = new Hashtable<>();
+    private Hashtable<String, Hashtable<String, DataType>> shards = new Hashtable<>();
 
     private MetadataBuffer () {}
 
@@ -78,7 +80,7 @@ public class MetadataBuffer {
                         }
 
                         if ((column.toString()).equals("port")) {
-                            String port = ((VarCharType)worker.getData().get(column)).getString();
+                            String port = ((IntegerType)worker.getData().get(column)).getInteger() + "";
                             workerAddress += port;
                         }
 
@@ -93,15 +95,19 @@ public class MetadataBuffer {
         return workers;
     }
 
-    public Hashtable<String, Record> getShards() {
+    public Hashtable<String, Hashtable<String, DataType>> getShards() {
         if (shards.isEmpty()) {
             MetaDAO metaDAO = MetaManager.getInstance();
             ArrayList<Record> shardRecords = metaDAO.getAll("shards");
 
             if (shardRecords != null) {
                 for (Record shard: shardRecords) {
+
                     String workerAddress = ":";
                     String tableName = "";
+                    String minValue = "";
+
+                    Hashtable<String, DataType> shardData = new Hashtable<>();
 
                     for (Column column: shard.getData().keySet()) {
 
@@ -111,7 +117,7 @@ public class MetadataBuffer {
                         }
 
                         if ((column.toString()).equals("port")) {
-                            String port = ((VarCharType)shard.getData().get(column)).getString();
+                            String port = ((IntegerType)shard.getData().get(column)).getInteger() + "";
                             workerAddress += port;
                         }
 
@@ -119,8 +125,15 @@ public class MetadataBuffer {
                             tableName = ((VarCharType)shard.getData().get(column)).getString();
                         }
 
+                        if ((column.toString()).equals("min_value")) {
+                            minValue = ((VarCharType)shard.getData().get(column)).getString();
+                        }
+
+                        shardData.put(column.toString(), shard.getData().get(column));
 
                     }
+
+                    shards.put(workerAddress + ":" + tableName + ":" + minValue, shardData);
 
                 }
             }

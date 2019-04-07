@@ -71,6 +71,7 @@ public class Master {
         MasterExecutorChain closeDatabase = new CloseDatabaseExecutor();
         MasterExecutorChain replicateTable = new ReplicateTableExecutor();
         MasterExecutorChain shardTable = new ShardTableExecutor();
+        MasterExecutorChain createShard = new CreateShardExecutor();
         MasterExecutorChain sqlExecutor = new SQLExecutor();
 
         return connectChain(new MasterExecutorChain[] {
@@ -80,6 +81,7 @@ public class Master {
                 closeDatabase,
                 replicateTable,
                 shardTable,
+                createShard,
                 sqlExecutor
         });
     }

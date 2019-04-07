@@ -155,6 +155,7 @@ public class MetaManager implements MetaDAO, Runnable {
 
         createWorkersTable();
         createTablesTable();
+        createShardsTable();
     }
 
     private void createWorkersTable() {
@@ -165,6 +166,11 @@ public class MetaManager implements MetaDAO, Runnable {
     private void createTablesTable() {
 
         forwardCommand("create table tables (name Varchar, metadata Varchar, distribution_method Varchar, distribution_column Varchar)");
+    }
+
+    private void createShardsTable() {
+
+        forwardCommand("create table shards (host Varchar, port Integer, table Varchar, min_value Varchar, max_value Varchar)");
     }
 
     public ArrayList<Record> getAll(String tableName) {
@@ -187,6 +193,13 @@ public class MetaManager implements MetaDAO, Runnable {
         MasterWriter.getInstance().write(new Response("Distribution method for table '" + tableName
         + "' updated to " + distributionMethod));
 
+    }
+
+    public void writeShard(String host, int port, String table, String minValue, String maxValue) {
+        forwardCommand("insert into shards values ('" + host + "', " + port + ", '" + table + "', '" + minValue + "', '"
+        + maxValue + "')");
+        MetadataBuffer.getInstance().getShards().clear();
+        MasterWriter.getInstance().write(new Response("Shard created"));
     }
 
     /**
