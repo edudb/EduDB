@@ -10,6 +10,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.master.executor;
 
+import net.edudb.data_type.DataType;
 import net.edudb.data_type.VarCharType;
 import net.edudb.engine.Utility;
 import net.edudb.master.MasterWriter;
@@ -20,6 +21,7 @@ import net.edudb.response.Response;
 import net.edudb.structure.Column;
 import net.edudb.structure.Record;
 
+import java.util.Hashtable;
 import java.util.regex.Matcher;
 
 /**
@@ -42,24 +44,24 @@ public class ReplicateTableExecutor implements MasterExecutorChain {
             Matcher matcher = Utility.getMatcher(string, regex);
             if (matcher.matches()) {
                 String tableName  = matcher.group(1);
-                Record table = MetadataBuffer.getInstance().getTables().get(tableName);
+                Hashtable<String, DataType> table = MetadataBuffer.getInstance().getTables().get(tableName);
 
                 if (table == null) {
                     MasterWriter.getInstance().write(new Response("Table '" + tableName + "' does not exist"));
                     return;
                 }
 
-                for (Column column: table.getData().keySet())
-                    if (column.toString().equals("distribution_method")) {
-                        String distributionMethod = ((VarCharType)table.getData().get(column)).getString();
-                        if (!distributionMethod.equals("null")) {
-                            MasterWriter.getInstance().write(new Response("Distribution method for table '" + tableName
-                                    + "' has already been set"));
-                            return;
-                        }
-                        MetaDAO metaDAO = MetaManager.getInstance();
-                        metaDAO.editTable(tableName, "replication", null);
-                    }
+                String distributionMethod = ((VarCharType)table.get("distribution_method")).getString();
+
+
+                if (!distributionMethod.equals("null")) {
+                    MasterWriter.getInstance().write(new Response("Distribution method for table '" + tableName
+                            + "' has already been set"));
+                    return;
+                }
+                MetaDAO metaDAO = MetaManager.getInstance();
+                metaDAO.editTable(tableName, "replication", null);
+
 
             }
         }

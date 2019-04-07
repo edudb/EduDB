@@ -10,11 +10,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.metadata_buffer;
 
+import net.edudb.data_type.DataType;
 import net.edudb.data_type.VarCharType;
-import net.edudb.master.MasterWriter;
 import net.edudb.meta_manager.MetaDAO;
 import net.edudb.meta_manager.MetaManager;
-import net.edudb.response.Response;
 import net.edudb.structure.Column;
 import net.edudb.structure.Record;
 
@@ -31,28 +30,101 @@ public class MetadataBuffer {
 
     private static MetadataBuffer instance = new MetadataBuffer();
 
-    private Hashtable<String, Record> tables = new Hashtable();
+    private Hashtable<String, Hashtable<String, DataType>> tables = new Hashtable();
+    private Hashtable<String, Record> workers = new Hashtable();
+    private Hashtable<String, Record> shards = new Hashtable<>();
 
     private MetadataBuffer () {}
 
     public static MetadataBuffer getInstance() { return instance; }
 
-    public Hashtable<String, Record> getTables () {
+    public Hashtable<String, Hashtable<String, DataType>> getTables() {
         if (tables.isEmpty()) {
             MetaDAO metaDAO = MetaManager.getInstance();
             ArrayList<Record> tableRecords = metaDAO.getAll("tables");
             //MasterWriter.getInstance().write(new Response("relation", tableRecords, null));
             if (tableRecords != null) {
                 for (Record table: tableRecords) {
+                    String tableName = "";
+                    Hashtable <String, DataType> tableData = new Hashtable<>();
                     for (Column column: table.getData().keySet()) {
                         if ((column.toString()).equals("name")) {
-                            String tableName = ((VarCharType)table.getData().get(column)).getString();
-                            tables.put(tableName, table);
+                            tableName = ((VarCharType)table.getData().get(column)).getString();
                         }
+                        tableData.put(column.toString(), table.getData().get(column));
                     }
+
+                    tables.put(tableName, tableData);
                 }
             }
         }
         return tables;
+    }
+
+    public Hashtable<String, Record> getWorkers() {
+        if (workers.isEmpty()) {
+            MetaDAO metaDAO = MetaManager.getInstance();
+            ArrayList<Record> workerRecords = metaDAO.getAll("workers");
+
+            if (workerRecords != null) {
+                for (Record worker: workerRecords) {
+                    String workerAddress = ":";
+
+                    for (Column column: worker.getData().keySet()) {
+
+                        if ((column.toString()).equals("host")) {
+                            String host = ((VarCharType)worker.getData().get(column)).getString();
+                            workerAddress = host + workerAddress;
+                        }
+
+                        if ((column.toString()).equals("port")) {
+                            String port = ((VarCharType)worker.getData().get(column)).getString();
+                            workerAddress += port;
+                        }
+
+
+                    }
+
+                    workers.put(workerAddress, worker);
+
+                }
+            }
+        }
+        return workers;
+    }
+
+    public Hashtable<String, Record> getShards() {
+        if (shards.isEmpty()) {
+            MetaDAO metaDAO = MetaManager.getInstance();
+            ArrayList<Record> shardRecords = metaDAO.getAll("shards");
+
+            if (shardRecords != null) {
+                for (Record shard: shardRecords) {
+                    String workerAddress = ":";
+                    String tableName = "";
+
+                    for (Column column: shard.getData().keySet()) {
+
+                        if ((column.toString()).equals("host")) {
+                            String host = ((VarCharType)shard.getData().get(column)).getString();
+                            workerAddress = host + workerAddress;
+                        }
+
+                        if ((column.toString()).equals("port")) {
+                            String port = ((VarCharType)shard.getData().get(column)).getString();
+                            workerAddress += port;
+                        }
+
+                        if ((column.toString()).equals("table")) {
+                            tableName = ((VarCharType)shard.getData().get(column)).getString();
+                        }
+
+
+                    }
+
+                }
+            }
+        }
+        return shards;
     }
 }

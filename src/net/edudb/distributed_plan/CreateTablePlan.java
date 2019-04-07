@@ -10,6 +10,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.distributed_plan;
 
+import net.edudb.data_type.DataType;
 import net.edudb.master.Master;
 import net.edudb.master.MasterWriter;
 import net.edudb.metadata_buffer.MetadataBuffer;
@@ -29,7 +30,7 @@ public class CreateTablePlan extends DistributedPlan {
         QueryTree plan = null;
         String tableName = statement.getTableName();
 
-        Hashtable<String, Record> tables = MetadataBuffer.getInstance().getTables();
+        Hashtable<String, Hashtable<String, DataType>> tables = MetadataBuffer.getInstance().getTables();
 
         if (tables.get(tableName) != null) {
             MasterWriter.getInstance().write(new Response("Table '" + tableName + "' already exists"));
