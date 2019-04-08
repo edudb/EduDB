@@ -16,7 +16,10 @@ import net.edudb.data_type.DataType;
 import net.edudb.data_type.DataTypeFactory;
 import net.edudb.data_type.GenericType;
 import net.edudb.ebtree.EBNode;
+import net.edudb.exception.InvalidTypeValueException;
 import net.edudb.operator.parameter.OperatorParameter;
+import net.edudb.response.Response;
+import net.edudb.server.ServerWriter;
 import net.edudb.structure.Column;
 
 /**
@@ -112,7 +115,13 @@ public class Expression implements BinaryExpressionNode, OperatorParameter {
 			 * creates a generic data type, it must be transformed into a
 			 * defined data type.
 			 */
-			value = new DataTypeFactory().makeType(leftColumn.getTypeName(), ((GenericType) this.value).getValue());
+			try {
+				value = new DataTypeFactory().makeType(leftColumn.getTypeName(), ((GenericType) this.value).getValue());
+			} catch (InvalidTypeValueException e) {
+				ServerWriter.getInstance().write(new Response(e.getMessage()));
+				e.printStackTrace();
+			}
+
 		}
 
 		/**

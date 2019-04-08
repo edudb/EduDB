@@ -11,6 +11,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.console.executor;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import java.util.regex.Matcher;
 import net.edudb.data_type.DataType;
 import net.edudb.data_type.DataTypeFactory;
 import net.edudb.engine.Utility;
+import net.edudb.exception.InvalidTypeValueException;
 import net.edudb.response.Response;
 import net.edudb.server.ServerWriter;
 import net.edudb.statistics.Schema;
@@ -85,7 +87,13 @@ public class CopyExecutor implements ConsoleExecutorChain {
 						int size = values.length;
 						for (int j = 0; j < size; j++) {
 							Column column = columns.get(j);
-							data.put(column, typeFactory.makeType(column.getTypeName(), values[j]));
+							try {
+								data.put(column, typeFactory.makeType(column.getTypeName(), values[j]));
+							} catch (InvalidTypeValueException e) {
+								ServerWriter.getInstance().write(new Response(e.getMessage()));
+								e.printStackTrace();
+							}
+
 						}
 
 						Record record = new TableRecord(data);

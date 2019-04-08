@@ -47,7 +47,7 @@ public class BooleanType extends DataType implements Serializable {
 		case "false":
 			return false;
 		default:
-			throw new InvalidTypeValueException("Value can only be 1, t, true, 0, f, or false only");
+			throw new InvalidTypeValueException("Value '" + string + "' is not a boolean. Value csan only be 1, t, true, 0, f, or false only");
 		}
 	}
 

@@ -14,11 +14,14 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import net.edudb.data_type.DataType;
 import net.edudb.data_type.DataTypeFactory;
+import net.edudb.exception.InvalidTypeValueException;
 import net.edudb.operator.InsertOperator;
 import net.edudb.operator.Operator;
 import net.edudb.operator.parameter.InsertOperatorParameter;
 import net.edudb.relation.Relation;
 import net.edudb.relation.VolatileRelation;
+import net.edudb.response.Response;
+import net.edudb.server.ServerWriter;
 import net.edudb.statement.SQLInsertStatement;
 import net.edudb.statistics.Schema;
 import net.edudb.structure.Column;
@@ -58,8 +61,14 @@ public class InsertExecutor extends PostOrderOperatorExecutor implements Operato
 			LinkedHashMap<Column, DataType> data = new LinkedHashMap<>();
 			int size = values.size();
 			for (int i = 0; i < size; i++) {
-				data.put(columns.get(i),
-						typeFactory.makeType(columnTypes.get(columns.get(i).getName()), values.get(i)));
+				try {
+					data.put(columns.get(i),
+							typeFactory.makeType(columnTypes.get(columns.get(i).getName()), values.get(i)));
+				} catch (InvalidTypeValueException e) {
+					ServerWriter.getInstance().write(new Response(e.getMessage()));
+					e.printStackTrace();
+				}
+
 			}
 
 			Record record = new TableRecord(data);

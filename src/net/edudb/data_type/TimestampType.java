@@ -55,7 +55,7 @@ public class TimestampType extends DataType implements Serializable {
 				e.printStackTrace();
 			}
 		}
-		throw new InvalidTypeValueException("The value must be of the format YYYY-MM-DD HH:MM:SS");
+		throw new InvalidTypeValueException("The value '" + string + "' is not a date. Value must be of the format YYYY-MM-DD HH:MM:SS");
 	}
 
 	@Override
