@@ -1,0 +1,14 @@
+version: "2"
+services:
+  edudb:
+    container_name: edudb
+    restart: always
+    build: .
+    ports:
+      - "9991:9999"
+  edudb2:
+    container_name: edudb2
+    restart: always
+    build: .
+    ports:
+      - "9992:9999"

@@ -195,7 +195,7 @@ public class Server {
 			port = 9999;
 		}
 		Server server = new Server(port);
-		server.showTray();
+		//server.showTray();
 		server.run();
 	}
 
