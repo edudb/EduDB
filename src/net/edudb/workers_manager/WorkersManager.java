@@ -12,6 +12,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.workers_manager;
 
 import net.edudb.master.MasterWriter;
+import net.edudb.meta_manager.MetaDAO;
+import net.edudb.meta_manager.MetaManager;
+import net.edudb.metadata_buffer.MetadataBuffer;
 import net.edudb.response.Response;
 import net.edudb.worker_manager.WorkerManager;
 
@@ -29,6 +32,8 @@ public class WorkersManager {
     private Hashtable<String, WorkerManager> workers = new Hashtable<String, WorkerManager>();
 
     private WorkersManager() {}
+
+    public Hashtable<String, WorkerManager> getWorkers() { return workers; }
 
     public static WorkersManager getInstance() { return instance; };
 
@@ -48,5 +53,25 @@ public class WorkersManager {
 
         MasterWriter.getInstance().write(new Response("Worker at " + workerIdentifier
                 + " successfully connected"));
+
+        if (MetadataBuffer.getInstance().getWorkers().get(workerIdentifier) == null) {
+            System.out.println("worker " + workerIdentifier + " should be registered");
+            MetaDAO metaDAO = MetaManager.getInstance();
+            metaDAO.writeWorker(workerManager.getHost(), workerManager.getPort());
+        }
+
+    }
+
+    public void removeWorker(WorkerManager workerManager) {
+        String workerIdentifier = workerManager.getHost() + ":" + workerManager.getPort();
+        workers.remove(workerIdentifier);
+    }
+
+    public void closeDatabase() {
+        for(WorkerManager worker: workers.values()) {
+            worker.closeDatabase();
+        }
+
+        workers.clear();
     }
 }

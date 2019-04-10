@@ -140,4 +140,10 @@ public class MetadataBuffer {
         }
         return shards;
     }
+
+    public void clearAll() {
+        workers.clear();
+        shards.clear();
+        tables.clear();
+    }
 }

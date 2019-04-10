@@ -8,34 +8,42 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.worker_manager;
+package net.edudb.master.executor;
 
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
-import net.edudb.response.Response;
+import net.edudb.data_type.DataType;
+import net.edudb.metadata_buffer.MetadataBuffer;
+import net.edudb.workers_manager.WorkersManager;
+
+import java.util.Hashtable;
 
 /**
- * This class handles incoming responses from
- * a worker node
+ * Connects all the registered workers
  *
  * @author Fady Sameh
  */
-public class WorkerHandler extends ChannelInboundHandlerAdapter {
+public class ConnectWorkersExecutor implements MasterExecutorChain {
 
-    private HandlerListener listener;
+    private MasterExecutorChain nextElement;
 
-    public WorkerHandler(HandlerListener listener) {
-        this.listener = listener;
+    @Override
+    public void setNextElementInChain(MasterExecutorChain chainElement) {
+        this.nextElement = chainElement;
     }
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        System.out.println("response arrived");
-        if (msg instanceof Response) {
-            System.out.println("response is an object");
-            Response response = (Response)msg;
-            listener.onResponseArrival(ctx, response);
+    public void execute(String s) {
+        if (s.toLowerCase().equals("connect workers")) {
+            System.out.println("entered connect workers executor");
+            for (String workerIdentifier: MetadataBuffer.getInstance().getWorkers().keySet()) {
+                String[] workerArgs = workerIdentifier.split(":");
+                String host = workerArgs[0];
+                int port = Integer.parseInt(workerArgs[1]);
+                System.out.println("attempting to connect to " + host +":" + port);
+                WorkersManager.getInstance().connect(host, port);
+            }
+        }
+        else {
+            nextElement.execute(s);
         }
     }
-
 }

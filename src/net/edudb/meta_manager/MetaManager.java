@@ -52,6 +52,8 @@ public class MetaManager implements MetaDAO, Runnable {
     private Hashtable<String, Response> pendingRequests = new Hashtable<String, Response>();
     private boolean connected;
     private MetaHandler metaHandler;
+    private String databaseName;
+    private boolean isDatabaseOpen;
 
 
 
@@ -118,6 +120,8 @@ public class MetaManager implements MetaDAO, Runnable {
         if (response.getMessage().startsWith("Created database")) {
             initializeTables();
             MasterWriter.getInstance().write(new Response("Created database '" + databaseName + "'"));
+            setDatabaseOpen(true);
+            setDatabaseName(databaseName);
         }
         else {
             MasterWriter.getInstance().write(new Response("Database '" + databaseName + "' already exists"));
@@ -130,6 +134,8 @@ public class MetaManager implements MetaDAO, Runnable {
 
         if (response.getMessage().startsWith("Opened database")) {
             MasterWriter.getInstance().write(new Response("Opened database '" + databaseName + "'"));
+            setDatabaseOpen(true);
+            setDatabaseName(databaseName);
         }
         else {
             MasterWriter.getInstance().write(new Response("Database '" + databaseName + "' does not exist"));
@@ -141,6 +147,7 @@ public class MetaManager implements MetaDAO, Runnable {
 
         if (response.getMessage().startsWith("Closed database")) {
             MasterWriter.getInstance().write(new Response(response.getMessage()));
+            setDatabaseOpen(false);
         }
         else {
             MasterWriter.getInstance().write(new Response("No open database"));
@@ -202,6 +209,11 @@ public class MetaManager implements MetaDAO, Runnable {
         MasterWriter.getInstance().write(new Response("Shard created"));
     }
 
+    public void writeWorker(String host, int port) {
+        forwardCommand("insert into workers values ('" + host + "', " + port +")");
+        MetadataBuffer.getInstance().getWorkers().clear();
+    }
+
     /**
      * This function is used for sending commands
      * to the meta database
@@ -235,5 +247,21 @@ public class MetaManager implements MetaDAO, Runnable {
 
     public Hashtable<String, Response> getPendingRequests() {
         return pendingRequests;
+    }
+
+    public String getDatabaseName() {
+        return databaseName;
+    }
+
+    public void setDatabaseName(String databaseName) {
+        this.databaseName = databaseName;
+    }
+
+    public boolean isDatabaseOpen() {
+        return isDatabaseOpen;
+    }
+
+    public void setDatabaseOpen(boolean databaseOpen) {
+        isDatabaseOpen = databaseOpen;
     }
 }

@@ -51,8 +51,10 @@ public class ServerWriter {
 	 */
 	public void write(Object obj) {
 		if (context != null) {
-			ByteBuf buf = Unpooled.copiedBuffer(obj.toString(), Charsets.UTF_8);
-
+			Response response = (Response)obj;
+			System.out.println("Response is being sent from server");
+			System.out.println(response.getId());
+			System.out.println(response.getMessage());
 			context.writeAndFlush(obj);
 		} else {
 			DatabaseConsole.getInstance().write(obj);
@@ -67,7 +69,6 @@ public class ServerWriter {
 	 */
 	public void writeln(Object obj) {
 		if (context != null) {
-			ByteBuf buf = Unpooled.copiedBuffer(obj.toString() + "\r\n", Charsets.UTF_8);
 
 			context.writeAndFlush(obj);
 		} else {

@@ -19,6 +19,8 @@ import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 import net.edudb.engine.Utility;
+import net.edudb.master.MasterWriter;
+import net.edudb.meta_manager.MetaManager;
 import net.edudb.request.Request;
 import net.edudb.response.Response;
 import net.edudb.workers_manager.WorkersManager;
@@ -82,17 +84,72 @@ public class WorkerManager implements Runnable, HandlerListener {
                 future.sync();
             }
 
+            /**
+             * Once workers is connected, the current database need to be created
+             * or opened
+             */
+            forwardCommand("create database " + MetaManager.getInstance().getDatabaseName());
+            forwardCommand("open database " + MetaManager.getInstance().getDatabaseName());
+            WorkersManager.getInstance().registerWorker(this);
             // Wait until the connection is closed.
             f.channel().closeFuture().sync();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
+            MasterWriter.getInstance().write("Could not connect to server at " + host +":" + port + ". Please make sure it's running.");
+            WorkersManager.getInstance().removeWorker(this);
             System.err.println("Could not connect to the server. Please make sure that it is running.\nExiting...");
             workerGroup.shutdownGracefully();
         }
 
     }
 
+    public void closeDatabase() {
+        forwardCommand("close database");
+    }
+
+    public Response forwardCommand(String command) {
+        System.out.println("Inside " + host + ":" + port + " forward command");
+
+        String id = Utility.generateUUID();
+        Request request = new Request(id, command);
+        System.out.println(request.getId());
+        System.out.println(request.getCommand());
+        workerWriter.write(request);
+
+        /**
+         * busy waiting till response is received
+         */
+        while (pendingRequests.get(id) == null);
+        System.out.println("response received at " + host + ":" + port + " handler");
+        System.out.println(pendingRequests.get(id).getMessage());
+        System.out.println(pendingRequests.get(id).getRecords());
+
+        return pendingRequests.remove(id);
+    }
+
+    public void onResponseArrival(ChannelHandlerContext ctx, Response response) {
+        System.out.println("Response arrive at " + host + ":" + port + " handler");
+        System.out.println(response.getId());
+        System.out.println(response.getMessage());
+
+        System.out.println("context " +ctx);
+
+
+        if (response.getId() != null
+                && !response.getId().equals("")) {
+            if (response.getMessage().equals("[edudb::init]")) {
+                setConnected(true);
+                workerWriter.setContext(ctx);
+
+
+            }
+            else {
+                workerWriter.setContext(ctx);
+                pendingRequests.put(response.getId(), response);
+            }
+        }
+    }
 
     public boolean isConnected() {
         return connected;
@@ -108,32 +165,5 @@ public class WorkerManager implements Runnable, HandlerListener {
 
     public String getHost() {
         return host;
-    }
-
-
-    private Response forwardToWorker(String command) {
-        String id = Utility.generateUUID();
-        Request request = new Request(id, command);
-        workerWriter.write(request);
-
-        /**
-         * busy waiting till response is received
-         */
-        while (pendingRequests.get(id) == null);
-
-        return pendingRequests.remove(id);
-    }
-
-    public void onResponseArrival(ChannelHandlerContext ctx, Response response) {
-        workerWriter.setContext(ctx);
-
-        if (response.getId() != null
-                && !response.getId().equals("")) {
-            if (response.getMessage().equals("[edudb::init]")) {
-                setConnected(true);
-                WorkersManager.getInstance().registerWorker(this);
-            }
-            pendingRequests.put(response.getId(), response);
-        }
     }
 }

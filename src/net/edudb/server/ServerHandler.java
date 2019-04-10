@@ -59,12 +59,11 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 
 			response.setId(messageID);
 			//Response response = new Response(result, null, null);
-			System.out.println(response.getMessage());
+			//System.out.println(response.getMessage());
 //			if (response.getMessage().equals("relation"))
 //				System.out.println(Relation.toString(response.getRelation()));
 
-			ServerWriter.getInstance().writeln(response);
-			System.out.println(response.getMessage());
+			ServerWriter.getInstance().write(response);
 			//ServerWriter.getInstance().writeln("[edudb::endofstring]");
 
 		} finally {

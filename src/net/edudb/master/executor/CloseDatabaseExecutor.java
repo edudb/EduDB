@@ -12,6 +12,10 @@ package net.edudb.master.executor;
 
 import net.edudb.engine.Utility;
 import net.edudb.meta_manager.MetaManager;
+import net.edudb.metadata_buffer.MetadataBuffer;
+import net.edudb.worker_manager.WorkerManager;
+import net.edudb.workers_manager.WorkersManager;
+
 import java.util.regex.Matcher;
 
 /**
@@ -37,7 +41,9 @@ public class CloseDatabaseExecutor implements MasterExecutorChain {
             if (matcher.matches()) {
                 MetaManager.getInstance().closeDatabase();
 
-                //return;
+                WorkersManager.getInstance().closeDatabase();
+
+                MetadataBuffer.getInstance().clearAll();
             }
         }
         else

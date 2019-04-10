@@ -125,7 +125,7 @@ public class Client {
 			});
 
 			// Start the client.
-			ChannelFuture f = b.connect("localhost", 9992).sync();
+			ChannelFuture f = b.connect(host, port).sync();
 
 //			clientHandler.setReceiving(true);
 			//ByteBuf buf = Unpooled.copiedBuffer("[edudb::" + username + ":" + password + "]", Charsets.UTF_8);
