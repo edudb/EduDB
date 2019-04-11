@@ -1,7 +1,7 @@
 version: "2"
 services:
-  edudb:
-    container_name: edudb
+  edudb1:
+    container_name: edudb1
     restart: always
     build: .
     ports:
@@ -12,3 +12,15 @@ services:
     build: .
     ports:
       - "9992:9999"
+  edudb3:
+    container_name: edudb3
+    restart: always
+    build: .
+    ports:
+      - "9993:9999"
+  edudb4:
+    container_name: edudb4
+    restart: always
+    build: .
+    ports:
+      - "9994:9999"

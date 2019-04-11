@@ -21,6 +21,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 
 import net.edudb.buffer.BufferManager;
 import net.edudb.server.ServerWriter;
+import net.edudb.statistics.Schema;
 import net.edudb.structure.table.TableManager;
 
 /**
@@ -96,6 +97,7 @@ public class DatabaseSystem {
 			this.databaseName = databaseName;
 			this.databaseIsOpen = true;
 			initializeDatabaseDirectories(this.databaseName);
+			Schema.getInstance().setSchema();
 			//ServerWriter.getInstance().writeln("Opened database '" + databaseName + "'");
 			return "Opened database '" + databaseName + "'";
 		} else {
@@ -121,6 +123,8 @@ public class DatabaseSystem {
 
 		this.databaseName = null;
 		this.databaseIsOpen = false;
+
+		Schema.getInstance().resetSchema();
 
 		//ServerWriter.getInstance().writeln("Closed database '" + dbName + "'");
 		return "Closed database '" + dbName + "'";

@@ -109,29 +109,29 @@ public class WorkerManager implements Runnable, HandlerListener {
     }
 
     public Response forwardCommand(String command) {
-        System.out.println("Inside " + host + ":" + port + " forward command");
+        //System.out.println("Inside " + host + ":" + port + " forward command");
 
         String id = Utility.generateUUID();
         Request request = new Request(id, command);
-        System.out.println(request.getId());
-        System.out.println(request.getCommand());
+//        System.out.println(request.getId());
+//        System.out.println(request.getCommand());
         workerWriter.write(request);
 
         /**
          * busy waiting till response is received
          */
         while (pendingRequests.get(id) == null);
-        System.out.println("response received at " + host + ":" + port + " handler");
-        System.out.println(pendingRequests.get(id).getMessage());
-        System.out.println(pendingRequests.get(id).getRecords());
+//        System.out.println("response received at " + host + ":" + port + " handler");
+//        System.out.println(pendingRequests.get(id).getMessage());
+//        System.out.println(pendingRequests.get(id).getRecords());
 
         return pendingRequests.remove(id);
     }
 
     public void onResponseArrival(ChannelHandlerContext ctx, Response response) {
-        System.out.println("Response arrive at " + host + ":" + port + " handler");
-        System.out.println(response.getId());
-        System.out.println(response.getMessage());
+//        System.out.println("Response arrive at " + host + ":" + port + " handler");
+//        System.out.println(response.getId());
+//        System.out.println(response.getMessage());
 
         System.out.println("context " +ctx);
 

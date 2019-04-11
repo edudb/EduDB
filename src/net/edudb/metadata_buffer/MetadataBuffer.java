@@ -145,5 +145,9 @@ public class MetadataBuffer {
         workers.clear();
         shards.clear();
         tables.clear();
+        System.out.println("all is cleared");
+        System.out.println(workers.isEmpty());
+        System.out.println(tables.isEmpty());
+        System.out.println(shards.isEmpty());
     }
 }

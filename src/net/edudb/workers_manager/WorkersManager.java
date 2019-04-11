@@ -73,5 +73,6 @@ public class WorkersManager {
         }
 
         workers.clear();
+        System.out.println("workers cleared in manage: " + workers.isEmpty());
     }
 }

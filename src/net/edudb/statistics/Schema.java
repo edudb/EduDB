@@ -50,7 +50,7 @@ public class Schema {
 		return schema.get(tableName) != null;
 	}
 
-	private void setSchema() {
+	public void setSchema() {
 		ArrayList<String> lines = FileManager.readFile(FileManager.getSchema());
 		for (String line : lines) {
 			putTable(line);
@@ -142,4 +142,6 @@ public class Schema {
 	public Set<String> getTableNames() {
 		return schema.keySet();
 	}
+
+	public void resetSchema() { schema.clear(); }
 }

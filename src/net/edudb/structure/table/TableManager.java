@@ -96,6 +96,7 @@ public class TableManager {
 		for (Table table : tableBuffer.values()) {
 			this.write(table);
 		}
+		tableBuffer.clear();
 	}
 
 	/**
