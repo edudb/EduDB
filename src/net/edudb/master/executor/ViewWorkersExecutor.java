@@ -45,7 +45,7 @@ public class ViewWorkersExecutor implements MasterExecutorChain {
 
             String workersTable =
                     "-------------------------------------------------" + "\r\n" +
-                            "| Address                   | Status            |" + "\r\n" +
+                            "| ADDRESS                   | STATUS            |" + "\r\n" +
                             "-------------------------------------------------" + "\r\n";
 
             for (String address : workersData.keySet()) {
