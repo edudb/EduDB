@@ -22,11 +22,9 @@ import net.edudb.meta_manager.MetaManager;
 import net.edudb.metadata_buffer.MetadataBuffer;
 import net.edudb.response.Response;
 import net.edudb.structure.Record;
-import net.edudb.worker_manager.WorkerManager;
+import net.edudb.worker_manager.WorkerDAO;
 import net.edudb.workers_manager.WorkersManager;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Hashtable;
 import java.util.regex.Matcher;
 
@@ -70,9 +68,9 @@ public class CreateShardExecutor implements MasterExecutorChain {
                     return;
                 }
 
-                WorkerManager workerManager = WorkersManager.getInstance().getWorkers().get(workerHost + ":" + workerPort);
+                WorkerDAO workerDAO = WorkersManager.getInstance().getWorkers().get(workerHost + ":" + workerPort);
 
-                if (workerManager == null) {
+                if (workerDAO == null) {
                     MasterWriter.getInstance().write(new Response("Worker at " + workerHost + ":" + workerPort + " is not currently online."));
                     return;
                 }
@@ -97,6 +95,7 @@ public class CreateShardExecutor implements MasterExecutorChain {
 
 
                         metaDAO.writeShard(workerHost, workerPort, tableName, 0, "null", "null");
+                        workerDAO.createTable(tableName, table.get("metadata").toString());
                         return;
                     case "sharding":
 
@@ -170,6 +169,7 @@ public class CreateShardExecutor implements MasterExecutorChain {
 
                         metaDAO.writeShard(workerHost, workerPort, tableName, shardId, minValue, maxValue);
                         metaDAO.editTable(tableName, null, null, shardId);
+                        workerDAO.createTable(tableName + shardId, table.get("metadata").toString());
                 }
 
             }

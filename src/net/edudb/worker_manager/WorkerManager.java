@@ -32,7 +32,7 @@ import java.util.Hashtable;
  *
  * @author Fady Sameh
  */
-public class WorkerManager implements Runnable, HandlerListener {
+public class WorkerManager implements Runnable, HandlerListener, WorkerDAO {
 
     private int port;
     private String host;
@@ -106,6 +106,18 @@ public class WorkerManager implements Runnable, HandlerListener {
 
     public void closeDatabase() {
         forwardCommand("close database");
+    }
+
+    public void createTable(String tableName, String metadata) {
+        String command = "create table " + tableName + " (";
+        String[] metadataArgs = metadata.split(" ");
+        for (int i = 0; i < metadataArgs.length; i+=2) {
+            command += metadataArgs[i] + " " + metadataArgs[i+1];
+            if (i != metadataArgs.length - 2)
+                command += ", ";
+        }
+        command += ")";
+        forwardCommand(command);
     }
 
     public Response forwardCommand(String command) {
