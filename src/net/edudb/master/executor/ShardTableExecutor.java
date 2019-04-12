@@ -91,7 +91,7 @@ public class ShardTableExecutor implements MasterExecutorChain {
 
 
                 MetaDAO metaDAO = MetaManager.getInstance();
-                metaDAO.editTable(tableName, "sharding", distributionColumn);
+                metaDAO.editTable(tableName, "sharding", distributionColumn, -1);
 
             }
         }

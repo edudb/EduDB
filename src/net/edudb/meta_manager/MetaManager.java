@@ -172,12 +172,12 @@ public class MetaManager implements MetaDAO, Runnable {
 
     private void createTablesTable() {
 
-        forwardCommand("create table tables (name Varchar, metadata Varchar, distribution_method Varchar, distribution_column Varchar)");
+        forwardCommand("create table tables (name Varchar, metadata Varchar, distribution_method Varchar, distribution_column Varchar, shard_number Integer)");
     }
 
     private void createShardsTable() {
 
-        forwardCommand("create table shards (host Varchar, port Integer, table Varchar, min_value Varchar, max_value Varchar)");
+        forwardCommand("create table shards (host Varchar, port Integer, table Varchar, id Integer, min_value Varchar, max_value Varchar)");
     }
 
     public ArrayList<Record> getAll(String tableName) {
@@ -186,25 +186,34 @@ public class MetaManager implements MetaDAO, Runnable {
     }
 
     public void writeTable(String tableName, String tableMetadata) {
-        forwardCommand("insert into tables values ('" + tableName +"', '" + tableMetadata +"', 'null', 'null')");
+        forwardCommand("insert into tables values ('" + tableName +"', '" + tableMetadata +"', 'null', 'null', 0)");
         MetadataBuffer.getInstance().getTables().clear();
         MasterWriter.getInstance().write(new Response("Table '" + tableName + "' created"));
     }
 
-    public void editTable(String tableName, String distributionMethod, String distributionColumn) {
+    public void editTable(String tableName, String distributionMethod, String distributionColumn, int shardNumber) {
         String whereClause = "where name='" + tableName +"'";
-        String updateFields = "set distribution_method='" + distributionMethod + "'"
-                + ((distributionColumn!=null) ? ", distribution_column='" + distributionColumn + "' " : " ");
+        String updateFields = "";
+
+        if (shardNumber == -1) {
+            updateFields = "set distribution_method='" + distributionMethod + "'"
+                    + ((distributionColumn!=null) ? ", distribution_column='" + distributionColumn + "' " : " ");
+        }
+        else {
+           updateFields = "set shard_number=" + shardNumber + " ";
+        }
+
         forwardCommand("update tables " + updateFields + whereClause);
         MetadataBuffer.getInstance().getTables().clear();
-        MasterWriter.getInstance().write(new Response("Distribution method for table '" + tableName
-        + "' updated to " + distributionMethod));
+        if (shardNumber == -1)
+            MasterWriter.getInstance().write(new Response("Distribution method for table '" + tableName
+                + "' updated to " + distributionMethod));
 
     }
 
-    public void writeShard(String host, int port, String table, String minValue, String maxValue) {
-        forwardCommand("insert into shards values ('" + host + "', " + port + ", '" + table + "', '" + minValue + "', '"
-        + maxValue + "')");
+    public void writeShard(String host, int port, String table, int id, String minValue, String maxValue) {
+        forwardCommand("insert into shards values ('" + host + "', " + port + ", '" + table + "', " + id + ", '"
+                + minValue + "', '" + maxValue + "')");
         MetadataBuffer.getInstance().getShards().clear();
         MasterWriter.getInstance().write(new Response("Shard created"));
     }

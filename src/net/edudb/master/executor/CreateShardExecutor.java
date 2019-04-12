@@ -12,6 +12,7 @@ package net.edudb.master.executor;
 
 import net.edudb.data_type.DataType;
 import net.edudb.data_type.DataTypeFactory;
+import net.edudb.data_type.IntegerType;
 import net.edudb.data_type.VarCharType;
 import net.edudb.engine.Utility;
 import net.edudb.exception.InvalidTypeValueException;
@@ -21,7 +22,11 @@ import net.edudb.meta_manager.MetaManager;
 import net.edudb.metadata_buffer.MetadataBuffer;
 import net.edudb.response.Response;
 import net.edudb.structure.Record;
+import net.edudb.worker_manager.WorkerManager;
+import net.edudb.workers_manager.WorkersManager;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Hashtable;
 import java.util.regex.Matcher;
 
@@ -65,6 +70,13 @@ public class CreateShardExecutor implements MasterExecutorChain {
                     return;
                 }
 
+                WorkerManager workerManager = WorkersManager.getInstance().getWorkers().get(workerHost + ":" + workerPort);
+
+                if (workerManager == null) {
+                    MasterWriter.getInstance().write(new Response("Worker at " + workerHost + ":" + workerPort + " is not currently online."));
+                    return;
+                }
+
                 String distributionMethod = ((VarCharType)table.get("distribution_method")).getString();
                 MetaDAO metaDAO = MetaManager.getInstance();
 
@@ -81,7 +93,10 @@ public class CreateShardExecutor implements MasterExecutorChain {
                             return;
                         }
 
-                        metaDAO.writeShard(workerHost, workerPort, tableName, "null", "null");
+
+
+
+                        metaDAO.writeShard(workerHost, workerPort, tableName, 0, "null", "null");
                         return;
                     case "sharding":
 
@@ -138,10 +153,12 @@ public class CreateShardExecutor implements MasterExecutorChain {
 
                                 }
 
-                                if (minimumShardValue.compareTo(currentShardMin) >= 0
-                                        && minimumShardValue.compareTo(currentShardMax) <= 0
-                                        || maximumShardValue.compareTo(currentShardMin) >= 0
-                                        && maximumShardValue.compareTo(currentShardMax) <= 0) {
+                                /**
+                                 * if new minimum is smaller than an existing shard's maximum and new maximum is
+                                 * bigger than the same shard's minimum
+                                 */
+                                if (minimumShardValue.compareTo(currentShardMax) <= 0
+                                        && maximumShardValue.compareTo(currentShardMin) >= 0) {
                                     MasterWriter.getInstance().write(new Response("Values overlap wih existing shards"));
                                     return;
                                 }
@@ -149,8 +166,10 @@ public class CreateShardExecutor implements MasterExecutorChain {
                             }
                         }
 
+                        int shardId = ((IntegerType)table.get("shard_number")).getInteger() + 1;
 
-                        metaDAO.writeShard(workerHost, workerPort, tableName, minValue, maxValue);
+                        metaDAO.writeShard(workerHost, workerPort, tableName, shardId, minValue, maxValue);
+                        metaDAO.editTable(tableName, null, null, shardId);
                 }
 
             }

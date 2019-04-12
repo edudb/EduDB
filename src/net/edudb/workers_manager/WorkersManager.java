@@ -45,6 +45,9 @@ public class WorkersManager {
             WorkerManager newWorkerManager =  new WorkerManager(port, host);
             new Thread(newWorkerManager).start();
         }
+        else  {
+            MasterWriter.getInstance().write(new Response("Worker " + host + ":" + port + " is already connected"));
+        }
     }
 
     public void registerWorker(WorkerManager workerManager) {
@@ -73,6 +76,6 @@ public class WorkersManager {
         }
 
         workers.clear();
-        System.out.println("workers cleared in manage: " + workers.isEmpty());
+        System.out.println("workers cleared in manager: " + workers.isEmpty());
     }
 }

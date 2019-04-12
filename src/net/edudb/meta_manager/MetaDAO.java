@@ -36,9 +36,9 @@ public interface MetaDAO {
 
     void writeTable(String tableName, String tableMetadata);
 
-    void editTable(String tableName, String distributionMethod, String distributionColumn);
+    void editTable(String tableName, String distributionMethod, String distributionColumn, int shardNumber);
 
-    void writeShard(String host, int port, String table, String minValue, String maxValue);
+    void writeShard(String host, int port, String table, int id, String minValue, String maxValue);
 
     void writeWorker(String host, int port);
 }

@@ -60,7 +60,7 @@ public class ReplicateTableExecutor implements MasterExecutorChain {
                     return;
                 }
                 MetaDAO metaDAO = MetaManager.getInstance();
-                metaDAO.editTable(tableName, "replication", null);
+                metaDAO.editTable(tableName, "replication", null, -1);
 
 
             }
