@@ -23,6 +23,9 @@ import net.edudb.structure.Record;
 
 import java.util.Hashtable;
 
+/**
+ * @author Fady Sameh
+ */
 public class CreateTablePlan extends DistributedPlan {
 
     public QueryTree makePlan(SQLStatement sqlStatement) {

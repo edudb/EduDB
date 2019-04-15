@@ -11,8 +11,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.distributed_executor;
 
 
-import net.edudb.distributed_operator.Operator;
-import net.edudb.relation.Relation;
+import net.edudb.distributed_operator.DistributedOperator;
 
 public interface OperatorExecutionChain {
 
@@ -33,7 +32,7 @@ public interface OperatorExecutionChain {
      * @param operator
      *            The operator to execute.
      */
-    public void execute(Operator operator);
+    public void execute(DistributedOperator operator);
 
     /**
      * connects a chain of executors

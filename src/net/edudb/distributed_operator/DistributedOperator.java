@@ -8,19 +8,25 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.worker_manager;
-
-import net.edudb.response.Response;
+package net.edudb.distributed_operator;
+import net.edudb.distributed_operator.parameter.DistributedOperatorParameter;
 
 /**
- * An interface, that implements the Repository design pattern, that
- * is used to interact with a worker database
- *
  * @author Fady Sameh
- *
  */
-public interface WorkerDAO {
-    void createTable(String tableName, String metadata);
+public interface DistributedOperator {
 
-    Response insert(String insertStatement);
+    /**
+     * Sets the parameter of an operator.
+     *
+     * @param parameter
+     *            The parameter to set.
+     */
+    public void setParameter(DistributedOperatorParameter parameter);
+
+    /**
+     *
+     * @return The parameter of the operator.
+     */
+    public DistributedOperatorParameter getParameter();
 }

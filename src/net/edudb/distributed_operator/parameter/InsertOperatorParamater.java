@@ -8,19 +8,34 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.worker_manager;
+package net.edudb.distributed_operator.parameter;
 
-import net.edudb.response.Response;
+import net.edudb.data_type.DataType;
+import net.edudb.statement.SQLInsertStatement;
+
+import java.util.ArrayList;
+import java.util.Hashtable;
 
 /**
- * An interface, that implements the Repository design pattern, that
- * is used to interact with a worker database
- *
  * @author Fady Sameh
- *
  */
-public interface WorkerDAO {
-    void createTable(String tableName, String metadata);
+public class InsertOperatorParamater implements DistributedOperatorParameter{
 
-    Response insert(String insertStatement);
+    SQLInsertStatement statement;
+    ArrayList<Hashtable<String, DataType>> shards;
+
+    public InsertOperatorParamater(SQLInsertStatement statement, ArrayList<Hashtable<String, DataType>> shards) {
+        this.statement = statement;
+        this.shards = shards;
+    }
+
+
+    public SQLInsertStatement getStatement() {
+        return statement;
+    }
+
+    public ArrayList<Hashtable<String, DataType>> getShards() {
+        return shards;
+    }
+
 }

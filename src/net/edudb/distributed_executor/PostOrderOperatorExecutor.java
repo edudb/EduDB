@@ -24,8 +24,11 @@ public class PostOrderOperatorExecutor {
 
     public OperatorExecutionChain getChain() {
         OperatorExecutionChain createTable = new CreateTableExecutor();
+        OperatorExecutionChain insert = new InsertExecutor();
+
         return OperatorExecutionChain.connnectChain(new OperatorExecutionChain[]{
-                createTable
+                createTable,
+                insert
         });
     }
 

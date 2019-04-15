@@ -18,7 +18,6 @@ import net.edudb.meta_manager.MetaManager;
 import net.edudb.structure.Column;
 import net.edudb.structure.Record;
 
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.Hashtable;
 

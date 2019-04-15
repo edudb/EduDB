@@ -120,6 +120,10 @@ public class WorkerManager implements Runnable, HandlerListener, WorkerDAO {
         forwardCommand(command);
     }
 
+    public Response insert(String insertStatement) {
+        return forwardCommand(insertStatement);
+    }
+
     public Response forwardCommand(String command) {
         //System.out.println("Inside " + host + ":" + port + " forward command");
 

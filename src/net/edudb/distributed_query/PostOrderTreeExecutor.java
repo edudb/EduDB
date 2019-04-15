@@ -10,7 +10,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.distributed_query;
 
-import net.edudb.distributed_operator.Operator;
+import net.edudb.distributed_operator.DistributedOperator;
 import net.edudb.distributed_executor.*;
 import net.edudb.relation.Relation;
 
@@ -33,7 +33,7 @@ public class PostOrderTreeExecutor implements QueryTreeExecutor {
 	public Relation execute(QueryTree queryTree) {
 		PostOrderOperatorExecutor executor = new PostOrderOperatorExecutor();
 		OperatorExecutionChain chain = executor.getChain();
-		Operator operator = (Operator) queryTree.getRoot();
+		DistributedOperator operator = (DistributedOperator) queryTree.getRoot();
 		chain.execute(operator);
 		return null;
 	}

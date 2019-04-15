@@ -14,9 +14,7 @@ import net.edudb.distributed_parser.DistributedParser;
 import net.edudb.distributed_plan.DistributedPlanFactory;
 import net.edudb.distributed_transaction.DistributedTransactionManager;
 import net.edudb.distributed_transaction.SynchronizedTransaction;
-import net.edudb.master.MasterWriter;
 import net.edudb.distributed_query.QueryTree;
-import net.edudb.response.Response;
 import net.edudb.statement.SQLStatement;
 
 /**

@@ -23,7 +23,8 @@ public class DistributedPlanFactory extends DistributedPlan {
         switch (statement.statementType()) {
             case SQLCreateTableStatement:
                 return new CreateTablePlan().makePlan(statement);
-
+            case SQLInsertStatement:
+                return new InsertPlan().makePlan(statement);
             default:
                 return null;
 

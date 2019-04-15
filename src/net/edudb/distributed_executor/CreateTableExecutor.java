@@ -12,13 +12,11 @@ package net.edudb.distributed_executor;
 
 import net.edudb.data_type.DataType;
 import net.edudb.distributed_operator.CreateTableOperator;
-import net.edudb.distributed_operator.Operator;
+import net.edudb.distributed_operator.DistributedOperator;
 import net.edudb.master.MasterWriter;
 import net.edudb.meta_manager.MetaManager;
 import net.edudb.response.Response;
 import net.edudb.statement.SQLCreateTableStatement;
-
-import java.util.LinkedHashMap;
 
 public class CreateTableExecutor implements OperatorExecutionChain {
 
@@ -27,7 +25,7 @@ public class CreateTableExecutor implements OperatorExecutionChain {
     public void setNextElementInChain(OperatorExecutionChain chainElement) { this.next = chainElement; }
 
 
-    public void execute(Operator operator) {
+    public void execute(DistributedOperator operator) {
         if (operator instanceof CreateTableOperator) {
             SQLCreateTableStatement statement = (SQLCreateTableStatement) operator.getParameter();
 
