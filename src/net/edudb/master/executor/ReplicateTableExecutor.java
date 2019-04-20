@@ -18,8 +18,6 @@ import net.edudb.meta_manager.MetaDAO;
 import net.edudb.meta_manager.MetaManager;
 import net.edudb.metadata_buffer.MetadataBuffer;
 import net.edudb.response.Response;
-import net.edudb.structure.Column;
-import net.edudb.structure.Record;
 
 import java.util.Hashtable;
 import java.util.regex.Matcher;

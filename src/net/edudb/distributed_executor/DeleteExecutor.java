@@ -12,12 +12,12 @@ package net.edudb.distributed_executor;
 
 import net.edudb.data_type.DataType;
 import net.edudb.data_type.IntegerType;
+import net.edudb.distributed_operator.DeleteOperator;
 import net.edudb.distributed_operator.DistributedOperator;
-import net.edudb.distributed_operator.InsertOperator;
-import net.edudb.distributed_operator.parameter.InsertOperatorParamater;
+import net.edudb.distributed_operator.parameter.DeleteOperatorParameter;
 import net.edudb.master.MasterWriter;
 import net.edudb.response.Response;
-import net.edudb.statement.SQLInsertStatement;
+import net.edudb.statement.SQLDeleteStatement;
 import net.edudb.worker_manager.WorkerDAO;
 import net.edudb.workers_manager.WorkersManager;
 
@@ -25,22 +25,22 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 
 /**
- * Inserts a record in all the necessary worker databases
+ * Deletes records from all the necessary worker databases
  *
  * @author Fady Sameh
  */
-public class InsertExecutor implements OperatorExecutionChain {
+public class DeleteExecutor implements OperatorExecutionChain {
 
     OperatorExecutionChain next;
 
     public void setNextElementInChain(OperatorExecutionChain chainElement) { this.next = chainElement; }
 
     public void execute(DistributedOperator operator) {
-        if (operator instanceof InsertOperator) {
-            DistributedOperator insert = (InsertOperator) operator;
-            InsertOperatorParamater parameter = (InsertOperatorParamater) insert.getParameter();
+        if (operator instanceof DeleteOperator) {
+            DistributedOperator delete = (DeleteOperator) operator;
+            DeleteOperatorParameter parameter = (DeleteOperatorParameter) delete.getParameter();
 
-            SQLInsertStatement statement = parameter.getStatement();
+            SQLDeleteStatement statement = parameter.getStatement();
             ArrayList<Hashtable<String, DataType>> shards = parameter.getShards();
 
             Response[] responses = new Response[shards.size()];
@@ -56,17 +56,16 @@ public class InsertExecutor implements OperatorExecutionChain {
                 }
 
                 String tableName = statement.getTableName();
-                int id = ((IntegerType)shard.get("id")).getInteger();
-                String insertStatement = statement.toString();
+                int id = ((IntegerType) shard.get("id")).getInteger();
+                String deleteStatement = statement.toString();
 
-                if (id != 0) {
-                    insertStatement = insertStatement.replace(tableName, tableName + id);
-                }
+                if (id != 0)
+                    deleteStatement = deleteStatement.replace(tableName, tableName + id);
 
                 final int index = i;
-                final String finalInsertStatement = insertStatement;
+                final String finalDeleteStatement = deleteStatement;
 
-                new Thread(() -> responses[index] = workerDAO.insert(finalInsertStatement)).start();
+                new Thread(() -> responses[index] = workerDAO.insert(finalDeleteStatement)).start();
             }
 
             int index = 0;
@@ -82,7 +81,6 @@ public class InsertExecutor implements OperatorExecutionChain {
             }
 
             MasterWriter.getInstance().write(new Response("relation", responses[0].getRecords(), ""));
-
         }
         else {
             next.execute(operator);

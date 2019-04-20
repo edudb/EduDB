@@ -100,8 +100,8 @@ public class InsertPlan extends DistributedPlan {
             if (distributionMethod.equals("sharding")) {
                 DataType shardMinValue = null;
                 DataType shardMaxValue = null;
-                try {
-                    shardMinValue = dataTypeFactory.makeType(distributionColumnType,
+                    try {
+                shardMinValue = dataTypeFactory.makeType(distributionColumnType,
                             shard.get("min_value").toString());
                     shardMaxValue = dataTypeFactory.makeType(distributionColumnType,
                             shard.get("max_value").toString());
@@ -127,21 +127,12 @@ public class InsertPlan extends DistributedPlan {
         }
 
         InsertOperator operator = new InsertOperator();
-        InsertOperatorParamater paramater = new InsertOperatorParamater(statement, shards);
-        operator.setParameter(paramater);
+        InsertOperatorParamater parameter = new InsertOperatorParamater(statement, shards);
+        operator.setParameter(parameter);
 
         QueryTree tree = new QueryTree((QueryNode)operator);
 
         return tree;
 
-//        System.out.println("Shard to insert into");
-//        for (Hashtable<String, DataType> shard: shards) {
-//            System.out.println(shard.toString());
-//            System.out.println("\r\n");
-//        }
-//        System.out.println("-----------------------------------");
-//        MasterWriter.getInstance().write(new Response("Everything is fine"));
-//
-//        return null;
     }
 }

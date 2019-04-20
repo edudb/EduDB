@@ -11,7 +11,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.distributed_plan;
 
 import net.edudb.data_type.DataType;
-import net.edudb.master.Master;
 import net.edudb.master.MasterWriter;
 import net.edudb.metadata_buffer.MetadataBuffer;
 import net.edudb.distributed_operator.CreateTableOperator;
@@ -19,7 +18,6 @@ import net.edudb.distributed_query.QueryTree;
 import net.edudb.response.Response;
 import net.edudb.statement.SQLCreateTableStatement;
 import net.edudb.statement.SQLStatement;
-import net.edudb.structure.Record;
 
 import java.util.Hashtable;
 

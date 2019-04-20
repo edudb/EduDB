@@ -8,30 +8,45 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.distributed_executor;
+package net.edudb.condition;
 
-import net.edudb.distributed_operator.CreateTableOperator;
+import net.edudb.data_type.DataType;
 
 /**
- * Executes a query tree in a post-order strategy. If a tree node is not a leaf,
- * its left child is executed before its right child. This approach is achieved
- * recursively.
+ * An equality condition. e.g. age = 21
  *
- * @author Fady `Sameh
- *
+ * @author Fady Sameh
  */
-public class PostOrderOperatorExecutor {
+public class EqualsCondition extends Condition {
 
-    public OperatorExecutionChain getChain() {
-        OperatorExecutionChain createTable = new CreateTableExecutor();
-        OperatorExecutionChain insert = new InsertExecutor();
-        OperatorExecutionChain delete = new DeleteExecutor();
+    private DataType data;
 
-        return OperatorExecutionChain.connnectChain(new OperatorExecutionChain[]{
-                createTable,
-                insert,
-                delete
-        });
+    public EqualsCondition(DataType data) {
+        this.data = data;
     }
 
+    Condition and(Condition condition) {
+        return null;
+    }
+
+    Condition or(Condition condition) {
+        return null;
+    }
+
+    /**
+     * This condition is satisfied is satisfied if and only if the condition value
+     * lies between the shard's minimum and maximum values
+     */
+    public boolean evaluate(DataType shardMinimum, DataType shardMaximum) {
+        return (data.compareTo(shardMinimum) >= 0) && (data.compareTo(shardMaximum) <= 0);
+    }
+
+    public DataType getData() {
+        return data;
+    }
+
+    @Override
+    public String toString() {
+        return "= " + data.toString();
+    }
 }

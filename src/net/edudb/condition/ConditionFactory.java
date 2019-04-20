@@ -8,30 +8,35 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.distributed_executor;
+package net.edudb.condition;
 
-import net.edudb.distributed_operator.CreateTableOperator;
+import net.edudb.data_type.DataType;
 
 /**
- * Executes a query tree in a post-order strategy. If a tree node is not a leaf,
- * its left child is executed before its right child. This approach is achieved
- * recursively.
+ * Creates a condition object based on the operator
  *
- * @author Fady `Sameh
- *
+ * @author Fady Sameh
  */
-public class PostOrderOperatorExecutor {
+public class ConditionFactory {
 
-    public OperatorExecutionChain getChain() {
-        OperatorExecutionChain createTable = new CreateTableExecutor();
-        OperatorExecutionChain insert = new InsertExecutor();
-        OperatorExecutionChain delete = new DeleteExecutor();
+    public Condition makeCondition(String operator, DataType data) {
 
-        return OperatorExecutionChain.connnectChain(new OperatorExecutionChain[]{
-                createTable,
-                insert,
-                delete
-        });
+        switch (operator) {
+            case "=":
+                return new EqualsCondition(data);
+            case "<>":
+                return new NotEqualsCondition(data);
+            case "<":
+                return new RangeCondition(null, false, data, false);
+            case "<=":
+                return new RangeCondition(null, false, data, true);
+            case ">":
+                return new RangeCondition(data, false, null, false);
+            case ">=":
+                return new RangeCondition(data, true, null, false);
+            default:
+                return null;
+        }
+
     }
-
 }

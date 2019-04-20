@@ -8,30 +8,22 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.distributed_executor;
+package net.edudb.condition;
 
-import net.edudb.distributed_operator.CreateTableOperator;
+import net.edudb.data_type.DataType;
 
-/**
- * Executes a query tree in a post-order strategy. If a tree node is not a leaf,
- * its left child is executed before its right child. This approach is achieved
- * recursively.
- *
- * @author Fady `Sameh
- *
- */
-public class PostOrderOperatorExecutor {
+public abstract class Condition {
+    String type;
 
-    public OperatorExecutionChain getChain() {
-        OperatorExecutionChain createTable = new CreateTableExecutor();
-        OperatorExecutionChain insert = new InsertExecutor();
-        OperatorExecutionChain delete = new DeleteExecutor();
+    abstract Condition and(Condition condition);
 
-        return OperatorExecutionChain.connnectChain(new OperatorExecutionChain[]{
-                createTable,
-                insert,
-                delete
-        });
-    }
+    abstract Condition or(Condition condition);
 
+    /**
+     * checks whether values inside a shard could satisfy the condition
+     * @param shardMinimum
+     * @param shardMaximum
+     * @return
+     */
+    abstract public boolean evaluate(DataType shardMinimum, DataType shardMaximum);
 }

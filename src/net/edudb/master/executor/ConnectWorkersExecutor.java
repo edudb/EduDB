@@ -10,11 +10,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.master.executor;
 
-import net.edudb.data_type.DataType;
 import net.edudb.metadata_buffer.MetadataBuffer;
 import net.edudb.workers_manager.WorkersManager;
-
-import java.util.Hashtable;
 
 /**
  * Connects all the registered workers
