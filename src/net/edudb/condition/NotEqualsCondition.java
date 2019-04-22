@@ -12,6 +12,8 @@ package net.edudb.condition;
 
 import net.edudb.data_type.DataType;
 
+import java.util.ArrayList;
+
 /**
  * An inequality condition. e.g. age <> 21
  *
@@ -25,13 +27,48 @@ public class NotEqualsCondition extends Condition {
         this.data = data;
     }
 
-    Condition and(Condition condition) {
-        return null;
+    public ArrayList<Condition> and(Condition condition) {
+        Condition resultCondition = null;
+        if (condition instanceof NullCondition) {
+            resultCondition =  this;
+        }
+        else if (condition instanceof EmptyCondition) {
+            resultCondition =  condition;
+        }
+        else if (condition instanceof EqualsCondition) {
+            resultCondition = merge((EqualsCondition)condition, this);
+        }
+
+        if (resultCondition != null) {
+            ArrayList<Condition> results = new ArrayList<>();
+            results.add(resultCondition);
+            return results;
+        }
+
+        ArrayList<Condition> results = new ArrayList<>();
+        if (condition instanceof NotEqualsCondition) {
+            if (getData().compareTo(((NotEqualsCondition) condition).getData()) == 0) {
+                results.add(this);
+            }
+            else {
+                DataType smaller = (getData().compareTo(((NotEqualsCondition) condition).getData()) > 0 ) ?
+                        ((NotEqualsCondition) condition).getData() : getData();
+                DataType larger = (getData().compareTo(((NotEqualsCondition) condition).getData()) < 0 ) ?
+                        ((NotEqualsCondition) condition).getData() : getData();
+                results.add(new RangeCondition(null, false, smaller, false));
+                results.add(new RangeCondition(smaller, false, larger, false));
+                results.add(new RangeCondition(larger, false, null, false));
+            }
+        }
+        else if (condition instanceof RangeCondition) {
+            ArrayList<Condition> mergingResults = merge(this, (RangeCondition)condition);
+            for (Condition c: mergingResults)
+                results.add(c);
+        }
+
+        return results;
     }
 
-    Condition or(Condition condition) {
-        return null;
-    }
 
     /**
      * This condition is only unsatisfied in the rare case that the
@@ -41,6 +78,8 @@ public class NotEqualsCondition extends Condition {
     public boolean evaluate(DataType shardMinimum, DataType shardMaximum) {
         return (data.compareTo(shardMinimum) != 0) || (data.compareTo(shardMaximum) != 0);
     }
+
+    public DataType getData() { return data; }
 
     @Override
     public String toString() {

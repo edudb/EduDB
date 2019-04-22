@@ -11,6 +11,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.distributed_plan;
 
 import net.edudb.condition.Condition;
+import net.edudb.condition.NullCondition;
 import net.edudb.data_type.DataType;
 import net.edudb.data_type.DataTypeFactory;
 import net.edudb.distributed_operator.DeleteOperator;
@@ -68,9 +69,13 @@ public class DeletePlan extends DistributedPlan {
             String ra = translator.translate("select * from " + tableName + " " + whereClause);
             distributionConditions = translator.getDistributionCondition(table.get("metadata").toString(),
                     table.get("distribution_column").toString(), ra);
-            for (Condition condition: distributionConditions)
-                System.out.println(condition.toString());
         }
+        else {
+            distributionConditions.add(new NullCondition());
+        }
+
+        if (distributionConditions == null)
+            return null;
 
         DataTypeFactory dataTypeFactory = new DataTypeFactory();
 

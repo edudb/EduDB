@@ -12,6 +12,8 @@ package net.edudb.condition;
 
 import net.edudb.data_type.DataType;
 
+import java.util.ArrayList;
+
 /**
  * A condition that is not useful when it comes to
  * filtering shards.
@@ -22,13 +24,12 @@ import net.edudb.data_type.DataType;
  */
 public class NullCondition extends Condition {
 
-    Condition and(Condition condition) {
-        return null;
+    public ArrayList<Condition> and(Condition condition) {
+        ArrayList<Condition> result = new ArrayList<>();
+        result.add(condition);
+        return result;
     }
 
-    Condition or(Condition condition) {
-        return null;
-    }
 
     /**
      * Since this condition is not decisive, any shard could contain records that satisfy

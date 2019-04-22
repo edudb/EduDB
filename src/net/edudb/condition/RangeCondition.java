@@ -12,6 +12,8 @@ package net.edudb.condition;
 
 import net.edudb.data_type.DataType;
 
+import java.util.ArrayList;
+
 /**
  * A range condition. e.g. 18 < age < 21
  * It is used for all range operators: <, <=, >, >=
@@ -33,16 +35,93 @@ public class RangeCondition extends Condition {
         this.maximumInclusive = maximumInclusive;
     }
 
-    Condition and(Condition condition) {
-        return null;
-    }
+    public ArrayList<Condition> and(Condition condition) {
+        Condition resultCondition = null;
+        if (condition instanceof NullCondition) {
+            resultCondition = this;
+        } else if (condition instanceof EmptyCondition) {
+            resultCondition = condition;
+        } else if (condition instanceof EqualsCondition) {
+            resultCondition = merge((EqualsCondition) condition, this);
+        }
 
-    Condition or(Condition condition) {
-        return null;
-    }
+        if (resultCondition != null) {
+            ArrayList<Condition> results = new ArrayList<>();
+            results.add(resultCondition);
+            return results;
+        }
 
-    public DataType getMinimumBound() {
-        return minimumBound;
+        ArrayList<Condition> results = new ArrayList<>();
+        if (condition instanceof NotEqualsCondition) {
+            ArrayList<Condition> mergingResults = merge((NotEqualsCondition)condition, this);
+            for (Condition c: mergingResults)
+                results.add(c);
+        }
+        else if (condition instanceof RangeCondition) {
+            DataType minimum = null;
+            boolean minimumInclusive = false;
+            DataType maximum = null;
+            boolean maximumInclusive = false;
+
+            if (this.getMinimumBound() == null && ((RangeCondition) condition).getMinimumBound() != null) {
+                minimum = ((RangeCondition) condition).getMinimumBound();
+                minimumInclusive = ((RangeCondition) condition).isMinimumInclusive();
+            }
+            else if (this.getMinimumBound() != null && ((RangeCondition) condition).getMinimumBound() == null) {
+                minimum = this.getMinimumBound();
+                minimumInclusive = this.isMinimumInclusive();
+            }
+            else if (this.getMinimumBound() != null && ((RangeCondition) condition).getMinimumBound() != null) {
+                if (this.getMinimumBound().compareTo(((RangeCondition) condition).getMinimumBound()) > 0) {
+                    minimum = this.getMinimumBound();
+                    minimumInclusive = this.isMinimumInclusive();
+                }
+                else {
+                    minimum = ((RangeCondition) condition).getMinimumBound();
+                    minimumInclusive = ((RangeCondition) condition).isMinimumInclusive();
+                }
+            }
+
+            if (this.getMaximumBound() == null && ((RangeCondition) condition).getMaximumBound() != null) {
+                maximum = ((RangeCondition) condition).getMaximumBound();
+                maximumInclusive = ((RangeCondition) condition).isMaximumInclusive();
+            }
+            else if (this.getMaximumBound() != null && ((RangeCondition) condition).getMaximumBound() == null) {
+                maximum = this.getMaximumBound();
+                maximumInclusive = this.isMaximumInclusive();
+            }
+            else if (this.getMaximumBound() != null && ((RangeCondition) condition).getMaximumBound() != null) {
+                if (this.getMaximumBound().compareTo(((RangeCondition) condition).getMaximumBound()) < 0) {
+                    maximum = this.getMaximumBound();
+                    maximumInclusive = this.isMaximumInclusive();
+                }
+                else {
+                    maximum = ((RangeCondition) condition).getMaximumBound();
+                    maximumInclusive = ((RangeCondition) condition).isMaximumInclusive();
+                }
+            }
+
+            Condition condition1 = null;
+            if (minimum != null && maximum != null) {
+                if (minimum.compareTo(maximum) > 0)
+                    condition1 = new EmptyCondition();
+                if (minimum.compareTo(maximum) == 0) {
+                    if (!minimumInclusive || !maximumInclusive)
+                        condition1 = new EmptyCondition();
+                    else
+                        condition1 = new EqualsCondition(minimum);
+                }
+
+            }
+
+            if (condition1 == null)
+                condition1 = new RangeCondition(minimum, minimumInclusive, maximum, maximumInclusive);
+
+            results.add(condition1);
+
+        }
+
+        return results;
     }
 
     /**
@@ -67,8 +146,32 @@ public class RangeCondition extends Condition {
             }
         }
         else {
-            return false;
+            if (maximumInclusive && minimumInclusive) {
+                if (minimumBound.compareTo(shardMaximum) <= 0
+                        && maximumBound.compareTo(shardMinimum) >= 0)
+                    return true;
+            }
+            else if (!maximumInclusive && !minimumInclusive) {
+                if (minimumBound.compareTo(shardMaximum) < 0
+                        && maximumBound.compareTo(shardMinimum) > 0)
+                    return true;
+            }
+            else if (!maximumInclusive && minimumInclusive) {
+                if (minimumBound.compareTo(shardMaximum) <= 0
+                        && maximumBound.compareTo(shardMinimum) > 0)
+                    return true;
+            }
+            else {
+                if (minimumBound.compareTo(shardMaximum) < 0
+                        && maximumBound.compareTo(shardMinimum) >= 0)
+                    return true;
+            }
         }
+        return false;
+    }
+
+    public DataType getMinimumBound() {
+        return minimumBound;
     }
 
     public boolean isMinimumInclusive() {

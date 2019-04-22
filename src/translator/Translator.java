@@ -113,14 +113,49 @@ public class Translator {
         Matcher columnExpression = Utility.getMatcher(ra, capturedColumnExpr);
         Matcher binaryExpression = Utility.getMatcher(ra, capturedBinaryExpr);
 
-        if (constantExpression.matches()) {
+        if (columnExpression.matches()) {
+            System.out.println("column");
             ArrayList<Condition> result = new ArrayList<>();
-            result.add(getConstantCondition(columnTypes, distributionIndex, constantExpression));
+            Condition condition = getColumnCondition(columnTypes, columnExpression);
+
+            if (condition == null) {
+                return null;
+            }
+            System.out.println(condition.toString());
+            result.add(condition);
+            return result;
+        }
+        else if (constantExpression.matches()) {
+            System.out.println("constant");
+            ArrayList<Condition> result = new ArrayList<>();
+            Condition condition = getConstantCondition(columnTypes, distributionIndex, constantExpression);
+            if (condition == null) {
+                return null;
+            }
+            System.out.println(condition.toString());
+            result.add(condition);
+            return result;
+        }
+        else if (binaryExpression.matches()) {
+            System.out.println("binary");
+            ArrayList<Condition> result = getBinaryCondition(columnTypes, distributionIndex, binaryExpression);
+            for (Condition condition: result)
+                System.out.print(condition.toString() + "||");
+            System.out.println();
             return result;
         }
         return null;
     }
 
+    /**
+     * Returns condition where one side is a column and the other is a value
+     * e.g. age > 25
+     *
+     * @param columnTypes
+     * @param distributionIndex
+     * @param matcher
+     * @return Condition
+     */
     private Condition getConstantCondition(String[] columnTypes, int distributionIndex, Matcher matcher) {
         int columnOrder = Integer.parseInt(matcher.group(1));
         String columnType = columnTypes[columnOrder- 1];
@@ -144,6 +179,105 @@ public class Translator {
 
         ConditionFactory conditionFactory = new ConditionFactory();
 
-        return conditionFactory.makeCondition(operator, data);
+        Condition condition = conditionFactory.makeCondition(operator, data);
+
+        if (condition == null)
+            MasterWriter.getInstance().write(new Response("Operator '" + operator + "' is not a valid operator"));
+
+        return condition;
+    }
+
+    /**
+     * Returns condition where both  sides are columns
+     * e.g. start_data = end_date
+     *
+     * @param columnTypes
+     * @param matcher
+     * @return Condition
+     */
+    private  Condition getColumnCondition(String[] columnTypes, Matcher matcher) {
+        int leftColumn = Integer.parseInt(matcher.group(1));
+        int rightColumn = Integer.parseInt(matcher.group(3));
+
+        /**
+         * if columns are of different types then they can't be compared
+         */
+        if (!columnTypes[leftColumn - 1].equals(columnTypes[rightColumn - 1])) {
+            MasterWriter.getInstance().write(new Response("Invalid where clause"));
+            return null;
+        }
+
+        String operator = matcher.group(2);
+        if (!operator.equals("=")
+                && !operator.equals("<")
+                && !operator.equals("<=")
+                && !operator.equals(">")
+                && !operator.equals(">=")
+                && !operator.equals("<>")) {
+            MasterWriter.getInstance().write(new Response("Operator '" + operator + "' is not a valid operator"));
+            return null;
+        }
+
+        /**
+         * We don't really care about the condition as long as it's sound.
+         * It won't help us in picking fewer shards
+         */
+        return new NullCondition();
+    }
+
+    /**
+     * Returns a list of condition resulting from ANDing or ORing two expressions
+     * e.g. age > 25 and department = 6
+     *
+     * @param columnTypes
+     * @param distributionIndex
+     * @param matcher
+     * @return ArrayList of Conditions
+     */
+    private ArrayList<Condition> getBinaryCondition(String[] columnTypes, int distributionIndex, Matcher matcher) {
+        String operator = matcher.group(1);
+        String leftExpression = matcher.group(2);
+        String rightExpression = matcher.group(3);
+
+        ArrayList<Condition> leftConditions = getDistributionCondition(columnTypes, distributionIndex, leftExpression);
+        System.out.println("left conditions");
+        for (Condition condition: leftConditions)
+            System.out.print(condition.toString() + " || ");
+        System.out.println();
+        ArrayList<Condition> rightConditions = getDistributionCondition(columnTypes, distributionIndex, rightExpression);
+        System.out.println("left conditions");
+        for (Condition condition: rightConditions)
+            System.out.print(condition.toString() + " || ");
+        System.out.println();
+
+        if (leftConditions == null || rightConditions == null)
+            return null;
+
+        switch (operator) {
+            case "OR":
+                System.out.println("OR");
+                for (Condition condition: rightConditions)
+                    leftConditions.add(condition);
+
+                return leftConditions;
+            case "AND":
+                System.out.println("AND");
+                ArrayList<Condition> result = new ArrayList<>();
+
+                for (Condition leftCondition: leftConditions) {
+                    for (Condition rightCondition : rightConditions) {
+                        ArrayList<Condition> andResult = leftCondition.and(rightCondition);
+                        for (Condition condition: andResult) {
+                            System.out.println(condition.toString());
+                            result.add(condition);
+                        }
+                    }
+                }
+
+                return result;
+            default:
+                return null;
+
+        }
     }
 }

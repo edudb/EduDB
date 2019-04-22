@@ -12,18 +12,90 @@ package net.edudb.condition;
 
 import net.edudb.data_type.DataType;
 
+import java.util.ArrayList;
+
 public abstract class Condition {
     String type;
 
-    abstract Condition and(Condition condition);
-
-    abstract Condition or(Condition condition);
+    abstract public ArrayList<Condition> and(Condition condition);
 
     /**
      * checks whether values inside a shard could satisfy the condition
+     *
      * @param shardMinimum
      * @param shardMaximum
      * @return
      */
     abstract public boolean evaluate(DataType shardMinimum, DataType shardMaximum);
+
+    protected static Condition merge(EqualsCondition equalsCondition, NotEqualsCondition notEqualsCondition) {
+        if (equalsCondition.getData().compareTo(notEqualsCondition.getData()) == 0)
+            return new EmptyCondition();
+        else {
+            return equalsCondition;
+        }
+    }
+
+    protected static Condition merge(EqualsCondition equalsCondition, RangeCondition rangeCondition) {
+
+        if (!(rangeCondition.getMinimumBound() == null)) {
+            if (rangeCondition.isMinimumInclusive()) {
+                if (equalsCondition.getData().compareTo(rangeCondition.getMinimumBound()) < 0)
+                    return new EmptyCondition();
+            }
+            else {
+                if (equalsCondition.getData().compareTo(rangeCondition.getMinimumBound()) <= 0)
+                    return new EmptyCondition();
+            }
+        }
+
+
+        if (!(rangeCondition.getMaximumBound() == null)) {
+            if (rangeCondition.isMaximumInclusive()) {
+                if (equalsCondition.getData().compareTo(rangeCondition.getMaximumBound()) > 0)
+                    return new EmptyCondition();
+            }
+            else {
+                if (equalsCondition.getData().compareTo(rangeCondition.getMaximumBound()) >= 0)
+                    return new EmptyCondition();
+            }
+        }
+
+        return equalsCondition;
+    }
+
+    protected static ArrayList<Condition> merge (NotEqualsCondition notEqualsCondition, RangeCondition rangeCondition) {
+        ArrayList<Condition> results = new ArrayList<>();
+
+        if (rangeCondition.getMaximumBound() == null) {
+            if (rangeCondition.getMinimumBound().compareTo(notEqualsCondition.getData()) < 0)
+                results.add(new RangeCondition(rangeCondition.getMinimumBound(), rangeCondition.isMinimumInclusive(),
+                        notEqualsCondition.getData(), false));
+                results.add(new RangeCondition(notEqualsCondition.getData(), false, null,
+                        false));
+        }
+        else if (rangeCondition.getMinimumBound() == null) {
+            if (rangeCondition.getMaximumBound().compareTo(notEqualsCondition.getData()) > 0)
+                results.add(new RangeCondition(notEqualsCondition.getData(), false,
+                        rangeCondition.getMaximumBound(), rangeCondition.isMaximumInclusive()));
+                results.add(new RangeCondition(null, false, notEqualsCondition.getData(),
+                        false));
+        }
+        else {
+            if (rangeCondition.getMinimumBound().compareTo(notEqualsCondition.getData()) < 0
+                    && rangeCondition.getMaximumBound().compareTo(notEqualsCondition.getData()) > 0) {
+                results.add(new RangeCondition(rangeCondition.getMinimumBound(), rangeCondition.isMinimumInclusive(),
+                        notEqualsCondition.getData(), false));
+                results.add(new RangeCondition(notEqualsCondition.getData(), false,
+                        rangeCondition.getMaximumBound(), rangeCondition.isMaximumInclusive()));
+            }
+
+        }
+
+        if (results.isEmpty())
+            results.add(new EmptyCondition());
+
+        return results;
+    }
+
 }

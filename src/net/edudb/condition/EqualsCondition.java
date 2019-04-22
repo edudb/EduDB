@@ -12,6 +12,8 @@ package net.edudb.condition;
 
 import net.edudb.data_type.DataType;
 
+import java.util.ArrayList;
+
 /**
  * An equality condition. e.g. age = 21
  *
@@ -25,12 +27,33 @@ public class EqualsCondition extends Condition {
         this.data = data;
     }
 
-    Condition and(Condition condition) {
-        return null;
-    }
+    public ArrayList<Condition> and(Condition condition) {
+        Condition resultCondition = null;
+        if (condition instanceof NullCondition) {
+            resultCondition =  this;
+        }
+        else if (condition instanceof EmptyCondition) {
+            resultCondition =  condition;
+        }
+        else if (condition instanceof EqualsCondition) {
+            if (this.getData().compareTo(((EqualsCondition) condition).getData()) == 0)
+                resultCondition = this;
+            else
+                resultCondition =  new EmptyCondition();
+        }
+        else if (condition instanceof NotEqualsCondition) {
+            resultCondition = merge(this, (NotEqualsCondition)condition);
+        }
+        else if (condition instanceof RangeCondition) {
+            resultCondition = merge(this, (RangeCondition)condition);
+        }
 
-    Condition or(Condition condition) {
-        return null;
+        if (resultCondition == null)
+            return null;
+
+        ArrayList<Condition> result = new ArrayList<>();
+        result.add(resultCondition);
+        return result;
     }
 
     /**

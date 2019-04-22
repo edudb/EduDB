@@ -12,6 +12,8 @@ package net.edudb.condition;
 
 import net.edudb.data_type.DataType;
 
+import java.util.ArrayList;
+
 /**
  * A condition that can not be satisfied.
  * For example the result of and-ing age > 30 and age < 25
@@ -20,12 +22,10 @@ import net.edudb.data_type.DataType;
  */
 public class EmptyCondition extends Condition {
 
-    Condition and(Condition condition) {
-        return null;
-    }
-
-    Condition or(Condition condition) {
-        return null;
+    public ArrayList<Condition> and(Condition condition) {
+        ArrayList<Condition> result = new ArrayList<>();
+        result.add(new EmptyCondition());
+        return result;
     }
 
     /**
