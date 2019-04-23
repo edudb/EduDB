@@ -8,7 +8,7 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package translator;
+package net.edudb.translator;
 
 import adipe.translate.Queries;
 import adipe.translate.TranslationException;
@@ -108,40 +108,38 @@ public class Translator {
     private String capturedBinaryExpr = "(AND|OR)\\(" + "(" + argument + ")" + "," + "(" + argument + ")" + "\\)";
 
     private ArrayList<Condition> getDistributionCondition(String[] columnTypes, int distributionIndex, String ra) {
-        System.out.println("Current ra: " + ra);
+        System.out.println("current ra: " + ra);
         Matcher constantExpression = Utility.getMatcher(ra, capturedConstantExpr);
         Matcher columnExpression = Utility.getMatcher(ra, capturedColumnExpr);
         Matcher binaryExpression = Utility.getMatcher(ra, capturedBinaryExpr);
 
         if (columnExpression.matches()) {
-            System.out.println("column");
+
             ArrayList<Condition> result = new ArrayList<>();
             Condition condition = getColumnCondition(columnTypes, columnExpression);
 
             if (condition == null) {
                 return null;
             }
-            System.out.println(condition.toString());
+
             result.add(condition);
             return result;
         }
         else if (constantExpression.matches()) {
-            System.out.println("constant");
+
             ArrayList<Condition> result = new ArrayList<>();
             Condition condition = getConstantCondition(columnTypes, distributionIndex, constantExpression);
             if (condition == null) {
                 return null;
             }
-            System.out.println(condition.toString());
+
             result.add(condition);
             return result;
         }
         else if (binaryExpression.matches()) {
-            System.out.println("binary");
+
             ArrayList<Condition> result = getBinaryCondition(columnTypes, distributionIndex, binaryExpression);
-            for (Condition condition: result)
-                System.out.print(condition.toString() + "||");
-            System.out.println();
+
             return result;
         }
         return null;
@@ -157,6 +155,7 @@ public class Translator {
      * @return Condition
      */
     private Condition getConstantCondition(String[] columnTypes, int distributionIndex, Matcher matcher) {
+        System.out.println("constant " + matcher.group());
         int columnOrder = Integer.parseInt(matcher.group(1));
         String columnType = columnTypes[columnOrder- 1];
 
@@ -196,6 +195,7 @@ public class Translator {
      * @return Condition
      */
     private  Condition getColumnCondition(String[] columnTypes, Matcher matcher) {
+        System.out.println("column " + matcher.group());
         int leftColumn = Integer.parseInt(matcher.group(1));
         int rightColumn = Integer.parseInt(matcher.group(3));
 
@@ -235,40 +235,36 @@ public class Translator {
      * @return ArrayList of Conditions
      */
     private ArrayList<Condition> getBinaryCondition(String[] columnTypes, int distributionIndex, Matcher matcher) {
+        System.out.println("binary " + matcher.group());
         String operator = matcher.group(1);
-        String leftExpression = matcher.group(2);
+        String leftExpression  = matcher.group(2);
         String rightExpression = matcher.group(3);
 
+
         ArrayList<Condition> leftConditions = getDistributionCondition(columnTypes, distributionIndex, leftExpression);
-        System.out.println("left conditions");
-        for (Condition condition: leftConditions)
-            System.out.print(condition.toString() + " || ");
-        System.out.println();
+
         ArrayList<Condition> rightConditions = getDistributionCondition(columnTypes, distributionIndex, rightExpression);
-        System.out.println("left conditions");
-        for (Condition condition: rightConditions)
-            System.out.print(condition.toString() + " || ");
-        System.out.println();
+
 
         if (leftConditions == null || rightConditions == null)
             return null;
 
         switch (operator) {
             case "OR":
-                System.out.println("OR");
+
                 for (Condition condition: rightConditions)
                     leftConditions.add(condition);
 
                 return leftConditions;
             case "AND":
-                System.out.println("AND");
+
                 ArrayList<Condition> result = new ArrayList<>();
 
                 for (Condition leftCondition: leftConditions) {
                     for (Condition rightCondition : rightConditions) {
                         ArrayList<Condition> andResult = leftCondition.and(rightCondition);
                         for (Condition condition: andResult) {
-                            System.out.println(condition.toString());
+
                             result.add(condition);
                         }
                     }

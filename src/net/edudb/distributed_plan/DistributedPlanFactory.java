@@ -27,6 +27,8 @@ public class DistributedPlanFactory extends DistributedPlan {
                 return new InsertPlan().makePlan(statement);
             case SQLDeleteStatement:
                 return new DeletePlan().makePlan(statement);
+            case SQLUpdateStatement:
+                return new UpdatePlan().makePlan(statement);
             default:
                 return null;
 

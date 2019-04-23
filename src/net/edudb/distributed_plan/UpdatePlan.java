@@ -14,31 +14,32 @@ import net.edudb.condition.Condition;
 import net.edudb.condition.NullCondition;
 import net.edudb.data_type.DataType;
 import net.edudb.data_type.DataTypeFactory;
-import net.edudb.distributed_operator.DeleteOperator;
-import net.edudb.distributed_operator.parameter.DeleteOperatorParameter;
+import net.edudb.distributed_operator.UpdateOperator;
+import net.edudb.distributed_operator.parameter.UpdateOperatorParameter;
 import net.edudb.distributed_query.QueryNode;
 import net.edudb.distributed_query.QueryTree;
 import net.edudb.exception.InvalidTypeValueException;
 import net.edudb.master.MasterWriter;
 import net.edudb.metadata_buffer.MetadataBuffer;
 import net.edudb.response.Response;
-import net.edudb.statement.SQLDeleteStatement;
 import net.edudb.statement.SQLStatement;
+import net.edudb.statement.SQLUpdateStatement;
 import net.edudb.translator.Translator;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 
 /**
- * A plan to delete data from worker databases
+ * A plan to update data in worker databases
  *
  * @author Fady Sameh
  */
-public class DeletePlan extends DistributedPlan {
+public class UpdatePlan extends DistributedPlan {
 
     public QueryTree makePlan(SQLStatement sqlStatement) {
 
-        SQLDeleteStatement statement = (SQLDeleteStatement)sqlStatement;
+        SQLUpdateStatement statement = (SQLUpdateStatement) sqlStatement;
         String tableName = statement.getTableName();
 
         Hashtable<String, DataType> table = MetadataBuffer.getInstance().getTables().get(tableName);
@@ -69,8 +70,7 @@ public class DeletePlan extends DistributedPlan {
             String ra = translator.translate("select * from " + tableName + " " + whereClause);
             distributionConditions = translator.getDistributionCondition(table.get("metadata").toString(),
                     table.get("distribution_column").toString(), ra);
-        }
-        else {
+        } else {
             distributionConditions.add(new NullCondition());
         }
 
@@ -87,14 +87,36 @@ public class DeletePlan extends DistributedPlan {
 
         String distributionColumnType = "";
 
-        for (int i = 0; i < metadataArray.length; i+=2) {
+        /**
+         * Making sure that all assignments are correct
+         */
+        HashMap<String, String> metadataMap = new HashMap();
+        for (int i = 0; i < metadataArray.length; i += 2) {
+            metadataMap.put(metadataArray[i], metadataArray[i+1]);
             if (distributionColumn.equals(metadataArray[i]))
-                distributionColumnType = metadataArray[i+1];
+                distributionColumnType = metadataArray[i + 1];
         }
 
-        ArrayList<Hashtable<String, DataType>> shards  = new ArrayList<>(); // shards we should forward the command to
+        HashMap<String, String> assignments = statement.getAssignemnts();
 
-        for (Hashtable<String, DataType> shard: MetadataBuffer.getInstance().getShards().values()) {
+        for (String column: assignments.keySet()) {
+            String columnType = metadataMap.get(column);
+            if (column == null) {
+                MasterWriter.getInstance().write(new Response("Column '" + column +"' does not exist"));
+                return null;
+            }
+
+            try {
+                dataTypeFactory.makeType(columnType, assignments.get(column));
+            } catch (InvalidTypeValueException e) {
+                MasterWriter.getInstance().write(new Response(e.getMessage()));
+                return null;
+            }
+        }
+
+        ArrayList<Hashtable<String, DataType>> shards = new ArrayList<>(); // shards we should forward the command to
+
+        for (Hashtable<String, DataType> shard : MetadataBuffer.getInstance().getShards().values()) {
             if (!shard.get("table").toString().equals(tableName))
                 continue;
 
@@ -113,7 +135,7 @@ public class DeletePlan extends DistributedPlan {
 
                 boolean validShard = false;
 
-                for (Condition condition: distributionConditions)
+                for (Condition condition : distributionConditions)
                     if (condition.evaluate(shardMinValue, shardMaxValue)) {
                         validShard = true;
                         break;
@@ -125,20 +147,14 @@ public class DeletePlan extends DistributedPlan {
             shards.add(shard);
         }
 
-
-        for (Hashtable<String, DataType> shard: shards) {
-            System.out.print(shard.get("table").toString() + " ");
-            System.out.print(shard.get("min_value").toString() + " ");
-            System.out.println(shard.get("max_value").toString());
-        }
-
-        DeleteOperator operator = new DeleteOperator();
-        DeleteOperatorParameter parameter = new DeleteOperatorParameter(statement, shards);
+        UpdateOperator operator = new UpdateOperator();
+        UpdateOperatorParameter parameter = new UpdateOperatorParameter(statement, shards);
         operator.setParameter(parameter);
 
         QueryTree tree = new QueryTree((QueryNode)operator);
 
         return tree;
+
     }
 
 }
