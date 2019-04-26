@@ -11,7 +11,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.distributed_operator.parameter;
 
 import net.edudb.data_type.DataType;
-import net.edudb.statement.SQLDeleteStatement;
 import net.edudb.statement.SQLUpdateStatement;
 
 import java.util.ArrayList;

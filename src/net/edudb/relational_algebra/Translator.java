@@ -16,6 +16,7 @@ import adipe.translate.Queries;
 import adipe.translate.TranslationException;
 import net.edudb.ebtree.EBNode;
 import net.edudb.ebtree.EBTree;
+import net.edudb.master.MasterWriter;
 import net.edudb.query.QueryTree;
 import net.edudb.response.Response;
 import net.edudb.server.ServerWriter;
@@ -36,6 +37,7 @@ public class Translator {
 			System.out.println("Translator (translate):" + term.toString());
 			return term.toString();
 		} catch (RuntimeException | TranslationException e) {
+			MasterWriter.getInstance().write(new Response(e.getMessage()));
 			e.printStackTrace();
 		}
 		return null;

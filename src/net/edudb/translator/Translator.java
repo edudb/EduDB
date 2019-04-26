@@ -51,15 +51,54 @@ public class Translator {
             Term term = Queries.getRaOf(adipe.translate.ra.Schema.create(schema), statement);
             return term.toString();
         } catch (RuntimeException | TranslationException e) {
-            e.printStackTrace();
+            MasterWriter.getInstance().write(new Response(e.getMessage()));
+            //e.printStackTrace();
         }
         return null;
     }
 
     private String regex = "\\AFilter\\((.+)\\,\"(.+)\"\\)\\z";
+    private String relationRegex = "\\A(\\w+)\\=(?:Relation\\(.(?:\\,.)*\\))\\z";
+    private String projectRegex = "\\AProject\\((.+)\\,\\[(\\d+(?:\\,\\s\\d+)*)\\]\\)\\z";
+
+    public String getTableName(String ra) {
+        String filterRa;
+        Matcher projectMatcher = Utility.getMatcher(ra, projectRegex);
+        if (projectMatcher.matches()) {
+            filterRa = projectMatcher.group(1);
+        }
+        else {
+            filterRa = ra;
+        }
+
+        String relationRA;
+        Matcher filterMatcher = Utility.getMatcher(filterRa, regex);
+        if (filterMatcher.matches()) {
+            relationRA = filterMatcher.group(1);
+        }
+        else {
+            relationRA = filterRa;
+        }
+
+        Matcher relationMatcher = Utility.getMatcher(relationRA, relationRegex);
+        if (relationMatcher.matches()) {
+            return relationMatcher.group(1);
+        }
+
+        return null;
+    }
 
     public ArrayList<Condition> getDistributionCondition(String metadata, String distributionColumn, String ra) {
-        Matcher matcher = Utility.getMatcher(ra, regex);
+        String filterRa;
+        Matcher projectMatcher = Utility.getMatcher(ra, projectRegex);
+        if (projectMatcher.matches()) {
+            filterRa = projectMatcher.group(1);
+        }
+        else {
+            filterRa = ra;
+        }
+
+        Matcher matcher = Utility.getMatcher(filterRa, regex);
         if (matcher.matches()) {
 
             String[] metadataArray = metadata.split(" ");
