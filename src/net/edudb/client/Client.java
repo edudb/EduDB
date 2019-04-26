@@ -18,9 +18,13 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.serialization.ClassResolvers;
+import io.netty.handler.codec.serialization.ObjectDecoder;
+import io.netty.handler.codec.serialization.ObjectEncoder;
 import jline.console.ConsoleReader;
 //import jline.console.UserInterruptException;
 import net.edudb.client.console.Console;
+import net.edudb.request.Request;
 
 import java.io.IOException;
 
@@ -76,7 +80,7 @@ public class Client {
 
 	public void start() {
 		this.host = "localhost";
-		this.port = 9999;
+		this.port = 8080;
 		this.username = "admin";
 		this.password = "admin";
 
@@ -113,7 +117,10 @@ public class Client {
 			b.handler(new ChannelInitializer<SocketChannel>() {
 				@Override
 				public void initChannel(SocketChannel ch) throws Exception {
-					ch.pipeline().addLast(clientHandler);
+					ch.pipeline().addLast(
+							new ObjectDecoder(2147483647,ClassResolvers.softCachingResolver(null)),
+							new ObjectEncoder(),
+							clientHandler);
 				}
 			});
 
@@ -121,8 +128,9 @@ public class Client {
 			ChannelFuture f = b.connect(host, port).sync();
 
 //			clientHandler.setReceiving(true);
-			ByteBuf buf = Unpooled.copiedBuffer("[edudb::" + username + ":" + password + "]", Charsets.UTF_8);
-			ChannelFuture future = f.channel().writeAndFlush(buf);
+			//ByteBuf buf = Unpooled.copiedBuffer("[edudb::" + username + ":" + password + "]", Charsets.UTF_8);
+			Request initRequest = new Request(null, "[edudb::" + username + ":" + password + "]");
+			ChannelFuture future = f.channel().writeAndFlush(initRequest);
 
 			while (!connected) {
 				Thread.sleep(10);

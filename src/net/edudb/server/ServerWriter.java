@@ -16,6 +16,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import net.edudb.console.DatabaseConsole;
+import net.edudb.response.Response;
 
 /**
  * A singleton that handles writing to the client.
@@ -45,14 +46,16 @@ public class ServerWriter {
 	/**
 	 * Writes to the client iff the context is not null.
 	 * 
-	 * @param object
+	 * @param obj
 	 *            Object to write.
 	 */
 	public void write(Object obj) {
 		if (context != null) {
-			ByteBuf buf = Unpooled.copiedBuffer(obj.toString(), Charsets.UTF_8);
-
-			context.writeAndFlush(buf);
+			Response response = (Response)obj;
+			System.out.println("Response is being sent from server");
+			System.out.println(response.getId());
+			System.out.println(response.getMessage());
+			context.writeAndFlush(obj);
 		} else {
 			DatabaseConsole.getInstance().write(obj);
 		}
@@ -60,15 +63,14 @@ public class ServerWriter {
 
 	/**
 	 * Writes a line to the client iff the context is not null.
-	 * 
-	 * @param object
+	 *
+	 * @param obj
 	 *            Object to write.
 	 */
 	public void writeln(Object obj) {
 		if (context != null) {
-			ByteBuf buf = Unpooled.copiedBuffer(obj.toString() + "\r\n", Charsets.UTF_8);
 
-			context.writeAndFlush(buf);
+			context.writeAndFlush(obj);
 		} else {
 			DatabaseConsole.getInstance().writeln(obj);
 		}

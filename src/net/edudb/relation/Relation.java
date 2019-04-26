@@ -11,7 +11,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.relation;
 
 import net.edudb.server.ServerWriter;
+import net.edudb.structure.Record;
 import net.edudb.structure.table.Table;
+
+import java.util.ArrayList;
 
 /**
  * Holds records returned from the execution of relational algebra operators.
@@ -40,6 +43,34 @@ public interface Relation extends Table {
 		while (relationIterator.hasNext()) {
 			ServerWriter.getInstance().writeln(relationIterator.next());
 		}
+	}
+
+	public static String toString(Relation relation) {
+		if (relation == null) {
+			return "";
+		}
+
+		String stringRelation = "";
+		RelationIterator relationIterator = relation.getIterator();
+		while (relationIterator.hasNext()) {
+			stringRelation += relationIterator.next() + "\r\n";
+		}
+
+		return stringRelation;
+	}
+
+	public static ArrayList<Record> toRecords(Relation relation) {
+		if(relation == null)
+			return null;
+
+		ArrayList<Record> records = new ArrayList<Record>();
+
+		RelationIterator relationIterator = relation.getIterator();
+		while (relationIterator.hasNext()) {
+			records.add(relationIterator.next());
+		}
+
+		return records;
 	}
 
 }

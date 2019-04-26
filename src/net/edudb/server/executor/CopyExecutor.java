@@ -7,6 +7,8 @@ import net.edudb.console.executor.ConsoleExecutorChain;
 import net.edudb.data_type.DataType;
 import net.edudb.data_type.DataTypeFactory;
 import net.edudb.engine.Utility;
+import net.edudb.exception.InvalidTypeValueException;
+import net.edudb.response.Response;
 import net.edudb.server.ServerWriter;
 import net.edudb.statistics.Schema;
 import net.edudb.structure.Column;
@@ -38,7 +40,7 @@ public class CopyExecutor implements ConsoleExecutorChain {
 	}
 
 	@Override
-	public void execute(String string) {
+	public Response execute(String string) {
 		/**
 		 * The string is passed as a command in the first line and data,
 		 * separated by a delimited, in subsequent lines.
@@ -49,8 +51,8 @@ public class CopyExecutor implements ConsoleExecutorChain {
 			if (matcher.matches()) {
 				String tableName = matcher.group(1);
 				if (!Schema.getInstance().chekTableExists(tableName)) {
-					ServerWriter.getInstance().writeln("Table '" + tableName + "' is not available.");
-					return;
+					//ServerWriter.getInstance().writeln("Table '" + tableName + "' is not available.");
+					return new Response("Table '" + tableName + "' is not available.");
 				}
 				Table table = TableManager.getInstance().read(tableName);
 				ArrayList<Column> columns = Schema.getInstance().getColumns(tableName);
@@ -63,7 +65,13 @@ public class CopyExecutor implements ConsoleExecutorChain {
 					int size = row.length;
 					for (int j = 0; j < size; j++) {
 						Column column = columns.get(j);
-						data.put(column, typeFactory.makeType(column.getTypeName(), row[j]));
+						try {
+							data.put(column, typeFactory.makeType(column.getTypeName(), row[j]));
+						} catch (InvalidTypeValueException e) {
+							ServerWriter.getInstance().write(new Response(e.getMessage()));
+							e.printStackTrace();
+						}
+
 					}
 
 					Record record = new TableRecord(data);
@@ -71,11 +79,11 @@ public class CopyExecutor implements ConsoleExecutorChain {
 					++count;
 				}
 
-				ServerWriter.getInstance().writeln("Copied '" + count + "' records");
-				return;
+				//ServerWriter.getInstance().writeln("Copied '" + count + "' records");
+				return new Response("Copied '" + count + "' records");
 			}
 		}
-		nextElement.execute(string);
+		return nextElement.execute(string);
 	}
 
 }

@@ -29,27 +29,30 @@ public class DataTypeFactory {
 	 *            The value of the type.
 	 * @return The created data type.
 	 */
-	public DataType makeType(String typeName, String value) {
+	public DataType makeType(String typeName, String value) throws InvalidTypeValueException {
 		String val = value.replace("'", "");
 		switch (typeName.toLowerCase()) {
 		case "bool":
 		case "boolean":
-			try {
-				return new BooleanType(BooleanType.parseBoolean(val));
-			} catch (InvalidTypeValueException e) {
-				e.printStackTrace();
-			}
+
+			return new BooleanType(BooleanType.parseBoolean(val));
+
 		case "decimal":
-			return new DecimalType(Double.parseDouble(val));
+			try {
+				return new DecimalType(Double.parseDouble(val));
+			} catch (Exception e) {
+				throw new InvalidTypeValueException("Value '" + value + "' is not a decimal");
+			}
 		case "integer":
-			return new IntegerType(Integer.parseInt(val));
+			try {
+				return new IntegerType(Integer.parseInt(val));
+			} catch (Exception e) {
+				throw new InvalidTypeValueException("Value '" + value +"' is not an integer");
+			}
 		case "timestamp":
 		case "datetime":
-			try {
-				return new TimestampType(TimestampType.parseDate(val));
-			} catch (InvalidTypeValueException e) {
-				e.printStackTrace();
-			}
+			return new TimestampType(TimestampType.parseDate(val));
+
 		case "varchar":
 			return new VarCharType(val);
 		default:

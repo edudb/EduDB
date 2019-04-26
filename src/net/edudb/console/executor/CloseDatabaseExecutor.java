@@ -14,6 +14,7 @@ import java.util.regex.Matcher;
 
 import net.edudb.engine.DatabaseSystem;
 import net.edudb.engine.Utility;
+import net.edudb.response.Response;
 
 /**
  * Closes the current open database.
@@ -37,15 +38,14 @@ public class CloseDatabaseExecutor implements ConsoleExecutorChain {
 	}
 
 	@Override
-	public void execute(String string) {
+	public Response execute(String string) {
 		if (string.toLowerCase().startsWith("close")) {
 			Matcher matcher = Utility.getMatcher(string, regex);
 			if (matcher.matches()) {
-				DatabaseSystem.getInstance().close();
-				return;
+				return new Response(DatabaseSystem.getInstance().close());
 			}
 		}
-		nextElement.execute(string);
+		return nextElement.execute(string);
 	}
 
 }

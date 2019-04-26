@@ -10,6 +10,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.transcation;
 
+import net.edudb.response.Response;
+
 /**
  * A singleton that handles the execution of transactions.
  * 
@@ -33,9 +35,10 @@ public class TransactionManager {
 	 * @param transaction
 	 *            The concurrent transaction to execute.
 	 */
-	public void execute(ConcurrentTransaction transaction) {
+	public String execute(ConcurrentTransaction transaction) {
 		Thread thread = new Thread(transaction);
 		thread.start();
+		return "";
 	}
 
 	/**
@@ -44,7 +47,7 @@ public class TransactionManager {
 	 * @param transaction
 	 *            The synchronized transaction to execute.
 	 */
-	public void execute(SynchronizedTransaction transaction) {
-		transaction.run();
+	public Response execute(SynchronizedTransaction transaction) {
+		return transaction.run();
 	}
 }

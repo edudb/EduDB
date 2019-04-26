@@ -16,7 +16,9 @@ import adipe.translate.Queries;
 import adipe.translate.TranslationException;
 import net.edudb.ebtree.EBNode;
 import net.edudb.ebtree.EBTree;
+import net.edudb.master.MasterWriter;
 import net.edudb.query.QueryTree;
+import net.edudb.response.Response;
 import net.edudb.server.ServerWriter;
 import net.edudb.statistics.Schema;
 import ra.Term;
@@ -32,9 +34,10 @@ public class Translator {
 	public String translate(String sqlString) {
 		try {
 			Term term = Queries.getRaOf(adipe.translate.ra.Schema.create(Schema.getInstance().getSchema()), sqlString);
-			System.out.println("Translator (teanslate):" + term.toString());
+			System.out.println("Translator (translate):" + term.toString());
 			return term.toString();
 		} catch (RuntimeException | TranslationException e) {
+			MasterWriter.getInstance().write(new Response(e.getMessage()));
 			e.printStackTrace();
 		}
 		return null;
@@ -79,7 +82,7 @@ public class Translator {
 				nodes.add(result.getNode());
 				relationAlgebra = result.getString();
 			} else {
-				ServerWriter.getInstance().writeln("No Match");
+				ServerWriter.getInstance().write(new Response("No Match"));
 				break;
 			}
 		}

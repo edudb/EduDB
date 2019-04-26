@@ -20,6 +20,8 @@ import java.util.regex.Matcher;
 import net.edudb.data_type.DataType;
 import net.edudb.data_type.DataTypeFactory;
 import net.edudb.engine.Utility;
+import net.edudb.exception.InvalidTypeValueException;
+import net.edudb.response.Response;
 import net.edudb.server.ServerWriter;
 import net.edudb.statistics.Schema;
 import net.edudb.structure.Column;
@@ -52,14 +54,14 @@ public class CopyExecutor implements ConsoleExecutorChain {
 	}
 
 	@Override
-	public void execute(String string) {
+	public Response execute(String string) {
 		if (string.toLowerCase().startsWith("copy")) {
 			Matcher matcher = Utility.getMatcher(string, regex);
 			if (matcher.matches()) {
 				String tableName = matcher.group(1);
 				if (!Schema.getInstance().chekTableExists(tableName)) {
-					ServerWriter.getInstance().writeln("Table '" + tableName + "' is not available.");
-					return;
+					//ServerWriter.getInstance().writeln("Table '" + tableName + "' is not available.");
+					return new Response("Table '" + tableName + "' is not available.");
 				}
 				Table table = TableManager.getInstance().read(tableName);
 				ArrayList<Column> columns = Schema.getInstance().getColumns(tableName);
@@ -84,24 +86,32 @@ public class CopyExecutor implements ConsoleExecutorChain {
 						int size = values.length;
 						for (int j = 0; j < size; j++) {
 							Column column = columns.get(j);
-							data.put(column, typeFactory.makeType(column.getTypeName(), values[j]));
+							try {
+								data.put(column, typeFactory.makeType(column.getTypeName(), values[j]));
+							} catch (InvalidTypeValueException e) {
+								ServerWriter.getInstance().write(new Response(e.getMessage()));
+								e.printStackTrace();
+							}
+
 						}
 
 						Record record = new TableRecord(data);
 						table.addRecord(record);
 						++count;
 					}
-					ServerWriter.getInstance().writeln("Copied '" + count + "' records");
+					//ServerWriter.getInstance().writeln("Copied '" + count + "' records");
+					return new Response("Copied '" + count + "' records");
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			} else {
-				ServerWriter.getInstance().writeln("Unknown command 'copy'");
+				//ServerWriter.getInstance().writeln("Unknown command 'copy'");
+				return new Response("Unknown command 'copy'");
 			}
 
-			return;
+			//return;
 		}
-		nextElement.execute(string);
+		return nextElement.execute(string);
 	}
 
 }

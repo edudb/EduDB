@@ -83,6 +83,8 @@ public class BufferManager {
 		for (Page page : pageBuffer.values()) {
 			this.writeToDisk(page);
 		}
+
+		pageBuffer.clear();
 	}
 
 	/**

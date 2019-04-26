@@ -10,9 +10,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.client;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import net.edudb.response.Response;
 
 /**
  * 
@@ -29,36 +29,66 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) {
-		ByteBuf in = (ByteBuf) msg;
-		String s = "";
-		try {
-			while (in.isReadable()) {
-				s += (char) in.readByte();
+		System.out.println("response arrived");
+		if (msg instanceof Response) {
+			System.out.println("Object");
+			Response response = (Response) msg;
+			//System.out.println(response.getMessage());
+			if (response.getMessage().equals("relation")) {
+				//System.out.println("test");
+				if (response.getRecords() != null)
+					System.out.println(response.getRecords().toString());
+			}
+			else {
+				//System.out.println("test2");
+				System.out.println(response.getMessage());
 			}
 
+			Client.getInstance().setConnected(true);
 			ClientWriter.getInstance().setContext(ctx);
-			if (s.contains("[edudb::init]")) {
-				Client.getInstance().setConnected(true);
-			} else if (s.contains("[edudb::mismatch]")) {
-				System.out.println("Wrong username and/or password\nExiting...");
-				exit();
-			} else if (s.contains("[edudb::exit]")) {
-				System.out.println("The server went away");
-				exit();
-			} else if (s.contains("[edudb::endofstring]")) {
-				s = s.replace("[edudb::endofstring]\r\n", "");
-
-				if (s.length() > 0) {
-					System.out.print(s);
-				}
-				setReceiving(false);
-			} else {
-				System.out.print(s);
-			}
-
-		} finally {
-			in.release();
+			setReceiving(false);
 		}
+		else {
+			System.out.println("object");
+			String response = (String) msg;
+			System.out.println(response);
+			Client.getInstance().setConnected(true);
+			ClientWriter.getInstance().setContext(ctx);
+			setReceiving(false);
+		}
+
+//		ByteBuf in = (ByteBuf) msg;
+//		String s = "";
+//		try {
+//			while (in.isReadable()) {
+//				s += (char) in.readByte();
+//			}
+//
+//			System.out.println("message from server");
+//			System.out.println(s);
+//			ClientWriter.getInstance().setContext(ctx);
+//			if (s.contains("[edudb::init]")) {
+//				Client.getInstance().setConnected(true);
+//			} else if (s.contains("[edudb::mismatch]")) {
+//				System.out.println("Wrong username and/or password\nExiting...");
+//				exit();
+//			} else if (s.contains("[edudb::exit]")) {
+//				System.out.println("The server went away");
+//				exit();
+//			} else if (s.contains("[edudb::endofstring]")) {
+//				s = s.replace("[edudb::endofstring]\r\n", "");
+//
+//				if (s.length() > 0) {
+//					//System.out.print(s);
+//				}
+//				setReceiving(false);
+//			} else {
+//				//System.out.print(s);
+//			}
+//
+//		} finally {
+//			in.release();
+//		}
 	}
 
 	@Override

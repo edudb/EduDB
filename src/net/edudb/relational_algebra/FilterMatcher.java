@@ -125,6 +125,7 @@ public class FilterMatcher implements RAMatcherChain {
 	 * @return The created expression.
 	 */
 	private Expression getConstantExpression(Matcher matcher) {
+		System.out.println("constant " + matcher.group());
 		int order = Integer.parseInt(matcher.group(1));
 
 		Column column = new Column(order);
@@ -144,6 +145,7 @@ public class FilterMatcher implements RAMatcherChain {
 	 * @return The created expression.
 	 */
 	private Expression getColumnExpression(Matcher matcher) {
+		System.out.println("column " + matcher.group());
 		int leftOrder = Integer.parseInt(matcher.group(1));
 		int rightOrder = Integer.parseInt(matcher.group(3));
 
@@ -189,6 +191,7 @@ public class FilterMatcher implements RAMatcherChain {
 	 * @return The logical operator created.
 	 */
 	private LogicalOperator getLogicalOperator(Matcher matcher) {
+		System.out.println("binary " + matcher.group());
 		Matcher leftExpression = Utility.getMatcher(matcher.group(2), capturedConstantExpr);
 		Matcher leftColumnExpression = Utility.getMatcher(matcher.group(2), capturedColumnExpr);
 		Matcher leftBinaryExpression = Utility.getMatcher(matcher.group(2), capturedBinaryExpr);

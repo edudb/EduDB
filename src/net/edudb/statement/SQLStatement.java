@@ -10,6 +10,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.statement;
 
+import net.edudb.distributed_operator.parameter.DistributedOperatorParameter;
 import net.edudb.operator.parameter.OperatorParameter;
 
 /**
@@ -18,7 +19,7 @@ import net.edudb.operator.parameter.OperatorParameter;
  * @author Ahmed Abdul Badie
  *
  */
-public abstract class SQLStatement implements OperatorParameter {
+public abstract class SQLStatement implements OperatorParameter, DistributedOperatorParameter {
 
 	/**
 	 * 

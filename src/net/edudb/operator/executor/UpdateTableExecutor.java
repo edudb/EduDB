@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import net.edudb.data_type.DataType;
 import net.edudb.data_type.DataTypeFactory;
+import net.edudb.exception.InvalidTypeValueException;
 import net.edudb.expression.BinaryExpressionTree;
 import net.edudb.expression.ExpressionTree;
 import net.edudb.operator.Operator;
@@ -22,6 +23,8 @@ import net.edudb.operator.UpdateTableOperator;
 import net.edudb.operator.parameter.UpdateTableOperatorParameter;
 import net.edudb.relation.Relation;
 import net.edudb.relation.RelationIterator;
+import net.edudb.response.Response;
+import net.edudb.server.ServerWriter;
 import net.edudb.statistics.Schema;
 import net.edudb.structure.Column;
 import net.edudb.structure.Record;
@@ -57,7 +60,13 @@ public class UpdateTableExecutor extends PostOrderOperatorExecutor implements Op
 				String columnName = column.getName();
 				String assignmentValue = assignments.get(columnName);
 				if (assignments.get(columnName) != null) {
-					data.put(column, typeFactory.makeType(column.getTypeName(), assignmentValue));
+					try {
+						data.put(column, typeFactory.makeType(column.getTypeName(), assignmentValue));
+					} catch (InvalidTypeValueException e) {
+						ServerWriter.getInstance().write(new Response(e.getMessage()));
+						e.printStackTrace();
+					}
+
 				}
 			}
 

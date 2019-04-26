@@ -14,6 +14,12 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.ReferenceCountUtil;
+import net.edudb.engine.Utility;
+import net.edudb.relation.Relation;
+import net.edudb.request.Request;
+import net.edudb.response.Response;
+
+import java.util.regex.Matcher;
 
 /**
  * 
@@ -24,21 +30,41 @@ import io.netty.util.ReferenceCountUtil;
  */
 public class ServerHandler extends ChannelInboundHandlerAdapter {
 
+	/**
+	 * This regex is used is to extract the message id from the incoming
+	 * message.
+	 */
+	private String regex = "(\\[id::(.+?)\\])";
+
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) {
-		ByteBuf in = (ByteBuf) msg;
+		System.out.println("inside server channel read");
 
-		String s = "";
+		Request request = (Request)msg;
+		String s = request.getCommand();
 		try {
-			while (in.isReadable()) {
-				s += (char) in.readByte();
-			}
+
+			System.out.println("Incoming string " + s);
+			Matcher matcher = Utility.getMatcher(s, regex);
+
+			String messageID = "";
+
+			if (request.getId() != null
+				&& !request.getId().equals(""))
+				messageID = request.getId();
 
 			ServerWriter.getInstance().setContext(ctx);
 
-			Server.getExecutionChain().execute(s);
+			Response response = Server.getExecutionChain().execute(s);
 
-			ServerWriter.getInstance().writeln("[edudb::endofstring]");
+			response.setId(messageID);
+			//Response response = new Response(result, null, null);
+			//System.out.println(response.getMessage());
+//			if (response.getMessage().equals("relation"))
+//				System.out.println(Relation.toString(response.getRelation()));
+
+			ServerWriter.getInstance().write(response);
+			//ServerWriter.getInstance().writeln("[edudb::endofstring]");
 
 		} finally {
 			ReferenceCountUtil.release(msg);

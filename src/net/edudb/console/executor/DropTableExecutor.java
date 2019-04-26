@@ -12,6 +12,7 @@ package net.edudb.console.executor;
 
 import java.util.regex.Matcher;
 import net.edudb.engine.Utility;
+import net.edudb.response.Response;
 import net.edudb.server.ServerWriter;
 import net.edudb.statistics.Schema;
 import net.edudb.structure.table.Table;
@@ -40,25 +41,25 @@ public class DropTableExecutor implements ConsoleExecutorChain {
 	}
 
 	@Override
-	public void execute(String string) {
+	public Response execute(String string) {
 		if (string.toLowerCase().startsWith("drop")) {
 			Matcher matcher = Utility.getMatcher(string, regex);
 			if (matcher.matches()) {
 				String tableName = matcher.group(1);
 				if (!Schema.getInstance().chekTableExists(tableName)) {
-					ServerWriter.getInstance().writeln("Table '" + tableName + "' does not exist");
-					return;
+					//ServerWriter.getInstance().writeln("Table '" + tableName + "' does not exist");
+					return new Response("Table '" + tableName + "' does not exist");
 				}
 
 				Table table = TableManager.getInstance().read(tableName);
 				TableManager.getInstance().delete(table);
 
-				ServerWriter.getInstance().writeln("Dropped table '" + tableName + "'");
+				//ServerWriter.getInstance().writeln("Dropped table '" + tableName + "'");
 
-				return;
+				return new Response("Dropped table '" + tableName + "'");
 			}
 		}
-		nextElement.execute(string);
+		return nextElement.execute(string);
 	}
 
 }
