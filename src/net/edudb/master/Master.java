@@ -77,6 +77,7 @@ public class Master {
         MasterExecutorChain viewWorkers = new ViewWorkersExecutor();
         MasterExecutorChain viewShards = new ViewShardsExecutor();
         MasterExecutorChain showColumns = new ShowColumnsExecutor();
+        MasterExecutorChain dropTable = new DropTableExecutor();
         MasterExecutorChain sqlExecutor = new SQLExecutor();
 
         return connectChain(new MasterExecutorChain[] {
@@ -92,6 +93,7 @@ public class Master {
                 viewWorkers,
                 viewShards,
                 showColumns,
+                dropTable,
                 sqlExecutor
         });
     }

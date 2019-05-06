@@ -177,7 +177,7 @@ public class MetaManager implements MetaDAO, Runnable {
 
     private void createShardsTable() {
 
-        forwardCommand("create table shards (host Varchar, port Integer, table Varchar, id Integer, min_value Varchar, max_value Varchar)");
+        forwardCommand("create table shards (host Varchar, port Integer, table_name Varchar, id Integer, min_value Varchar, max_value Varchar)");
     }
 
     public ArrayList<Record> getAll(String tableName) {
@@ -211,11 +211,19 @@ public class MetaManager implements MetaDAO, Runnable {
 
     }
 
+    public void deleteTable(String tableName) {
+        forwardCommand("delete from tables where name = '" + tableName + "'");
+    }
+
     public void writeShard(String host, int port, String table, int id, String minValue, String maxValue) {
         forwardCommand("insert into shards values ('" + host + "', " + port + ", '" + table + "', " + id + ", '"
                 + minValue + "', '" + maxValue + "')");
         MetadataBuffer.getInstance().getShards().clear();
         MasterWriter.getInstance().write(new Response("Shard created"));
+    }
+
+    public void deleteShards(String tableName) {
+        forwardCommand("delete from shards where table_name = '" + tableName + "'");
     }
 
     public void writeWorker(String host, int port) {

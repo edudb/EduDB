@@ -138,7 +138,7 @@ public class CreateShardExecutor implements MasterExecutorChain {
                          * making sure that new shard does not overlap with an existing shard
                          */
                         for (Hashtable<String, DataType> shard: shards.values()) {
-                            if (((VarCharType)shard.get("table")).getString().equals(tableName)) {
+                            if (((VarCharType)shard.get("table_name")).getString().equals(tableName)) {
 
                                 DataType currentShardMin = null;
                                 DataType currentShardMax = null;

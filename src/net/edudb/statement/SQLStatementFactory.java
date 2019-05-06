@@ -29,19 +29,20 @@ public class SQLStatementFactory {
 	 *         SQL statements.
 	 */
 	public SQLStatement makeSQLStatement(TCustomSqlStatement tCustomSqlStatement) {
+		System.out.println(tCustomSqlStatement.sqlstatementtype);
 		switch (tCustomSqlStatement.sqlstatementtype) {
-		case sstcreatetable:
-			return new SQLCreateTableStatement(tCustomSqlStatement);
-		case sstdelete:
-			return new SQLDeleteStatement(tCustomSqlStatement);
-		case sstinsert:
-			return new SQLInsertStatement(tCustomSqlStatement);
-		case sstselect:
-			return new SQLSelectStatement(tCustomSqlStatement);
-		case sstupdate:
-			return new SQLUpdateStatement(tCustomSqlStatement);
-		default:
-			return null;
+			case sstcreatetable:
+				return new SQLCreateTableStatement(tCustomSqlStatement);
+			case sstdelete:
+				return new SQLDeleteStatement(tCustomSqlStatement);
+			case sstinsert:
+				return new SQLInsertStatement(tCustomSqlStatement);
+			case sstselect:
+				return new SQLSelectStatement(tCustomSqlStatement);
+			case sstupdate:
+				return new SQLUpdateStatement(tCustomSqlStatement);
+			default:
+				return null;
 		}
 	}
 }

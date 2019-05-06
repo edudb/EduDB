@@ -93,7 +93,7 @@ public class SelectPlan extends DistributedPlan {
             Hashtable<String, ArrayList<Hashtable<String, DataType>>> shards  = new Hashtable<>();
 
             for (Hashtable<String, DataType> shard: MetadataBuffer.getInstance().getShards().values()) {
-                if (!shard.get("table").toString().equals(tableName))
+                if (!shard.get("table_name").toString().equals(tableName))
                     continue;
 
                 if (table.get("distribution_method").toString().equals("sharding")) {

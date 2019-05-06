@@ -51,7 +51,7 @@ public class ViewShardsExecutor implements MasterExecutorChain {
                                 "-----------------------------------------------------------------------------" + "\r\n";
 
                 for (Hashtable<String, DataType> shard: MetadataBuffer.getInstance().getShards().values()) {
-                    if (shard.get("table").toString().equals(tableName)) {
+                    if (shard.get("table_name").toString().equals(tableName)) {
 
                         String address = shard.get("host").toString() + ":" + shard.get("port").toString();
                         shardsTable += "| " + address;
