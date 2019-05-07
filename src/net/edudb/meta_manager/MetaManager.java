@@ -154,6 +154,10 @@ public class MetaManager implements MetaDAO, Runnable {
         }
     }
 
+    public void dropDatabase(String databaseName) {
+        forwardCommand("drop database " + databaseName);
+    }
+
     /**
      * This method is responsible for creating all the metadata
      * tables, once a new database is created
