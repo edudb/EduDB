@@ -31,7 +31,7 @@ import java.util.regex.Matcher;
 public class ShardTableExecutor implements MasterExecutorChain {
 
     private MasterExecutorChain nextElement;
-    private String regex = "shard table \\((\\w+), (\\w+)\\)";
+    private String regex = "\\A(?:(?i)shard)\\s+(?:(?i)table)\\s+\\((\\w+), (\\w+)\\)\\s*;?\\z";
 
     @Override
     public void setNextElementInChain(MasterExecutorChain chainElement) {
@@ -39,7 +39,7 @@ public class ShardTableExecutor implements MasterExecutorChain {
     }
 
     public void execute(String string) {
-        if (string.startsWith("shard table")) {
+        if (string.toLowerCase().startsWith("shard table")) {
             Matcher matcher = Utility.getMatcher(string, regex);
             if (matcher.matches()) {
                 String tableName = matcher.group(1);

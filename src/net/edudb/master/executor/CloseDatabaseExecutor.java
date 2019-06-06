@@ -27,7 +27,7 @@ public class CloseDatabaseExecutor implements MasterExecutorChain {
 
     private MasterExecutorChain nextElement;
 
-    private String regex = "close\\s+database";
+    private String regex = "\\A(?:(?i)close)\\s+(?:(?i)database)\\s*;?\\z";
 
     @Override
     public void setNextElementInChain(MasterExecutorChain chainElement) {

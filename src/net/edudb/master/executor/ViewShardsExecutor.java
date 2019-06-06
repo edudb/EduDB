@@ -27,7 +27,7 @@ import java.util.regex.Matcher;
 public class ViewShardsExecutor implements MasterExecutorChain {
 
     private MasterExecutorChain nextElement;
-    private String regex = "view shards (\\w+)";
+    private String regex = "\\A(?:(?i)show)\\s+(?:(?i)shards)\\s+(?:(?i)from)\\s+(\\w+)\\s*;?\\z";
 
     @Override
     public void setNextElementInChain(MasterExecutorChain chainElement) {
@@ -36,7 +36,7 @@ public class ViewShardsExecutor implements MasterExecutorChain {
 
     @Override
     public void execute(String s) {
-        if (s.toLowerCase().startsWith("view shards")) {
+        if (s.toLowerCase().startsWith("show shards")) {
             Matcher matcher = Utility.getMatcher(s, regex);
             if (matcher.matches()) {
                 String tableName = matcher.group(1);

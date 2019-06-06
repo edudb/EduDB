@@ -72,9 +72,11 @@ public class InsertPlan extends DistributedPlan {
             return null;
         }
 
+        System.out.println(statement.toString());
         for (int i = 0; i < metadataArray.length; i+=2) {
             DataType value = null;
             try {
+                System.out.println(values.get(i/2));
                 value = dataTypeFactory.makeType(metadataArray[i+1], values.get(i/2));
             } catch (InvalidTypeValueException e) {
                 MasterWriter.getInstance().write(new Response(e.getMessage()));

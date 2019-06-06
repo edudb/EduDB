@@ -30,7 +30,7 @@ import java.util.regex.Matcher;
 public class ReplicateTableExecutor implements MasterExecutorChain {
 
     private MasterExecutorChain nextElement;
-    private String regex = "replicate table (\\w+)";
+    private String regex = "\\A(?:(?i)replicate)\\s+(?:(?i)table)\\s+(\\w+)\\s*;?\\z";
 
     @Override
     public void setNextElementInChain(MasterExecutorChain chainElement) {
@@ -38,7 +38,7 @@ public class ReplicateTableExecutor implements MasterExecutorChain {
     }
 
     public void execute(String string) {
-        if (string.startsWith("replicate")) {
+        if (string.toLowerCase().startsWith("replicate")) {
             Matcher matcher = Utility.getMatcher(string, regex);
             if (matcher.matches()) {
                 String tableName  = matcher.group(1);

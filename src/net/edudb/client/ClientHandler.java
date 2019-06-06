@@ -13,6 +13,7 @@ package net.edudb.client;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import net.edudb.response.Response;
+import net.edudb.structure.Record;
 
 /**
  * 
@@ -29,15 +30,15 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) {
-		System.out.println("response arrived");
 		if (msg instanceof Response) {
-			System.out.println("Object");
 			Response response = (Response) msg;
 			//System.out.println(response.getMessage());
 			if (response.getMessage().equals("relation")) {
 				//System.out.println("test");
-				if (response.getRecords() != null)
-					System.out.println(response.getRecords().toString());
+				if (response.getRecords() != null) {
+					for (Record record : response.getRecords())
+						System.out.println(record.toString());
+				}
 			}
 			else {
 				//System.out.println("test2");
@@ -49,7 +50,6 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			setReceiving(false);
 		}
 		else {
-			System.out.println("object");
 			String response = (String) msg;
 			System.out.println(response);
 			Client.getInstance().setConnected(true);

@@ -81,7 +81,7 @@ public class InsertExecutor implements OperatorExecutionChain {
                 index = (index + 1) % responses.length;
             }
 
-            MasterWriter.getInstance().write(new Response("relation", responses[0].getRecords(), ""));
+            MasterWriter.getInstance().write(new Response("Insertion complete", null, ""));
 
         }
         else {

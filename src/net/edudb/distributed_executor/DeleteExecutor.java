@@ -80,7 +80,7 @@ public class DeleteExecutor implements OperatorExecutionChain {
                 index = (index + 1) % responses.length;
             }
 
-            MasterWriter.getInstance().write(new Response("relation", responses[0].getRecords(), ""));
+            MasterWriter.getInstance().write(new Response("Deletions complete", null, ""));
         }
         else {
             next.execute(operator);
