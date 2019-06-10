@@ -30,9 +30,9 @@ public class WorkerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        System.out.println("response arrived");
+//        System.out.println("response arrived");
         if (msg instanceof Response) {
-            System.out.println("response is an object");
+//            System.out.println("response is an object");
             Response response = (Response)msg;
             listener.onResponseArrival(ctx, response);
         }

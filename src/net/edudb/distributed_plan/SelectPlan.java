@@ -14,11 +14,15 @@ import net.edudb.condition.Condition;
 import net.edudb.condition.NullCondition;
 import net.edudb.data_type.DataType;
 import net.edudb.data_type.DataTypeFactory;
+import net.edudb.distributed_operator.JoinOperator;
 import net.edudb.distributed_operator.SelectOperator;
+import net.edudb.distributed_operator.parameter.JoinOperatorParameter;
 import net.edudb.distributed_operator.parameter.SelectOperatorParameter;
 import net.edudb.distributed_query.QueryNode;
 import net.edudb.distributed_query.QueryTree;
 import net.edudb.exception.InvalidTypeValueException;
+import net.edudb.join_request.JoinRequest;
+import net.edudb.join_request.LocalJoinRequest;
 import net.edudb.master.MasterWriter;
 import net.edudb.metadata_buffer.MetadataBuffer;
 import net.edudb.response.Response;
@@ -46,14 +50,93 @@ public class SelectPlan extends DistributedPlan {
         if (ra == null)
             return null;
 
+        System.out.println(ra);
         /**
-         * if the select is from a single table then it is far more simple.
-         * we only need to forward the command as is to the necessary shard.
+         * if the select is from a single table then it is fairly simple.
+         * we only need to forward the command as is to the necessary shards.
          *
          * Joins are far far more complicated
          */
         if (ra.contains("EqJoin")) {
-            MasterWriter.getInstance().write(new Response("Joins are not yet supported :("));
+            String[] tableNames = translator.getTableNames(ra);
+
+            if (tableNames == null || tableNames[0] == null || tableNames[1] == null) {
+                MasterWriter.getInstance().write(new Response("A problem occurred"));
+                return null;
+            }
+
+            Hashtable<String, DataType> leftTable = MetadataBuffer.getInstance().getTables().get(tableNames[0]);
+            String leftDistributionMethod = leftTable.get("distribution_method").toString();
+
+            Hashtable<String, DataType> rightTable = MetadataBuffer.getInstance().getTables().get(tableNames[1]);
+            String rightDistributionMethod = rightTable.get("distribution_method").toString();
+
+            if (leftDistributionMethod.equals("null") || rightDistributionMethod.equals("null")) {
+                MasterWriter.getInstance().write("The distribution has not been set for all the tables");
+                return null;
+            }
+
+            String leftTableMetaData = leftTable.get("metadata").toString();
+            String rightTableMetaData = rightTable.get("metadata").toString();
+
+            if (!translator.checkJoinConditionValidity(leftTableMetaData, rightTableMetaData, ra)) {
+                MasterWriter.getInstance().write("The column types in the join condition do not match");
+                return null;
+            }
+
+            Hashtable<String, Hashtable<String, DataType>> leftShards = new Hashtable<>();
+            Hashtable<String, Hashtable<String, DataType>> rightShards = new Hashtable<>();
+
+            ArrayList<JoinRequest> joinRequests = new ArrayList<>();
+
+            if (leftDistributionMethod.equals("replication") && rightDistributionMethod.equals("replication")) {
+                for (Hashtable<String, DataType> shard: MetadataBuffer.getInstance().getShards().values()) {
+
+                    String shardTable = shard.get("table_name").toString();
+                    String shardAddress = shard.get("host").toString() + shard.get("port").toString()
+                            + shard.get("minimum_value") + shard.get("maximum_value");
+
+                    if (shardTable.equals(leftTable.get("name").toString())) {
+                        if (leftShards.get(shardAddress) == null) {
+                            leftShards.put(shardAddress, shard);
+                        }
+
+                        if (rightShards.get(shardAddress) != null) {
+                            joinRequests.add(new LocalJoinRequest(leftShards.get(shardAddress), rightShards.get(shardAddress)));
+                            break;
+                        }
+
+                    }
+                    else if (shardTable.equals(rightTable.get("name").toString())) {
+                        if (rightShards.get(shardAddress) == null) {
+                            rightShards.put(shardAddress, shard);
+                        }
+
+                        if (leftShards.get(shardAddress) != null) {
+                            joinRequests.add(new LocalJoinRequest(leftShards.get(shardAddress), rightShards.get(shardAddress)));
+                            break;
+                        }
+                    }
+                }
+            }
+
+
+            if (joinRequests.size() >= 1) {
+                JoinOperatorParameter parameter = new JoinOperatorParameter(statement, joinRequests);
+                JoinOperator operator = new JoinOperator();
+                operator.setParameter(parameter);
+
+                QueryTree tree = new QueryTree((QueryNode)operator);
+
+                return tree;
+            }
+
+            MasterWriter.getInstance().write(new Response("Currently only joins between replicated tables are supported."));
+            return null;
+        }
+        else if (ra.contains("GenJoin")) {
+            MasterWriter.getInstance().write(new Response("Currently only joins of the format 'SELECT [column list] "
+            + "FROM table1 t1 INNER JOIN table2 t2 ON t.column = t2.column' are supported."));
             return null;
         }
         else {

@@ -8,36 +8,20 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.edudb.distributed_executor;
+package net.edudb.join_request;
 
-import net.edudb.distributed_operator.CreateTableOperator;
+import net.edudb.data_type.DataType;
+
+import java.util.Hashtable;
 
 /**
- * Executes a query tree in a post-order strategy. If a tree node is not a leaf,
- * its left child is executed before its right child. This approach is achieved
- * recursively.
+ * A join operation where all the data is available at one node
  *
- * @author Fady `Sameh
- *
+ * @author Fady Sameh
  */
-public class PostOrderOperatorExecutor {
+public class LocalJoinRequest extends JoinRequest{
 
-    public OperatorExecutionChain getChain() {
-        OperatorExecutionChain createTable = new CreateTableExecutor();
-        OperatorExecutionChain insert = new InsertExecutor();
-        OperatorExecutionChain delete = new DeleteExecutor();
-        OperatorExecutionChain update = new UpdateExecutor();
-        OperatorExecutionChain select = new SelectExecutor();
-        OperatorExecutionChain join = new JoinExecutor();
-
-        return OperatorExecutionChain.connnectChain(new OperatorExecutionChain[]{
-                createTable,
-                insert,
-                delete,
-                update,
-                select,
-                join
-        });
+    public LocalJoinRequest(Hashtable<String, DataType> leftShard, Hashtable<String, DataType> rightShard) {
+        super(leftShard, rightShard);
     }
-
 }

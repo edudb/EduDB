@@ -243,9 +243,9 @@ public class MetaManager implements MetaDAO, Runnable {
      * The command to be sent to the meta database
      */
     public Response forwardCommand(String command) {
-        System.out.println("inside forward command");
-        System.out.println(command);
-        System.out.println("------------------");
+//        System.out.println("inside forward command");
+//        System.out.println(command);
+//        System.out.println("------------------");
         String id = Utility.generateUUID();
         Request request = new Request(id, command);
         MetaWriter.getInstance().write(request);
@@ -255,9 +255,9 @@ public class MetaManager implements MetaDAO, Runnable {
          */
         while (pendingRequests.get(id) == null);
 
-        System.out.println("Response arrived at forwardCommand");
-        System.out.println(pendingRequests.get(id).getMessage());
-        System.out.println(pendingRequests.get(id).getRecords());
+//        System.out.println("Response arrived at forwardCommand");
+//        System.out.println(pendingRequests.get(id).getMessage());
+//        System.out.println(pendingRequests.get(id).getRecords());
 
         return pendingRequests.remove(id);
     }

@@ -153,7 +153,7 @@ public class WorkerManager implements Runnable, HandlerListener, WorkerDAO {
 //        System.out.println(response.getId());
 //        System.out.println(response.getMessage());
 
-        System.out.println("context " +ctx);
+        //System.out.println("context " +ctx);
 
 
         if (response.getId() != null
