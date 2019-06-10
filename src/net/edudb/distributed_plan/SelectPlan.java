@@ -84,17 +84,24 @@ public class SelectPlan extends DistributedPlan {
                 return null;
             }
 
-            Hashtable<String, Hashtable<String, DataType>> leftShards = new Hashtable<>();
-            Hashtable<String, Hashtable<String, DataType>> rightShards = new Hashtable<>();
-
             ArrayList<JoinRequest> joinRequests = new ArrayList<>();
 
+
             if (leftDistributionMethod.equals("replication") && rightDistributionMethod.equals("replication")) {
+                /**
+                 * If both tables are replicated, we need to find a worker that contains a replica of both tables
+                 *
+                 * In the future, if no worker contains a replica of both tables, we should send a new type of statement
+                 * that forces a worker to request the necessary data to complete the join, from another worker.
+                 */
+
+                Hashtable<String, Hashtable<String, DataType>> leftShards = new Hashtable<>();
+                Hashtable<String, Hashtable<String, DataType>> rightShards = new Hashtable<>();
+
                 for (Hashtable<String, DataType> shard: MetadataBuffer.getInstance().getShards().values()) {
 
                     String shardTable = shard.get("table_name").toString();
-                    String shardAddress = shard.get("host").toString() + shard.get("port").toString()
-                            + shard.get("minimum_value") + shard.get("maximum_value");
+                    String shardAddress = shard.get("host").toString() + shard.get("port").toString();
 
                     if (shardTable.equals(leftTable.get("name").toString())) {
                         if (leftShards.get(shardAddress) == null) {
@@ -119,6 +126,83 @@ public class SelectPlan extends DistributedPlan {
                     }
                 }
             }
+            else if (leftDistributionMethod.equals("sharding") && rightDistributionMethod.equals("sharding")) {
+                /**
+                 * Both tables are sharded.
+                 * Currently unsupported.
+                 * The only way this join would be cost effective is if both tables are distributed in the exact same way.
+                 * Otherwise the cost will be huge.
+                 */
+            }
+            else {
+                /**
+                 * One table is sharded, the other is replicated.
+                 *
+                 * We need to perform a join operation for each shard of the sharded table with a local replica of the
+                 * replicated table.
+                 * In the future, if a replica of the replicated table is not available at one of the workers, the worker
+                 * should request it from another worker.
+                 */
+                String shardedTableName = (leftDistributionMethod.equals("sharding")) ? leftTable.get("name").toString()
+                        : rightTable.get("name").toString();
+                String replicatedTableName = (!leftDistributionMethod.equals("sharding")) ? leftTable.get("name").toString()
+                        : rightTable.get("name").toString();
+                boolean isReplicatedLeft = leftDistributionMethod.equals("replication");
+
+                Hashtable<String, Hashtable<String, DataType>> replicatedTableShards = new Hashtable<>();
+                Hashtable<String, ArrayList<Hashtable<String, DataType>>> shardedTableShards = new Hashtable<>();
+
+                /**
+                 * Getting all the shards from both tables
+                 */
+                for (Hashtable<String, DataType> shard: MetadataBuffer.getInstance().getShards().values()) {
+                    String shardTableName = shard.get("table_name").toString();
+
+                    if (shardTableName.equals(replicatedTableName)) {
+                        String shardAddress = shard.get("host").toString() + shard.get("port").toString();
+                        replicatedTableShards.put(shardAddress, shard);
+                    }
+                    else if (shardTableName.equals(shardedTableName)) {
+                        String shardMinimumValue = shard.get("min_value").toString();
+
+                        if (shardedTableShards.get(shardMinimumValue) == null)
+                            shardedTableShards.put(shardMinimumValue, new ArrayList<>());
+
+                        shardedTableShards.get(shardMinimumValue).add(shard);
+                    }
+                }
+
+                /**
+                 * We have to pair one replica from each shard of the sharded table with a local replica of the replicated
+                 * table
+                 */
+                for (ArrayList<Hashtable<String, DataType>> shardReplicas: shardedTableShards.values()) {
+                    boolean pairingCompleted = false;
+                    for (Hashtable<String, DataType> shard: shardReplicas) {
+                        String shardAddress = shard.get("host").toString() + shard.get("port").toString();
+
+                        Hashtable<String, DataType> replicateTableShard = replicatedTableShards.get(shardAddress);
+                        if (replicateTableShard != null) {
+
+                            if (isReplicatedLeft)
+                                joinRequests.add(new LocalJoinRequest(replicateTableShard, shard));
+                            else
+                                joinRequests.add(new LocalJoinRequest(shard, replicateTableShard));
+
+                            pairingCompleted = true;
+                            break;
+                        }
+                    }
+
+                    if (!pairingCompleted) {
+                        MasterWriter.getInstance().write(new Response("Not enough replicas of '" + replicatedTableName
+                        + "' to complete join."));
+                        return null;
+                    }
+                }
+
+
+            }
 
 
             if (joinRequests.size() >= 1) {
@@ -139,6 +223,9 @@ public class SelectPlan extends DistributedPlan {
             + "FROM table1 t1 INNER JOIN table2 t2 ON t.column = t2.column' are supported."));
             return null;
         }
+        /**
+         * Select from a single table.
+         */
         else {
             String tableName = translator.getTableName(ra);
 
