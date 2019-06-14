@@ -42,7 +42,8 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			}
 			else {
 				//System.out.println("test2");
-				System.out.println(response.getMessage());
+				if (!response.getMessage().equals("[edudb::init]"))
+					System.out.println(response.getMessage());
 			}
 
 			Client.getInstance().setConnected(true);
