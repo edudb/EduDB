@@ -108,6 +108,10 @@ public class WorkerManager implements Runnable, HandlerListener, WorkerDAO {
         forwardCommand("close database");
     }
 
+    public Response dropDatabase(String databaseName) {
+        return forwardCommand("drop database " + databaseName);
+    }
+
     public void createTable(String tableName, String metadata) {
         String command = "create table " + tableName + " (";
         String[] metadataArgs = metadata.split(" ");
@@ -149,7 +153,7 @@ public class WorkerManager implements Runnable, HandlerListener, WorkerDAO {
 //        System.out.println(response.getId());
 //        System.out.println(response.getMessage());
 
-        System.out.println("context " +ctx);
+        //System.out.println("context " +ctx);
 
 
         if (response.getId() != null

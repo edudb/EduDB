@@ -10,8 +10,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.master.executor;
 
+import net.edudb.engine.Utility;
 import net.edudb.metadata_buffer.MetadataBuffer;
 import net.edudb.workers_manager.WorkersManager;
+
+import java.util.regex.Matcher;
 
 /**
  * Connects all the registered workers
@@ -27,16 +30,21 @@ public class ConnectWorkersExecutor implements MasterExecutorChain {
         this.nextElement = chainElement;
     }
 
+    private String regex = "\\A(?:(?i)connect)\\s+(?:(?i)workers)\\s*;?\\z";
+
     @Override
     public void execute(String s) {
-        if (s.toLowerCase().equals("connect workers")) {
-            System.out.println("entered connect workers executor");
-            for (String workerIdentifier: MetadataBuffer.getInstance().getWorkers().keySet()) {
-                String[] workerArgs = workerIdentifier.split(":");
-                String host = workerArgs[0];
-                int port = Integer.parseInt(workerArgs[1]);
-                System.out.println("attempting to connect to " + host +":" + port);
-                WorkersManager.getInstance().connect(host, port);
+        if (s.toLowerCase().startsWith("connect workers")) {
+            Matcher matcher = Utility.getMatcher(s, regex);
+            if (matcher.matches()) {
+                System.out.println("entered connect workers executor");
+                for (String workerIdentifier : MetadataBuffer.getInstance().getWorkers().keySet()) {
+                    String[] workerArgs = workerIdentifier.split(":");
+                    String host = workerArgs[0];
+                    int port = Integer.parseInt(workerArgs[1]);
+                    System.out.println("attempting to connect to " + host + ":" + port);
+                    WorkersManager.getInstance().connect(host, port);
+                }
             }
         }
         else {

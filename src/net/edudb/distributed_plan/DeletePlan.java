@@ -95,7 +95,7 @@ public class DeletePlan extends DistributedPlan {
         ArrayList<Hashtable<String, DataType>> shards  = new ArrayList<>(); // shards we should forward the command to
 
         for (Hashtable<String, DataType> shard: MetadataBuffer.getInstance().getShards().values()) {
-            if (!shard.get("table").toString().equals(tableName))
+            if (!shard.get("table_name").toString().equals(tableName))
                 continue;
 
             if (table.get("distribution_method").toString().equals("sharding")) {
@@ -125,12 +125,6 @@ public class DeletePlan extends DistributedPlan {
             shards.add(shard);
         }
 
-
-        for (Hashtable<String, DataType> shard: shards) {
-            System.out.print(shard.get("table").toString() + " ");
-            System.out.print(shard.get("min_value").toString() + " ");
-            System.out.println(shard.get("max_value").toString());
-        }
 
         DeleteOperator operator = new DeleteOperator();
         DeleteOperatorParameter parameter = new DeleteOperatorParameter(statement, shards);

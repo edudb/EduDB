@@ -80,7 +80,7 @@ public class UpdateExecutor implements OperatorExecutionChain {
                 index = (index + 1) % responses.length;
             }
 
-            MasterWriter.getInstance().write(new Response("relation", responses[0].getRecords(), ""));
+            MasterWriter.getInstance().write(new Response("Updates complete", null, ""));
         }
         else {
             next.execute(operator);

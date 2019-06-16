@@ -10,6 +10,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.master.executor;
 
+import net.edudb.engine.Utility;
 import net.edudb.master.MasterWriter;
 import net.edudb.metadata_buffer.MetadataBuffer;
 import net.edudb.response.Response;
@@ -18,6 +19,7 @@ import net.edudb.worker_manager.WorkerManager;
 import net.edudb.workers_manager.WorkersManager;
 
 import java.util.Hashtable;
+import java.util.regex.Matcher;
 
 /**
  * Displays a list of registered workers and their connection status
@@ -28,6 +30,9 @@ import java.util.Hashtable;
 public class ViewWorkersExecutor implements MasterExecutorChain {
     private MasterExecutorChain nextElement;
 
+    private String regex = "\\A(?:(?i)show)\\s+(?:(?i)workers)\\s*;?\\z";
+
+
     @Override
     public void setNextElementInChain(MasterExecutorChain chainElement) {
         this.nextElement = chainElement;
@@ -35,31 +40,34 @@ public class ViewWorkersExecutor implements MasterExecutorChain {
 
     @Override
     public void execute(String s) {
-        if (s.toLowerCase().equals("view workers")) {
-            Hashtable<String, Record> workersData = MetadataBuffer.getInstance().getWorkers();
-            if (workersData.isEmpty()) {
-                MasterWriter.getInstance().write(new Response("No workers registered in this database"));
-                return;
+        if (s.toLowerCase().startsWith("show workers")) {
+            Matcher matcher = Utility.getMatcher(s, regex);
+            if (matcher.matches()) {
+                Hashtable<String, Record> workersData = MetadataBuffer.getInstance().getWorkers();
+                if (workersData.isEmpty()) {
+                    MasterWriter.getInstance().write(new Response("No workers registered in this database"));
+                    return;
+                }
+                Hashtable<String, WorkerManager> connectedWorkers = WorkersManager.getInstance().getWorkers();
+
+                String workersTable =
+                        "-------------------------------------------------" + "\r\n" +
+                                "| ADDRESS                   | STATUS            |" + "\r\n" +
+                                "-------------------------------------------------" + "\r\n";
+
+                for (String address : workersData.keySet()) {
+                    String status = (connectedWorkers.get(address) == null) ? "offline" : "online";
+                    workersTable += "| " + address;
+                    for (int i = 0; i < 26 - address.length(); i++) workersTable += " ";
+                    workersTable += "| " + status;
+                    for (int i = 0; i < 18 - status.length(); i++) workersTable += " ";
+                    workersTable += "|\r\n";
+                    workersTable += "-------------------------------------------------\r\n";
+
+                }
+
+                MasterWriter.getInstance().write(new Response(workersTable));
             }
-            Hashtable<String, WorkerManager> connectedWorkers = WorkersManager.getInstance().getWorkers();
-
-            String workersTable =
-                    "-------------------------------------------------" + "\r\n" +
-                            "| ADDRESS                   | STATUS            |" + "\r\n" +
-                            "-------------------------------------------------" + "\r\n";
-
-            for (String address : workersData.keySet()) {
-                String status = (connectedWorkers.get(address) == null) ? "offline" : "online";
-                workersTable += "| " + address;
-                for (int i = 0; i < 26 - address.length(); i++) workersTable += " ";
-                workersTable += "| " + status;
-                for (int i = 0; i < 18 - status.length(); i++) workersTable += " ";
-                workersTable += "|\r\n";
-                workersTable += "-------------------------------------------------\r\n";
-
-            }
-
-            MasterWriter.getInstance().write(new Response(workersTable));
         }
         else {
             nextElement.execute(s);

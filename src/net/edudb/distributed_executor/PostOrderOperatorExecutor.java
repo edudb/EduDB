@@ -28,13 +28,15 @@ public class PostOrderOperatorExecutor {
         OperatorExecutionChain delete = new DeleteExecutor();
         OperatorExecutionChain update = new UpdateExecutor();
         OperatorExecutionChain select = new SelectExecutor();
+        OperatorExecutionChain join = new JoinExecutor();
 
         return OperatorExecutionChain.connnectChain(new OperatorExecutionChain[]{
                 createTable,
                 insert,
                 delete,
                 update,
-                select
+                select,
+                join
         });
     }
 

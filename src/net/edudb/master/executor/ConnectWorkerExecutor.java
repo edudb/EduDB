@@ -26,7 +26,7 @@ import java.util.regex.Matcher;
 public class ConnectWorkerExecutor implements MasterExecutorChain {
 
     private MasterExecutorChain nextElement;
-    private String regex = "connect\\s+worker\\s+\\((\\w+), (\\w+)\\)";
+    private String regex = "\\A(?:(?i)connect)\\s+(?:(?i)worker)\\s+\\((\\w+), (\\w+)\\)\\s*;?\\z";
 
     @Override
     public void setNextElementInChain(MasterExecutorChain chainElement) {
@@ -35,7 +35,7 @@ public class ConnectWorkerExecutor implements MasterExecutorChain {
 
     @Override
     public void execute(String s) {
-        if (s.startsWith("connect worker ")) {
+        if (s.toLowerCase().startsWith("connect worker ")) {
             Matcher matcher = Utility.getMatcher(s, regex);
             if (matcher.matches()) {
                 String host = matcher.group(1);

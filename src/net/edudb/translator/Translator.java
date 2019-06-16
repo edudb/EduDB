@@ -60,6 +60,7 @@ public class Translator {
     private String regex = "\\AFilter\\((.+)\\,\"(.+)\"\\)\\z";
     private String relationRegex = "\\A(\\w+)\\=(?:Relation\\(.(?:\\,.)*\\))\\z";
     private String projectRegex = "\\AProject\\((.+)\\,\\[(\\d+(?:\\,\\s\\d+)*)\\]\\)\\z";
+    private String eqJoinRegex = "\\AEqJoin\\((.*\\)),(.*)\\,(\\d+)\\,(\\d+)\\)\\z";
 
     public String getTableName(String ra) {
         String filterRa;
@@ -86,6 +87,102 @@ public class Translator {
         }
 
         return null;
+    }
+
+    private String getRelationName(String relationRA) {
+
+        Matcher relationMatcher = Utility.getMatcher(relationRA, relationRegex);
+        if (relationMatcher.matches()) {
+            return relationMatcher.group(1);
+        }
+
+        return null;
+    }
+
+    public String[] getTableNames(String ra) {
+        String filterRa;
+        Matcher projectMatcher = Utility.getMatcher(ra, projectRegex);
+        if (projectMatcher.matches()) {
+            filterRa = projectMatcher.group(1);
+        }
+        else {
+            filterRa = ra;
+        }
+
+        String joinRA;
+        Matcher filterMatcher = Utility.getMatcher(filterRa, regex);
+        if (filterMatcher.matches()) {
+            joinRA = filterMatcher.group(1);
+        }
+        else {
+            joinRA = filterRa;
+        }
+
+        String leftRelation;
+        String rightRelation;
+
+        Matcher joinMatcher = Utility.getMatcher(joinRA, eqJoinRegex);
+        if (joinMatcher.matches()) {
+            leftRelation = joinMatcher.group(1);
+            rightRelation = joinMatcher.group(2);
+        }
+        else {
+            return null;
+        }
+
+        String[] tableNames = new String[2];
+        tableNames[0] = getRelationName(leftRelation);
+        tableNames[1] = getRelationName(rightRelation);
+
+        return tableNames;
+    }
+
+    public boolean checkJoinConditionValidity(String leftTableMetadata, String rightTableMetadata, String ra) {
+        String[] leftTableColumnTypes = getColumnTypes(leftTableMetadata);
+        String[] rightTableColumnTypes = getColumnTypes(rightTableMetadata);
+
+        String filterRa;
+        Matcher projectMatcher = Utility.getMatcher(ra, projectRegex);
+        if (projectMatcher.matches()) {
+            filterRa = projectMatcher.group(1);
+        }
+        else {
+            filterRa = ra;
+        }
+
+        String joinRA;
+        Matcher filterMatcher = Utility.getMatcher(filterRa, regex);
+        if (filterMatcher.matches()) {
+            joinRA = filterMatcher.group(1);
+        }
+        else {
+            joinRA = filterRa;
+        }
+
+        int leftColumnIndex;
+        int rightColumnIndex;
+
+        Matcher joinMatcher = Utility.getMatcher(joinRA, eqJoinRegex);
+        if (joinMatcher.matches()) {
+            leftColumnIndex = Integer.parseInt(joinMatcher.group(3));
+            rightColumnIndex = Integer.parseInt(joinMatcher.group(4));
+        }
+        else {
+            return false;
+        }
+
+        return leftTableColumnTypes[leftColumnIndex-1].equals(rightTableColumnTypes[rightColumnIndex-1]);
+    }
+
+    private String[] getColumnTypes(String metadata) {
+        String[] metadataArray = metadata.split(" ");
+        String[] columnTypes = new String[metadataArray.length/2];
+
+        for (int i = 0; i < metadataArray.length; i+=2) {
+            columnTypes[i / 2] = metadataArray[i + 1];
+        }
+
+        return columnTypes;
     }
 
     public ArrayList<Condition> getDistributionCondition(String metadata, String distributionColumn, String ra) {

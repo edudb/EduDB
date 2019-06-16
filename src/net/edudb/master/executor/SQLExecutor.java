@@ -34,7 +34,7 @@ public class SQLExecutor implements MasterExecutorChain {
     public void execute(String string) {
 
         DistributedParser parser = new DistributedParser();
-        SQLStatement statement = parser.parseSQL(string.replace(":", ""));
+        SQLStatement statement = parser.parseSQL(string);
         if (statement != null) {
             //MasterWriter.getInstance().write(new Response(statement.toString()));
             QueryTree plan = planFactory.makePlan(statement);

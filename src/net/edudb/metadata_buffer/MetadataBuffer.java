@@ -120,7 +120,7 @@ public class MetadataBuffer {
                             workerAddress += port;
                         }
 
-                        if ((column.toString()).equals("table")) {
+                        if ((column.toString()).equals("table_name")) {
                             tableName = ((VarCharType)shard.getData().get(column)).getString();
                         }
 

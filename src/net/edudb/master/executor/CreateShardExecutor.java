@@ -35,7 +35,7 @@ import java.util.regex.Matcher;
 public class CreateShardExecutor implements MasterExecutorChain {
 
     private MasterExecutorChain nextElement;
-    private String regex = "create shard \\((\\w+), (\\w+), (\\w+), (\\w+), (\\w+)\\)";
+    private String regex = "\\A(?:(?i)create)\\s+(?:(?i)shard)\\s+\\((\\w+), (\\w+), (\\w+), (\\w+), (\\w+)\\)\\s*;?\\z";
 
     @Override
     public void setNextElementInChain(MasterExecutorChain chainElement) {
@@ -43,7 +43,7 @@ public class CreateShardExecutor implements MasterExecutorChain {
     }
 
     public void execute(String string) {
-        if (string.startsWith("create shard")) {
+        if (string.toLowerCase().startsWith("create shard")) {
             Matcher matcher = Utility.getMatcher(string, regex);
             if (matcher.matches()) {
                 String tableName = matcher.group(1);
@@ -138,7 +138,7 @@ public class CreateShardExecutor implements MasterExecutorChain {
                          * making sure that new shard does not overlap with an existing shard
                          */
                         for (Hashtable<String, DataType> shard: shards.values()) {
-                            if (((VarCharType)shard.get("table")).getString().equals(tableName)) {
+                            if (((VarCharType)shard.get("table_name")).getString().equals(tableName)) {
 
                                 DataType currentShardMin = null;
                                 DataType currentShardMax = null;

@@ -154,6 +154,10 @@ public class MetaManager implements MetaDAO, Runnable {
         }
     }
 
+    public void dropDatabase(String databaseName) {
+        forwardCommand("drop database " + databaseName);
+    }
+
     /**
      * This method is responsible for creating all the metadata
      * tables, once a new database is created
@@ -177,7 +181,7 @@ public class MetaManager implements MetaDAO, Runnable {
 
     private void createShardsTable() {
 
-        forwardCommand("create table shards (host Varchar, port Integer, table Varchar, id Integer, min_value Varchar, max_value Varchar)");
+        forwardCommand("create table shards (host Varchar, port Integer, table_name Varchar, id Integer, min_value Varchar, max_value Varchar)");
     }
 
     public ArrayList<Record> getAll(String tableName) {
@@ -211,11 +215,19 @@ public class MetaManager implements MetaDAO, Runnable {
 
     }
 
+    public void deleteTable(String tableName) {
+        forwardCommand("delete from tables where name = '" + tableName + "'");
+    }
+
     public void writeShard(String host, int port, String table, int id, String minValue, String maxValue) {
         forwardCommand("insert into shards values ('" + host + "', " + port + ", '" + table + "', " + id + ", '"
                 + minValue + "', '" + maxValue + "')");
         MetadataBuffer.getInstance().getShards().clear();
         MasterWriter.getInstance().write(new Response("Shard created"));
+    }
+
+    public void deleteShards(String tableName) {
+        forwardCommand("delete from shards where table_name = '" + tableName + "'");
     }
 
     public void writeWorker(String host, int port) {
@@ -231,9 +243,9 @@ public class MetaManager implements MetaDAO, Runnable {
      * The command to be sent to the meta database
      */
     public Response forwardCommand(String command) {
-        System.out.println("inside forward command");
-        System.out.println(command);
-        System.out.println("------------------");
+//        System.out.println("inside forward command");
+//        System.out.println(command);
+//        System.out.println("------------------");
         String id = Utility.generateUUID();
         Request request = new Request(id, command);
         MetaWriter.getInstance().write(request);
@@ -243,9 +255,9 @@ public class MetaManager implements MetaDAO, Runnable {
          */
         while (pendingRequests.get(id) == null);
 
-        System.out.println("Response arrived at forwardCommand");
-        System.out.println(pendingRequests.get(id).getMessage());
-        System.out.println(pendingRequests.get(id).getRecords());
+//        System.out.println("Response arrived at forwardCommand");
+//        System.out.println(pendingRequests.get(id).getMessage());
+//        System.out.println(pendingRequests.get(id).getRecords());
 
         return pendingRequests.remove(id);
     }
