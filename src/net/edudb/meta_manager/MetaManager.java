@@ -87,7 +87,7 @@ public class MetaManager implements MetaDAO, Runnable {
             });
 
             // Start the client.
-            ChannelFuture f = b.connect("localhost", port).sync();
+            ChannelFuture f = b.connect("edudb_meta", port).sync();
 
 //			clientHandler.setReceiving(true);
            // ByteBuf buf = Unpooled.copiedBuffer(, Charsets.UTF_8);
