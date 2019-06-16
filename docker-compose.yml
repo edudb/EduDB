@@ -1,5 +1,15 @@
 version: "2"
 services:
+  edudb_master:
+    image: edudb_master
+    ports:
+      - "8080:8080"
+  edudb_meta:
+    container_name: edudb_meta
+    restart: always
+    build: .
+    ports:
+      - "9999:9999"
   edudb1:
     container_name: edudb1
     restart: always
