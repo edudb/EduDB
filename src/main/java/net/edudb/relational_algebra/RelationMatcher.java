@@ -18,7 +18,7 @@ import net.edudb.operator.parameter.RelationOperatorParameter;
 
 /**
  * Matches the relational algebra Relation formula.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -32,7 +32,7 @@ public class RelationMatcher implements RAMatcherChain {
 	 * and captures <b>arg0</b> in the matcher's group one. <b>arg0</b> is the
 	 * relation's name.
 	 */
-	private String regex = "\\A(\\w+)\\=(?:Relation\\(.(?:\\,.)*\\))\\z";
+	private final String regex = "\\A(\\w+)\\=(?:Relation\\(.(?:\\,.)*\\))\\z";
 
 	@Override
 	public void setNextElementInChain(RAMatcherChain chainElement) {

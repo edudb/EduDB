@@ -72,7 +72,7 @@ public class InsertPlan extends DistributedPlan {
             return null;
         }
 
-        System.out.println(statement.toString());
+        System.out.println(statement);
         for (int i = 0; i < metadataArray.length; i+=2) {
             DataType value = null;
             try {
@@ -132,7 +132,7 @@ public class InsertPlan extends DistributedPlan {
         InsertOperatorParamater parameter = new InsertOperatorParamater(statement, shards);
         operator.setParameter(parameter);
 
-        QueryTree tree = new QueryTree((QueryNode)operator);
+        QueryTree tree = new QueryTree(operator);
 
         return tree;
 

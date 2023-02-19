@@ -18,7 +18,7 @@ import net.edudb.response.Response;
 
 /**
  * Closes the current open database.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -30,7 +30,7 @@ public class CloseDatabaseExecutor implements ConsoleExecutorChain {
 	 * <b>CLOSE DATABASE;<b><br>
 	 * <br>
 	 */
-	private String regex = "\\A(?:(?i)close)\\s+(?:(?i)database)\\s*;?\\z";
+	private final String regex = "\\A(?:(?i)close)\\s+(?:(?i)database)\\s*;?\\z";
 
 	@Override
 	public void setNextElementInChain(ConsoleExecutorChain chainElement) {

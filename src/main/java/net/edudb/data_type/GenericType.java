@@ -11,28 +11,28 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.data_type;
 
 /**
- * 
+ *
  * Used as a placeholder of other types when performing a Filter operation. <br>
  * <br>
- * 
+ *
  * <b>ATTENTION</b><br>
  * <br>
- * 
+ *
  * Do not evaluate any expression against this type. You should transform it
  * into a specific type based on the column it matches. <br>
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
 public class GenericType extends DataType {
-	private String value;
+	private final String value;
 
 	public GenericType(String value) {
 		this.value = value;
 	}
 
 	/**
-	 * 
+	 *
 	 * @return the value of the data type.
 	 */
 	public String getValue() {

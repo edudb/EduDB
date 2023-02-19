@@ -20,7 +20,7 @@ import net.edudb.structure.table.TableManager;
 
 /**
  * Executes the relational algebra Relation operator.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

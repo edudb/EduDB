@@ -22,12 +22,12 @@ public class BinaryTable implements Table, Serializable {
 	/**
 	 * Name of the table.
 	 */
-	private String name;
+	private final String name;
 
 	/**
 	 * Name of the pages in which data are persisted in.
 	 */
-	private PageManager pageManager;
+	private final PageManager pageManager;
 
 	private LinkedHashMap<String, String> columnTypes;
 
@@ -41,7 +41,7 @@ public class BinaryTable implements Table, Serializable {
 	public synchronized PageManager getPageManager() {
 		return pageManager;
 	}
-	
+
 	@Override
 	public void deletePages() {
 		this.pageManager.deletePages();

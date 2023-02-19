@@ -18,7 +18,7 @@ import net.edudb.data_type.DataType;
 import net.edudb.expression.*;
 
 /**
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -26,7 +26,7 @@ public class TableRecord implements Record, Serializable {
 
 	private static final long serialVersionUID = -3305225200308977932L;
 
-	private LinkedHashMap<Column, DataType> data;
+	private final LinkedHashMap<Column, DataType> data;
 	private boolean deleted;
 
 	public TableRecord() {

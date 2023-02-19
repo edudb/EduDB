@@ -17,7 +17,7 @@ import net.edudb.response.Response;
 
 /**
  * Handles the parsing and execution of an SQL query.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

@@ -23,7 +23,7 @@ public class CreateDatabaseExecutor implements MasterExecutorChain {
 
     private MasterExecutorChain nextElement;
 
-    private String regex = "\\A(?:(?i)create)\\s+(?:(?i)database)\\s+(\\D\\w*)\\s*;?\\z";
+    private final String regex = "\\A(?:(?i)create)\\s+(?:(?i)database)\\s+(\\D\\w*)\\s*;?\\z";
 
     @Override
     public void setNextElementInChain(MasterExecutorChain chainElement) {

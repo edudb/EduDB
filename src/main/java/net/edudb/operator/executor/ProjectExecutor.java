@@ -20,7 +20,7 @@ import net.edudb.structure.Record;
 
 /**
  * Executes the relational algebra Project operator.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -34,8 +34,7 @@ public class ProjectExecutor extends PostOrderOperatorExecutor implements Operat
 
 	@Override
 	public Relation execute(Operator operator) {
-		if (operator instanceof ProjectOperator) {
-			ProjectOperator projectOperator = (ProjectOperator) operator;
+		if (operator instanceof ProjectOperator projectOperator) {
 			ProjectOperatorParameter projectedColumns = (ProjectOperatorParameter) projectOperator.getParameter();
 			Relation relation = getChain().execute((Operator) projectOperator.getChild());
 
@@ -43,7 +42,7 @@ public class ProjectExecutor extends PostOrderOperatorExecutor implements Operat
 			Relation resultRelation = new VolatileRelation();
 
 			while (relationIterator.hasNext()) {
-				Record r = (Record) relationIterator.next();
+				Record r = relationIterator.next();
 				resultRelation.addRecord(r.project(projectedColumns.getProjectedColumns()));
 			}
 

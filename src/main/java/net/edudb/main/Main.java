@@ -15,7 +15,7 @@ import net.edudb.console.DatabaseConsole;
 import net.edudb.engine.DatabaseSystem;
 
 /**
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -25,7 +25,7 @@ public class Main {
 
 		/**
 		 * ATTENTION
-		 * 
+		 *
 		 * Important call.
 		 */
 		DatabaseSystem.getInstance().initializeDirectories();

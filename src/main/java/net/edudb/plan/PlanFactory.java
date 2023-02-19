@@ -16,7 +16,7 @@ import net.edudb.statement.SQLStatement;
 
 /**
  * Created by mohamed on 4/1/14.
- * 
+ *
  * @author Ahmed Abdul Badie
  */
 public class PlanFactory extends Plan {

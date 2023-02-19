@@ -20,7 +20,7 @@ import net.edudb.page.Page;
  * will be inserted at the end of the pool. Any requested page that is in the pool
  * will be moved to the end of it; this ensures that the least recently used
  * pages are at the beginning of the pool.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -50,7 +50,7 @@ public class LRUPageReplacement extends PageReplacement {
 
 	@Override
 	public void remove() {
-		String firstPageName = (String) pageBuffer.entrySet().iterator().next().getKey();
+		String firstPageName = pageBuffer.entrySet().iterator().next().getKey();
 		pageBuffer.remove(firstPageName);
 	}
 

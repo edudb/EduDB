@@ -19,7 +19,7 @@ package net.edudb.distributed_transaction;
  */
 public class DistributedTransactionManager {
 
-    private static DistributedTransactionManager instance = new DistributedTransactionManager();
+    private static final DistributedTransactionManager instance = new DistributedTransactionManager();
 
     private DistributedTransactionManager() {}
 

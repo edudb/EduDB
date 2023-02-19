@@ -19,7 +19,7 @@ import net.edudb.structure.Column;
 /**
  * A tree that consists of binary expression nodes. Used for expression trees
  * that are evaluated against records.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

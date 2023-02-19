@@ -15,7 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -23,7 +23,7 @@ public class Utility {
 
 	/**
 	 * Generates a UUID.
-	 * 
+	 *
 	 * @return The generated {@link UUID}.
 	 */
 	public static String generateUUID() {
@@ -32,7 +32,7 @@ public class Utility {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param string
 	 *            String to be matched.
 	 * @param regex

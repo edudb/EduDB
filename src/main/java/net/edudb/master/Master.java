@@ -30,7 +30,7 @@ import net.edudb.master.executor.*;
  */
 public class Master {
 
-    private int port;
+    private final int port;
 
     public Master(int port) { this.port = port; }
 

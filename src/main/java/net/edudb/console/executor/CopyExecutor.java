@@ -32,7 +32,7 @@ import net.edudb.structure.table.TableManager;
 
 /**
  * Handles the copy command.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

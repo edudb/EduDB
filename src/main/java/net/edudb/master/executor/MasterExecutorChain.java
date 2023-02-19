@@ -27,7 +27,7 @@ public interface MasterExecutorChain {
      * @param chainElement
      *            The {@link MasterExecutorChain} to be set next in the chain.
      */
-    public void setNextElementInChain(MasterExecutorChain chainElement);
+    void setNextElementInChain(MasterExecutorChain chainElement);
 
     /**
      * Executes the passed command. Classes that implement the
@@ -37,5 +37,5 @@ public interface MasterExecutorChain {
      * @param string
      *            The command to execute.
      */
-    public void execute(String string);
+    void execute(String string);
 }

@@ -13,16 +13,16 @@ package net.edudb.data_type;
 import java.io.Serializable;
 
 /**
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
 public class VarCharType extends DataType implements Serializable {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -9166500810916250790L;
-	private String string;
+	private final String string;
 
 	public VarCharType(String string) {
 		this.string = string;

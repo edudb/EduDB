@@ -11,7 +11,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.index.BPlusTree;
 
 public class BTreeTest {
-	public static void main(String args[]) {
+	public static void main(String[] args) {
 		IntegerBTree tree = new IntegerBTree();
 
 		tree.insert(10);
@@ -54,8 +54,7 @@ public class BTreeTest {
 		tree.print();
 		// DBBTreeIterator iterator = new DBBTreeIterator(tree);
 		// iterator.print();
-		return;
-	}
+    }
 }
 
 class IntegerBTree extends BTree<Integer, Integer> {

@@ -18,7 +18,7 @@ import net.edudb.structure.Column;
 /**
  * A logical operator that evaluates its children expression by logically
  * 'anding' them.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

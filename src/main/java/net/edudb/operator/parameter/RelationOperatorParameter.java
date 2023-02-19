@@ -12,12 +12,12 @@ package net.edudb.operator.parameter;
 
 /**
  * The parameter associated with the relation operator.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
 public class RelationOperatorParameter implements OperatorParameter {
-	private String tableName;
+	private final String tableName;
 
 	public RelationOperatorParameter(String tableName) {
 		this.tableName = tableName;

@@ -20,7 +20,7 @@ import net.edudb.structure.table.TableManager;
 
 /**
  * Drops a table from a database.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -33,7 +33,7 @@ public class DropTableExecutor implements ConsoleExecutorChain {
 	 * <br>
 	 * and captures the <b>table_name</b> in the matchers group one.
 	 */
-	private String regex = "\\A(?:(?i)drop)\\s+(?:(?i)table)\\s+(\\D\\w*)\\s*;?\\z";
+	private final String regex = "\\A(?:(?i)drop)\\s+(?:(?i)table)\\s+(\\D\\w*)\\s*;?\\z";
 
 	@Override
 	public void setNextElementInChain(ConsoleExecutorChain chainElement) {

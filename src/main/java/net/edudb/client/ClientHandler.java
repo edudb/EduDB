@@ -16,7 +16,7 @@ import net.edudb.response.Response;
 import net.edudb.structure.Record;
 
 /**
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -30,8 +30,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) {
-		if (msg instanceof Response) {
-			Response response = (Response) msg;
+		if (msg instanceof Response response) {
 			//System.out.println(response.getMessage());
 			if (response.getMessage().equals("relation")) {
 				//System.out.println("test");
@@ -101,7 +100,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 	/**
 	 * Used to signal when the server has stopped sending strings to the client
 	 * using the [edudb::endofstring] delimiter.
-	 * 
+	 *
 	 * @param receiving
 	 *            The state of the stream.
 	 */
@@ -112,7 +111,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 	public boolean isReceiving() {
 		return this.receiving;
 	}
-	
+
 	private void exit() {
 		if (Client.getInstance().getChannel() != null) {
 			Client.getInstance().getChannel().close();

@@ -12,7 +12,7 @@ package net.edudb.expression;
 
 /**
  * The supported operators.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

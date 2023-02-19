@@ -37,7 +37,7 @@ public class DeleteExecutor implements OperatorExecutionChain {
 
     public void execute(DistributedOperator operator) {
         if (operator instanceof DeleteOperator) {
-            DistributedOperator delete = (DeleteOperator) operator;
+            DistributedOperator delete = operator;
             DeleteOperatorParameter parameter = (DeleteOperatorParameter) delete.getParameter();
 
             SQLDeleteStatement statement = parameter.getStatement();

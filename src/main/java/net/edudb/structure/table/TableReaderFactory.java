@@ -10,9 +10,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.structure.table;
 
+import java.util.Objects;
+
 /**
  * A factory that creates table information readers.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -20,13 +22,11 @@ public class TableReaderFactory extends TableAbstractFactory {
 
 	@Override
 	public TableReader getReader(TableFileType fileType) {
-		switch (fileType) {
-		case Binary:
-			return new BinaryTableReader();
-		default:
-			return null;
-		}
-	}
+        if (Objects.requireNonNull(fileType) == TableFileType.Binary) {
+            return new BinaryTableReader();
+        }
+        return null;
+    }
 
 	@Override
 	public TableWriter getWriter(TableFileType fileType) {

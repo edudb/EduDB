@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 /**
  * The list that contains the buckets.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -24,7 +24,7 @@ public class EBBucketList implements EBPartitionedHashIndex {
 	/**
 	 * ArrayList of connected buckets
 	 */
-	private ArrayList<EBBucket> buckets;
+	private final ArrayList<EBBucket> buckets;
 
 	/**
 	 * The current bucket to insert into
@@ -34,7 +34,7 @@ public class EBBucketList implements EBPartitionedHashIndex {
 	/**
 	 * Number of indexes the bucket can hold
 	 */
-	private int bucketCapacity;
+	private final int bucketCapacity;
 
 	public EBBucketList(int bucketCapacity) {
 		this.bucketCapacity = bucketCapacity;
@@ -45,7 +45,7 @@ public class EBBucketList implements EBPartitionedHashIndex {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return Number of buckets in the list
 	 */
 	public int buckets() {

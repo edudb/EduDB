@@ -26,20 +26,20 @@ import net.edudb.client.console.executor.ServerExecutor;
 
 /**
  * Singleton that handles the console and its commands.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
 public class Console {
 
-	private static Console instance = new Console();
+	private static final Console instance = new Console();
 	private ConsoleReader consoleReader;
 
 	private Console() {
 		try {
 			this.consoleReader = new ConsoleReader();
 			consoleReader.setHandleUserInterrupt(true);
-			
+
 			ArrayList<String> strings = new ArrayList<>();
 			strings.add("clear");
 			strings.add("close database");
@@ -93,7 +93,7 @@ public class Console {
 	}
 
 	public void printHelp() {
-		String supportedCommands[] = new String[] { "\tclear", "\tCLOSE DATABASE",
+		String[] supportedCommands = new String[] { "\tclear", "\tCLOSE DATABASE",
 				"\tCOPY table_name FROM 'path' DELIMITER 'delimiter'", "\texit", "\tOPEN DATABASE database_name",
 				"\tSQL commands:", "\t\tCREATE DATABASE database_name", "\t\tCREATE TABLE table_name (column_type_list)",
 				"\t\tDELETE FROM table_name [WHERE condition]", "\t\tDROP DATABASE database_name",

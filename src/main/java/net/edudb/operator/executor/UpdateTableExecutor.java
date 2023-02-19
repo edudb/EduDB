@@ -31,7 +31,7 @@ import net.edudb.structure.Record;
 
 /**
  * Executes the SQL UPDATE statement.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -45,8 +45,7 @@ public class UpdateTableExecutor extends PostOrderOperatorExecutor implements Op
 
 	@Override
 	public Relation execute(Operator operator) {
-		if (operator instanceof UpdateTableOperator) {
-			UpdateTableOperator update = (UpdateTableOperator) operator;
+		if (operator instanceof UpdateTableOperator update) {
 			UpdateTableOperatorParameter parameter = (UpdateTableOperatorParameter) update.getParameter();
 
 			HashMap<String, String> assignments = parameter.getAssignmentList();
@@ -74,7 +73,7 @@ public class UpdateTableExecutor extends PostOrderOperatorExecutor implements Op
 
 			RelationIterator iterator = relation.getIterator();
 			while (iterator.hasNext()) {
-				Record record = (Record) iterator.next();
+				Record record = iterator.next();
 				if (record.evaluate((BinaryExpressionTree) tree)) {
 					record.update(data);
 				}

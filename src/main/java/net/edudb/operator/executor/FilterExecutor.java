@@ -13,6 +13,7 @@ package net.edudb.operator.executor;
 /**
  * Executes the relational algebra Filter operator.
  */
+
 import net.edudb.expression.BinaryExpressionTree;
 import net.edudb.expression.ExpressionTree;
 import net.edudb.operator.FilterOperator;
@@ -24,34 +25,33 @@ import net.edudb.structure.Record;
 
 public class FilterExecutor extends PostOrderOperatorExecutor implements OperatorExecutionChain {
 
-	private OperatorExecutionChain nextElement;
+    private OperatorExecutionChain nextElement;
 
-	@Override
-	public void setNextElementInChain(OperatorExecutionChain chainElement) {
-		this.nextElement = chainElement;
-	}
+    @Override
+    public void setNextElementInChain(OperatorExecutionChain chainElement) {
+        this.nextElement = chainElement;
+    }
 
-	@Override
-	public Relation execute(Operator operator) {
-		if (operator instanceof FilterOperator) {
-			FilterOperator filter = (FilterOperator) operator;
-			ExpressionTree tree = (ExpressionTree) filter.getParameter();
-			
-			Relation relation = getChain().execute((Operator) filter.getChild());
+    @Override
+    public Relation execute(Operator operator) {
+        if (operator instanceof FilterOperator filter) {
+            ExpressionTree tree = (ExpressionTree) filter.getParameter();
 
-			RelationIterator ri = relation.getIterator();
-			Relation resultRelation = new VolatileRelation();
+            Relation relation = getChain().execute((Operator) filter.getChild());
 
-			while (ri.hasNext()) {
-				Record r = (Record) ri.next();
-				if (r.evaluate((BinaryExpressionTree) tree)) {
-					resultRelation.addRecord(r);
-				}
-			}
+            RelationIterator ri = relation.getIterator();
+            Relation resultRelation = new VolatileRelation();
 
-			return resultRelation;
-		}
-		return nextElement.execute(operator);
-	}
+            while (ri.hasNext()) {
+                Record r = ri.next();
+                if (r.evaluate((BinaryExpressionTree) tree)) {
+                    resultRelation.addRecord(r);
+                }
+            }
+
+            return resultRelation;
+        }
+        return nextElement.execute(operator);
+    }
 
 }

@@ -21,7 +21,7 @@ import java.util.ArrayList;
  */
 public class NotEqualsCondition extends Condition {
 
-    private DataType data;
+    private final DataType data;
 
     public NotEqualsCondition(DataType data) {
         this.data = data;

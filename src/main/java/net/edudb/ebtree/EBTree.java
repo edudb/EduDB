@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 /**
  * A custom-made tree that is used to build query and expression trees.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -32,7 +32,7 @@ public abstract class EBTree {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return The levels of the tree.
 	 */
 	public int getLevels() {
@@ -40,7 +40,7 @@ public abstract class EBTree {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return The root of the tree.
 	 */
 	public EBNode getRoot() {
@@ -49,7 +49,7 @@ public abstract class EBTree {
 
 	/**
 	 * Sets the root iff the root is null.
-	 * 
+	 *
 	 * @param root
 	 *            The root to be set.
 	 */
@@ -64,7 +64,7 @@ public abstract class EBTree {
 	 * Adds a node to the tree using bottom-up approach. The root is given a
 	 * parent and then the new parent becomes the root. If the new node is a
 	 * binary node, the root becomes the node's left child.
-	 * 
+	 *
 	 * @param node
 	 *            The node to add.
 	 */
@@ -73,7 +73,7 @@ public abstract class EBTree {
 	/**
 	 * A new tree is constructed from the input ArrayList using
 	 * {@link #addNode(EBNode) addNode}.
-	 * 
+	 *
 	 * @param nodes
 	 *            ArrayList of nodes used to construct the tree.
 	 * @return The tree constructed using the nodes.

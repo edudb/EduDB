@@ -16,7 +16,7 @@ import net.edudb.relation.Relation;
 
 /**
  * A transaction that is executed concurrently by being added to a thread.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

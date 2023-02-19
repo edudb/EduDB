@@ -25,16 +25,16 @@ import net.edudb.statistics.Schema;
 import net.edudb.structure.table.TableManager;
 
 /**
- * 
+ *
  * Manages the system's databases and their required files and directories.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
 public class DatabaseSystem {
 
-	private static DatabaseSystem instance = new DatabaseSystem();
-	private String databasesString = "databases";
+	private static final DatabaseSystem instance = new DatabaseSystem();
+	private final String databasesString = "databases";
 	private String databaseName;
 	private boolean databaseIsOpen;
 
@@ -56,7 +56,7 @@ public class DatabaseSystem {
 	 * Initialized the required directories for the database to be able to
 	 * function properly. These are the directories where files are saved to
 	 * disk.
-	 * 
+	 *
 	 * @param databaseName
 	 *            The name of the database to initialize its directories.
 	 */
@@ -71,7 +71,7 @@ public class DatabaseSystem {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return The name of the current open database.
 	 */
 	public String getDatabaseName() {
@@ -79,7 +79,7 @@ public class DatabaseSystem {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return Whether the system has an open database.
 	 */
 	public boolean databaseIsOpen() {
@@ -88,7 +88,7 @@ public class DatabaseSystem {
 
 	/**
 	 * Opens a given database if it is available.
-	 * 
+	 *
 	 * @param databaseName
 	 *            The name of the database to open.
 	 */
@@ -132,7 +132,7 @@ public class DatabaseSystem {
 
 	/**
 	 * Creates a new database in the system iff it does not exist.
-	 * 
+	 *
 	 * @param databaseName
 	 *            The name of the database to create.
 	 */
@@ -152,7 +152,7 @@ public class DatabaseSystem {
 
 	/**
 	 * Drops a database from the system iff it does exist.
-	 * 
+	 *
 	 * @param databaseName
 	 *            The name of the database to drop.
 	 * @throws IOException
@@ -188,7 +188,7 @@ public class DatabaseSystem {
 
 	/**
 	 * Checks whether the given database exists in the system.
-	 * 
+	 *
 	 * @param databaseName
 	 *            The name of the database to check.
 	 * @return The availability of the database.
@@ -209,7 +209,7 @@ public class DatabaseSystem {
 
 	/**
 	 * Creates the database's tables directory.
-	 * 
+	 *
 	 * @param databaseName
 	 *            The name of the database.
 	 */
@@ -222,7 +222,7 @@ public class DatabaseSystem {
 
 	/**
 	 * Creates the database's pages directory.
-	 * 
+	 *
 	 * @param databaseName
 	 *            The name of the database.
 	 */
@@ -246,7 +246,7 @@ public class DatabaseSystem {
 
 	/**
 	 * Creates the database's schema file.
-	 * 
+	 *
 	 * @param databaseName
 	 *            The name of the database.
 	 */
@@ -263,7 +263,7 @@ public class DatabaseSystem {
 
 	/**
 	 * Exits the system.
-	 * 
+	 *
 	 * @param status
 	 *            The status of the exit.
 	 */

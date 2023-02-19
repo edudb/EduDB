@@ -21,7 +21,7 @@ import net.edudb.structure.Column;
 
 /**
  * Matches the relational algebra EqJoin formula.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -38,7 +38,7 @@ public class EquiJoinMatcher implements RAMatcherChain {
 	 * relation, <b>arg2</b> is the left formula's column, and <b>arg3</b> is
 	 * the right relation's column.
 	 */
-	private String regex = "\\AEqJoin\\((.*\\)),(.*)\\,(\\d+)\\,(\\d+)\\)\\z";
+	private final String regex = "\\AEqJoin\\((.*\\)),(.*)\\,(\\d+)\\,(\\d+)\\)\\z";
 
 	@Override
 	public void setNextElementInChain(RAMatcherChain chainElement) {

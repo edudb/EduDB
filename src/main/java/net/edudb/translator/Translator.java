@@ -57,10 +57,10 @@ public class Translator {
         return null;
     }
 
-    private String regex = "\\AFilter\\((.+)\\,\"(.+)\"\\)\\z";
-    private String relationRegex = "\\A(\\w+)\\=(?:Relation\\(.(?:\\,.)*\\))\\z";
-    private String projectRegex = "\\AProject\\((.+)\\,\\[(\\d+(?:\\,\\s\\d+)*)\\]\\)\\z";
-    private String eqJoinRegex = "\\AEqJoin\\((.*\\)),(.*)\\,(\\d+)\\,(\\d+)\\)\\z";
+    private final String regex = "\\AFilter\\((.+)\\,\"(.+)\"\\)\\z";
+    private final String relationRegex = "\\A(\\w+)\\=(?:Relation\\(.(?:\\,.)*\\))\\z";
+    private final String projectRegex = "\\AProject\\((.+)\\,\\[(\\d+(?:\\,\\s\\d+)*)\\]\\)\\z";
+    private final String eqJoinRegex = "\\AEqJoin\\((.*\\)),(.*)\\,(\\d+)\\,(\\d+)\\)\\z";
 
     public String getTableName(String ra) {
         String filterRa;
@@ -216,24 +216,24 @@ public class Translator {
     /**
      * Matches string of the format: #{number}={number}. e.g. #1=2
      */
-    private String genericExpr = "(?:\\#\\d+\\<?\\>?\\=?#?.+)";
+    private final String genericExpr = "(?:\\#\\d+\\<?\\>?\\=?#?.+)";
     /**
      * Matches string of the format: AND({anything}) or OR({anything})
      */
-    private String binaryExpr = "(?:(?:AND|OR)\\(.*\\))";
+    private final String binaryExpr = "(?:(?:AND|OR)\\(.*\\))";
     /**
      * Matches string of the format: #{number}={number} or (AND({anything}) or
      * OR({anything}))
      */
-    private String argument = "(?:" + genericExpr + "|" + binaryExpr + ")";
+    private final String argument = "(?:" + genericExpr + "|" + binaryExpr + ")";
     /**
      * Matches and captures string of the format: #{number}={number}. e.g. #1=2
      */
-    private String capturedConstantExpr = "\\#(\\d+)(\\<?\\>?\\=?)(.+)";
+    private final String capturedConstantExpr = "\\#(\\d+)(\\<?\\>?\\=?)(.+)";
     /**
      * Matches and captures string of the format: #{number}={number}. e.g. #1=2
      */
-    private String capturedColumnExpr = "\\#(\\d+)(\\<?\\>?\\=?)#(\\d+)";
+    private final String capturedColumnExpr = "\\#(\\d+)(\\<?\\>?\\=?)#(\\d+)";
     /**
      * Matches string of the format: AND(genericExpr or binaryExpr, genericExpr
      * or binaryExpr) or OR(genericExpr or binaryExpr, genericExpr or
@@ -241,7 +241,7 @@ public class Translator {
      *
      * e.g. AND(OR(#1=3,#4=1),#2=44)
      */
-    private String capturedBinaryExpr = "(AND|OR)\\(" + "(" + argument + ")" + "," + "(" + argument + ")" + "\\)";
+    private final String capturedBinaryExpr = "(AND|OR)\\(" + "(" + argument + ")" + "," + "(" + argument + ")" + "\\)";
 
     private ArrayList<Condition> getDistributionCondition(String[] columnTypes, int distributionIndex, String ra) {
         System.out.println("current ra: " + ra);

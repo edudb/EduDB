@@ -151,7 +151,7 @@ public class UpdatePlan extends DistributedPlan {
         UpdateOperatorParameter parameter = new UpdateOperatorParameter(statement, shards);
         operator.setParameter(parameter);
 
-        QueryTree tree = new QueryTree((QueryNode)operator);
+        QueryTree tree = new QueryTree(operator);
 
         return tree;
 

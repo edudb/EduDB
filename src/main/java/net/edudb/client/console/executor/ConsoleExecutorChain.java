@@ -12,8 +12,8 @@ package net.edudb.client.console.executor;
 
 public interface ConsoleExecutorChain {
 
-	public void setNextInChain(ConsoleExecutorChain chainElement);
+	void setNextInChain(ConsoleExecutorChain chainElement);
 
-	public void execute(String string);
+	void execute(String string);
 
 }

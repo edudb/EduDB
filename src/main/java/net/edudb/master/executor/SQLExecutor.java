@@ -24,7 +24,7 @@ import net.edudb.statement.SQLStatement;
  */
 public class SQLExecutor implements MasterExecutorChain {
 
-    private DistributedPlanFactory planFactory = new DistributedPlanFactory();
+    private final DistributedPlanFactory planFactory = new DistributedPlanFactory();
 
     @Override
     public void setNextElementInChain(MasterExecutorChain chainElement) {

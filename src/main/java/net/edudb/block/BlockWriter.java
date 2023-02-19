@@ -16,7 +16,7 @@ import net.edudb.page.Page;
 
 /**
  * A writer that writes page files to disk.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -24,7 +24,7 @@ public abstract class BlockWriter {
 
 	/**
 	 * Writes a page to disk.
-	 * 
+	 *
 	 * @param page
 	 *            The page to write to disk.
 	 * @throws IOException

@@ -10,9 +10,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.block;
 
+import java.util.Objects;
+
 /**
  * A factory that creates block writers.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -25,12 +27,10 @@ public class BlockWriterFactory extends BlockAbstractFactory {
 
 	@Override
 	public BlockWriter getWriter(BlockFileType fileType) {
-		switch (fileType) {
-		case Binary:
-			return new BinaryBlockWriter();
-		default:
-			return null;
-		}
-	}
+        if (Objects.requireNonNull(fileType) == BlockFileType.Binary) {
+            return new BinaryBlockWriter();
+        }
+        return null;
+    }
 
 }

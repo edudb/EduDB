@@ -18,7 +18,7 @@ import net.edudb.query.QueryNode;
 /**
  * A relational algebra operator, with two children, which is used to
  * compute the Cartesian product of two relations.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

@@ -22,10 +22,10 @@ import net.edudb.structure.Column;
  * val</i> and <b>B</b> is <i>col > val</i>, then the whole expression is
  * evaluated as <i>col = val <b>AND</b> col > val</i>.<br>
  * <br>
- * 
+ *
  * Currently supported logical operators: <b>AND</b> and <b>OR</b>.
- * 
- * 
+ *
+ *
  * @author Ahmed Abdul Badie
  *
  */

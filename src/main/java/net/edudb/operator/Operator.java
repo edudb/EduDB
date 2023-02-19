@@ -15,7 +15,7 @@ import net.edudb.operator.parameter.OperatorParameter;
 /**
  * An interface that is used to add additional information to the relational
  * algebra operators.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -23,16 +23,16 @@ public interface Operator {
 
 	/**
 	 * Sets the parameter of an operator.
-	 * 
+	 *
 	 * @param parameter
 	 *            The parameter to set.
 	 */
-	public void setParameter(OperatorParameter parameter);
+    void setParameter(OperatorParameter parameter);
 
 	/**
 	 *
 	 * @return The parameter of the operator.
 	 */
-	public OperatorParameter getParameter();
+    OperatorParameter getParameter();
 
 }

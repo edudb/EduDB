@@ -16,7 +16,7 @@ import net.edudb.server.ServerWriter;
 
 /**
  * Handles exit command passed from the client.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

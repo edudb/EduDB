@@ -11,14 +11,14 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.index.PartitionedHashTable;
 
 /**
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
 
 public class EBIndex {
 
-	private String[] values;
+	private final String[] values;
 	private String pageName;
 	private int rowNumber;
 	private boolean isDeleted;
@@ -36,11 +36,10 @@ public class EBIndex {
 
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof EBIndex)) {
+		if (!(object instanceof EBIndex other)) {
 			return false;
 		}
 
-		EBIndex other = (EBIndex) object;
 		for (int i = 0; i < values.length; i++) {
 			if (other.getValues()[i] != null && this.getValues()[i] != null) {
 				if (!other.getValues()[i].equals(this.getValues()[i])) {

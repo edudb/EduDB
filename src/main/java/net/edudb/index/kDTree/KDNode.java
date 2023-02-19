@@ -1,25 +1,25 @@
 /**
  * This file is part of the Java Machine Learning Library
- * 
+ * <p>
  * The Java Machine Learning Library is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ * <p>
  * The Java Machine Learning Library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with the Java Machine Learning Library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- * 
+ * <p>
  * Copyright (c) 2006-2012, Thomas Abeel
- * 
+ * <p>
  * Project: http://java-ml.sourceforge.net/
- * 
- * 
+ * <p>
+ * <p>
  * based on work by Simon Levy
  * http://www.cs.wlu.edu/~levy/software/kd/
  */
@@ -32,41 +32,45 @@ class KDNode {
 
     // these are seen by kDTree
     /**
-     * @uml.property  name="k"
-     * @uml.associationEnd  multiplicity="(1 1)"
+     * @uml.property name="k"
+     * @uml.associationEnd multiplicity="(1 1)"
      */
     protected HPoint k;
-
     /**
-     * @uml.property  name="v"
+     * @uml.property name="left"
+     * @uml.associationEnd multiplicity="(1 1)" inverse="right:data_structures.kDTree.KDNode"
+     */
+    protected KDNode left;
+    /**
+     * @uml.property name="right"
+     * @uml.associationEnd multiplicity="(1 1)" inverse="left:data_structures.kDTree.KDNode"
+     */
+    protected KDNode right;
+    /**
+     * @uml.property name="deleted"
+     */
+    protected boolean deleted;
+    /**
+     * @uml.property name="v"
      */
     Object v;
 
-    /**
-     * @uml.property  name="left"
-     * @uml.associationEnd  multiplicity="(1 1)" inverse="right:data_structures.kDTree.KDNode"
-     */
-    protected KDNode left;
+    // constructor is used only by class; other methods are static
+    private KDNode(HPoint key, Object val) {
 
-    /**
-     * @uml.property  name="right"
-     * @uml.associationEnd  multiplicity="(1 1)" inverse="left:data_structures.kDTree.KDNode"
-     */
-    protected KDNode right;
-
-    /**
-     * @uml.property  name="deleted"
-     */
-    protected boolean deleted;
+        k = key;
+        v = val;
+        left = null;
+        right = null;
+        deleted = false;
+    }
 
     // Method ins translated from 352.ins.c of Gonnet & Baeza-Yates
-    protected static KDNode ins(HPoint key, Object val, KDNode t, int lev, int K)  {
+    protected static KDNode ins(HPoint key, Object val, KDNode t, int lev, int K) {
 
         if (t == null) {
             t = new KDNode(key, val);
-        }
-
-        else if (key.equals(t.k)) {
+        } else if (key.equals(t.k)) {
 
             // "re-insert"
             if (t.deleted) {
@@ -77,9 +81,7 @@ class KDNode {
             // else {
             // throw new KeyDuplicateException();
             // }
-        }
-
-        else if (key.coord[lev].compareTo(t.k.coord[lev])> 0) {
+        } else if (key.coord[lev].compareTo(t.k.coord[lev]) > 0) {
             t.right = ins(key, val, t.right, (lev + 1) % K, K);
         } else {
             t.left = ins(key, val, t.left, (lev + 1) % K, K);
@@ -95,7 +97,7 @@ class KDNode {
 
             if (!t.deleted && key.equals(t.k)) {
                 return t;
-            } else if (key.coord[lev].compareTo(t.k.coord[lev])> 0) {
+            } else if (key.coord[lev].compareTo(t.k.coord[lev]) > 0) {
                 t = t.right;
             } else {
                 t = t.left;
@@ -110,16 +112,16 @@ class KDNode {
 
         if (t == null)
             return;
-        if (lowk.coord[lev].compareTo(t.k.coord[lev])> 0) {
+        if (lowk.coord[lev].compareTo(t.k.coord[lev]) > 0) {
             rsearch(lowk, uppk, t.left, (lev + 1) % K, K, v);
         }
         int j;
-        for (j = 0; j < K && lowk.coord[lev].compareTo(t.k.coord[lev])<= 0
-                && uppk.coord[lev].compareTo(t.k.coord[lev])>= 0; j++)
+        for (j = 0; j < K && lowk.coord[lev].compareTo(t.k.coord[lev]) <= 0
+                && uppk.coord[lev].compareTo(t.k.coord[lev]) >= 0; j++)
             ;
         if (j == K)
             v.add(t);
-        if (uppk.coord[lev].compareTo(t.k.coord[lev])> 0) {
+        if (uppk.coord[lev].compareTo(t.k.coord[lev]) > 0) {
             rsearch(lowk, uppk, t.right, (lev + 1) % K, K, v);
         }
     }
@@ -129,7 +131,7 @@ class KDNode {
     // make the algorithm work correctly. NearestNeighborList solution
     // courtesy of Bjoern Heckel.
     protected static void nnbr(KDNode kd, HPoint target, HRect hr, double max_dist_sqd, int lev, int K,
-            NearestNeighborList nnl) {
+                               NearestNeighborList nnl) {
 
         // 1. if kd is empty then set dist-sqd to infinity and exit.
         if (kd == null) {
@@ -153,7 +155,7 @@ class KDNode {
 
         // 5. target-in-left := target_s <= pivot_s
 
-        boolean target_in_left = target.coord[lev].compareTo(pivot.coord[lev]) < 0;;
+        boolean target_in_left = target.coord[lev].compareTo(pivot.coord[lev]) < 0;
 
         KDNode nearer_kd;
         HRect nearer_hr;
@@ -249,27 +251,6 @@ class KDNode {
         }
     }
 
-    // constructor is used only by class; other methods are static
-    private KDNode(HPoint key, Object val) {
-
-        k = key;
-        v = val;
-        left = null;
-        right = null;
-        deleted = false;
-    }
-
-    protected String toString(int depth) {
-        String s = k + "  " + v + (deleted ? "*" : "");
-        if (left != null) {
-            s = s + "\n" + pad(depth) + "L " + left.toString(depth + 1);
-        }
-        if (right != null) {
-            s = s + "\n" + pad(depth) + "R " + right.toString(depth + 1);
-        }
-        return s;
-    }
-
     private static String pad(int n) {
         String s = "";
         for (int i = 0; i < n; ++i) {
@@ -284,8 +265,17 @@ class KDNode {
     }
 
     private static void hpcopy(HPoint hp_src, HPoint hp_dst) {
-        for (int i = 0; i < hp_dst.coord.length; ++i) {
-            hp_dst.coord[i] = hp_src.coord[i];
+        System.arraycopy(hp_src.coord, 0, hp_dst.coord, 0, hp_dst.coord.length);
+    }
+
+    protected String toString(int depth) {
+        String s = k + "  " + v + (deleted ? "*" : "");
+        if (left != null) {
+            s = s + "\n" + pad(depth) + "L " + left.toString(depth + 1);
         }
+        if (right != null) {
+            s = s + "\n" + pad(depth) + "R " + right.toString(depth + 1);
+        }
+        return s;
     }
 }

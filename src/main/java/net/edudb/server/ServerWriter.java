@@ -20,12 +20,12 @@ import net.edudb.response.Response;
 
 /**
  * A singleton that handles writing to the client.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
 public class ServerWriter {
-	private static ServerWriter instance = new ServerWriter();
+	private static final ServerWriter instance = new ServerWriter();
 	private ChannelHandlerContext context;
 
 	private ServerWriter() {
@@ -45,7 +45,7 @@ public class ServerWriter {
 
 	/**
 	 * Writes to the client iff the context is not null.
-	 * 
+	 *
 	 * @param obj
 	 *            Object to write.
 	 */

@@ -18,43 +18,43 @@ import net.edudb.structure.Record;
 
 public interface Table extends OperatorParameter {
 	/**
-	 * 
+	 *
 	 * @return Name of the table.
 	 */
-	public String getName();
+    String getName();
 
 	/**
-	 * 
+	 *
 	 * @return PageManager responsible for the table's set of pages.
 	 */
-	public PageManager getPageManager();
+    PageManager getPageManager();
 
 	/**
 	 * Delete all the pages associated with the table from disk.
 	 */
-	public void deletePages();
+    void deletePages();
 
 	/**
 	 * Adds a record to the table/relation.
-	 * 
+	 *
 	 * @param record
 	 *            The record to add.
 	 */
-	public void addRecord(Record record);
+    void addRecord(Record record);
 
 	/**
-	 * 
+	 *
 	 * @param columnTypes
 	 *            Linked Hash Map that holds each column name and its type name.
 	 */
-	public void setColumnTypes(LinkedHashMap<String, String> columnTypes);
+    void setColumnTypes(LinkedHashMap<String, String> columnTypes);
 
 	/**
-	 * 
+	 *
 	 * @return Linked Hash Map that holds each column name and its type name
 	 *         inside the table.
 	 */
-	public LinkedHashMap<String, String> getColumnTypes();
+    LinkedHashMap<String, String> getColumnTypes();
 
 	/**
 	 * Prints the whole pages of a given table/relation. <br>
@@ -63,5 +63,5 @@ public interface Table extends OperatorParameter {
 	 * <br>
 	 * Use only for testing.
 	 */
-	public void print();
+    void print();
 }

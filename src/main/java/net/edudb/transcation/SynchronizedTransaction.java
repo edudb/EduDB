@@ -17,7 +17,7 @@ import net.edudb.response.Response;
 
 /**
  * A transaction that is executed in-order.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

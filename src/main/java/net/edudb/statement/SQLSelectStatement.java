@@ -15,7 +15,7 @@ import gudusoft.gsqlparser.stmt.TSelectSqlStatement;
 
 /**
  * Holds information about the SQL SELECT statement.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -24,11 +24,11 @@ public class SQLSelectStatement extends SQLStatement {
 	/**
 	 * <b>ATTENTION</b><br>
 	 * <br>
-	 * 
+	 *
 	 * Do not access `statement` from concurrent threads as it will cause
 	 * exceptions.
 	 */
-	private TSelectSqlStatement statement;
+	private final TSelectSqlStatement statement;
 
 	public SQLSelectStatement(TCustomSqlStatement tCustomSqlStatement) {
 		this.statement = (TSelectSqlStatement) tCustomSqlStatement;

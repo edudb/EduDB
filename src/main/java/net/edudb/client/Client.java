@@ -29,14 +29,14 @@ import net.edudb.request.Request;
 import java.io.IOException;
 
 /**
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
 public class Client {
 
-	private static Client instance = new Client();
-	private ClientHandler clientHandler;
+	private static final Client instance = new Client();
+	private final ClientHandler clientHandler;
 	private ConsoleReader consoleReader;
 	private Channel channel;
 	private String host;

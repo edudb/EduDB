@@ -13,7 +13,7 @@ package net.edudb.client.console.executor;
 import net.edudb.client.ClientWriter;
 
 /**
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

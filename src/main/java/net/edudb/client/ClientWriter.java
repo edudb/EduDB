@@ -8,36 +8,36 @@ import net.edudb.request.Request;
  */
 public class ClientWriter {
 
-	private static ClientWriter instance = new ClientWriter();
-	private ChannelHandlerContext context;
+    private static final ClientWriter instance = new ClientWriter();
+    private ChannelHandlerContext context;
 
-	private ClientWriter() {
-	}
+    private ClientWriter() {
+    }
 
-	public void setContext(ChannelHandlerContext context) {
-		this.context = context;
-	}
+    public static ClientWriter getInstance() {
+        return instance;
+    }
 
-	public void writeln(Object obj) {
-		if (context != null) {
+    public void setContext(ChannelHandlerContext context) {
+        this.context = context;
+    }
 
-			//ByteBuf buf = Unpooled.copiedBuffer(obj.toString() + "\n", Charsets.UTF_8);
-			Request request = new Request(null, (String)obj);
-			context.writeAndFlush(request);
-		}
-	}
+    public void writeln(Object obj) {
+        if (context != null) {
 
-	public void write(Object obj) {
-		if (context != null) {
-			//ByteBuf buf = Unpooled.copiedBuffer(obj.toString(), Charsets.UTF_8);
+            //ByteBuf buf = Unpooled.copiedBuffer(obj.toString() + "\n", Charsets.UTF_8);
+            Request request = new Request(null, (String) obj);
+            context.writeAndFlush(request);
+        }
+    }
 
-			Request request = new Request(null, (String)obj);
-			context.writeAndFlush(request);
-		}
-	}
+    public void write(Object obj) {
+        if (context != null) {
+            //ByteBuf buf = Unpooled.copiedBuffer(obj.toString(), Charsets.UTF_8);
 
-	public static ClientWriter getInstance() {
-		return instance;
-	}
+            Request request = new Request(null, (String) obj);
+            context.writeAndFlush(request);
+        }
+    }
 
 }

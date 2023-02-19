@@ -17,7 +17,7 @@ import net.edudb.query.UnaryQueryNode;
 /**
  * DistributedOperator that relates to a relation. It has no children because it is the
  * leaf node in the query tree.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

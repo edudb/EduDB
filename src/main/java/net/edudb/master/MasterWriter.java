@@ -23,7 +23,7 @@ import net.edudb.console.DatabaseConsole;
  *
  */
 public class MasterWriter {
-    private static MasterWriter instance = new MasterWriter();
+    private static final MasterWriter instance = new MasterWriter();
     private ChannelHandlerContext context;
 
     private MasterWriter() {}

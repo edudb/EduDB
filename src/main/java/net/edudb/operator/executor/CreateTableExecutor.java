@@ -17,7 +17,7 @@ import net.edudb.structure.table.TableManager;
 
 /**
  * Executes the SQL CREATE TABLE statement.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

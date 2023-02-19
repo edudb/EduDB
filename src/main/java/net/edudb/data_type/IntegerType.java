@@ -13,18 +13,18 @@ package net.edudb.data_type;
 import java.io.Serializable;
 
 /**
- * 
+ *
  * @author mohamed
  * @author Ahmed Abdul Badie
- * 
+ *
  */
 public class IntegerType extends DataType implements Serializable {
-	
+
 	private static final long serialVersionUID = 3302671401075163802L;
 	/**
 	 * @uml.property name="integer"
 	 */
-	private Integer integer;
+	private final Integer integer;
 
 	public IntegerType(Integer integer) {
 		this.integer = integer;

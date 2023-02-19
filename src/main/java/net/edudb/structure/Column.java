@@ -14,7 +14,7 @@ import java.io.Serializable;
 
 /**
  * Created by mohamed on 4/19/14.
- * 
+ *
  * @author Ahmed Abdul Badie
  */
 public class Column implements Serializable {
@@ -55,7 +55,7 @@ public class Column implements Serializable {
 	@Override
 	public int hashCode() {
 		return order;
-	};
+	}
 
 	@Override
 	public boolean equals(Object o) {

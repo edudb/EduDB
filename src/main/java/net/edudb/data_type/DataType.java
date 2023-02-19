@@ -11,7 +11,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 package net.edudb.data_type;
 
 /**
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -19,7 +19,7 @@ public abstract class DataType implements Comparable<DataType> {
 
 	/**
 	 * This method is used in the {@link net.edudb.index.kDTree}.
-	 * 
+	 *
 	 * @param dataType
 	 * @return
 	 */
@@ -31,7 +31,7 @@ public abstract class DataType implements Comparable<DataType> {
 
 	/**
 	 * Checks whether a given type is supported.
-	 * 
+	 *
 	 * @param typeName
 	 *            The type to check if it is supported.
 	 * @return The support state of the given type.

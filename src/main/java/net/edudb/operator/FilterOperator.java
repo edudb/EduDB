@@ -18,7 +18,7 @@ import net.edudb.query.UnaryQueryNode;
 /**
  * A relational algebra operator, with one child, that filters tuples from a
  * relation based on some condition.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

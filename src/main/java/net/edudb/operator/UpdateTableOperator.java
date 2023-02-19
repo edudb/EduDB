@@ -18,7 +18,7 @@ import net.edudb.query.UnaryQueryNode;
 /**
  * An operator, with one child, that updates tuples in its child relation based
  * on an optional condition.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

@@ -22,11 +22,11 @@ public interface DistributedOperator {
      * @param parameter
      *            The parameter to set.
      */
-    public void setParameter(DistributedOperatorParameter parameter);
+    void setParameter(DistributedOperatorParameter parameter);
 
     /**
      *
      * @return The parameter of the operator.
      */
-    public DistributedOperatorParameter getParameter();
+    DistributedOperatorParameter getParameter();
 }

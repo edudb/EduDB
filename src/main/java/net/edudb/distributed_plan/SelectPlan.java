@@ -210,7 +210,7 @@ public class SelectPlan extends DistributedPlan {
                 JoinOperator operator = new JoinOperator();
                 operator.setParameter(parameter);
 
-                QueryTree tree = new QueryTree((QueryNode)operator);
+                QueryTree tree = new QueryTree(operator);
 
                 return tree;
             }
@@ -318,7 +318,7 @@ public class SelectPlan extends DistributedPlan {
 
             operator.setParameter(parameter);
 
-            QueryTree tree = new QueryTree((QueryNode)operator);
+            QueryTree tree = new QueryTree(operator);
 
             return tree;
         }

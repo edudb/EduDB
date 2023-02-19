@@ -32,7 +32,7 @@ public class InitializeExecutor implements MasterExecutorChain {
      * and captures <b>username</b> and <b>password</b> in the matcher's groups
      * one and two, respectively.
      */
-    private String regex = "\\A\\[edudb\\:\\:(\\w+)\\:(\\w+)\\]\\z";
+    private final String regex = "\\A\\[edudb\\:\\:(\\w+)\\:(\\w+)\\]\\z";
 
     @Override
     public void setNextElementInChain(MasterExecutorChain chainElement) {

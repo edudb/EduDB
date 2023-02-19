@@ -15,7 +15,7 @@ import net.edudb.ebtree.EBTree;
 
 /**
  * A tree that has relational algebra operators as its nodes.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

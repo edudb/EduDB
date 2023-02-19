@@ -1,25 +1,25 @@
 /**
  * This file is part of the Java Machine Learning Library
- * 
+ *
  * The Java Machine Learning Library is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * The Java Machine Learning Library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with the Java Machine Learning Library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- * 
+ *
  * Copyright (c) 2006-2012, Thomas Abeel
- * 
+ *
  * Project: http://java-ml.sourceforge.net/
- * 
- * 
+ *
+ *
  * based on work by Simon Levy
  * http://www.cs.wlu.edu/~levy/software/kd/
  */
@@ -47,7 +47,7 @@ public class KDTree {
 	// root of KD-tree
 	/**
      * @uml.property  name="m_root"
-     * @uml.associationEnd  
+     * @uml.associationEnd
      */
 	private KDNode m_root;
 
@@ -59,7 +59,7 @@ public class KDTree {
 
 	/**
 	 * Creates a KD-tree with specified number of dimensions.
-	 * 
+	 *
 	 * @param k
 	 *            number of dimensions
 	 */
@@ -71,21 +71,21 @@ public class KDTree {
 
 	/**
 	 * Insert a node in a KD-tree. Uses algorithm translated from 352.ins.c of
-	 * 
+	 *
 	 * <PRE>
-	 *   &#064;Book{GonnetBaezaYates1991,                                   
+	 *   &#064;Book{GonnetBaezaYates1991,
 	 *     author =    {G.H. Gonnet and R. Baeza-Yates},
 	 *     title =     {Handbook of Algorithms and Data Structures},
 	 *     publisher = {Addison-Wesley},
 	 *     year =      {1991}
 	 *   }
 	 * </PRE>
-	 * 
+	 *
 	 * @param key
 	 *            key for KD-tree node
 	 * @param value
 	 *            value at that key
-	 * 
+	 *
 	 * @throws KeySizeException
 	 *             if key.length mismatches K
 	 * @throws KeyDuplicateException
@@ -106,12 +106,12 @@ public class KDTree {
 	/**
 	 * Find KD-tree node whose key is identical to key. Uses algorithm
 	 * translated from 352.srch.c of Gonnet & Baeza-Yates.
-	 * 
+	 *
 	 * @param key
 	 *            key for KD-tree node
-	 * 
+	 *
 	 * @return object at key, or null if not found
-	 * 
+	 *
 	 * @throws KeySizeException
 	 *             if key.length mismatches K
 	 */
@@ -130,10 +130,10 @@ public class KDTree {
 	 * Delete a node from a KD-tree. Instead of actually deleting node and
 	 * rebuilding tree, marks node as deleted. Hence, it is up to the caller to
 	 * rebuild the tree as needed for efficiency.
-	 * 
+	 *
 	 * @param key
 	 *            key for KD-tree node
-	 * 
+	 *
 	 * @throws KeySizeException
 	 *             if key.length mismatches K
 	 * @throws KeyMissingException
@@ -161,24 +161,24 @@ public class KDTree {
 	/**
 	 * Find KD-tree node whose key is nearest neighbor to key. Implements the
 	 * Nearest Neighbor algorithm (Table 6.4) of
-	 * 
+	 *
 	 * <PRE>
 	 * &#064;techreport{AndrewMooreNearestNeighbor,
 	 *   author  = {Andrew Moore},
 	 *   title   = {An introductory tutorial on kd-trees},
 	 *   institution = {Robotics Institute, Carnegie Mellon University},
 	 *   year    = {1991},
-	 *   number  = {Technical Report No. 209, Computer Laboratory, 
+	 *   number  = {Technical Report No. 209, Computer Laboratory,
 	 *              University of Cambridge},
 	 *   address = {Pittsburgh, PA}
 	 * }
 	 * </PRE>
-	 * 
+	 *
 	 * @param key
 	 *            key for KD-tree node
-	 * 
+	 *
 	 * @return object at node nearest to key, or null on failure
-	 * 
+	 *
 	 * @throws KeySizeException
 	 *             if key.length mismatches K
 	 */
@@ -192,14 +192,14 @@ public class KDTree {
 	 * Find KD-tree nodes whose keys are <I>n</I> nearest neighbors to key. Uses
 	 * algorithm above. Neighbors are returned in ascending order of distance to
 	 * key.
-	 * 
+	 *
 	 * @param key
 	 *            key for KD-tree node
 	 * @param n
 	 *            how many neighbors to find
-	 * 
+	 *
 	 * @return objects at node nearest to key, or null on failure
-	 * 
+	 *
 	 * @throws KeySizeException
 	 *             if key.length mismatches K
 	 * @throws IllegalArgumentException
@@ -237,14 +237,14 @@ public class KDTree {
 	/**
 	 * Range search in a KD-tree. Uses algorithm translated from 352.range.c of
 	 * Gonnet & Baeza-Yates.
-	 * 
+	 *
 	 * @param lowk
 	 *            lower-bounds for key
 	 * @param uppk
 	 *            upper-bounds for key
-	 * 
+	 *
 	 * @return array of Objects whose keys fall in range [lowk,uppk]
-	 * 
+	 *
 	 * @throws KeySizeException
 	 *             on mismatch among lowk.length, uppk.length, or K
 	 */

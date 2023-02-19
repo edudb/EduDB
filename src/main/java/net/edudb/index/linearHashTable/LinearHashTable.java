@@ -28,11 +28,11 @@ public class LinearHashTable implements Map<DataType, DataType> {
 	/**
 	 * @uml.property name="loadFactor"
 	 */
-	private float loadFactor;
+	private final float loadFactor;
 	/**
 	 * @uml.property name="bucketSize"
 	 */
-	private int bucketSize;
+	private final int bucketSize;
 	/**
 	 * @uml.property name="size"
 	 */
@@ -54,7 +54,7 @@ public class LinearHashTable implements Map<DataType, DataType> {
 	 * @uml.associationEnd multiplicity="(0 -1)" inverse=
 	 *                     "this$0:data_structures.linearHashTable.LinearHashTable$Bucket"
 	 */
-	private ArrayList<Bucket> buckets;
+	private final ArrayList<Bucket> buckets;
 
 	public LinearHashTable(float loadFactor, int bucketSize) {
 		this.loadFactor = loadFactor;
@@ -307,13 +307,13 @@ public class LinearHashTable implements Map<DataType, DataType> {
 		 * @uml.property name="key"
 		 * @uml.associationEnd
 		 */
-		private DataType key;
+		private final DataType key;
 		/**
 		 * @uml.property name="value"
 		 * @uml.associationEnd
 		 */
 		private DataType value;
-		private int hash;
+		private final int hash;
 
 		public LHTEntry(DataType key, DataType value, int hash) {
 			this.key = key;

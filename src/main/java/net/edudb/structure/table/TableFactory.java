@@ -10,9 +10,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.structure.table;
 
+import java.util.Objects;
+
 /**
  * A factory that creates table information file types supported by EduDB.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -20,7 +22,7 @@ public class TableFactory {
 	/**
 	 * Creates an instance of a supported table information file type as an
 	 * object.
-	 * 
+	 *
 	 * @param fileType
 	 *            The name of the file type.
 	 * @param tableName
@@ -28,11 +30,9 @@ public class TableFactory {
 	 * @return The created table information instance.
 	 */
 	public Table makeTable(TableFileType fileType, String tableName) {
-		switch (fileType) {
-		case Binary:
-			return new BinaryTable(tableName);
-		default:
-			return null;
-		}
-	}
+        if (Objects.requireNonNull(fileType) == TableFileType.Binary) {
+            return new BinaryTable(tableName);
+        }
+        return null;
+    }
 }

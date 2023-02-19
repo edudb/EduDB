@@ -15,7 +15,7 @@ import net.edudb.response.Response;
 
 /**
  * Prints EduDB's supported commands.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

@@ -15,13 +15,13 @@ import net.edudb.structure.table.Table;
 
 /**
  * The parameter associated with the insert operator.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
 public class InsertOperatorParameter implements OperatorParameter {
-	private Table table;
-	private SQLInsertStatement statement;
+	private final Table table;
+	private final SQLInsertStatement statement;
 
 	public InsertOperatorParameter(Table table, SQLInsertStatement statement) {
 		this.table = table;

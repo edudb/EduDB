@@ -47,13 +47,13 @@ import net.edudb.engine.DatabaseSystem;
 import net.edudb.server.executor.*;
 
 /**
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
 public class Server {
 
-	private int port;
+	private final int port;
 
 	public Server(int port) {
 		this.port = port;
@@ -183,7 +183,7 @@ public class Server {
 		/**
 		 * <b>ATTENTION</b><br>
 		 * <br>
-		 * 
+		 *
 		 * Important call.
 		 */
 		DatabaseSystem.getInstance().initializeDirectories();

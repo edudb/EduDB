@@ -37,8 +37,7 @@ public class SelectExecutor implements OperatorExecutionChain {
     public void setNextElementInChain(OperatorExecutionChain chainElement) { this.next = chainElement; }
 
     public void execute(DistributedOperator operator) {
-        if (operator instanceof SelectOperator) {
-            SelectOperator select = (SelectOperator) operator;
+        if (operator instanceof SelectOperator select) {
             SelectOperatorParameter parameter = (SelectOperatorParameter)select.getParameter();
 
             SQLSelectStatement statement = parameter.getStatement();

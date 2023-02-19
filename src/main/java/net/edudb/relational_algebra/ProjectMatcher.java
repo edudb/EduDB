@@ -18,7 +18,7 @@ import net.edudb.operator.parameter.ProjectOperatorParameter;
 
 /**
  * Matches the relational algebra Project formula.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -33,7 +33,7 @@ public class ProjectMatcher implements RAMatcherChain {
 	 * two, respectively. <b>arg0</b> is the relational algebra formula to
 	 * project the columns from and <b>arg1</b> is the column orders to project.
 	 */
-	private String regex = "\\AProject\\((.+)\\,\\[(\\d+(?:\\,\\s\\d+)*)\\]\\)\\z";
+	private final String regex = "\\AProject\\((.+)\\,\\[(\\d+(?:\\,\\s\\d+)*)\\]\\)\\z";
 
 	@Override
 	public void setNextElementInChain(RAMatcherChain chainElement) {

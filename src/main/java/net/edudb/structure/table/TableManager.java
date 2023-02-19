@@ -17,18 +17,18 @@ import net.edudb.engine.FileManager;
 import net.edudb.statistics.Schema;
 
 /**
- * 
+ *
  * TableManager is a singleton that is a wrapper class around
  * TableAbstractFactory. It handles the reading and writing of tables by
  * contacting the File Manager.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
 public class TableManager {
 
-	private static TableManager instance = new TableManager();
-	private HashMap<String, Table> tableBuffer;
+	private static final TableManager instance = new TableManager();
+	private final HashMap<String, Table> tableBuffer;
 
 	private TableManager() {
 		this.tableBuffer = new HashMap<>();
@@ -41,7 +41,7 @@ public class TableManager {
 	/**
 	 * Reads a table from the disk if it is not available in the table buffer
 	 * pool.
-	 * 
+	 *
 	 * @param tableName
 	 *            Name of the table to read.
 	 * @return The read table.
@@ -71,7 +71,7 @@ public class TableManager {
 
 	/**
 	 * Adds the table to the buffer pool and writes it to disk.
-	 * 
+	 *
 	 * @param table
 	 *            The table to write.
 	 */
@@ -102,7 +102,7 @@ public class TableManager {
 	/**
 	 * Deletes the table by deleting its pages from disk, removing the table
 	 * from the schema file, and removing the table from disk.
-	 * 
+	 *
 	 * @param table
 	 *            The table to delete.
 	 */

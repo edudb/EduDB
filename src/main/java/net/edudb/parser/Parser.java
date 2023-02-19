@@ -24,7 +24,7 @@ import net.edudb.transcation.TransactionManager;
 
 /**
  * The SQL parser.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -48,7 +48,7 @@ public class Parser {
 	/**
 	 * Parses and executes an SQL query by encapsulating it inside a
 	 * synchronized transaction.
-	 * 
+	 *
 	 * @param strSQL
 	 *            The SQL string to parse.
 	 * @throws TranslationException

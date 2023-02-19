@@ -18,7 +18,7 @@ import net.edudb.query.QueryNode;
 /**
  * A relational algebra operator, with two children, that joins two relations on
  * columns that have equal values.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

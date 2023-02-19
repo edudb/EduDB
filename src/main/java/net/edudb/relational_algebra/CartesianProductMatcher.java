@@ -18,7 +18,7 @@ import net.edudb.operator.RelationOperator;
 
 /**
  * Matches the relational algebra CartProd formula.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -33,7 +33,7 @@ public class CartesianProductMatcher implements RAMatcherChain {
 	 * two, respectively. <b>arg0</b> is the left relational algebra formula and
 	 * <b>arg1</b> is the right relation.
 	 */
-	private String regex = "\\ACartProd\\((.*\\))\\,(.*)\\)\\z";
+	private final String regex = "\\ACartProd\\((.*\\))\\,(.*)\\)\\z";
 
 	@Override
 	public void setNextElementInChain(RAMatcherChain chainElement) {

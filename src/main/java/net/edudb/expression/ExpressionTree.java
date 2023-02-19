@@ -17,7 +17,7 @@ import net.edudb.operator.parameter.OperatorParameter;
 import net.edudb.structure.Column;
 
 /**
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -25,11 +25,11 @@ public interface ExpressionTree extends OperatorParameter {
 
 	/**
 	 * Evaluates an expression against a record.
-	 * 
+	 *
 	 * @param data
 	 *            The record for the expression to be evaluated against.
 	 * @return Result of the evaluation.
 	 */
-	public boolean evaluate(LinkedHashMap<Column, DataType> data);
+    boolean evaluate(LinkedHashMap<Column, DataType> data);
 
 }

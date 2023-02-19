@@ -29,11 +29,11 @@ import java.util.Hashtable;
  */
 public class MetadataBuffer {
 
-    private static MetadataBuffer instance = new MetadataBuffer();
+    private static final MetadataBuffer instance = new MetadataBuffer();
 
-    private Hashtable<String, Hashtable<String, DataType>> tables = new Hashtable();
-    private Hashtable<String, Record> workers = new Hashtable();
-    private Hashtable<String, Hashtable<String, DataType>> shards = new Hashtable<>();
+    private final Hashtable<String, Hashtable<String, DataType>> tables = new Hashtable();
+    private final Hashtable<String, Record> workers = new Hashtable();
+    private final Hashtable<String, Hashtable<String, DataType>> shards = new Hashtable<>();
 
     private MetadataBuffer () {}
 

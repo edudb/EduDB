@@ -18,7 +18,7 @@ import gudusoft.gsqlparser.stmt.TInsertSqlStatement;
 
 /**
  * Holds information about the SQL INSERT INTO statement.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -27,15 +27,15 @@ public class SQLInsertStatement extends SQLStatement {
 	/**
 	 * <b>ATTENTION</b><br>
 	 * <br>
-	 * 
+	 *
 	 * Do not access `statement` from concurrent threads as it will cause
 	 * exceptions.
 	 */
-	private TInsertSqlStatement statement;
-	private String statementString;
-	private String tableName;
-	private ArrayList<String> columnList;
-	private ArrayList<String> valueList;
+	private final TInsertSqlStatement statement;
+	private final String statementString;
+	private final String tableName;
+	private final ArrayList<String> columnList;
+	private final ArrayList<String> valueList;
 
 	public SQLInsertStatement(TCustomSqlStatement tCustomSqlStatement) {
 		this.statement = (TInsertSqlStatement) tCustomSqlStatement;
@@ -58,7 +58,7 @@ public class SQLInsertStatement extends SQLStatement {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return List of column names.
 	 */
 	public ArrayList<String> getColumnList() {
@@ -76,7 +76,7 @@ public class SQLInsertStatement extends SQLStatement {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return List of values.
 	 */
 	public ArrayList<String> getValueList() {

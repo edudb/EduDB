@@ -12,7 +12,7 @@ package net.edudb.structure.table;
 
 /**
  * Supported table information file types.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

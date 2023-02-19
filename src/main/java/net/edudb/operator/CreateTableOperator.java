@@ -16,7 +16,7 @@ import net.edudb.query.UnaryQueryNode;
 
 /**
  * An operator, with no children, that is used to create a table in a database.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

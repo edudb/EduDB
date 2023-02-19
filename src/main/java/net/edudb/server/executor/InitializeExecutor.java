@@ -18,7 +18,7 @@ import net.edudb.server.ServerWriter;
 
 /**
  * Handles the initialization of the connection with the client.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -32,7 +32,7 @@ public class InitializeExecutor implements ConsoleExecutorChain {
 	 * and captures <b>username</b> and <b>password</b> in the matcher's groups
 	 * one and two, respectively.
 	 */
-	private String regex = "\\A\\[edudb\\:\\:(\\w+)\\:(\\w+)\\]\\z";
+	private final String regex = "\\A\\[edudb\\:\\:(\\w+)\\:(\\w+)\\]\\z";
 
 	@Override
 	public void setNextElementInChain(ConsoleExecutorChain chainElement) {
@@ -47,7 +47,7 @@ public class InitializeExecutor implements ConsoleExecutorChain {
 				/**
 				 * Write anything to the client to initialize a connection with
 				 * it.
-				 * 
+				 *
 				 */
 				if (matcher.group(1).equals("admin") && matcher.group(2).equals("admin")) {
 					//ServerWriter.getInstance().write("[edudb::init]");

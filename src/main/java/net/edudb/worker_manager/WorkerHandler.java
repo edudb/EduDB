@@ -22,7 +22,7 @@ import net.edudb.response.Response;
  */
 public class WorkerHandler extends ChannelInboundHandlerAdapter {
 
-    private HandlerListener listener;
+    private final HandlerListener listener;
 
     public WorkerHandler(HandlerListener listener) {
         this.listener = listener;
@@ -31,9 +31,8 @@ public class WorkerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
 //        System.out.println("response arrived");
-        if (msg instanceof Response) {
+        if (msg instanceof Response response) {
 //            System.out.println("response is an object");
-            Response response = (Response)msg;
             listener.onResponseArrival(ctx, response);
         }
     }

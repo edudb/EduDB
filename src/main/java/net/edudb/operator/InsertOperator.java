@@ -16,7 +16,7 @@ import net.edudb.query.UnaryQueryNode;
 
 /**
  * An operator, with one child, that inserts data to its child relation.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

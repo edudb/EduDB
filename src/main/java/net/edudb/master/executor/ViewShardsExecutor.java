@@ -27,7 +27,7 @@ import java.util.regex.Matcher;
 public class ViewShardsExecutor implements MasterExecutorChain {
 
     private MasterExecutorChain nextElement;
-    private String regex = "\\A(?:(?i)show)\\s+(?:(?i)shards)\\s+(?:(?i)from)\\s+(\\w+)\\s*;?\\z";
+    private final String regex = "\\A(?:(?i)show)\\s+(?:(?i)shards)\\s+(?:(?i)from)\\s+(\\w+)\\s*;?\\z";
 
     @Override
     public void setNextElementInChain(MasterExecutorChain chainElement) {

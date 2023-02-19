@@ -13,7 +13,7 @@ package net.edudb.relational_algebra;
 /**
  * An interface, that implements the Chain of Responsibility design pattern,
  * that is used to match relational algebra formulae.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -21,21 +21,21 @@ public interface RAMatcherChain {
 
 	/**
 	 * Connects an existing executor chain with the argument chain element.
-	 * 
+	 *
 	 * @param chainElement
 	 *            The {@link RAMatcherChain} to be set next in the chain.
 	 */
-	public void setNextElementInChain(RAMatcherChain chainElement);
+    void setNextElementInChain(RAMatcherChain chainElement);
 
 	/**
 	 * Matches the passed relational algebra formula. Classes that implement the
 	 * {@link RAMatcherChain} interface handles the matching of the passed
 	 * relational algebra formula according to their functionality.
-	 * 
+	 *
 	 * @param string
 	 *            The relational algebra formula to match.
-	 * 
+	 *
 	 * @return The result of matching the passed relational algebra formula.
 	 */
-	public RAMatcherResult match(String string);
+    RAMatcherResult match(String string);
 }

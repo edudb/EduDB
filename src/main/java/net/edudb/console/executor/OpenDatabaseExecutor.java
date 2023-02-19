@@ -10,45 +10,44 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.console.executor;
 
-import java.util.regex.Matcher;
-
 import net.edudb.engine.DatabaseSystem;
 import net.edudb.engine.Utility;
 import net.edudb.response.Response;
 
+import java.util.regex.Matcher;
+
 /**
  * Opens an available database.
- * 
- * @author Ahmed Abdul Badie
  *
+ * @author Ahmed Abdul Badie
  */
 public class OpenDatabaseExecutor implements ConsoleExecutorChain {
-	private ConsoleExecutorChain nextElement;
-	/**
-	 * Matches strings of the form: <br>
-	 * <br>
-	 * <b>OPEN DATABASE database_name;</b><br>
-	 * <br>
-	 * and captures <b>database_name</b> in the matcher's group one.
-	 */
-	private String regex = "\\A(?:(?i)open)\\s+(?:(?i)database)\\s+(\\D\\w*)\\s*;?\\z";
+    /**
+     * Matches strings of the form: <br>
+     * <br>
+     * <b>OPEN DATABASE database_name;</b><br>
+     * <br>
+     * and captures <b>database_name</b> in the matcher's group one.
+     */
+    private final String regex = "\\A(?:(?i)open)\\s+(?:(?i)database)\\s+(\\D\\w*)\\s*;?\\z";
+    private ConsoleExecutorChain nextElement;
 
-	@Override
-	public void setNextElementInChain(ConsoleExecutorChain chainElement) {
-		this.nextElement = chainElement;
-	}
+    @Override
+    public void setNextElementInChain(ConsoleExecutorChain chainElement) {
+        this.nextElement = chainElement;
+    }
 
-	@Override
-	public Response execute(String string) {
-		if (string.toLowerCase().startsWith("open")) {
-			Matcher matcher = Utility.getMatcher(string, regex);
-			if (matcher.matches()) {
-				return new Response(DatabaseSystem.getInstance().open(matcher.group(1)));
+    @Override
+    public Response execute(String string) {
+        if (string.toLowerCase().startsWith("open")) {
+            Matcher matcher = Utility.getMatcher(string, regex);
+            if (matcher.matches()) {
+                return new Response(DatabaseSystem.getInstance().open(matcher.group(1)));
 
-				//return;
-			}
-		}
-		return nextElement.execute(string);
-	}
+                //return;
+            }
+        }
+        return nextElement.execute(string);
+    }
 
 }

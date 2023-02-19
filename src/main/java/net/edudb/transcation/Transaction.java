@@ -16,7 +16,7 @@ import net.edudb.query.QueryTreeExecutor;
 /**
  * A transaction is an object that executes a query tree using an execution
  * strategy. A transaction can either be concurrent or synchronized.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

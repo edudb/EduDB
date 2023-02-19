@@ -31,7 +31,7 @@ import net.edudb.structure.table.Table;
 
 /**
  * Executes the SQL INSERT INTO statement.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -46,7 +46,7 @@ public class InsertExecutor extends PostOrderOperatorExecutor implements Operato
 	@Override
 	public Relation execute(Operator operator) {
 		if (operator instanceof InsertOperator) {
-			Operator insert = (InsertOperator) operator;
+			Operator insert = operator;
 			InsertOperatorParameter parameter = (InsertOperatorParameter) insert.getParameter();
 
 			Table table = parameter.getTable();

@@ -14,29 +14,29 @@ import java.util.ArrayList;
 
 /**
  * A structure that is composed of multiple pages. E.g. database tables.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
 public interface Pageable {
 
 	/**
-	 * 
+	 *
 	 * @return ArrayList<String> of page names holding the data.
 	 */
-	public ArrayList<String> getPageNames();
+    ArrayList<String> getPageNames();
 
 	/**
 	 * Adds a new page name to the page names list.
-	 * 
+	 *
 	 * @param pageName
 	 *            Name of the page to add.
 	 */
-	public void addPageName(String pageName);
-	
+    void addPageName(String pageName);
+
 	/**
 	 * Deletes the pages from disk.
 	 */
-	public void deletePages();
+    void deletePages();
 
 }

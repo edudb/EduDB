@@ -20,50 +20,50 @@ public interface Record {
 
 	/**
 	 * Adds a column-value pair to the tuple.
-	 * 
+	 *
 	 * @param key
 	 *            The colmn to add.
 	 * @param value
 	 *            The value to add.
 	 */
-	public void addValue(Column key, DataType value);
+    void addValue(Column key, DataType value);
 
 	/**
-	 * 
+	 *
 	 * @return The tuple.
 	 */
-	public LinkedHashMap<Column, DataType> getData();
+    LinkedHashMap<Column, DataType> getData();
 
 	/**
 	 * Projects a set of columns from the caller record.
-	 * 
+	 *
 	 * @param projectedColumns
 	 *            Columns to project from the caller record.
 	 * @return Record containing the projected columns.
 	 */
-	public Record project(Integer[] projectedColumns);
+    Record project(Integer[] projectedColumns);
 
 	/**
 	 * Evaluates an expression tree against the caller record.
-	 * 
+	 *
 	 * @param expressionTree
 	 *            The expression tree to evaluate.
 	 * @return The evaluation result of the expression tree against the caller
 	 *         record.
 	 */
-	public boolean evaluate(BinaryExpressionTree expressionTree);
+    boolean evaluate(BinaryExpressionTree expressionTree);
 
 	/**
-	 * 
+	 *
 	 * @param record
 	 *            The record to join with the caller.
 	 * @return The record in which the caller and the record argument are joined
 	 *         together.
 	 */
-	public Record join(Record record);
+    Record join(Record record);
 
 	/**
-	 * 
+	 *
 	 * @param record
 	 *            The record to equate against.
 	 * @param expression
@@ -72,12 +72,12 @@ public interface Record {
 	 * @return The result of equating the caller record with the argument
 	 *         record.
 	 */
-	public boolean equates(Record record, Expression expression);
+    boolean equates(Record record, Expression expression);
 
 	/**
 	 * Joins the caller record with the argument record iff they equate to each
 	 * other. See {@link #equates(Record, Expression) equates}.
-	 * 
+	 *
 	 * @param record
 	 *            The record to join with the caller record.
 	 * @param column
@@ -87,25 +87,25 @@ public interface Record {
 	 *            EquiJoin.
 	 * @return
 	 */
-	public Record equiJoin(Record record, Column column);
+    Record equiJoin(Record record, Column column);
 
 	/**
 	 * Updates the record.
-	 * 
+	 *
 	 * @param data
 	 *            The data to update.
 	 */
-	public void update(LinkedHashMap<Column, DataType> data);
+    void update(LinkedHashMap<Column, DataType> data);
 
 	/**
 	 * Deletes the caller record.
 	 */
-	public void delete();
+    void delete();
 
 	/**
-	 * 
+	 *
 	 * @return The status of the caller record.
 	 */
-	public boolean isDeleted();
+    boolean isDeleted();
 
 }

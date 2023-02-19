@@ -22,7 +22,7 @@ public interface OperatorExecutionChain {
      *            The {@link OperatorExecutionChain} to be set next in the
      *            chain.
      */
-    public void setNextElementInChain(OperatorExecutionChain chainElement);
+    void setNextElementInChain(OperatorExecutionChain chainElement);
 
     /**
      * Executes the passed command. Classes that implement the
@@ -32,7 +32,7 @@ public interface OperatorExecutionChain {
      * @param operator
      *            The operator to execute.
      */
-    public void execute(DistributedOperator operator);
+    void execute(DistributedOperator operator);
 
     /**
      * connects a chain of executors
@@ -43,7 +43,7 @@ public interface OperatorExecutionChain {
      * @return
      * First executor in chain
      */
-    public static OperatorExecutionChain connnectChain(OperatorExecutionChain[] chain) {
+    static OperatorExecutionChain connnectChain(OperatorExecutionChain[] chain) {
         for (int i = 0; i < chain.length - 1; i++) {
             chain[i].setNextElementInChain(chain[i+1]);
         }

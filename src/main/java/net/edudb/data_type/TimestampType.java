@@ -20,12 +20,12 @@ import net.edudb.engine.Utility;
 import net.edudb.exception.InvalidTypeValueException;
 
 /**
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
 public class TimestampType extends DataType implements Serializable {
-	private Date timestamp;
+	private final Date timestamp;
 
 	private static final long serialVersionUID = 8410489057933198854L;
 
@@ -35,7 +35,7 @@ public class TimestampType extends DataType implements Serializable {
 
 	/**
 	 * Parses a date passed as a string and returns its value as a date.
-	 * 
+	 *
 	 * @param string
 	 *            The data to parse.
 	 * @return The parsed date iff the value is valid.

@@ -15,13 +15,13 @@ import net.edudb.query.QueryNode;
 /**
  * Holds a query tree node and the remaining string from the relational algebra
  * formula.
- * 
+ *
  * @author ahmedabadie
  *
  */
 public class RAMatcherResult {
-	private QueryNode node;
-	private String string;
+	private final QueryNode node;
+	private final String string;
 
 	public RAMatcherResult(QueryNode node, String string) {
 		this.node = node;

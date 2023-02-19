@@ -27,15 +27,15 @@ import java.util.Hashtable;
  */
 public class WorkersManager {
 
-    private static WorkersManager instance = new WorkersManager();
+    private static final WorkersManager instance = new WorkersManager();
 
-    private Hashtable<String, WorkerManager> workers = new Hashtable<String, WorkerManager>();
+    private final Hashtable<String, WorkerManager> workers = new Hashtable<String, WorkerManager>();
 
     private WorkersManager() {}
 
     public Hashtable<String, WorkerManager> getWorkers() { return workers; }
 
-    public static WorkersManager getInstance() { return instance; };
+    public static WorkersManager getInstance() { return instance; }
 
     public void connect(String host, Integer port) {
         String workerIdentifier = host + ":" + port;

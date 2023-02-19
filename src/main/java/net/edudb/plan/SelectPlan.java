@@ -16,7 +16,7 @@ import net.edudb.statement.SQLStatement;
 
 /**
  * A plan to select data from a table or tables.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

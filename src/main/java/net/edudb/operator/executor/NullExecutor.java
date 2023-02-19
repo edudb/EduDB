@@ -16,7 +16,7 @@ import net.edudb.relation.Relation;
 /**
  * An executor that is placed at the end of the chain. Reaching this executor
  * means that the given relational algebra operator is not supported.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

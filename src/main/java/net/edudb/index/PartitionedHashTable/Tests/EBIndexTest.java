@@ -8,7 +8,7 @@ import net.edudb.index.PartitionedHashTable.EBIndex;
 
 
 /**
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -22,7 +22,7 @@ public class EBIndexTest {
 		assertArrayEquals(new String[] { "a", "b" }, index.getValues());
 		assertEquals("test", index.getPageName());
 		assertEquals(12, index.getRowNumber());
-		assertEquals(false, index.isDeleted());
+        assertFalse(index.isDeleted());
 	}
 
 	@Test
@@ -30,9 +30,9 @@ public class EBIndexTest {
 		EBIndex index = new EBIndex(new String[] { "a", "b" });
 
 		assertArrayEquals(new String[] { "a", "b" }, index.getValues());
-		assertEquals(null, index.getPageName());
+        assertNull(index.getPageName());
 		assertEquals(0, index.getRowNumber());
-		assertEquals(false, index.isDeleted());
+        assertFalse(index.isDeleted());
 	}
 
 	@Test
@@ -54,7 +54,7 @@ public class EBIndexTest {
 		EBIndex index = new EBIndex(new String[] { "a", "b" }, "test", 12);
 
 		index.setDeleted(true);
-		assertEquals(true, index.isDeleted());
+        assertTrue(index.isDeleted());
 	}
 
 	@Test

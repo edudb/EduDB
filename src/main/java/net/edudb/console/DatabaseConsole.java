@@ -16,13 +16,13 @@ import net.edudb.console.executor.*;
 
 /**
  * Singleton that handles the console and its commands.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
 public class DatabaseConsole {
 
-	private static DatabaseConsole instance = new DatabaseConsole();
+	private static final DatabaseConsole instance = new DatabaseConsole();
 	private ConsoleReader consoleReader;
 
 	private DatabaseConsole() {
@@ -39,7 +39,7 @@ public class DatabaseConsole {
 
 	/**
 	 * Reads a line from the console.
-	 * 
+	 *
 	 * @return The read line.
 	 */
 	public String readLine() {
@@ -53,7 +53,7 @@ public class DatabaseConsole {
 
 	/**
 	 * Sets the console prompt.
-	 * 
+	 *
 	 * @param prompt
 	 *            The prompt to set.
 	 */
@@ -84,7 +84,7 @@ public class DatabaseConsole {
 	 * Prints EduDB's supported commands.
 	 */
 	public void printHelp() {
-		String supportedCommands[] = new String[] { "\tclear", "\texit" };
+		String[] supportedCommands = new String[] { "\tclear", "\texit" };
 		this.writeln("Supported commands:");
 		for (String string : supportedCommands) {
 			this.writeln(string);
@@ -93,7 +93,7 @@ public class DatabaseConsole {
 
 	/**
 	 * Writes to the system's console.
-	 * 
+	 *
 	 * @param object
 	 *            Object to write.
 	 */
@@ -103,7 +103,7 @@ public class DatabaseConsole {
 
 	/**
 	 * Writes a line to the system's console.
-	 * 
+	 *
 	 * @param object
 	 *            Object to write.
 	 */
@@ -129,9 +129,9 @@ public class DatabaseConsole {
 	}
 
 	/**
-	 * 
+	 *
 	 * Connects the elements of the given chain in their respected order.
-	 * 
+	 *
 	 * @param chainElements
 	 *            Elements of the chain to connect
 	 * @return The first element of the connected chain.
@@ -145,7 +145,7 @@ public class DatabaseConsole {
 
 	/**
 	 * Sets the console's execution chain.
-	 * 
+	 *
 	 * @return Console's execution chain.
 	 */
 	public static ConsoleExecutorChain getExecutionChain() {

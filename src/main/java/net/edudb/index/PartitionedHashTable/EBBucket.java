@@ -16,17 +16,17 @@ import net.edudb.server.ServerWriter;
 
 /**
  * The container that holds the data.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
 
 public class EBBucket implements EBPartitionedHashIndex {
-	
+
 	/**
 	 * Number of indexes the bucket will hold
 	 */
-	private int pageSize;
+	private final int pageSize;
 	/**
 	 * The next free position to insert the index into
 	 */
@@ -34,55 +34,55 @@ public class EBBucket implements EBPartitionedHashIndex {
 	/**
 	 * Array of indexes the bucket holds
 	 */
-	private EBIndex[] indexes;
-	
+	private final EBIndex[] indexes;
+
 	public EBBucket(int pageSize) {
 		this.pageSize = pageSize;
 		this.indexes = new EBIndex[this.pageSize];
 		this.freeSlot = 0;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return Bucket is full of indexes.
 	 */
-	
+
 	public boolean isFull() {
 		return this.freeSlot == this.pageSize;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return Bucket has no indexes.
 	 */
-	
+
 	public boolean isEmpty() {
 		return this.freeSlot == 0;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return Count of indexes in the bucket.
 	 */
-	
+
 	public int length() {
 		return this.freeSlot;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return Number of indexes the bucket can hold.
 	 */
-	
+
 	public int capacity() {
 		return this.pageSize;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return Count of not deleted indexes.
 	 */
-	
+
 	public int size() {
 		int count = 0;
 		for (int i = 0; i < this.freeSlot; ++i) {
@@ -92,7 +92,7 @@ public class EBBucket implements EBPartitionedHashIndex {
 		}
 		return count;
 	}
-	
+
 	public void print() {
 		for (int i = 0; i < this.freeSlot; ++i) {
 			EBIndex ebIndex = this.indexes[i];

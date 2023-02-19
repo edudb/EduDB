@@ -14,20 +14,20 @@ import net.edudb.structure.Record;
 
 /**
  * A structure that is composed of multiple records.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
 public abstract class Page {
 
 	/**
-	 * 
+	 *
 	 * @return Name of the page.
 	 */
 	public abstract String getName();
 
 	/**
-	 * 
+	 *
 	 * @param index
 	 *            Index of record to return.
 	 * @return The required record.
@@ -35,39 +35,39 @@ public abstract class Page {
 	public abstract Record getRecord(int index);
 
 	/**
-	 * 
+	 *
 	 * @return Records inside the page.
 	 */
 	public abstract Record[] getRecords();
 
 	/**
 	 * Adds a record to the page.
-	 * 
+	 *
 	 * @param record
 	 *            Record to be added to the page.
 	 */
 	public abstract void addRecord(Record record);
 
 	/**
-	 * 
+	 *
 	 * @return Number of records the page can hold.
 	 */
 	public abstract int capacity();
 
 	/**
-	 * 
+	 *
 	 * @return Number of records in the page.
 	 */
 	public abstract int size();
 
 	/**
-	 * 
+	 *
 	 * @return Page is full.
 	 */
 	public abstract boolean isFull();
 
 	/**
-	 * 
+	 *
 	 * @return Page has no records.
 	 */
 	public abstract boolean isEmpty();

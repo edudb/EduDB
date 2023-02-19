@@ -15,7 +15,7 @@ import net.edudb.ebtree.EBUnaryNode;
 /**
  * A marker interface. A {@link UnaryQueryNode} is a query tree node that has
  * one child.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

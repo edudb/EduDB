@@ -26,7 +26,7 @@ public class LinearHashTableTest {
 		IntegerType key = new IntegerType(5);
 		VarCharType value = new VarCharType("five");
 		table.put(key, value);
-		assertTrue(key.equals(key));
+        assertEquals(key, key);
 		assertEquals("get as put", value, table.get(key));
 	}
 
@@ -69,7 +69,7 @@ public class LinearHashTableTest {
 			DataType value = table.remove(key2);
 			assertEquals("value", value2, value);
 		}
-		assertEquals("table empty", true, table.isEmpty());
+        assertTrue("table empty", table.isEmpty());
 	}
 
 	@Test

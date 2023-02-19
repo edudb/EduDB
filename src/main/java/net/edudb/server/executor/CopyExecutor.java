@@ -18,7 +18,7 @@ import net.edudb.structure.table.Table;
 import net.edudb.structure.table.TableManager;
 /**
  * Handles the copy command.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -32,7 +32,7 @@ public class CopyExecutor implements ConsoleExecutorChain {
 	 * and captures <b>table_name</b> and <b>delimiter</b> in the matcher's
 	 * groups one and two, respectively.
 	 */
-	private String regex = "^(?:(?i)copy)\\s+(\\D\\w*)\\s+(?:(?i)delimiter)\\s+\\'(.+)\\'\\s*\\;?$";
+	private final String regex = "^(?:(?i)copy)\\s+(\\D\\w*)\\s+(?:(?i)delimiter)\\s+\\'(.+)\\'\\s*\\;?$";
 
 	@Override
 	public void setNextElementInChain(ConsoleExecutorChain chainElement) {

@@ -32,8 +32,7 @@ public class EquiJoinExecutor extends PostOrderOperatorExecutor implements Opera
 
 	@Override
 	public Relation execute(Operator operator) {
-		if (operator instanceof EquiJoinOperator) {
-			EquiJoinOperator equiOperator = (EquiJoinOperator) operator;
+		if (operator instanceof EquiJoinOperator equiOperator) {
 			Relation leftRelation = getChain().execute((Operator) equiOperator.getLeftChild());
 			Relation rightRelation = getChain().execute((Operator) equiOperator.getRightChild());
 

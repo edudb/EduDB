@@ -20,7 +20,7 @@ public class EBPartitionedHashTable implements EBPartitionedHashIndex {
 	/**
 	 * Hash table directory
 	 */
-	private EBDirectory directory;
+	private final EBDirectory directory;
 
 	/**
 	 * Keys indexed
@@ -30,7 +30,7 @@ public class EBPartitionedHashTable implements EBPartitionedHashIndex {
 	/**
 	 * Number of bits assigned to each key from the hash code
 	 */
-	private int bitsAssigned;
+	private final int bitsAssigned;
 
 	/**
 	 * @param keys
@@ -45,9 +45,9 @@ public class EBPartitionedHashTable implements EBPartitionedHashIndex {
 		bitsAssigned = 2;
 		this.directory = new EBDirectory((int) Math.pow(2, bitsAssigned * keys.length), bitsAssigned, 100);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return Key indexed
 	 */
 
@@ -60,10 +60,7 @@ public class EBPartitionedHashTable implements EBPartitionedHashIndex {
 	}
 
 	private boolean isValidIndex(EBIndex index) {
-		if (index.getValues().length != keys.length || index.getPageName() == null) {
-			return false;
-		}
-		return true;
+		return index.getValues().length == keys.length && index.getPageName() != null;
 	}
 
 	@Override

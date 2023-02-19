@@ -13,7 +13,6 @@ package net.edudb.master.executor;
 import net.edudb.engine.Utility;
 import net.edudb.meta_manager.MetaManager;
 import net.edudb.metadata_buffer.MetadataBuffer;
-import net.edudb.worker_manager.WorkerManager;
 import net.edudb.workers_manager.WorkersManager;
 
 import java.util.regex.Matcher;
@@ -25,9 +24,8 @@ import java.util.regex.Matcher;
  */
 public class CloseDatabaseExecutor implements MasterExecutorChain {
 
+    private final String regex = "\\A(?:(?i)close)\\s+(?:(?i)database)\\s*;?\\z";
     private MasterExecutorChain nextElement;
-
-    private String regex = "\\A(?:(?i)close)\\s+(?:(?i)database)\\s*;?\\z";
 
     @Override
     public void setNextElementInChain(MasterExecutorChain chainElement) {
@@ -45,8 +43,7 @@ public class CloseDatabaseExecutor implements MasterExecutorChain {
 
                 MetadataBuffer.getInstance().clearAll();
             }
-        }
-        else
+        } else
             nextElement.execute(string);
     }
 }

@@ -15,7 +15,7 @@ import net.edudb.ebtree.EBNode;
 /**
  * A marker interface. A {@link QueryNode} is a query tree node that has either
  * one or two children.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

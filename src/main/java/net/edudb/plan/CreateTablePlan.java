@@ -27,9 +27,9 @@ import net.edudb.statistics.Schema;
 
 /**
  * A plan to create a new table in a database.
- * 
+ *
  * Created by mohamed on 4/1/14.
- * 
+ *
  * @author Ahmed Abdul Badie
  */
 public class CreateTablePlan extends Plan {

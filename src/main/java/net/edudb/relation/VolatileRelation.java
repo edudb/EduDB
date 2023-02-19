@@ -19,14 +19,14 @@ import net.edudb.structure.table.Table;
 
 /**
  * A relation that is not intended to be saved to disk.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
 public class VolatileRelation implements Relation, Serializable {
 
 	private Table table;
-	private PageManager pageManager;
+	private final PageManager pageManager;
 
 	public VolatileRelation() {
 		this.pageManager = new PageManager();

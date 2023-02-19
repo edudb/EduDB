@@ -16,7 +16,7 @@ import net.edudb.page.Page;
 
 /**
  * Handles the replacement of pages in the buffer pool.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -32,7 +32,7 @@ public abstract class PageReplacement {
 
 	/**
 	 * Reads a page from the buffer pool.
-	 * 
+	 *
 	 * @param pageName
 	 *            Name of the page to read from the buffer pool.
 	 * @return The read page.
@@ -40,9 +40,9 @@ public abstract class PageReplacement {
 	public abstract Page read(String pageName);
 
 	/**
-	 * 
+	 *
 	 * Insert a page into the buffer pool.
-	 * 
+	 *
 	 * @param page
 	 *            Page to insert into the buffer pool.
 	 */

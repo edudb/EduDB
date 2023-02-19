@@ -18,7 +18,7 @@ import net.edudb.engine.Config;
 
 /**
  * A table information writer that writes binary table information files to disk.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

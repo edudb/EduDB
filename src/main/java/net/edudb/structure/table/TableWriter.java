@@ -14,7 +14,7 @@ import java.io.IOException;
 
 /**
  * A writer that writes table's information files to disk.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -22,7 +22,7 @@ public abstract class TableWriter {
 
 	/**
 	 * Writes a table's information to disk.
-	 * 
+	 *
 	 * @param table
 	 *            The table's information to write to disk.
 	 * @throws IOException

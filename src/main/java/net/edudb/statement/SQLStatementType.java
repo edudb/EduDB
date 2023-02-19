@@ -12,7 +12,7 @@ package net.edudb.statement;
 
 /**
  * Supported SQL statements.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

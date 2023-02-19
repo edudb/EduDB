@@ -30,7 +30,7 @@ public class ConnectWorkersExecutor implements MasterExecutorChain {
         this.nextElement = chainElement;
     }
 
-    private String regex = "\\A(?:(?i)connect)\\s+(?:(?i)workers)\\s*;?\\z";
+    private final String regex = "\\A(?:(?i)connect)\\s+(?:(?i)workers)\\s*;?\\z";
 
     @Override
     public void execute(String s) {

@@ -22,11 +22,11 @@ import java.util.ArrayList;
  */
 public class RangeCondition extends Condition {
 
-    private DataType minimumBound;
-    private boolean minimumInclusive;
+    private final DataType minimumBound;
+    private final boolean minimumInclusive;
 
-    private DataType maximumBound;
-    private boolean maximumInclusive;
+    private final DataType maximumBound;
+    private final boolean maximumInclusive;
 
     public RangeCondition(DataType minimumBound, boolean minimumInclusive, DataType maximumBound, boolean maximumInclusive) {
         this.minimumBound = minimumBound;
@@ -147,27 +147,22 @@ public class RangeCondition extends Condition {
         }
         else {
             if (maximumInclusive && minimumInclusive) {
-                if (minimumBound.compareTo(shardMaximum) <= 0
-                        && maximumBound.compareTo(shardMinimum) >= 0)
-                    return true;
+                return minimumBound.compareTo(shardMaximum) <= 0
+                        && maximumBound.compareTo(shardMinimum) >= 0;
             }
             else if (!maximumInclusive && !minimumInclusive) {
-                if (minimumBound.compareTo(shardMaximum) < 0
-                        && maximumBound.compareTo(shardMinimum) > 0)
-                    return true;
+                return minimumBound.compareTo(shardMaximum) < 0
+                        && maximumBound.compareTo(shardMinimum) > 0;
             }
             else if (!maximumInclusive && minimumInclusive) {
-                if (minimumBound.compareTo(shardMaximum) <= 0
-                        && maximumBound.compareTo(shardMinimum) > 0)
-                    return true;
+                return minimumBound.compareTo(shardMaximum) <= 0
+                        && maximumBound.compareTo(shardMinimum) > 0;
             }
             else {
-                if (minimumBound.compareTo(shardMaximum) < 0
-                        && maximumBound.compareTo(shardMinimum) >= 0)
-                    return true;
+                return minimumBound.compareTo(shardMaximum) < 0
+                        && maximumBound.compareTo(shardMinimum) >= 0;
             }
         }
-        return false;
     }
 
     public DataType getMinimumBound() {

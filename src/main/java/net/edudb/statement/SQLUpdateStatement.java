@@ -18,7 +18,7 @@ import gudusoft.gsqlparser.stmt.TUpdateSqlStatement;
 
 /**
  * Holds information about the SQL UPDATE statement.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -27,15 +27,15 @@ public class SQLUpdateStatement extends SQLStatement {
 	/**
 	 * <b>ATTENTION</b><br>
 	 * <br>
-	 * 
+	 *
 	 * Do not access `statement` from concurrent threads as it will cause
 	 * exceptions.
 	 */
-	private TUpdateSqlStatement statement;
-	private String tableName;
-	private String statementString;
+	private final TUpdateSqlStatement statement;
+	private final String tableName;
+	private final String statementString;
 	private String whereClause;
-	private HashMap<String, String> assignments;
+	private final HashMap<String, String> assignments;
 
 	public SQLUpdateStatement(TCustomSqlStatement tCustomSqlStatement) {
 		this.statement = (TUpdateSqlStatement) tCustomSqlStatement;
@@ -56,8 +56,8 @@ public class SQLUpdateStatement extends SQLStatement {
 	}
 
 	/**
-	 *  
-	 * @return Column-value pairs. 
+	 *
+	 * @return Column-value pairs.
 	 */
 	public HashMap<String, String> getAssignemnts() {
 		return assignments;

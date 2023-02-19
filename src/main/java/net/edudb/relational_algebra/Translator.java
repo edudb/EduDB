@@ -26,7 +26,7 @@ import ra.Term;
 public class Translator {
 	/**
 	 * Translates an SQL SELECT statement into a relational algebra formula.
-	 * 
+	 *
 	 * @param sqlString
 	 *            The SQL statement to translate.
 	 * @return The relational algebra formula.
@@ -46,7 +46,7 @@ public class Translator {
 	/**
 	 * Returns a chain of {@link RAMatcherChain} elements that are used to match
 	 * a relational algebra formula.
-	 * 
+	 *
 	 * @return Chain of {@link RAMatcherChain} elements.
 	 */
 	private RAMatcherChain getChain() {
@@ -67,7 +67,7 @@ public class Translator {
 	/**
 	 * Creates query tree nodes from a relational algebra formula by using
 	 * string matchers.
-	 * 
+	 *
 	 * @param relationAlgebra
 	 *            The relational algebra formula to match.
 	 * @param chain
@@ -91,7 +91,7 @@ public class Translator {
 
 	/**
 	 * Creates a query tree by matching a relational algebra formula.
-	 * 
+	 *
 	 * @param relationAlgebra
 	 *            The relational algebra formula to match.
 	 * @return The created query tree.

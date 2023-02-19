@@ -34,13 +34,13 @@ import java.util.Hashtable;
  */
 public class WorkerManager implements Runnable, HandlerListener, WorkerDAO {
 
-    private int port;
-    private String host;
-    private Hashtable<String, Response> pendingRequests = new Hashtable<String, Response>();
+    private final int port;
+    private final String host;
+    private final Hashtable<String, Response> pendingRequests = new Hashtable<String, Response>();
 
     private boolean connected = false;
-    private WorkerWriter workerWriter;
-    private WorkerHandler workerHandler;
+    private final WorkerWriter workerWriter;
+    private final WorkerHandler workerHandler;
 
     public WorkerManager(int port, String host) {
         this.port = port;

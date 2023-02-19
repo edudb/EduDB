@@ -33,11 +33,13 @@ public class UpdateExecutor implements OperatorExecutionChain {
 
     OperatorExecutionChain next;
 
-    public void setNextElementInChain(OperatorExecutionChain chainElement) { this.next = chainElement; }
+    public void setNextElementInChain(OperatorExecutionChain chainElement) {
+        this.next = chainElement;
+    }
 
     public void execute(DistributedOperator operator) {
         if (operator instanceof UpdateOperator) {
-            DistributedOperator update = (UpdateOperator) operator;
+            DistributedOperator update = operator;
             UpdateOperatorParameter parameter = (UpdateOperatorParameter) update.getParameter();
 
             SQLUpdateStatement statement = parameter.getStatement();
@@ -81,8 +83,7 @@ public class UpdateExecutor implements OperatorExecutionChain {
             }
 
             MasterWriter.getInstance().write(new Response("Updates complete", null, ""));
-        }
-        else {
+        } else {
             next.execute(operator);
         }
     }

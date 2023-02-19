@@ -20,7 +20,7 @@ import net.edudb.engine.Utility;
 
 public class CopyExecutor implements ConsoleExecutorChain {
 	private ConsoleExecutorChain nextElement;
-	private String regex = "\\A(?:(?i)copy)\\s+(\\D\\w*)\\s+(?:(?i)from)\\s+\\'(.+)\\'\\s+(?:(?i)delimiter)\\s+\\'(.+)\\'\\s*\\;?\\z";
+	private final String regex = "\\A(?:(?i)copy)\\s+(\\D\\w*)\\s+(?:(?i)from)\\s+\\'(.+)\\'\\s+(?:(?i)delimiter)\\s+\\'(.+)\\'\\s*\\;?\\z";
 
 	@Override
 	public void setNextInChain(ConsoleExecutorChain chainElement) {

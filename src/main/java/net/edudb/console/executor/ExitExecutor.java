@@ -15,7 +15,7 @@ import net.edudb.response.Response;
 
 /**
  * Exits the system.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

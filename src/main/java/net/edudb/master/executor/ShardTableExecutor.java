@@ -31,7 +31,7 @@ import java.util.regex.Matcher;
 public class ShardTableExecutor implements MasterExecutorChain {
 
     private MasterExecutorChain nextElement;
-    private String regex = "\\A(?:(?i)shard)\\s+(?:(?i)table)\\s+\\((\\w+), (\\w+)\\)\\s*;?\\z";
+    private final String regex = "\\A(?:(?i)shard)\\s+(?:(?i)table)\\s+\\((\\w+), (\\w+)\\)\\s*;?\\z";
 
     @Override
     public void setNextElementInChain(MasterExecutorChain chainElement) {

@@ -20,7 +20,7 @@ class BTreeLeafNode<TKey extends Comparable<TKey>, TValue> extends BTreeNode<TKe
 	/**
 	 * @uml.property name="values"
 	 */
-	private Object[] values;
+	private final Object[] values;
 	/**
 	 * @uml.property name="filters"
 	 * @uml.associationEnd multiplicity="(0 -1)" elementType="java.lang.Boolean"

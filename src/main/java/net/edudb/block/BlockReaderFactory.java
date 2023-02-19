@@ -10,9 +10,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.block;
 
+import java.util.Objects;
+
 /**
  * A factory that creates block readers.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -20,12 +22,10 @@ public class BlockReaderFactory extends BlockAbstractFactory {
 
 	@Override
 	public BlockReader getReader(BlockFileType fileType) {
-		switch (fileType) {
-		case Binary:
+		if (Objects.requireNonNull(fileType) == BlockFileType.Binary) {
 			return new BinaryBlockReader();
-		default:
-			return null;
 		}
+		return null;
 	}
 
 	@Override

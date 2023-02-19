@@ -10,13 +10,13 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 
 /**
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
 
 public class EBBucketTest {
-	
+
 	@Test
 	public void initTest() {
 		EBBucket bucket = new EBBucket(5);
@@ -59,7 +59,7 @@ public class EBBucketTest {
 
 		assertEquals(1, indexes.size());
 	}
-	
+
 	@Test
 	public void deleteIndexTest() {
 		EBBucket bucket = new EBBucket(5);

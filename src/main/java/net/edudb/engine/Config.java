@@ -12,20 +12,21 @@ package net.edudb.engine;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 
 import net.edudb.block.BlockFileType;
 import net.edudb.structure.table.TableFileType;
 
 /**
  * Stores the system's configuration.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
 public class Config {
 
 	/**
-	 * 
+	 *
 	 * @return The type of the block file to save to disk.
 	 */
 	public static BlockFileType blockType() {
@@ -33,7 +34,7 @@ public class Config {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return The type of the table file to save to disk.
 	 */
 	public static TableFileType tableType() {
@@ -41,20 +42,15 @@ public class Config {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return The system's absolute path on disk.
 	 */
 	public static String absolutePath() {
-		try {
-			return URLDecoder.decode(ClassLoader.getSystemClassLoader().getResource(".").getPath(), "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+        return URLDecoder.decode(ClassLoader.getSystemClassLoader().getResource(".").getPath(), StandardCharsets.UTF_8);
+    }
 
 	/**
-	 * 
+	 *
 	 * @return The path to the current open database. Null if no database is
 	 *         currently open.
 	 */
@@ -63,7 +59,7 @@ public class Config {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return The path to the table files on disk.
 	 */
 	public static String tablesPath() {
@@ -71,7 +67,7 @@ public class Config {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return The path to the page files on disk.
 	 */
 	public static String pagesPath() {
@@ -79,7 +75,7 @@ public class Config {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return The maximum allowed number of records inside a page.
 	 */
 	public static int pageSize() {
@@ -87,7 +83,7 @@ public class Config {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return The maximum allowed number of pages in the page buffer pool.
 	 */
 	public static int bufferSize() {

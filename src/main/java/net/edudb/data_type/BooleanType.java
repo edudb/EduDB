@@ -15,12 +15,12 @@ import java.io.Serializable;
 import net.edudb.exception.InvalidTypeValueException;
 
 /**
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
 public class BooleanType extends DataType implements Serializable {
-	private boolean bool;
+	private final boolean bool;
 
 	private static final long serialVersionUID = -8942317279081394033L;
 
@@ -30,7 +30,7 @@ public class BooleanType extends DataType implements Serializable {
 
 	/**
 	 * Parses a boolean passed as a string and returns its value as a boolean.
-	 * 
+	 *
 	 * @param string
 	 *            The boolean string to parse.
 	 * @return The parsed boolean iff the value is valid.

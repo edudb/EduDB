@@ -18,7 +18,7 @@ import net.edudb.query.UnaryQueryNode;
 /**
  * A relational algebra operator, with one child, that projects certain columns
  * from a relation.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

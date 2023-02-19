@@ -12,9 +12,11 @@ package net.edudb.page;
 
 import net.edudb.block.BlockFileType;
 
+import java.util.Objects;
+
 /**
  * A factory that creates supported page types.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -22,17 +24,15 @@ public class PageFactory {
 
 	/**
 	 * Creates an instance of a supported page type.
-	 * 
+	 *
 	 * @param blockType
 	 *            The type of page to create.
 	 * @return The created page.
 	 */
 	public Page makePage(BlockFileType blockType) {
-		switch (blockType) {
-		case Binary:
-			return new BinaryPage();
-		default:
-			return null;
-		}
-	}
+        if (Objects.requireNonNull(blockType) == BlockFileType.Binary) {
+            return new BinaryPage();
+        }
+        return null;
+    }
 }

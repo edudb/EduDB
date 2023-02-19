@@ -130,7 +130,7 @@ public class DeletePlan extends DistributedPlan {
         DeleteOperatorParameter parameter = new DeleteOperatorParameter(statement, shards);
         operator.setParameter(parameter);
 
-        QueryTree tree = new QueryTree((QueryNode)operator);
+        QueryTree tree = new QueryTree(operator);
 
         return tree;
     }

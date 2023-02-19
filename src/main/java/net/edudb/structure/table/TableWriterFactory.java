@@ -10,9 +10,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 package net.edudb.structure.table;
 
+import java.util.Objects;
+
 /**
  * A factory that creates table information writers.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -25,12 +27,10 @@ public class TableWriterFactory extends TableAbstractFactory {
 
 	@Override
 	public TableWriter getWriter(TableFileType fileType) {
-		switch (fileType) {
-		case Binary:
-			return new BinaryTableWriter();
-		default:
-			return null;
-		}
-	}
+        if (Objects.requireNonNull(fileType) == TableFileType.Binary) {
+            return new BinaryTableWriter();
+        }
+        return null;
+    }
 
 }

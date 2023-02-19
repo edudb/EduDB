@@ -27,8 +27,7 @@ public class MetaHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
 
 
-        if (msg instanceof Response) {
-            Response response = (Response)msg;
+        if (msg instanceof Response response) {
             MetaWriter.getInstance().setContext(ctx);
             MetaManager.getInstance().setConnected(true);
             if (response.getId() != null

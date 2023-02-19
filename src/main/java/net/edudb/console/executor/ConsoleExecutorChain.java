@@ -15,7 +15,7 @@ import net.edudb.response.Response;
 /**
  * An interface, that implements the Chain of Responsibility design pattern, that
  * is used to execute commands passed from the console.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -23,20 +23,20 @@ public interface ConsoleExecutorChain {
 
 	/**
 	 * Connects an existing executor chain with the argument chain element.
-	 * 
+	 *
 	 * @param chainElement
 	 *            The {@link ConsoleExecutorChain} to be set next in the chain.
 	 */
-	public void setNextElementInChain(ConsoleExecutorChain chainElement);
+    void setNextElementInChain(ConsoleExecutorChain chainElement);
 
 	/**
 	 * Executes the passed command. Classes that implement the
 	 * {@link ConsoleExecutorChain} interface handles the execution of the
 	 * passed command according to their functionality.
-	 * 
+	 *
 	 * @param string
 	 *            The command to execute.
 	 */
-	public Response execute(String string);
+    Response execute(String string);
 
 }

@@ -18,7 +18,7 @@ import net.edudb.response.Response;
 
 /**
  * Drops a database from the system.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -29,7 +29,7 @@ public class DropDatabaseExecutor implements ConsoleExecutorChain {
 	 * <b>DROP DATABASE database_name;</b><br><br>
 	 * and captures <b>database_name</b> in the matcher's group one.
 	 */
-	private String regex = "\\A(?:(?i)drop)\\s+(?:(?i)database)\\s+(\\D\\w*)\\s*;?\\z";
+	private final String regex = "\\A(?:(?i)drop)\\s+(?:(?i)database)\\s+(\\D\\w*)\\s*;?\\z";
 
 	@Override
 	public void setNextElementInChain(ConsoleExecutorChain chainElement) {

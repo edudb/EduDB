@@ -16,13 +16,13 @@ import net.edudb.page.Page;
 
 /**
  * Singleton that handles pages read/written from/to disk.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
 public class BufferManager {
 
-	private static BufferManager instance = new BufferManager();
+	private static final BufferManager instance = new BufferManager();
 	/**
 	 * The buffer pool.
 	 */
@@ -30,7 +30,7 @@ public class BufferManager {
 	/**
 	 * The replacement algorithm.
 	 */
-	private PageReplacement replacement;
+	private final PageReplacement replacement;
 
 	private BufferManager() {
 		pageBuffer = new LinkedHashMap<String, Page>();
@@ -45,7 +45,7 @@ public class BufferManager {
 	 * Reads a page from the disk and adds it to the buffer if not present in
 	 * the buffer. If the page is inside the buffer pool, it is directly
 	 * returned.
-	 * 
+	 *
 	 * @param pageName
 	 *            Name of page to read.
 	 * @return Page The read page.
@@ -67,7 +67,7 @@ public class BufferManager {
 
 	/**
 	 * Writes a page to disk and adds it to the buffer.
-	 * 
+	 *
 	 * @param page
 	 *            The page to write.
 	 */
@@ -90,7 +90,7 @@ public class BufferManager {
 	/**
 	 * Reads a page from disk by requesting the read from the
 	 * {@link FileManager}.
-	 * 
+	 *
 	 * @param pageName
 	 *            The name of the page to be read from disk.
 	 * @return The page read from disk.
@@ -102,7 +102,7 @@ public class BufferManager {
 	/**
 	 * Writes a page to disk by requesting the write from the
 	 * {@link FileManager}.
-	 * 
+	 *
 	 * @param page
 	 *            The page to be written to disk.
 	 */

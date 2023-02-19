@@ -25,7 +25,7 @@ import net.edudb.statistics.Schema;
 
 /**
  * A plan to update data in a table.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

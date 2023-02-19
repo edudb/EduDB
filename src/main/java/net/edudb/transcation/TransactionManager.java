@@ -14,13 +14,13 @@ import net.edudb.response.Response;
 
 /**
  * A singleton that handles the execution of transactions.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
 public class TransactionManager {
 
-	private static TransactionManager instance = new TransactionManager();
+	private static final TransactionManager instance = new TransactionManager();
 
 	private TransactionManager() {
 	}
@@ -31,7 +31,7 @@ public class TransactionManager {
 
 	/**
 	 * Executes a concurrent transaction.
-	 * 
+	 *
 	 * @param transaction
 	 *            The concurrent transaction to execute.
 	 */
@@ -43,7 +43,7 @@ public class TransactionManager {
 
 	/**
 	 * Executes a synchronized transaction.
-	 * 
+	 *
 	 * @param transaction
 	 *            The synchronized transaction to execute.
 	 */

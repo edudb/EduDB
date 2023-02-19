@@ -12,8 +12,8 @@ package net.edudb.block;
 
 /**
  * An abstract factory that creates both block reader and writer factories.
- * 
- * 
+ *
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -22,7 +22,7 @@ public abstract class BlockAbstractFactory {
 	/**
 	 * Returns a block reader that supports multiple file formats. Currently
 	 * supported file formats: binary.
-	 * 
+	 *
 	 * @param fileType
 	 *            Type of file to read.
 	 * @return The block reader.
@@ -32,7 +32,7 @@ public abstract class BlockAbstractFactory {
 	/**
 	 * Returns a block writer that supports multiple file formats. Currently
 	 * supported file formats: binary.
-	 * 
+	 *
 	 * @param fileType
 	 *            Type of file to write.
 	 * @return The block writer.

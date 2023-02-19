@@ -18,7 +18,7 @@ import net.edudb.response.Response;
 
 /**
  * Creates a new database in the system.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -31,7 +31,7 @@ public class CreateDatabaseExecutor implements ConsoleExecutorChain {
 	 * <br>
 	 * and captures the <b>database_name</b> in the matcher's group one.
 	 */
-	private String regex = "\\A(?:(?i)create)\\s+(?:(?i)database)\\s+(\\D\\w*)\\s*;?\\z";
+	private final String regex = "\\A(?:(?i)create)\\s+(?:(?i)database)\\s+(\\D\\w*)\\s*;?\\z";
 
 	@Override
 	public void setNextElementInChain(ConsoleExecutorChain chainElement) {

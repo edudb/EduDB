@@ -18,7 +18,7 @@ import net.edudb.query.UnaryQueryNode;
 /**
  * An operator, with one child, that is used to delete tuples from its child
  * relation based on an optional condition.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

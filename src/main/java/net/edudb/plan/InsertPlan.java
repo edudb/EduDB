@@ -24,9 +24,9 @@ import net.edudb.structure.table.TableManager;
 
 /**
  * A plan to insert data into a table.
- * 
+ *
  * Created by mohamed on 4/9/14.
- * 
+ *
  * @author Ahmed Abdul Badie
  */
 public class InsertPlan extends Plan {

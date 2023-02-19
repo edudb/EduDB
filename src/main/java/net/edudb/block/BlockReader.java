@@ -16,7 +16,7 @@ import net.edudb.page.Page;
 
 /**
  * A reader that reads page files.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -24,7 +24,7 @@ public abstract class BlockReader {
 
 	/**
 	 * Reads a page from disk.
-	 * 
+	 *
 	 * @param blockName
 	 *            The name of the page to read from disk.
 	 * @return The read page from disk.

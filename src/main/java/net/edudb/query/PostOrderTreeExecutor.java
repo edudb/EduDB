@@ -21,9 +21,9 @@ import net.edudb.relation.Relation;
  * from memory or disk and therefore are persisted whenever a page is replaced
  * or the system exits. You can remove the relation after being used to make
  * sure that they are not persisted to disk.
- * 
+ *
  * @see PostOrderOperatorExecutor
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

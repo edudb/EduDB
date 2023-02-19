@@ -19,13 +19,13 @@ import net.edudb.structure.Record;
 
 /**
  * Iterates over a relation's records.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
 public class RelationIterator implements Iterator<Record> {
 
-	private ArrayList<String> pageNames;
+	private final ArrayList<String> pageNames;
 	/**
 	 * The current open page.
 	 */

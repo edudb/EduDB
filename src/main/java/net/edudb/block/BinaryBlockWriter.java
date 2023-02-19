@@ -19,7 +19,7 @@ import net.edudb.page.Page;
 
 /**
  * A block writer that writes binary page files to disk.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

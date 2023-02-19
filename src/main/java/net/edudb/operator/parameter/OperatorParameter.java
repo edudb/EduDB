@@ -13,7 +13,7 @@ package net.edudb.operator.parameter;
 /**
  * A marker interface. An {@link OperatorParameter} is additional information that a
  * relational algebra operator can have other than its type and children.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

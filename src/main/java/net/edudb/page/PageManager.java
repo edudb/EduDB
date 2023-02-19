@@ -20,7 +20,7 @@ import net.edudb.structure.Record;
 
 /**
  * A structure that manages pages.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -31,7 +31,7 @@ public class PageManager implements Pageable, Serializable {
 	/**
 	 * List of page names the manager is responsible for.
 	 */
-	private ArrayList<String> pageNames;
+	private final ArrayList<String> pageNames;
 
 	public PageManager() {
 		this.pageNames = new ArrayList<>();
@@ -73,7 +73,7 @@ public class PageManager implements Pageable, Serializable {
 
 	/**
 	 * Adds a record to the last page.
-	 * 
+	 *
 	 * @param record
 	 *            Record to be added to a page.
 	 */

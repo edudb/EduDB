@@ -30,7 +30,7 @@ import java.util.regex.Matcher;
 public class ViewWorkersExecutor implements MasterExecutorChain {
     private MasterExecutorChain nextElement;
 
-    private String regex = "\\A(?:(?i)show)\\s+(?:(?i)workers)\\s*;?\\z";
+    private final String regex = "\\A(?:(?i)show)\\s+(?:(?i)workers)\\s*;?\\z";
 
 
     @Override

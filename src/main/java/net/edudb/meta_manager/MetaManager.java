@@ -43,15 +43,15 @@ import java.util.Hashtable;
  */
 public class MetaManager implements MetaDAO, Runnable {
 
-    private static MetaManager instance = new MetaManager();
-    private int port;
+    private static final MetaManager instance = new MetaManager();
+    private final int port;
     /**
      * Used to generate busy waiting until response is received
      * from the meta data database server
      */
     private Hashtable<String, Response> pendingRequests = new Hashtable<String, Response>();
     private boolean connected;
-    private MetaHandler metaHandler;
+    private final MetaHandler metaHandler;
     private String databaseName;
     private boolean isDatabaseOpen;
 
@@ -66,7 +66,7 @@ public class MetaManager implements MetaDAO, Runnable {
         this.port = 9999;
     }
 
-    public static MetaManager getInstance() { return instance; };
+    public static MetaManager getInstance() { return instance; }
 
     public void run() {
         System.out.println("meta manager started");

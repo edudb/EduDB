@@ -21,7 +21,7 @@ import java.util.ArrayList;
  */
 public class EqualsCondition extends Condition {
 
-    private DataType data;
+    private final DataType data;
 
     public EqualsCondition(DataType data) {
         this.data = data;

@@ -13,16 +13,16 @@ package net.edudb.data_type;
 import java.io.Serializable;
 
 /**
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
 public class DecimalType extends DataType implements Serializable {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -240691003965584504L;
-	private Double decimal;
+	private final Double decimal;
 
 	public DecimalType(Double decimal) {
 		this.decimal = decimal;
@@ -38,7 +38,7 @@ public class DecimalType extends DataType implements Serializable {
 		DecimalType type = (DecimalType) dataType;
 		return decimal.compareTo(type.decimal);
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		DecimalType type = (DecimalType) o;

@@ -39,8 +39,7 @@ public class JoinExecutor implements OperatorExecutionChain {
     public void setNextElementInChain(OperatorExecutionChain chainElement) { this.next = chainElement; }
 
     public void execute(DistributedOperator operator) {
-        if (operator instanceof JoinOperator) {
-            JoinOperator join = (JoinOperator) operator;
+        if (operator instanceof JoinOperator join) {
             JoinOperatorParameter parameter = (JoinOperatorParameter)join.getParameter();
 
             SQLSelectStatement statement = parameter.getStatement();

@@ -13,8 +13,8 @@ package net.edudb.structure.table;
 /**
  * An abstract factory that creates both table information reader and writer
  * factories.
- * 
- * 
+ *
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -23,7 +23,7 @@ public abstract class TableAbstractFactory {
 	/**
 	 * Returns a table information reader that supports multiple file formats. Currently
 	 * supported file formats: binary.
-	 * 
+	 *
 	 * @param fileType
 	 *            Type of file to read.
 	 * @return The table information reader.
@@ -33,7 +33,7 @@ public abstract class TableAbstractFactory {
 	/**
 	 * Returns a table information writer that supports multiple file formats. Currently
 	 * supported file formats: binary.
-	 * 
+	 *
 	 * @param fileType
 	 *            Type of file to write.
 	 * @return The table information writer.

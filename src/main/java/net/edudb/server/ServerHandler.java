@@ -22,11 +22,11 @@ import net.edudb.response.Response;
 import java.util.regex.Matcher;
 
 /**
- * 
+ *
  * Handles a server-side channel.
- * 
+ *
  * @author Ahmed Abdul Badie
- * 
+ *
  */
 public class ServerHandler extends ChannelInboundHandlerAdapter {
 
@@ -34,7 +34,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 	 * This regex is used is to extract the message id from the incoming
 	 * message.
 	 */
-	private String regex = "(\\[id::(.+?)\\])";
+	private final String regex = "(\\[id::(.+?)\\])";
 
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) {

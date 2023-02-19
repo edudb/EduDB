@@ -15,20 +15,20 @@ import net.edudb.operator.parameter.OperatorParameter;
 
 /**
  * Holds information about the SQL statements.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
 public abstract class SQLStatement implements OperatorParameter, DistributedOperatorParameter {
 
 	/**
-	 * 
+	 *
 	 * @return The target table's name of the SQL statement.
 	 */
 	public abstract String getTableName();
 
 	/**
-	 * 
+	 *
 	 * @return The type of the SQL statement.
 	 */
 	public abstract SQLStatementType statementType();

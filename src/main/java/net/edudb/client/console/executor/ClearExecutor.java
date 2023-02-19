@@ -32,7 +32,7 @@ public class ClearExecutor implements ConsoleExecutorChain {
 			 * problem.
 			 *
 			 * This is a temporary fix until it is fixed, it not yet.
-			 * 
+			 *
 			 */
 			Console.getInstance().setPrompt("");
 			Console.getInstance().clearScreen();

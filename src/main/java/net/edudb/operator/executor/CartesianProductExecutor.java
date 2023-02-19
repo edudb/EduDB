@@ -19,7 +19,7 @@ import net.edudb.structure.Record;
 
 /**
  * Executes the relational algebra CartesianProduct operator.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -33,8 +33,7 @@ public class CartesianProductExecutor extends PostOrderOperatorExecutor implemen
 
 	@Override
 	public Relation execute(Operator operator) {
-		if (operator instanceof CartesianProductOperator) {
-			CartesianProductOperator cartesianOperator = (CartesianProductOperator) operator;
+		if (operator instanceof CartesianProductOperator cartesianOperator) {
 			Relation leftRelation = getChain().execute((Operator) cartesianOperator.getLeftChild());
 			Relation rightRelation = getChain().execute((Operator) cartesianOperator.getRightChild());
 

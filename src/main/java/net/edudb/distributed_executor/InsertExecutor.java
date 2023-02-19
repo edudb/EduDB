@@ -37,7 +37,7 @@ public class InsertExecutor implements OperatorExecutionChain {
 
     public void execute(DistributedOperator operator) {
         if (operator instanceof InsertOperator) {
-            DistributedOperator insert = (InsertOperator) operator;
+            DistributedOperator insert = operator;
             InsertOperatorParamater parameter = (InsertOperatorParamater) insert.getParameter();
 
             SQLInsertStatement statement = parameter.getStatement();

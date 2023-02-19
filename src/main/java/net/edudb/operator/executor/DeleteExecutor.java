@@ -12,10 +12,10 @@ package net.edudb.operator.executor;
 
 /**
  * Executes the SQL DELETE statement.
- * 
- * @author Ahmed Abdul Badie
  *
+ * @author Ahmed Abdul Badie
  */
+
 import net.edudb.expression.BinaryExpressionTree;
 import net.edudb.expression.ExpressionTree;
 import net.edudb.operator.DeleteOperator;
@@ -25,30 +25,29 @@ import net.edudb.relation.RelationIterator;
 import net.edudb.structure.Record;
 
 public class DeleteExecutor extends PostOrderOperatorExecutor implements OperatorExecutionChain {
-	private OperatorExecutionChain nextElement;
+    private OperatorExecutionChain nextElement;
 
-	@Override
-	public void setNextElementInChain(OperatorExecutionChain chainElement) {
-		this.nextElement = chainElement;
-	}
+    @Override
+    public void setNextElementInChain(OperatorExecutionChain chainElement) {
+        this.nextElement = chainElement;
+    }
 
-	@Override
-	public Relation execute(Operator operator) {
-		if (operator instanceof DeleteOperator) {
-			DeleteOperator delete = (DeleteOperator) operator;
-			ExpressionTree tree = (ExpressionTree) delete.getParameter();
-			Relation relation = getChain().execute((Operator) delete.getChild());
+    @Override
+    public Relation execute(Operator operator) {
+        if (operator instanceof DeleteOperator delete) {
+            ExpressionTree tree = (ExpressionTree) delete.getParameter();
+            Relation relation = getChain().execute((Operator) delete.getChild());
 
-			RelationIterator iterator = relation.getIterator();
-			while (iterator.hasNext()) {
-				Record record = (Record) iterator.next();
-				if (record.evaluate((BinaryExpressionTree) tree)) {
-					record.delete();
-				}
-			}
-			return relation;
-		}
-		return nextElement.execute(operator);
-	}
+            RelationIterator iterator = relation.getIterator();
+            while (iterator.hasNext()) {
+                Record record = iterator.next();
+                if (record.evaluate((BinaryExpressionTree) tree)) {
+                    record.delete();
+                }
+            }
+            return relation;
+        }
+        return nextElement.execute(operator);
+    }
 
 }

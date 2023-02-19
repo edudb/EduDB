@@ -12,7 +12,7 @@ package net.edudb.ebtree;
 
 /**
  * Represents a node that has at most one child.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -20,15 +20,15 @@ public interface EBUnaryNode extends EBNode {
 
 	/**
 	 * Sets the child of a unary node.
-	 * 
+	 *
 	 * @param child
 	 *            The child to set.
 	 */
-	public void setChild(EBNode child);
+    void setChild(EBNode child);
 
 	/**
-	 * 
+	 *
 	 * @return The child of the node.
 	 */
-	public EBNode getChild();
+    EBNode getChild();
 }

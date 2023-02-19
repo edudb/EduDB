@@ -19,7 +19,7 @@ import net.edudb.structure.Record;
 
 /**
  * A page that is saved to disk as binary data.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -30,12 +30,12 @@ public class BinaryPage extends Page implements Serializable {
 	/**
 	 * Name of the page.
 	 */
-	private String name;
+	private final String name;
 
 	/**
 	 * Array holding the records in the page.
 	 */
-	private Record[] records;
+	private final Record[] records;
 
 	/**
 	 * The location in the page where the next record should be placed next.

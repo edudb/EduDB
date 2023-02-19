@@ -12,7 +12,7 @@ package net.edudb.block;
 
 /**
  * Supported page file types.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

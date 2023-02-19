@@ -12,7 +12,7 @@ package net.edudb.exception;
 
 /**
  * An exception in which the value of a given data type is not valid.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

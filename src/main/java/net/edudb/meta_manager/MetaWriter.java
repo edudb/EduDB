@@ -24,7 +24,7 @@ import net.edudb.request.Request;
  */
 public class MetaWriter {
 
-    private static MetaWriter instance = new MetaWriter();
+    private static final MetaWriter instance = new MetaWriter();
     private ChannelHandlerContext context;
 
     private MetaWriter(){

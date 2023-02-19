@@ -18,24 +18,24 @@ import java.util.ArrayList;
 
 /**
  * Holds records returned from the execution of relational algebra operators.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
 public interface Relation extends Table {
 
 	/**
-	 * 
+	 *
 	 * @return An iterator that iterates over the relation's records.
 	 */
-	public RelationIterator getIterator();
+    RelationIterator getIterator();
 
 	/**
 	 * Prints a given relation to the writer stream iff the relation is not
 	 * null. <br>
 	 * Uses a Relation Iterator to iterate through the given relation.
 	 */
-	public static void print(Relation relation) {
+	static void print(Relation relation) {
 		if (relation == null) {
 			return;
 		}
@@ -45,7 +45,7 @@ public interface Relation extends Table {
 		}
 	}
 
-	public static String toString(Relation relation) {
+	static String toString(Relation relation) {
 		if (relation == null) {
 			return "";
 		}
@@ -59,7 +59,7 @@ public interface Relation extends Table {
 		return stringRelation;
 	}
 
-	public static ArrayList<Record> toRecords(Relation relation) {
+	static ArrayList<Record> toRecords(Relation relation) {
 		if(relation == null)
 			return null;
 

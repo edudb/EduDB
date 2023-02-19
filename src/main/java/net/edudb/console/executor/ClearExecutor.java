@@ -15,7 +15,7 @@ import net.edudb.response.Response;
 
 /**
  * Clears the console screen.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

@@ -24,7 +24,7 @@ import net.edudb.statistics.Schema;
 
 /**
  * A plan to delete data from a table.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -33,7 +33,7 @@ public class DeletePlan extends Plan {
 	@Override
 	public QueryTree makePlan(SQLStatement sqlStatement) {
 		SQLDeleteStatement statement = (SQLDeleteStatement) sqlStatement;
-		
+
 		if (!Schema.getInstance().chekTableExists(statement.getTableName())) {
 			return null;
 		}
@@ -41,7 +41,7 @@ public class DeletePlan extends Plan {
 		QueryTree plan = null;
 
 		DeleteOperator operator = new DeleteOperator();
-		
+
 		RelationOperatorParameter parameter = new RelationOperatorParameter(statement.getTableName());
 
 		/**

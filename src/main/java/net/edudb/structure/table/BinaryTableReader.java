@@ -18,7 +18,7 @@ import net.edudb.engine.Config;
 
 /**
  * A table information reader that reads binary table information files from disk.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

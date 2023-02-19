@@ -12,13 +12,13 @@ package net.edudb.operator.parameter;
 
 /**
  * The parameter associated with the project operator.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
 public class ProjectOperatorParameter implements OperatorParameter {
 	private Integer[] projectedColumns;
-	
+
 	public ProjectOperatorParameter(Integer[] projectedColumns) {
 		setProjectedColumns(projectedColumns);
 	}
@@ -30,6 +30,6 @@ public class ProjectOperatorParameter implements OperatorParameter {
 	public void setProjectedColumns(Integer[] projectedColumns) {
 		this.projectedColumns = projectedColumns;
 	}
-	
-	
+
+
 }

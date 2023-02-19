@@ -27,8 +27,8 @@ import com.google.common.collect.Iterables;
  */
 public class Schema {
 
-	private static Schema instance = new Schema();
-	private HashMap<String, ArrayList<String>> schema;
+	private static final Schema instance = new Schema();
+	private final HashMap<String, ArrayList<String>> schema;
 
 	private Schema() {
 		schema = new HashMap<>();
@@ -41,7 +41,7 @@ public class Schema {
 
 	/**
 	 * Checks the availability of the given table in the database's schema.
-	 * 
+	 *
 	 * @param tableName
 	 *            The name of the table to check.
 	 * @return The availability of the table.
@@ -59,7 +59,7 @@ public class Schema {
 
 	/**
 	 * Returns the columns of the required table.
-	 * 
+	 *
 	 * @param tableName
 	 *            The name of the required table.
 	 * @return Columns of the required table as an {@link ArrayList}.

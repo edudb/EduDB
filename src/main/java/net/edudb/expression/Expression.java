@@ -23,7 +23,7 @@ import net.edudb.server.ServerWriter;
 import net.edudb.structure.Column;
 
 /**
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -129,7 +129,7 @@ public class Expression implements BinaryExpressionNode, OperatorParameter {
 		 * table columns.
 		 */
 		if (rightColumn != null) {
-			int comparisonResult = ((DataType) val).compareTo((DataType) data.get(rightColumn));
+			int comparisonResult = ((DataType) val).compareTo(data.get(rightColumn));
 			return evaluate(comparisonResult);
 		}
 		/**
@@ -144,7 +144,7 @@ public class Expression implements BinaryExpressionNode, OperatorParameter {
 
 	/**
 	 * Given the type of operator, it returns whether the evaluation holds.
-	 * 
+	 *
 	 * @param comparisonResult
 	 *            The value to check.
 	 * @return The result of the evaluation.

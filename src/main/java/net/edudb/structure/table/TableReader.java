@@ -14,7 +14,7 @@ import java.io.IOException;
 
 /**
  * A reader that reads table's information files.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -22,7 +22,7 @@ public abstract class TableReader {
 
 	/**
 	 * Reads a table's information from disk.
-	 * 
+	 *
 	 * @param tableName
 	 *            The name of the table to read its information from disk.
 	 * @return The read table's information from disk.

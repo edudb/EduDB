@@ -15,7 +15,7 @@ import net.edudb.ebtree.EBBinaryNode;
 /**
  * A marker interface. A {@link BinaryQueryNode} is a query tree node that has
  * two children.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */

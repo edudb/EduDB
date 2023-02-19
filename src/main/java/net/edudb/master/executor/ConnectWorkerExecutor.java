@@ -26,7 +26,7 @@ import java.util.regex.Matcher;
 public class ConnectWorkerExecutor implements MasterExecutorChain {
 
     private MasterExecutorChain nextElement;
-    private String regex = "\\A(?:(?i)connect)\\s+(?:(?i)worker)\\s+\\((\\w+), (\\w+)\\)\\s*;?\\z";
+    private final String regex = "\\A(?:(?i)connect)\\s+(?:(?i)worker)\\s+\\((\\w+), (\\w+)\\)\\s*;?\\z";
 
     @Override
     public void setNextElementInChain(MasterExecutorChain chainElement) {

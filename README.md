@@ -1,6 +1,6 @@
 # EduDB
-The Open Source Educational Database Engine
 
+The Open Source Educational Database Engine
 
 ## Build
 
@@ -17,6 +17,7 @@ mvnw.cmd clean package
 ```
 
 ## Docs
+
 ### generating the docs
 
 for macOS and Linux
@@ -32,6 +33,5 @@ mvnw.cmd javadoc:javadoc
 ```
 
 ### viewing the docs
-
 
 open the [docs](target/site/apidocs/index.html) from `target/site/apidocs/index.html` in your browser

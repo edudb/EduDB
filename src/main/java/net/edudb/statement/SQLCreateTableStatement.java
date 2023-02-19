@@ -16,78 +16,74 @@ import gudusoft.gsqlparser.stmt.TCreateTableSqlStatement;
 
 /**
  * Holds information about the SQL CREATE TABLE statement.
- * 
- * @author Ahmed Abdul Badie
  *
+ * @author Ahmed Abdul Badie
  */
 public class SQLCreateTableStatement extends SQLStatement {
 
-	/**
-	 * <b>ATTENTION</b><br>
-	 * <br>
-	 * 
-	 * Do not access `statement` from concurrent threads as it will cause
-	 * exceptions.
-	 */
-	private TCreateTableSqlStatement statement;
-	private String columnList;
-	private String tableName;
-	private String statementString;
-	private String[] columnNames;
-	private String[] dataTypeNames;
+    /**
+     * <b>ATTENTION</b><br>
+     * <br>
+     * <p>
+     * Do not access `statement` from concurrent threads as it will cause
+     * exceptions.
+     */
+    private final TCreateTableSqlStatement statement;
+    private final String columnList;
+    private final String tableName;
+    private final String statementString;
+    private final String[] columnNames;
+    private final String[] dataTypeNames;
 
-	public SQLCreateTableStatement(TCustomSqlStatement tCustomSqlStatement) {
-		this.statement = (TCreateTableSqlStatement) tCustomSqlStatement;
-		this.columnList = statement.getColumnList().toString();
-		this.tableName = statement.getTargetTable().toString();
-		this.statementString = statement.toString();
+    public SQLCreateTableStatement(TCustomSqlStatement tCustomSqlStatement) {
+        this.statement = (TCreateTableSqlStatement) tCustomSqlStatement;
+        this.columnList = statement.getColumnList().toString();
+        this.tableName = statement.getTargetTable().toString();
+        this.statementString = statement.toString();
 
-		TColumnDefinitionList columnList = this.statement.getColumnList();
-		this.columnNames = new String[columnList.size()];
-		this.dataTypeNames = new String[columnList.size()];
-		for (int i = 0; i < columnList.size(); i++) {
-			this.columnNames[i] = columnList.getColumn(i).getColumnName().toString();
-			this.dataTypeNames[i] = columnList.getColumn(i).getDatatype().toString();
-		}
-	}
+        TColumnDefinitionList columnList = this.statement.getColumnList();
+        this.columnNames = new String[columnList.size()];
+        this.dataTypeNames = new String[columnList.size()];
+        for (int i = 0; i < columnList.size(); i++) {
+            this.columnNames[i] = columnList.getColumn(i).getColumnName().toString();
+            this.dataTypeNames[i] = columnList.getColumn(i).getDatatype().toString();
+        }
+    }
 
-	/**
-	 * 
-	 * @return String containing a list of column names with their types.
-	 */
-	public String getColumnList() {
-		return columnList;
-	}
+    /**
+     * @return String containing a list of column names with their types.
+     */
+    public String getColumnList() {
+        return columnList;
+    }
 
-	/**
-	 * 
-	 * @return List of column names.
-	 */
-	public String[] getColumnNames() {
-		return columnNames;
-	}
+    /**
+     * @return List of column names.
+     */
+    public String[] getColumnNames() {
+        return columnNames;
+    }
 
-	/**
-	 * 
-	 * @return List of data type names.
-	 */
-	public String[] getDataTypeNames() {
-		return dataTypeNames;
-	}
+    /**
+     * @return List of data type names.
+     */
+    public String[] getDataTypeNames() {
+        return dataTypeNames;
+    }
 
-	@Override
-	public String getTableName() {
-		return tableName;
-	}
+    @Override
+    public String getTableName() {
+        return tableName;
+    }
 
-	@Override
-	public SQLStatementType statementType() {
-		return SQLStatementType.SQLCreateTableStatement;
-	}
+    @Override
+    public SQLStatementType statementType() {
+        return SQLStatementType.SQLCreateTableStatement;
+    }
 
-	@Override
-	public String toString() {
-		return statementString;
-	}
+    @Override
+    public String toString() {
+        return statementString;
+    }
 
 }

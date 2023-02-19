@@ -35,7 +35,7 @@ import java.util.regex.Matcher;
 public class CreateShardExecutor implements MasterExecutorChain {
 
     private MasterExecutorChain nextElement;
-    private String regex = "\\A(?:(?i)create)\\s+(?:(?i)shard)\\s+\\((\\w+), (\\w+), (\\w+), (\\w+), (\\w+)\\)\\s*;?\\z";
+    private final String regex = "\\A(?:(?i)create)\\s+(?:(?i)shard)\\s+\\((\\w+), (\\w+), (\\w+), (\\w+), (\\w+)\\)\\s*;?\\z";
 
     @Override
     public void setNextElementInChain(MasterExecutorChain chainElement) {

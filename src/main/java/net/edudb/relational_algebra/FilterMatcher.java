@@ -26,7 +26,7 @@ import net.edudb.structure.Column;
 
 /**
  * Matches the relational algebra Filter formula.
- * 
+ *
  * @author Ahmed Abdul Badie
  *
  */
@@ -42,7 +42,7 @@ public class FilterMatcher implements RAMatcherChain {
 	 * filter the tuples from and <b>arg1</b> is the expression to evaluate the
 	 * tuples against.
 	 */
-	private String regex = "\\AFilter\\((.+)\\,\"(.+)\"\\)\\z";
+	private final String regex = "\\AFilter\\((.+)\\,\"(.+)\"\\)\\z";
 
 	@Override
 	public void setNextElementInChain(RAMatcherChain chainElement) {
@@ -66,36 +66,36 @@ public class FilterMatcher implements RAMatcherChain {
 	/**
 	 * Matches string of the format: #{number}={number}. e.g. #1=2
 	 */
-	private String genericExpr = "(?:\\#\\d+\\<?\\>?\\=?#?.+)";
+	private final String genericExpr = "(?:\\#\\d+\\<?\\>?\\=?#?.+)";
 	/**
 	 * Matches string of the format: AND({anything}) or OR({anything})
 	 */
-	private String binaryExpr = "(?:(?:AND|OR)\\(.*\\))";
+	private final String binaryExpr = "(?:(?:AND|OR)\\(.*\\))";
 	/**
 	 * Matches string of the format: #{number}={number} or (AND({anything}) or
 	 * OR({anything}))
 	 */
-	private String argument = "(?:" + genericExpr + "|" + binaryExpr + ")";
+	private final String argument = "(?:" + genericExpr + "|" + binaryExpr + ")";
 	/**
 	 * Matches and captures string of the format: #{number}={number}. e.g. #1=2
 	 */
-	private String capturedConstantExpr = "\\#(\\d+)(\\<?\\>?\\=?)(.+)";
+	private final String capturedConstantExpr = "\\#(\\d+)(\\<?\\>?\\=?)(.+)";
 	/**
 	 * Matches and captures string of the format: #{number}={number}. e.g. #1=2
 	 */
-	private String capturedColumnExpr = "\\#(\\d+)(\\<?\\>?\\=?)#(\\d+)";
+	private final String capturedColumnExpr = "\\#(\\d+)(\\<?\\>?\\=?)#(\\d+)";
 	/**
 	 * Matches string of the format: AND(genericExpr or binaryExpr, genericExpr
 	 * or binaryExpr) or OR(genericExpr or binaryExpr, genericExpr or
 	 * binaryExpr)
-	 * 
+	 *
 	 * e.g. AND(OR(#1=3,#4=1),#2=44)
 	 */
-	private String capturedBinaryExpr = "(AND|OR)\\(" + "(" + argument + ")" + "," + "(" + argument + ")" + "\\)";
+	private final String capturedBinaryExpr = "(AND|OR)\\(" + "(" + argument + ")" + "," + "(" + argument + ")" + "\\)";
 
 	/**
 	 * Creates the expression tree from a given expression string; <b>arg1</b>.
-	 * 
+	 *
 	 * @param string
 	 *            The expression string to match.
 	 * @return The created expression tree.
@@ -119,7 +119,7 @@ public class FilterMatcher implements RAMatcherChain {
 	/**
 	 * Creates an expression where the left-hand side is a column and the
 	 * right-hand side is a value.
-	 * 
+	 *
 	 * @param matcher
 	 *            The matcher that matched the expression string.
 	 * @return The created expression.
@@ -139,7 +139,7 @@ public class FilterMatcher implements RAMatcherChain {
 
 	/**
 	 * Creates an expression where both sides of the expression are columns.
-	 * 
+	 *
 	 * @param matcher
 	 *            The matcher that matched the expression string.
 	 * @return The created expression.
@@ -160,7 +160,7 @@ public class FilterMatcher implements RAMatcherChain {
 
 	/**
 	 * Creates an {@link OperatorType} from a string.
-	 * 
+	 *
 	 * @param string
 	 *            The operator.
 	 * @return The type of operator.
@@ -185,7 +185,7 @@ public class FilterMatcher implements RAMatcherChain {
 	/**
 	 * Creates a logical operator that has two children expressions where one or
 	 * all are also logical operators. This is done recursively.
-	 * 
+	 *
 	 * @param matcher
 	 *            The matcher that matched the operator.
 	 * @return The logical operator created.
@@ -201,14 +201,11 @@ public class FilterMatcher implements RAMatcherChain {
 		Matcher rightBinaryExpression = Utility.getMatcher(matcher.group(3), capturedBinaryExpr);
 
 		LogicalOperator operator;
-		switch (matcher.group(1)) {
-		case "AND":
-			operator = new ANDLogicalOperator();
-			break;
-		default:
-			operator = new ORLogicalOperator();
-			break;
-		}
+        if (matcher.group(1).equals("AND")) {
+            operator = new ANDLogicalOperator();
+        } else {
+            operator = new ORLogicalOperator();
+        }
 
 		if (leftColumnExpression.matches()) {
 			operator.setLeftChild(getColumnExpression(leftColumnExpression));
