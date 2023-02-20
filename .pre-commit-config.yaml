@@ -21,12 +21,3 @@ repos:
     hooks:
       - id: maven
         args: ["clean compile"]
-#      - id: maven-checkstyle
-
-#  - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-#    rev: v2.7.0
-#    hooks:
-#      - id: pretty-format-java
-#        args: [ --autofix, --indent, '4' ]
-#      - id: pretty-format-yaml
-#        args: [ --autofix, --indent, '2' ]
