@@ -9,33 +9,35 @@
 
 package net.edudb.console.executor;
 
-import net.edudb.client.Client;
-import net.edudb.console.DatabaseConsole;
+import net.edudb.engine.DatabaseSystem;
+import net.edudb.engine.Utility;
 import net.edudb.response.Response;
 
+import java.util.regex.Matcher;
+
 /**
- * Clears the console screen.
+ * Lists all the available databases.
  *
- * @author Ahmed Abdul Badie
+ * @author Ahmed Nasser Gaafar
  */
-public class ClearExecutor implements ConsoleExecutorChain {
-    private ConsoleExecutorChain nextChainElement;
+public class ListDatabasesExecutor implements ConsoleExecutorChain {
+    private final String regex = "\\A(?:(?i)list)\\s+(?:(?i)databases)\\s*;?\\z";
+    private ConsoleExecutorChain nextElement;
 
     @Override
     public void setNextElementInChain(ConsoleExecutorChain chainElement) {
-        this.nextChainElement = chainElement;
+        this.nextElement = chainElement;
     }
 
     @Override
     public Response execute(String string) {
-        if (string.equalsIgnoreCase("clear")) {
-            DatabaseConsole.getInstance().setPrompt("");
-            DatabaseConsole.getInstance().clearScreen();
-            DatabaseConsole.getInstance().flush();
-            DatabaseConsole.getInstance().setPrompt("edudb$ ");
-            Client.getInstance().getHandler().setReceiving(false);
-            return new Response("");
+        if (string.toLowerCase().startsWith("list")) {
+            Matcher matcher = Utility.getMatcher(string, regex);
+            if (matcher.matches()) {
+                return new Response(DatabaseSystem.getInstance().listDatabases());
+            }
+
         }
-        return nextChainElement.execute(string);
+        return nextElement.execute(string);
     }
 }

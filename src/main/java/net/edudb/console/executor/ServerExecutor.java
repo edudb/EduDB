@@ -9,33 +9,23 @@
 
 package net.edudb.console.executor;
 
-import net.edudb.client.Client;
-import net.edudb.console.DatabaseConsole;
+import net.edudb.client.ClientWriter;
 import net.edudb.response.Response;
 
 /**
- * Clears the console screen.
- *
  * @author Ahmed Abdul Badie
  */
-public class ClearExecutor implements ConsoleExecutorChain {
-    private ConsoleExecutorChain nextChainElement;
+public class ServerExecutor implements ConsoleExecutorChain {
 
     @Override
     public void setNextElementInChain(ConsoleExecutorChain chainElement) {
-        this.nextChainElement = chainElement;
+
     }
 
     @Override
     public Response execute(String string) {
-        if (string.equalsIgnoreCase("clear")) {
-            DatabaseConsole.getInstance().setPrompt("");
-            DatabaseConsole.getInstance().clearScreen();
-            DatabaseConsole.getInstance().flush();
-            DatabaseConsole.getInstance().setPrompt("edudb$ ");
-            Client.getInstance().getHandler().setReceiving(false);
-            return new Response("");
-        }
-        return nextChainElement.execute(string);
+        ClientWriter.getInstance().write(string);
+        return null;
     }
+
 }
