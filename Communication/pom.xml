@@ -12,23 +12,38 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>net.edudb</groupId>
+        <artifactId>EduDB</artifactId>
+        <version>3.0-SNAPSHOT</version>
+    </parent>
 
-    <groupId>net.edudb</groupId>
-    <artifactId>EduDB</artifactId>
-    <version>3.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
-    <modules>
-        <module>Core</module>
-        <module>Communication</module>
-        <module>Client</module>
-        <module>Server</module>
-    </modules>
+    <artifactId>Communication</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <AMQP_URL>amqp://localhost:5672</AMQP_URL>
     </properties>
 
+
+    <dependencies>
+        <dependency>
+            <groupId>com.rabbitmq</groupId>
+            <artifactId>amqp-client</artifactId>
+            <version>5.13.0</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>net.edudb</groupId>
+            <artifactId>Core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 
 </project>
