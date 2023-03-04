@@ -11,7 +11,7 @@ package net.edudb;
 import net.edudb.structure.Record;
 
 import java.io.*;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * From this class, the response objects sent from
@@ -22,14 +22,14 @@ import java.util.ArrayList;
 public class Response implements Serializable {
 
     private String message;
-    private ArrayList<Record> records;
+    private List<Record> records;
     private String id;
 
     public Response(String message) {
         this.message = message;
     }
 
-    public Response(String message, ArrayList<Record> records, String id) {
+    public Response(String message, List<Record> records, String id) {
         this.message = message;
         this.records = records;
         this.id = id;
@@ -49,11 +49,11 @@ public class Response implements Serializable {
         return (Response) ois.readObject();
     }
 
-    public ArrayList<Record> getRecords() {
+    public List<Record> getRecords() {
         return records;
     }
 
-    public void setRecords(ArrayList<Record> records) {
+    public void setRecords(List<Record> records) {
         this.records = records;
     }
 

@@ -20,23 +20,53 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
+/**
+ * The RPCClient class represents a remote procedure call (RPC) client that is used to send a request to a server and wait for its response.
+ * The client is initialized with a server name that is used to construct a queue name to communicate with the server. The AMQP URL is obtained from the system property "AMQP_URL".
+ *
+ * @author Ahmed Nasser Gaafar
+ */
 public class RPCClient {
     private String queueName;
     private Connection connection;
     private Channel channel;
 
+    /**
+     * Constructs a new RPCClient object with the given server name.
+     *
+     * @param serverName The name of the server to communicate with.
+     * @author Ahmed Nasser Gaafar
+     */
     public RPCClient(String serverName) {
         this.queueName = String.format("%s_queue", serverName);
     }
 
+    /**
+     * Initializes the connection to the RabbitMQ server's queue.
+     *
+     * @throws IOException      if there is a problem with the IO while establishing the connection.
+     * @throws TimeoutException If the connection to the server times out.
+     * @author Ahmed Nasser Gaafar
+     */
     public void initializeConnection() throws IOException, TimeoutException {
-        String AMQP_URL = System.getProperty("AMQP_URL");
+        final String AMQP_URL = System.getProperty("AMQP_URL");
 
         ConnectionFactory factory = new ConnectionFactory();
         this.connection = factory.newConnection(AMQP_URL);
         this.channel = connection.createChannel();
     }
 
+
+    /**
+     * Sends a request message to the server and waits for a response message.
+     *
+     * @param request The request to send to the server.
+     * @return The response from the server.
+     * @throws IOException          If there is a problem with the IO while sending or receiving messages.
+     * @throws InterruptedException If the thread is interrupted while waiting for the response.
+     * @throws ExecutionException   If there is an error while processing the response.
+     * @author Ahmed Nasser Gaafar
+     */
     public Response call(Request request) throws IOException, InterruptedException, ExecutionException {
         byte[] serializedRequest = Request.serialize(request);
 
@@ -69,6 +99,12 @@ public class RPCClient {
         return result;
     }
 
+    /**
+     * Closes the connection to the server.
+     *
+     * @throws IOException If there is a problem with the IO while closing the connection.
+     * @author Ahmed Nasser Gaafar
+     */
     public void closeConnection() throws IOException {
         this.connection.close();
     }

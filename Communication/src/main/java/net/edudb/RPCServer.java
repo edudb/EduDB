@@ -14,18 +14,37 @@ import com.rabbitmq.client.*;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
+/**
+ * The RPCServer class represents a server that handles remote procedure calls (RPC) from clients.
+ * The server is initialized with a server name that is used to construct a queue name to communicate with the clients. The AMQP URL is obtained from the system property "AMQP_URL".
+ *
+ * @author Ahmed Nasser Gaafar
+ */
 public class RPCServer {
     private String queueName;
     private Connection connection;
     private Channel channel;
 
 
+    /**
+     * Creates a new instance of RPCServer with the specified server name.
+     *
+     * @param serverName
+     * @author Ahmed Nasser Gaafar
+     */
     public RPCServer(String serverName) {
         this.queueName = String.format("%s_queue", serverName);
     }
 
+    /**
+     * Initializes the connection to the RabbitMQ server's queue.
+     *
+     * @throws IOException      if there is a problem with the IO while establishing the connection.
+     * @throws TimeoutException If the connection to the server times out.
+     * @author Ahmed Nasser Gaafar
+     */
     public void initializeConnection() throws IOException, TimeoutException {
-        String AMQP_URL = System.getProperty("AMQP_URL");
+        final String AMQP_URL = System.getProperty("AMQP_URL");
 
         ConnectionFactory factory = new ConnectionFactory();
         this.connection = factory.newConnection(AMQP_URL);
@@ -34,6 +53,13 @@ public class RPCServer {
         this.channel.queuePurge(this.queueName);
     }
 
+    /**
+     * Handles incoming requests from clients by invoking the specified RequestHandler instance.
+     *
+     * @param handler The RequestHandler instance to use for handling requests.
+     * @throws IOException
+     * @author Ahmed Nasser Gaafar
+     */
     public void handleRequests(RequestHandler handler) throws IOException {
         DeliverCallback deliverCallback = (consumerTag, delivery) -> {
             String correlationId = delivery.getProperties().getCorrelationId();
@@ -61,6 +87,15 @@ public class RPCServer {
         });
     }
 
+    /**
+     * Sends a response back to the client.
+     *
+     * @param response      The response to send.
+     * @param correlationId The correlation ID of the request.
+     * @param replyTo       The queue name to send the response to.
+     * @throws IOException
+     * @author Ahmed Nasser Gaafar
+     */
     private void sendResponse(Response response, String correlationId, String replyTo) throws IOException {
         byte[] serializedResponse = Response.serialize(response);
 
@@ -72,6 +107,14 @@ public class RPCServer {
         channel.basicPublish("", replyTo, props, serializedResponse);
     }
 
+
+    /**
+     * Closes the connection to the RabbitMQ server's queue.
+     *
+     * @throws IOException      if there is a problem with the IO while closing the connection.
+     * @throws TimeoutException If the connection to the server times out.
+     * @author Ahmed Nasser Gaafar
+     */
     public void closeConnection() throws IOException, TimeoutException {
         this.channel.close();
         this.connection.close();
