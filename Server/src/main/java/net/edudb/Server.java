@@ -22,10 +22,15 @@ public class Server {
 
     public Server() {
         this.handler = new ServerHandler();
+        DatabaseSystem.getInstance().initializeDirectories();
     }
 
     public void setRpcServer(RPCServer rpcServer) {
         this.rpcServer = rpcServer;
+    }
+
+    public ServerHandler getHandler() {
+        return handler;
     }
 
     private static String getServerNameFromUser(String[] args) {
@@ -49,7 +54,6 @@ public class Server {
     }
 
     public static void main(String[] args) {
-        DatabaseSystem.getInstance().initializeDirectories();
         Server server = new Server();
 
         String serverName = getServerNameFromUser(args);
