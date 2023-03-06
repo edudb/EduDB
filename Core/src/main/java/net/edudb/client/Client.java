@@ -18,8 +18,8 @@ import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 import jline.console.ConsoleReader;
+import net.edudb.Request;
 import net.edudb.console.DatabaseConsole;
-import net.edudb.request.Request;
 
 import java.io.IOException;
 

@@ -1,15 +1,15 @@
 /*
-EduDB is made available under the OSI-approved MIT license.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
+ *
+ * EduDB is made available under the OSI-approved MIT license.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * /
+ */
 
 package net.edudb.master.executor;
 
+import net.edudb.Response;
 import net.edudb.data_type.DataType;
 import net.edudb.data_type.DataTypeFactory;
 import net.edudb.data_type.IntegerType;
@@ -20,7 +20,6 @@ import net.edudb.master.MasterWriter;
 import net.edudb.meta_manager.MetaDAO;
 import net.edudb.meta_manager.MetaManager;
 import net.edudb.metadata_buffer.MetadataBuffer;
-import net.edudb.response.Response;
 import net.edudb.structure.Record;
 import net.edudb.worker_manager.WorkerDAO;
 import net.edudb.workers_manager.WorkersManager;
@@ -75,7 +74,7 @@ public class CreateShardExecutor implements MasterExecutorChain {
                     return;
                 }
 
-                String distributionMethod = ((VarCharType)table.get("distribution_method")).getString();
+                String distributionMethod = ((VarCharType) table.get("distribution_method")).getString();
                 MetaDAO metaDAO = MetaManager.getInstance();
 
                 switch (distributionMethod) {
@@ -85,13 +84,11 @@ public class CreateShardExecutor implements MasterExecutorChain {
                         return;
                     case "replication":
                         if (MetadataBuffer.getInstance().getShards().get(workerHost + ":" + workerPort + ":" + tableName
-                            + ":null") != null) {
+                                + ":null") != null) {
                             MasterWriter.getInstance().write(new Response("Duplicate shard exists at " + workerHost
                                     + ":" + workerPort));
                             return;
                         }
-
-
 
 
                         metaDAO.writeShard(workerHost, workerPort, tableName, 0, "null", "null");
@@ -99,14 +96,14 @@ public class CreateShardExecutor implements MasterExecutorChain {
                         return;
                     case "sharding":
 
-                        String distributionColumn = ((VarCharType)table.get("distribution_column")).getString();
-                        String metadata = ((VarCharType)table.get("metadata")).getString();
+                        String distributionColumn = ((VarCharType) table.get("distribution_column")).getString();
+                        String metadata = ((VarCharType) table.get("metadata")).getString();
 
                         String[] metadataArray = metadata.split(" ");
                         String distributionColumnType = "";
-                        for (int i = 0; i < metadataArray.length; i+=2)
+                        for (int i = 0; i < metadataArray.length; i += 2)
                             if (metadataArray[i].equals(distributionColumn)) {
-                                distributionColumnType = metadataArray[i+1].toLowerCase();
+                                distributionColumnType = metadataArray[i + 1].toLowerCase();
                                 break;
                             }
 
@@ -137,8 +134,8 @@ public class CreateShardExecutor implements MasterExecutorChain {
                         /**
                          * making sure that new shard does not overlap with an existing shard
                          */
-                        for (Hashtable<String, DataType> shard: shards.values()) {
-                            if (((VarCharType)shard.get("table_name")).getString().equals(tableName)) {
+                        for (Hashtable<String, DataType> shard : shards.values()) {
+                            if (((VarCharType) shard.get("table_name")).getString().equals(tableName)) {
 
                                 DataType currentShardMin = null;
                                 DataType currentShardMax = null;
@@ -165,7 +162,7 @@ public class CreateShardExecutor implements MasterExecutorChain {
                             }
                         }
 
-                        int shardId = ((IntegerType)table.get("shard_number")).getInteger() + 1;
+                        int shardId = ((IntegerType) table.get("shard_number")).getInteger() + 1;
 
                         metaDAO.writeShard(workerHost, workerPort, tableName, shardId, minValue, maxValue);
                         metaDAO.editTable(tableName, null, null, shardId);
@@ -173,8 +170,7 @@ public class CreateShardExecutor implements MasterExecutorChain {
                 }
 
             }
-        }
-        else {
+        } else {
             nextElement.execute(string);
         }
 

@@ -1,15 +1,15 @@
 /*
-EduDB is made available under the OSI-approved MIT license.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
+ *
+ * EduDB is made available under the OSI-approved MIT license.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * /
+ */
 
 package net.edudb.distributed_plan;
 
+import net.edudb.Response;
 import net.edudb.condition.Condition;
 import net.edudb.condition.NullCondition;
 import net.edudb.data_type.DataType;
@@ -18,14 +18,12 @@ import net.edudb.distributed_operator.JoinOperator;
 import net.edudb.distributed_operator.SelectOperator;
 import net.edudb.distributed_operator.parameter.JoinOperatorParameter;
 import net.edudb.distributed_operator.parameter.SelectOperatorParameter;
-import net.edudb.distributed_query.QueryNode;
 import net.edudb.distributed_query.QueryTree;
 import net.edudb.exception.InvalidTypeValueException;
 import net.edudb.join_request.JoinRequest;
 import net.edudb.join_request.LocalJoinRequest;
 import net.edudb.master.MasterWriter;
 import net.edudb.metadata_buffer.MetadataBuffer;
-import net.edudb.response.Response;
 import net.edudb.statement.SQLSelectStatement;
 import net.edudb.statement.SQLStatement;
 import net.edudb.translator.Translator;
@@ -42,7 +40,7 @@ import java.util.Random;
 public class SelectPlan extends DistributedPlan {
 
     public QueryTree makePlan(SQLStatement sqlStatement) {
-        SQLSelectStatement statement = (SQLSelectStatement)sqlStatement;
+        SQLSelectStatement statement = (SQLSelectStatement) sqlStatement;
 
         Translator translator = new Translator();
         String ra = translator.translate(statement.toString());
@@ -98,7 +96,7 @@ public class SelectPlan extends DistributedPlan {
                 Hashtable<String, Hashtable<String, DataType>> leftShards = new Hashtable<>();
                 Hashtable<String, Hashtable<String, DataType>> rightShards = new Hashtable<>();
 
-                for (Hashtable<String, DataType> shard: MetadataBuffer.getInstance().getShards().values()) {
+                for (Hashtable<String, DataType> shard : MetadataBuffer.getInstance().getShards().values()) {
 
                     String shardTable = shard.get("table_name").toString();
                     String shardAddress = shard.get("host").toString() + shard.get("port").toString();
@@ -113,8 +111,7 @@ public class SelectPlan extends DistributedPlan {
                             break;
                         }
 
-                    }
-                    else if (shardTable.equals(rightTable.get("name").toString())) {
+                    } else if (shardTable.equals(rightTable.get("name").toString())) {
                         if (rightShards.get(shardAddress) == null) {
                             rightShards.put(shardAddress, shard);
                         }
@@ -125,16 +122,14 @@ public class SelectPlan extends DistributedPlan {
                         }
                     }
                 }
-            }
-            else if (leftDistributionMethod.equals("sharding") && rightDistributionMethod.equals("sharding")) {
+            } else if (leftDistributionMethod.equals("sharding") && rightDistributionMethod.equals("sharding")) {
                 /**
                  * Both tables are sharded.
                  * Currently unsupported.
                  * The only way this join would be cost effective is if both tables are distributed in the exact same way.
                  * Otherwise the cost will be huge.
                  */
-            }
-            else {
+            } else {
                 /**
                  * One table is sharded, the other is replicated.
                  *
@@ -155,14 +150,13 @@ public class SelectPlan extends DistributedPlan {
                 /**
                  * Getting all the shards from both tables
                  */
-                for (Hashtable<String, DataType> shard: MetadataBuffer.getInstance().getShards().values()) {
+                for (Hashtable<String, DataType> shard : MetadataBuffer.getInstance().getShards().values()) {
                     String shardTableName = shard.get("table_name").toString();
 
                     if (shardTableName.equals(replicatedTableName)) {
                         String shardAddress = shard.get("host").toString() + shard.get("port").toString();
                         replicatedTableShards.put(shardAddress, shard);
-                    }
-                    else if (shardTableName.equals(shardedTableName)) {
+                    } else if (shardTableName.equals(shardedTableName)) {
                         String shardMinimumValue = shard.get("min_value").toString();
 
                         if (shardedTableShards.get(shardMinimumValue) == null)
@@ -176,9 +170,9 @@ public class SelectPlan extends DistributedPlan {
                  * We have to pair one replica from each shard of the sharded table with a local replica of the replicated
                  * table
                  */
-                for (ArrayList<Hashtable<String, DataType>> shardReplicas: shardedTableShards.values()) {
+                for (ArrayList<Hashtable<String, DataType>> shardReplicas : shardedTableShards.values()) {
                     boolean pairingCompleted = false;
-                    for (Hashtable<String, DataType> shard: shardReplicas) {
+                    for (Hashtable<String, DataType> shard : shardReplicas) {
                         String shardAddress = shard.get("host").toString() + shard.get("port").toString();
 
                         Hashtable<String, DataType> replicateTableShard = replicatedTableShards.get(shardAddress);
@@ -196,7 +190,7 @@ public class SelectPlan extends DistributedPlan {
 
                     if (!pairingCompleted) {
                         MasterWriter.getInstance().write(new Response("Not enough replicas of '" + replicatedTableName
-                        + "' to complete join."));
+                                + "' to complete join."));
                         return null;
                     }
                 }
@@ -217,10 +211,9 @@ public class SelectPlan extends DistributedPlan {
 
             MasterWriter.getInstance().write(new Response("Currently only joins between replicated tables are supported."));
             return null;
-        }
-        else if (ra.contains("GenJoin")) {
+        } else if (ra.contains("GenJoin")) {
             MasterWriter.getInstance().write(new Response("Currently only joins of the format 'SELECT [column list] "
-            + "FROM table1 t1 INNER JOIN table2 t2 ON t.column = t2.column' are supported."));
+                    + "FROM table1 t1 INNER JOIN table2 t2 ON t.column = t2.column' are supported."));
             return null;
         }
         /**
@@ -243,16 +236,15 @@ public class SelectPlan extends DistributedPlan {
 
             String distributionColumnType = "";
 
-            for (int i = 0; i < metadataArray.length; i+=2) {
+            for (int i = 0; i < metadataArray.length; i += 2) {
                 if (distributionColumn.equals(metadataArray[i]))
-                    distributionColumnType = metadataArray[i+1];
+                    distributionColumnType = metadataArray[i + 1];
             }
 
             ArrayList<Condition> distributionConditions = new ArrayList<>();
             if (ra.contains("Filter")) {
                 distributionConditions = translator.getDistributionCondition(metadata, distributionColumn, ra);
-            }
-            else {
+            } else {
                 distributionConditions.add(new NullCondition());
             }
 
@@ -260,9 +252,9 @@ public class SelectPlan extends DistributedPlan {
                 return null;
 
             DataTypeFactory dataTypeFactory = new DataTypeFactory();
-            Hashtable<String, ArrayList<Hashtable<String, DataType>>> shards  = new Hashtable<>();
+            Hashtable<String, ArrayList<Hashtable<String, DataType>>> shards = new Hashtable<>();
 
-            for (Hashtable<String, DataType> shard: MetadataBuffer.getInstance().getShards().values()) {
+            for (Hashtable<String, DataType> shard : MetadataBuffer.getInstance().getShards().values()) {
                 if (!shard.get("table_name").toString().equals(tableName))
                     continue;
 
@@ -281,7 +273,7 @@ public class SelectPlan extends DistributedPlan {
 
                     boolean validShard = false;
 
-                    for (Condition condition: distributionConditions)
+                    for (Condition condition : distributionConditions)
                         if (condition.evaluate(shardMinValue, shardMaxValue)) {
                             validShard = true;
                             break;
@@ -304,9 +296,9 @@ public class SelectPlan extends DistributedPlan {
              * each id. We're going to select the shards randomly for load balancing.
              */
 
-            ArrayList<Hashtable<String, DataType>> finalShards  = new ArrayList<>(); // shards we should forward the command to
+            ArrayList<Hashtable<String, DataType>> finalShards = new ArrayList<>(); // shards we should forward the command to
 
-            for (ArrayList<Hashtable<String, DataType>> shardGroup: shards.values()) {
+            for (ArrayList<Hashtable<String, DataType>> shardGroup : shards.values()) {
                 int groupSize = shardGroup.size();
                 int randomIndex = new Random().nextInt(groupSize);
                 finalShards.add(shardGroup.get(randomIndex));

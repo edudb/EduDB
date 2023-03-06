@@ -9,9 +9,9 @@
 
 package net.edudb.console.executor;
 
+import net.edudb.Response;
 import net.edudb.client.Client;
 import net.edudb.console.DatabaseConsole;
-import net.edudb.response.Response;
 
 /**
  * Clears the console screen.

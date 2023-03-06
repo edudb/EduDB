@@ -1,25 +1,23 @@
 /*
-EduDB is made available under the OSI-approved MIT license.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
+ *
+ * EduDB is made available under the OSI-approved MIT license.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * /
+ */
 
 package net.edudb.distributed_plan;
 
+import net.edudb.Response;
 import net.edudb.data_type.DataType;
 import net.edudb.data_type.DataTypeFactory;
 import net.edudb.distributed_operator.InsertOperator;
 import net.edudb.distributed_operator.parameter.InsertOperatorParamater;
-import net.edudb.distributed_query.QueryNode;
 import net.edudb.distributed_query.QueryTree;
 import net.edudb.exception.InvalidTypeValueException;
 import net.edudb.master.MasterWriter;
 import net.edudb.metadata_buffer.MetadataBuffer;
-import net.edudb.response.Response;
 import net.edudb.statement.SQLInsertStatement;
 import net.edudb.statement.SQLStatement;
 
@@ -73,11 +71,11 @@ public class InsertPlan extends DistributedPlan {
         }
 
         System.out.println(statement);
-        for (int i = 0; i < metadataArray.length; i+=2) {
+        for (int i = 0; i < metadataArray.length; i += 2) {
             DataType value = null;
             try {
-                System.out.println(values.get(i/2));
-                value = dataTypeFactory.makeType(metadataArray[i+1], values.get(i/2));
+                System.out.println(values.get(i / 2));
+                value = dataTypeFactory.makeType(metadataArray[i + 1], values.get(i / 2));
             } catch (InvalidTypeValueException e) {
                 MasterWriter.getInstance().write(new Response(e.getMessage()));
                 return null;
@@ -93,17 +91,17 @@ public class InsertPlan extends DistributedPlan {
          * We need to get all the shards that the new record should
          * be inserted into
          */
-        ArrayList<Hashtable<String, DataType>> shards  = new ArrayList<>(); // shards to insert into
+        ArrayList<Hashtable<String, DataType>> shards = new ArrayList<>(); // shards to insert into
 
-        for (Hashtable<String, DataType> shard: MetadataBuffer.getInstance().getShards().values()) {
+        for (Hashtable<String, DataType> shard : MetadataBuffer.getInstance().getShards().values()) {
             if (!shard.get("table_name").toString().equals(tableName))
                 continue;
 
             if (distributionMethod.equals("sharding")) {
                 DataType shardMinValue = null;
                 DataType shardMaxValue = null;
-                    try {
-                shardMinValue = dataTypeFactory.makeType(distributionColumnType,
+                try {
+                    shardMinValue = dataTypeFactory.makeType(distributionColumnType,
                             shard.get("min_value").toString());
                     shardMaxValue = dataTypeFactory.makeType(distributionColumnType,
                             shard.get("max_value").toString());

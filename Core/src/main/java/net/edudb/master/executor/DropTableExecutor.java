@@ -1,15 +1,15 @@
 /*
-EduDB is made available under the OSI-approved MIT license.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
+ *
+ * EduDB is made available under the OSI-approved MIT license.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * /
+ */
 
 package net.edudb.master.executor;
 
+import net.edudb.Response;
 import net.edudb.data_type.DataType;
 import net.edudb.data_type.IntegerType;
 import net.edudb.engine.Utility;
@@ -17,7 +17,6 @@ import net.edudb.master.MasterWriter;
 import net.edudb.meta_manager.MetaDAO;
 import net.edudb.meta_manager.MetaManager;
 import net.edudb.metadata_buffer.MetadataBuffer;
-import net.edudb.response.Response;
 import net.edudb.worker_manager.WorkerDAO;
 import net.edudb.workers_manager.WorkersManager;
 
@@ -34,7 +33,7 @@ import java.util.regex.Matcher;
  *
  * @author Fady Sameh
  */
-public class DropTableExecutor implements MasterExecutorChain{
+public class DropTableExecutor implements MasterExecutorChain {
 
     private MasterExecutorChain nextElement;
     private final String regex = "\\A(?:(?i)drop)\\s+(?:(?i)table)\\s+(\\D\\w*)\\s*;?\\z";
@@ -55,7 +54,7 @@ public class DropTableExecutor implements MasterExecutorChain{
                 }
 
                 ArrayList<Hashtable<String, DataType>> shards = new ArrayList<>();
-                for (Hashtable<String, DataType> shard: MetadataBuffer.getInstance().getShards().values()) {
+                for (Hashtable<String, DataType> shard : MetadataBuffer.getInstance().getShards().values()) {
                     if (shard.get("table_name").toString().equals(tableName)) {
                         shards.add(shard);
                     }
@@ -73,7 +72,7 @@ public class DropTableExecutor implements MasterExecutorChain{
                         return;
                     }
 
-                    int id = ((IntegerType)shard.get("id")).getInteger();
+                    int id = ((IntegerType) shard.get("id")).getInteger();
                     String dropTableStatement = string;
 
                     if (id > 0)
@@ -115,8 +114,7 @@ public class DropTableExecutor implements MasterExecutorChain{
             }
 
 
-        }
-        else {
+        } else {
             nextElement.execute(string);
         }
     }

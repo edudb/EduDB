@@ -9,9 +9,9 @@
 
 package net.edudb.console.executor;
 
+import net.edudb.Response;
 import net.edudb.engine.DatabaseSystem;
 import net.edudb.engine.Utility;
-import net.edudb.response.Response;
 
 import java.util.regex.Matcher;
 

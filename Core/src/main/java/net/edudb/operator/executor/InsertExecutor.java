@@ -9,6 +9,7 @@
 
 package net.edudb.operator.executor;
 
+import net.edudb.Response;
 import net.edudb.data_type.DataType;
 import net.edudb.data_type.DataTypeFactory;
 import net.edudb.exception.InvalidTypeValueException;
@@ -17,7 +18,6 @@ import net.edudb.operator.Operator;
 import net.edudb.operator.parameter.InsertOperatorParameter;
 import net.edudb.relation.Relation;
 import net.edudb.relation.VolatileRelation;
-import net.edudb.response.Response;
 import net.edudb.server.ServerWriter;
 import net.edudb.statement.SQLInsertStatement;
 import net.edudb.statistics.Schema;

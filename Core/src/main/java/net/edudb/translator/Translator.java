@@ -1,17 +1,17 @@
 /*
-EduDB is made available under the OSI-approved MIT license.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
+ *
+ * EduDB is made available under the OSI-approved MIT license.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * /
+ */
 
 package net.edudb.translator;
 
 import adipe.translate.Queries;
 import adipe.translate.TranslationException;
+import net.edudb.Response;
 import net.edudb.condition.Condition;
 import net.edudb.condition.ConditionFactory;
 import net.edudb.condition.NullCondition;
@@ -21,7 +21,6 @@ import net.edudb.engine.Utility;
 import net.edudb.exception.InvalidTypeValueException;
 import net.edudb.master.MasterWriter;
 import net.edudb.metadata_buffer.MetadataBuffer;
-import net.edudb.response.Response;
 import ra.Term;
 
 import java.util.ArrayList;
@@ -35,13 +34,13 @@ public class Translator {
         HashMap<String, ArrayList<String>> schema = new HashMap<>();
         Hashtable<String, Hashtable<String, DataType>> tables = MetadataBuffer.getInstance().getTables();
 
-        for (Hashtable<String, DataType> table: tables.values()) {
+        for (Hashtable<String, DataType> table : tables.values()) {
             ArrayList<String> columnNames = new ArrayList<>();
 
             String metadata = table.get("metadata").toString();
             String[] metadataArray = metadata.split(" ");
 
-            for ( int i = 0; i < metadataArray.length; i+=2)
+            for (int i = 0; i < metadataArray.length; i += 2)
                 columnNames.add(metadataArray[i]);
 
             schema.put(table.get("name").toString(), columnNames);
@@ -67,8 +66,7 @@ public class Translator {
         Matcher projectMatcher = Utility.getMatcher(ra, projectRegex);
         if (projectMatcher.matches()) {
             filterRa = projectMatcher.group(1);
-        }
-        else {
+        } else {
             filterRa = ra;
         }
 
@@ -76,8 +74,7 @@ public class Translator {
         Matcher filterMatcher = Utility.getMatcher(filterRa, regex);
         if (filterMatcher.matches()) {
             relationRA = filterMatcher.group(1);
-        }
-        else {
+        } else {
             relationRA = filterRa;
         }
 
@@ -104,8 +101,7 @@ public class Translator {
         Matcher projectMatcher = Utility.getMatcher(ra, projectRegex);
         if (projectMatcher.matches()) {
             filterRa = projectMatcher.group(1);
-        }
-        else {
+        } else {
             filterRa = ra;
         }
 
@@ -113,8 +109,7 @@ public class Translator {
         Matcher filterMatcher = Utility.getMatcher(filterRa, regex);
         if (filterMatcher.matches()) {
             joinRA = filterMatcher.group(1);
-        }
-        else {
+        } else {
             joinRA = filterRa;
         }
 
@@ -125,8 +120,7 @@ public class Translator {
         if (joinMatcher.matches()) {
             leftRelation = joinMatcher.group(1);
             rightRelation = joinMatcher.group(2);
-        }
-        else {
+        } else {
             return null;
         }
 
@@ -145,8 +139,7 @@ public class Translator {
         Matcher projectMatcher = Utility.getMatcher(ra, projectRegex);
         if (projectMatcher.matches()) {
             filterRa = projectMatcher.group(1);
-        }
-        else {
+        } else {
             filterRa = ra;
         }
 
@@ -154,8 +147,7 @@ public class Translator {
         Matcher filterMatcher = Utility.getMatcher(filterRa, regex);
         if (filterMatcher.matches()) {
             joinRA = filterMatcher.group(1);
-        }
-        else {
+        } else {
             joinRA = filterRa;
         }
 
@@ -166,19 +158,18 @@ public class Translator {
         if (joinMatcher.matches()) {
             leftColumnIndex = Integer.parseInt(joinMatcher.group(3));
             rightColumnIndex = Integer.parseInt(joinMatcher.group(4));
-        }
-        else {
+        } else {
             return false;
         }
 
-        return leftTableColumnTypes[leftColumnIndex-1].equals(rightTableColumnTypes[rightColumnIndex-1]);
+        return leftTableColumnTypes[leftColumnIndex - 1].equals(rightTableColumnTypes[rightColumnIndex - 1]);
     }
 
     private String[] getColumnTypes(String metadata) {
         String[] metadataArray = metadata.split(" ");
-        String[] columnTypes = new String[metadataArray.length/2];
+        String[] columnTypes = new String[metadataArray.length / 2];
 
-        for (int i = 0; i < metadataArray.length; i+=2) {
+        for (int i = 0; i < metadataArray.length; i += 2) {
             columnTypes[i / 2] = metadataArray[i + 1];
         }
 
@@ -190,8 +181,7 @@ public class Translator {
         Matcher projectMatcher = Utility.getMatcher(ra, projectRegex);
         if (projectMatcher.matches()) {
             filterRa = projectMatcher.group(1);
-        }
-        else {
+        } else {
             filterRa = ra;
         }
 
@@ -199,10 +189,10 @@ public class Translator {
         if (matcher.matches()) {
 
             String[] metadataArray = metadata.split(" ");
-            String[] columnTypes = new String[metadataArray.length/2];
+            String[] columnTypes = new String[metadataArray.length / 2];
 
             int distributionColumnIndex = -1;
-            for (int i = 0; i < metadataArray.length; i+=2) {
+            for (int i = 0; i < metadataArray.length; i += 2) {
                 if (metadataArray[i].equals(distributionColumn))
                     distributionColumnIndex = i / 2 + 1;
                 columnTypes[i / 2] = metadataArray[i + 1];
@@ -238,7 +228,7 @@ public class Translator {
      * Matches string of the format: AND(genericExpr or binaryExpr, genericExpr
      * or binaryExpr) or OR(genericExpr or binaryExpr, genericExpr or
      * binaryExpr)
-     *
+     * <p>
      * e.g. AND(OR(#1=3,#4=1),#2=44)
      */
     private final String capturedBinaryExpr = "(AND|OR)\\(" + "(" + argument + ")" + "," + "(" + argument + ")" + "\\)";
@@ -260,8 +250,7 @@ public class Translator {
 
             result.add(condition);
             return result;
-        }
-        else if (constantExpression.matches()) {
+        } else if (constantExpression.matches()) {
 
             ArrayList<Condition> result = new ArrayList<>();
             Condition condition = getConstantCondition(columnTypes, distributionIndex, constantExpression);
@@ -271,8 +260,7 @@ public class Translator {
 
             result.add(condition);
             return result;
-        }
-        else if (binaryExpression.matches()) {
+        } else if (binaryExpression.matches()) {
 
             ArrayList<Condition> result = getBinaryCondition(columnTypes, distributionIndex, binaryExpression);
 
@@ -293,7 +281,7 @@ public class Translator {
     private Condition getConstantCondition(String[] columnTypes, int distributionIndex, Matcher matcher) {
         System.out.println("constant " + matcher.group());
         int columnOrder = Integer.parseInt(matcher.group(1));
-        String columnType = columnTypes[columnOrder- 1];
+        String columnType = columnTypes[columnOrder - 1];
 
         String stringData = matcher.group(3).replace("\\\"", "");
 
@@ -330,7 +318,7 @@ public class Translator {
      * @param matcher
      * @return Condition
      */
-    private  Condition getColumnCondition(String[] columnTypes, Matcher matcher) {
+    private Condition getColumnCondition(String[] columnTypes, Matcher matcher) {
         System.out.println("column " + matcher.group());
         int leftColumn = Integer.parseInt(matcher.group(1));
         int rightColumn = Integer.parseInt(matcher.group(3));
@@ -373,7 +361,7 @@ public class Translator {
     private ArrayList<Condition> getBinaryCondition(String[] columnTypes, int distributionIndex, Matcher matcher) {
         System.out.println("binary " + matcher.group());
         String operator = matcher.group(1);
-        String leftExpression  = matcher.group(2);
+        String leftExpression = matcher.group(2);
         String rightExpression = matcher.group(3);
 
 
@@ -388,7 +376,7 @@ public class Translator {
         switch (operator) {
             case "OR":
 
-                for (Condition condition: rightConditions)
+                for (Condition condition : rightConditions)
                     leftConditions.add(condition);
 
                 return leftConditions;
@@ -396,10 +384,10 @@ public class Translator {
 
                 ArrayList<Condition> result = new ArrayList<>();
 
-                for (Condition leftCondition: leftConditions) {
+                for (Condition leftCondition : leftConditions) {
                     for (Condition rightCondition : rightConditions) {
                         ArrayList<Condition> andResult = leftCondition.and(rightCondition);
-                        for (Condition condition: andResult) {
+                        for (Condition condition : andResult) {
 
                             result.add(condition);
                         }

@@ -34,7 +34,9 @@ public class SQLExecutor implements ConsoleExecutorChain {
 
         Parser parser = new Parser();
         try {
-            return new Response(parser.parseSQL(string).getMessage(), parser.parseSQL(string).getRecords(), null);
+
+            return parser.parseSQL(string);
+//            return new Response(parser.parseSQL(string).getMessage(), parser.parseSQL(string).getRecords(), null);
 //            return parser.parseSQL(string); //TODO: handle this response
         } catch (TranslationException e) {
             e.printStackTrace();

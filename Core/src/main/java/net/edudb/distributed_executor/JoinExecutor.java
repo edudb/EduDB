@@ -1,15 +1,15 @@
 /*
-EduDB is made available under the OSI-approved MIT license.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
+ *
+ * EduDB is made available under the OSI-approved MIT license.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * /
+ */
 
 package net.edudb.distributed_executor;
 
+import net.edudb.Response;
 import net.edudb.data_type.DataType;
 import net.edudb.data_type.IntegerType;
 import net.edudb.distributed_operator.DistributedOperator;
@@ -18,7 +18,6 @@ import net.edudb.distributed_operator.parameter.JoinOperatorParameter;
 import net.edudb.join_request.JoinRequest;
 import net.edudb.join_request.LocalJoinRequest;
 import net.edudb.master.MasterWriter;
-import net.edudb.response.Response;
 import net.edudb.statement.SQLSelectStatement;
 import net.edudb.structure.Record;
 import net.edudb.worker_manager.WorkerDAO;
@@ -28,19 +27,19 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 
 /**
- *
- *
  * @author Fady Sameh
  */
 public class JoinExecutor implements OperatorExecutionChain {
 
     OperatorExecutionChain next;
 
-    public void setNextElementInChain(OperatorExecutionChain chainElement) { this.next = chainElement; }
+    public void setNextElementInChain(OperatorExecutionChain chainElement) {
+        this.next = chainElement;
+    }
 
     public void execute(DistributedOperator operator) {
         if (operator instanceof JoinOperator join) {
-            JoinOperatorParameter parameter = (JoinOperatorParameter)join.getParameter();
+            JoinOperatorParameter parameter = (JoinOperatorParameter) join.getParameter();
 
             SQLSelectStatement statement = parameter.getStatement();
             ArrayList<JoinRequest> joinRequests = parameter.getJoins();
@@ -105,8 +104,7 @@ public class JoinExecutor implements OperatorExecutionChain {
             MasterWriter.getInstance().write(new Response("relation", concatenatedResult, null));
 
             //MasterWriter.getInstance().write(new Response("Reached Executor: " + parameter.getStatement().toString()));
-        }
-        else {
+        } else {
             next.execute(operator);
         }
     }

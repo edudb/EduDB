@@ -12,7 +12,6 @@ import net.edudb.structure.Record;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * From this class, the response objects sent from
@@ -50,7 +49,7 @@ public class Response implements Serializable {
         return (Response) ois.readObject();
     }
 
-    public List<Record> getRecords() {
+    public ArrayList<Record> getRecords() {
         return records;
     }
 
@@ -85,4 +84,5 @@ public class Response implements Serializable {
         }
         return str;
     }
+
 }

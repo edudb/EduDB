@@ -9,8 +9,8 @@
 
 package net.edudb.console.executor;
 
+import net.edudb.Response;
 import net.edudb.client.ClientWriter;
-import net.edudb.response.Response;
 
 /**
  * @author Ahmed Abdul Badie
