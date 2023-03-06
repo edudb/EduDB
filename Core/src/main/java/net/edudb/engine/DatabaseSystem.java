@@ -87,10 +87,8 @@ public class DatabaseSystem {
             this.databaseIsOpen = true;
             initializeDatabaseDirectories(this.databaseName);
             Schema.getInstance().setSchema();
-            //ServerWriter.getInstance().writeln("Opened database '" + databaseName + "'");
             return "Opened database '" + databaseName + "'";
         } else {
-            //ServerWriter.getInstance().writeln("Database '" + databaseName + "' does not exist");
             return "Database '" + databaseName + "' does not exist";
         }
     }
@@ -100,8 +98,6 @@ public class DatabaseSystem {
      */
     public String close() {
         if (!databaseIsOpen) {
-//			ServerWriter.getInstance().writeln("No open database");
-//			return;
             return "No open database";
         }
 
@@ -115,7 +111,6 @@ public class DatabaseSystem {
 
         Schema.getInstance().resetSchema();
 
-        //ServerWriter.getInstance().writeln("Closed database '" + dbName + "'");
         return "Closed database '" + dbName + "'";
     }
 
@@ -126,14 +121,12 @@ public class DatabaseSystem {
      */
     public String createDatabase(String databaseName) {
         if (databaseExists(databaseName)) {
-            //ServerWriter.getInstance().writeln("Database '" + databaseName + "' does exist");
             return "Database '" + databaseName + "' does exist";
         }
         if (databaseIsOpen) {
             close();
         }
         new File(Config.absolutePath() + databasesString + "/" + databaseName).mkdir();
-//		ServerWriter.getInstance().writeln("Created database '" + databaseName + "'");
 //		open(databaseName);
         return "Created database '" + databaseName + "'" + "\r\n" + open(databaseName);
     }
@@ -146,8 +139,6 @@ public class DatabaseSystem {
      */
     public String dropDatabase(String databaseName) throws IOException {
         if (!databaseExists(databaseName)) {
-//			ServerWriter.getInstance().writeln("Database '" + databaseName + "' does not exist");
-//			return;
             return "Database '" + databaseName + "' does not exist";
         }
         if (databaseIsOpen) {
@@ -169,7 +160,6 @@ public class DatabaseSystem {
             }
         });
 
-        //ServerWriter.getInstance().writeln("Dropped database '" + databaseName + "'");
         return "Dropped database '" + databaseName + "'";
     }
 
@@ -180,7 +170,6 @@ public class DatabaseSystem {
      * @author Ahmed Nasser Gaafar
      */
     public String listDatabases() {
-//        TODO: initialize the databases directory if it does not exist
         File databases = new File(Config.absolutePath() + databasesString);
         String[] databaseNames = databases.list();
         String result = "";
