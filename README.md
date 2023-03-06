@@ -4,6 +4,14 @@ The Open Source Educational Database Engine
 
 ## Build
 
+### prerequisites
+
+install required jar files in your local maven repository
+
+```bash
+./install-jars.sh
+```
+
 for macOS and Linux
 
 ```bash
