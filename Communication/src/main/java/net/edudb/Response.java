@@ -11,6 +11,7 @@ package net.edudb;
 import net.edudb.structure.Record;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,14 +23,14 @@ import java.util.List;
 public class Response implements Serializable {
 
     private String message;
-    private List<Record> records;
+    private ArrayList<Record> records;
     private String id;
 
     public Response(String message) {
         this.message = message;
     }
 
-    public Response(String message, List<Record> records, String id) {
+    public Response(String message, ArrayList<Record> records, String id) {
         this.message = message;
         this.records = records;
         this.id = id;
@@ -53,7 +54,7 @@ public class Response implements Serializable {
         return records;
     }
 
-    public void setRecords(List<Record> records) {
+    public void setRecords(ArrayList<Record> records) {
         this.records = records;
     }
 
@@ -73,4 +74,15 @@ public class Response implements Serializable {
         this.id = id;
     }
 
+    @Override
+    public String toString() {
+        String str = message;
+        if (records != null) {
+            str += "\n";
+            for (Record record : records) {
+                str += record.toString() + "\n";
+            }
+        }
+        return str;
+    }
 }

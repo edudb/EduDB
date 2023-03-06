@@ -21,6 +21,10 @@ public class Request implements Serializable {
     private String id;
     private String command;
 
+    public Request(String command) {
+        this.command = command;
+    }
+
     public Request(String id, String command) {
         this.id = id;
         this.command = command;

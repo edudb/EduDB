@@ -63,8 +63,6 @@ public class Client {
             client.rpcClient.initializeConnection();
             while (true) {
                 String input = client.console.readLine();
-//                Request request = new Request(null, input);
-//                Response response = client.rpcClient.call(request);
                 String output = client.handler.handle(input);
                 client.console.displayMessage(output);
             }

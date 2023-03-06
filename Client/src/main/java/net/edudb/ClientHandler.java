@@ -35,6 +35,6 @@ public class ClientHandler {
 
     public String handle(String userCommand) {
         Response response = chain.execute(userCommand);
-        return response.getMessage();
+        return response.toString();
     }
 }
