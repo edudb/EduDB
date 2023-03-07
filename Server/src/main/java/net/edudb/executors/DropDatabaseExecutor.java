@@ -9,6 +9,7 @@
 
 package net.edudb.executors;
 
+import net.edudb.Request;
 import net.edudb.Response;
 import net.edudb.engine.DatabaseSystem;
 import net.edudb.engine.Utility;
@@ -36,9 +37,10 @@ public class DropDatabaseExecutor implements ConsoleExecutorChain {
     }
 
     @Override
-    public Response execute(String string) {
-        if (string.toLowerCase().startsWith("drop")) {
-            Matcher matcher = Utility.getMatcher(string, regex);
+    public Response execute(Request request) {
+        String command = request.getCommand();
+        if (command.toLowerCase().startsWith("drop")) {
+            Matcher matcher = Utility.getMatcher(command, regex);
             if (matcher.matches()) {
                 try {
                     return new Response(DatabaseSystem.getInstance().dropDatabase(matcher.group(1)));
@@ -48,7 +50,7 @@ public class DropDatabaseExecutor implements ConsoleExecutorChain {
                 return new Response("");
             }
         }
-        return nextElement.execute(string);
+        return nextElement.execute(request);
     }
 
 }

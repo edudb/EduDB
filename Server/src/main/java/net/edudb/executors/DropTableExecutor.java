@@ -9,6 +9,7 @@
 
 package net.edudb.executors;
 
+import net.edudb.Request;
 import net.edudb.Response;
 import net.edudb.engine.Utility;
 import net.edudb.statistics.Schema;
@@ -39,9 +40,10 @@ public class DropTableExecutor implements ConsoleExecutorChain {
     }
 
     @Override
-    public Response execute(String string) {
-        if (string.toLowerCase().startsWith("drop")) {
-            Matcher matcher = Utility.getMatcher(string, regex);
+    public Response execute(Request request) {
+        String command = request.getCommand();
+        if (command.toLowerCase().startsWith("drop")) {
+            Matcher matcher = Utility.getMatcher(command, regex);
             if (matcher.matches()) {
                 String tableName = matcher.group(1);
                 if (!Schema.getInstance().chekTableExists(tableName)) {
@@ -57,7 +59,7 @@ public class DropTableExecutor implements ConsoleExecutorChain {
                 return new Response("Dropped table '" + tableName + "'");
             }
         }
-        return nextElement.execute(string);
+        return nextElement.execute(request);
     }
 
 }

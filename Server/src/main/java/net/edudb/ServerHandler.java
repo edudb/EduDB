@@ -39,7 +39,7 @@ public class ServerHandler implements RequestHandler {
     }
 
     public Response handle(Request request) {
-        Response response = chain.execute(request.getCommand());
+        Response response = chain.execute(request);
         return response;
     }
 }

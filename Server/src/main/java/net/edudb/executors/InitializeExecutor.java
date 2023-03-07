@@ -9,6 +9,7 @@
 
 package net.edudb.executors;
 
+import net.edudb.Request;
 import net.edudb.Response;
 import net.edudb.engine.Utility;
 
@@ -38,9 +39,10 @@ public class InitializeExecutor implements ConsoleExecutorChain {
 
     //	TODO: handle this logic
     @Override
-    public Response execute(String string) {
-        if (string.toLowerCase().startsWith("[edudb::")) {
-            Matcher matcher = Utility.getMatcher(string, regex);
+    public Response execute(Request request) {
+        String command = request.getCommand();
+        if (command.toLowerCase().startsWith("[edudb::")) {
+            Matcher matcher = Utility.getMatcher(command, regex);
             if (matcher.matches()) {
                 /**
                  * Write anything to the client to initialize a connection with
@@ -55,7 +57,7 @@ public class InitializeExecutor implements ConsoleExecutorChain {
 
             }
         }
-        return nextElement.execute(string);
+        return nextElement.execute(request);
     }
 
 }
