@@ -10,6 +10,7 @@
 package net.edudb.statistics;
 
 import com.google.common.collect.Iterables;
+import net.edudb.engine.Config;
 import net.edudb.engine.FileManager;
 import net.edudb.structure.Column;
 import net.edudb.structure.table.Table;
@@ -90,7 +91,7 @@ public class Schema {
     public void addTable(String line) {
         putTable(line);
         line += System.lineSeparator();
-        FileManager.writeFile(FileManager.getSchemaPath(), line, true);
+        FileManager.writeFile(Config.schemaPath(), line, true);
     }
 
     public void removeTable(String tableName) {
@@ -105,14 +106,14 @@ public class Schema {
             }
         }
 
-        File file = new File(FileManager.getSchemaPath());
+        File file = new File(Config.schemaPath());
         if (file.exists()) {
             file.delete();
         }
 
         this.schema.remove(tableName);
 
-        FileManager.writeFile(FileManager.getSchemaPath(), schemaData, false);
+        FileManager.writeFile(Config.schemaPath(), schemaData, false);
     }
 
     public HashMap<String, ArrayList<String>> getSchema() {

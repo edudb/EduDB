@@ -49,18 +49,22 @@ public class Config {
         return absolutePath() + "databases" + "/" + DatabaseSystem.getInstance().getDatabaseName();
     }
 
+    public static String schemaPath() {
+        return databasePath() + "/schema.txt";
+    }
+
     /**
      * @return The path to the table files on disk.
      */
     public static String tablesPath() {
-        return absolutePath() + "databases" + "/" + DatabaseSystem.getInstance().getDatabaseName() + "/tables/";
+        return databasePath() + "/tables/";
     }
 
     /**
      * @return The path to the page files on disk.
      */
     public static String pagesPath() {
-        return absolutePath() + "databases" + "/" + DatabaseSystem.getInstance().getDatabaseName() + "/blocks/";
+        return databasePath() + "/blocks/";
     }
 
     /**

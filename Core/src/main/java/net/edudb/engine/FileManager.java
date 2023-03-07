@@ -32,11 +32,7 @@ public class FileManager {
     }
 
     public static ArrayList<String> readSchema() {
-        return readFile(getSchemaPath());
-    }
-
-    public static String getSchemaPath() {
-        return Utility.appendToPath(Config.databasePath(), "schema.txt");
+        return readFile(Config.schemaPath());
     }
 
     /**
