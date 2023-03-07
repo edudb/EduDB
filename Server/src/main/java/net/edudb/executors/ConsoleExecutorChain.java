@@ -18,7 +18,7 @@ import net.edudb.Response;
  *
  * @author Ahmed Abdul Badie
  */
-public interface ConsoleExecutorChain {
+public interface ConsoleExecutorChain { //TODO: rename this class
 
     /**
      * Connects an existing executor chain with the argument chain element.

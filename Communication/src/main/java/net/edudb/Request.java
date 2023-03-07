@@ -18,16 +18,16 @@ import java.io.*;
  */
 public class Request implements Serializable {
 
-    private String id;
     private String command;
+    private String databaseName;
 
     public Request(String command) {
         this.command = command;
     }
 
-    public Request(String id, String command) {
-        this.id = id;
+    public Request(String command, String databaseName) {
         this.command = command;
+        this.databaseName = databaseName;
     }
 
     public static byte[] serialize(Request request) throws IOException {
@@ -44,13 +44,6 @@ public class Request implements Serializable {
         return (Request) ois.readObject();
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getCommand() {
         return command;
@@ -60,4 +53,7 @@ public class Request implements Serializable {
         this.command = command;
     }
 
+    public String getDatabaseName() {
+        return databaseName;
+    }
 }

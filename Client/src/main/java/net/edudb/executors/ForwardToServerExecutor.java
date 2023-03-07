@@ -26,7 +26,7 @@ public class ForwardToServerExecutor implements ConsoleExecutorChain {
 
     @Override
     public Response execute(String string) {
-        Request request = new Request(null, string);
+        Request request = new Request(string);
         Response response;
         try {
             response = Client.getInstance().getRpcClient().call(request);
