@@ -61,7 +61,7 @@ public class RPCClient {
     }
 
     public Response handshake() {
-        Request request = new Request(this.connectionQueueName, true);
+        Request request = new Request(this.connectionQueueName, RequestType.HANDSHAKE);
         try {
             return this.call(request);
         } catch (IOException | InterruptedException | ExecutionException e) {

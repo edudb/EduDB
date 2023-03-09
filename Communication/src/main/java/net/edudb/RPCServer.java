@@ -65,13 +65,13 @@ public class RPCServer {
 
             try {
                 Request request = Request.deserialize(delivery.getBody());
-                System.out.println("Received handshake request: " + request.getCommand());
 
-                if (!request.isHandshake()) {
+                if (request.getType() != RequestType.HANDSHAKE) {
                     sendResponse(new Response(String.format("Expected handshake request, got %s", request.getCommand())), correlationId, replyTo);
                     return;
                 }
 
+                System.out.println("Received handshake request: " + request.getCommand());
                 String connectionQueueName = request.getCommand();
                 this.channel.queueDeclare(connectionQueueName, false, false, false, null);
                 this.channel.queuePurge(connectionQueueName);
