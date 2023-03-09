@@ -8,6 +8,7 @@
  */
 package net.edudb;
 
+import net.edudb.exceptions.SerializationException;
 import net.edudb.structure.Record;
 
 import java.io.*;
@@ -35,18 +36,26 @@ public class Response implements Serializable {
         this.id = id;
     }
 
-    public static byte[] serialize(Response response) throws IOException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(bos);
-        oos.writeObject(response);
-        oos.flush();
-        return bos.toByteArray();
+    public static byte[] serialize(Response response) throws SerializationException {
+        try {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(bos);
+            oos.writeObject(response);
+            oos.flush();
+            return bos.toByteArray();
+        } catch (IOException e) {
+            throw new SerializationException("Failed to serialize response", e);
+        }
     }
 
-    public static Response deserialize(byte[] serializedData) throws ClassNotFoundException, IOException {
-        ByteArrayInputStream bis = new ByteArrayInputStream(serializedData);
-        ObjectInputStream ois = new ObjectInputStream(bis);
-        return (Response) ois.readObject();
+    public static Response deserialize(byte[] serializedData) throws SerializationException {
+        try {
+            ByteArrayInputStream bis = new ByteArrayInputStream(serializedData);
+            ObjectInputStream ois = new ObjectInputStream(bis);
+            return (Response) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            throw new SerializationException("Failed to deserialize response", e);
+        }
     }
 
     public ArrayList<Record> getRecords() {

@@ -10,8 +10,13 @@
 package net.edudb;
 
 import com.rabbitmq.client.*;
+import net.edudb.exceptions.RabbitMQConnectionException;
+import net.edudb.exceptions.RabbitMQCreateQueueException;
+import net.edudb.exceptions.SerializationException;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -21,7 +26,8 @@ import java.util.concurrent.TimeoutException;
  * @author Ahmed Nasser Gaafar
  */
 public class RPCServer {
-    private String queueName;
+    private String handshakeQueueName;
+    private List<String> connectionQueueNames;
     private Connection connection;
     private Channel channel;
 
@@ -33,7 +39,8 @@ public class RPCServer {
      * @author Ahmed Nasser Gaafar
      */
     public RPCServer(String serverName) {
-        this.queueName = String.format("%s_queue", serverName);
+        this.handshakeQueueName = Utils.getHandshakeQueueName(serverName);
+        this.connectionQueueNames = new ArrayList<>();
     }
 
     /**
@@ -43,14 +50,56 @@ public class RPCServer {
      * @throws TimeoutException If the connection to the server times out.
      * @author Ahmed Nasser Gaafar
      */
-    public void initializeConnection() throws IOException, TimeoutException {
-        final String AMQP_URL = System.getProperty("AMQP_URL");
+    public void initializeConnection() throws RabbitMQConnectionException, RabbitMQCreateQueueException {
 
         ConnectionFactory factory = new ConnectionFactory();
-        this.connection = factory.newConnection(AMQP_URL);
-        this.channel = connection.createChannel();
-        this.channel.queueDeclare(this.queueName, false, false, false, null);
-        this.channel.queuePurge(this.queueName);
+
+        try {
+            this.connection = factory.newConnection(Utils.getAMQPURL());
+            this.channel = this.connection.createChannel();
+        } catch (Exception e) {
+            throw new RabbitMQConnectionException("Could not connect to RabbitMQ.", e);
+        }
+
+        try {
+            this.channel.queueDeclare(this.handshakeQueueName, false, false, false, null);
+            this.channel.queuePurge(this.handshakeQueueName);
+        } catch (Exception e) {
+            throw new RabbitMQCreateQueueException("Could not create handshake queue.", e);
+        }
+
+    }
+
+    public void handleHandshakes() throws IOException {
+        DeliverCallback deliverCallback = (consumerTag, delivery) -> {
+            String correlationId = delivery.getProperties().getCorrelationId();
+            String replyTo = delivery.getProperties().getReplyTo();
+
+            try {
+                Request request = Request.deserialize(delivery.getBody());
+
+                if (request.getType() != RequestType.HANDSHAKE) {
+                    sendResponse(new Response(String.format("Expected handshake request, got %s", request.getCommand())), correlationId, replyTo);
+                    return;
+                }
+
+                System.out.println("Received handshake request: " + request.getCommand());
+                String connectionQueueName = request.getCommand();
+                this.channel.queueDeclare(connectionQueueName, false, false, false, null);
+                this.channel.queuePurge(connectionQueueName);
+
+                connectionQueueNames.add(connectionQueueName);
+                sendResponse(new Response("Handshake: OK"), correlationId, replyTo);
+
+                channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
+            } catch (SerializationException e) {
+                System.err.println(e.getMessage());
+                e.printStackTrace();
+            }
+        };
+
+        channel.basicConsume(handshakeQueueName, false, deliverCallback, consumerTag -> {
+        });
     }
 
     /**
@@ -76,15 +125,17 @@ public class RPCServer {
 
                 channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
 
-            } catch (IOException e) {
+            } catch (SerializationException e) {
+                System.err.println(e.getMessage());
                 e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
             }
         };
 
-        channel.basicConsume(queueName, false, deliverCallback, consumerTag -> {
-        });
+        for (String connectionQueueName : connectionQueueNames) {
+            channel.basicConsume(connectionQueueName, false, deliverCallback, consumerTag -> {
+            });
+        }
+
     }
 
     /**
@@ -96,7 +147,7 @@ public class RPCServer {
      * @throws IOException
      * @author Ahmed Nasser Gaafar
      */
-    private void sendResponse(Response response, String correlationId, String replyTo) throws IOException {
+    private void sendResponse(Response response, String correlationId, String replyTo) throws IOException, SerializationException {
         byte[] serializedResponse = Response.serialize(response);
 
         AMQP.BasicProperties props = new AMQP.BasicProperties

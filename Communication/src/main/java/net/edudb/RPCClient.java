@@ -13,6 +13,8 @@ import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import net.edudb.exceptions.RabbitMQConnectionException;
+import net.edudb.exceptions.SerializationException;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -27,7 +29,9 @@ import java.util.concurrent.TimeoutException;
  * @author Ahmed Nasser Gaafar
  */
 public class RPCClient {
-    private String queueName;
+    private String handshakeQueueName;
+    private String connectionQueueName;
+    private String clientId;
     private Connection connection;
     private Channel channel;
 
@@ -38,7 +42,9 @@ public class RPCClient {
      * @author Ahmed Nasser Gaafar
      */
     public RPCClient(String serverName) {
-        this.queueName = String.format("%s_queue", serverName);
+        this.clientId = Utils.getUniqueID();
+        this.handshakeQueueName = Utils.getHandshakeQueueName(serverName);
+        this.connectionQueueName = Utils.getConnectionQueueName(serverName, this.clientId);
     }
 
     /**
@@ -48,12 +54,24 @@ public class RPCClient {
      * @throws TimeoutException If the connection to the server times out.
      * @author Ahmed Nasser Gaafar
      */
-    public void initializeConnection() throws IOException, TimeoutException {
-        final String AMQP_URL = System.getProperty("AMQP_URL");
-
+    public void initializeConnection() throws RabbitMQConnectionException {
         ConnectionFactory factory = new ConnectionFactory();
-        this.connection = factory.newConnection(AMQP_URL);
-        this.channel = connection.createChannel();
+
+        try {
+            this.connection = factory.newConnection(Utils.getAMQPURL());
+            this.channel = this.connection.createChannel();
+        } catch (Exception e) {
+            throw new RabbitMQConnectionException("Could not connect to RabbitMQ.", e);
+        }
+    }
+
+    public Response handshake() {
+        Request request = new Request(this.connectionQueueName, RequestType.HANDSHAKE);
+        try {
+            return this.call(request);
+        } catch (IOException | InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
@@ -68,7 +86,13 @@ public class RPCClient {
      * @author Ahmed Nasser Gaafar
      */
     public Response call(Request request) throws IOException, InterruptedException, ExecutionException {
-        byte[] serializedRequest = Request.serialize(request);
+        byte[] serializedRequest = new byte[0];
+        try {
+            serializedRequest = Request.serialize(request);
+        } catch (SerializationException e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
 
         final String corrId = UUID.randomUUID().toString();
         String replyQueueName = channel.queueDeclare().getQueue();
@@ -79,7 +103,7 @@ public class RPCClient {
                 .replyTo(replyQueueName)
                 .build();
 
-        channel.basicPublish("", this.queueName, props, serializedRequest);
+        channel.basicPublish("", this.handshakeQueueName, props, serializedRequest);
 
         final CompletableFuture<Response> response = new CompletableFuture<>();
 
@@ -87,8 +111,9 @@ public class RPCClient {
             if (delivery.getProperties().getCorrelationId().equals(corrId)) {
                 try {
                     response.complete(Response.deserialize(delivery.getBody()));
-                } catch (ClassNotFoundException e) {
-                    throw new RuntimeException(e);
+                } catch (SerializationException e) {
+                    System.err.println(e.getMessage());
+                    e.printStackTrace();
                 }
             }
         }, consumerTag -> {
