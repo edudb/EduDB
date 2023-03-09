@@ -15,6 +15,7 @@ import java.util.concurrent.TimeoutException;
 public class Client {
     private static Client instance = new Client();
     private static final String DEFAULT_SERVER_NAME = "server";
+    private String connectedDatabase;
     private Console console;
     private RPCClient rpcClient;
     private ClientHandler handler;
@@ -39,6 +40,10 @@ public class Client {
         return userInput;
     }
 
+    public ClientHandler getHandler() {
+        return handler;
+    }
+
     public void setRpcClient(RPCClient rpcClient) {
         this.rpcClient = rpcClient;
     }
@@ -51,17 +56,29 @@ public class Client {
         return rpcClient;
     }
 
+    public String getConnectedDatabase() {
+        return connectedDatabase;
+    }
+
+    public void setConnectedDatabase(String connectedDatabase) {
+        this.connectedDatabase = connectedDatabase;
+    }
+
     public static void main(String[] args) {
         Client client = Client.getInstance();
 
         String serverName = client.getServerNameFromUser();
         client.setRpcClient(new RPCClient(serverName));
-        client.console.setPrompt(String.format("EduDB-%s> ", serverName));
 
 
         try {
             client.rpcClient.initializeConnection();
             while (true) {
+                if (client.getConnectedDatabase() != null)
+                    client.console.setPrompt(String.format("EduDB-%s-(%s)> ", serverName, client.getConnectedDatabase()));
+                else {
+                    client.console.setPrompt(String.format("EduDB-%s> ", serverName));
+                }
                 String input = client.console.readLine();
                 String output = client.handler.handle(input);
                 client.console.displayMessage(output);
