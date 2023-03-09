@@ -20,9 +20,15 @@ public class Request implements Serializable {
 
     private String id;
     private String command;
+    private boolean handshake;
 
     public Request(String command) {
         this.command = command;
+    }
+
+    public Request(String command, boolean handshake) {
+        this.command = command;
+        this.handshake = handshake;
     }
 
     public Request(String id, String command) {
@@ -60,4 +66,7 @@ public class Request implements Serializable {
         this.command = command;
     }
 
+    public boolean isHandshake() {
+        return handshake;
+    }
 }

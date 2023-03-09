@@ -27,7 +27,9 @@ import java.util.concurrent.TimeoutException;
  * @author Ahmed Nasser Gaafar
  */
 public class RPCClient {
-    private String queueName;
+    private String handshakeQueueName;
+    private String connectionQueueName;
+    private String clientId;
     private Connection connection;
     private Channel channel;
 
@@ -38,7 +40,9 @@ public class RPCClient {
      * @author Ahmed Nasser Gaafar
      */
     public RPCClient(String serverName) {
-        this.queueName = String.format("%s_queue", serverName);
+        this.clientId = Utils.getUniqueID();
+        this.handshakeQueueName = Utils.getHandshakeQueueName(serverName);
+        this.connectionQueueName = Utils.getConnectionQueueName(serverName, this.clientId);
     }
 
     /**
@@ -54,6 +58,15 @@ public class RPCClient {
         ConnectionFactory factory = new ConnectionFactory();
         this.connection = factory.newConnection(AMQP_URL);
         this.channel = connection.createChannel();
+    }
+
+    public Response handshake() {
+        Request request = new Request(this.connectionQueueName, true);
+        try {
+            return this.call(request);
+        } catch (IOException | InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
@@ -79,7 +92,7 @@ public class RPCClient {
                 .replyTo(replyQueueName)
                 .build();
 
-        channel.basicPublish("", this.queueName, props, serializedRequest);
+        channel.basicPublish("", this.handshakeQueueName, props, serializedRequest);
 
         final CompletableFuture<Response> response = new CompletableFuture<>();
 

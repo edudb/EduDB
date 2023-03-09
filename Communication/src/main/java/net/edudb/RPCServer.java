@@ -12,6 +12,8 @@ package net.edudb;
 import com.rabbitmq.client.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -21,7 +23,8 @@ import java.util.concurrent.TimeoutException;
  * @author Ahmed Nasser Gaafar
  */
 public class RPCServer {
-    private String queueName;
+    private String handshakeQueueName;
+    private List<String> connectionQueueNames;
     private Connection connection;
     private Channel channel;
 
@@ -33,7 +36,8 @@ public class RPCServer {
      * @author Ahmed Nasser Gaafar
      */
     public RPCServer(String serverName) {
-        this.queueName = String.format("%s_queue", serverName);
+        this.handshakeQueueName = Utils.getHandshakeQueueName(serverName);
+        this.connectionQueueNames = new ArrayList<>();
     }
 
     /**
@@ -49,8 +53,42 @@ public class RPCServer {
         ConnectionFactory factory = new ConnectionFactory();
         this.connection = factory.newConnection(AMQP_URL);
         this.channel = connection.createChannel();
-        this.channel.queueDeclare(this.queueName, false, false, false, null);
-        this.channel.queuePurge(this.queueName);
+
+        this.channel.queueDeclare(this.handshakeQueueName, false, false, false, null);
+        this.channel.queuePurge(this.handshakeQueueName);
+    }
+
+    public void handleHandshakes() throws IOException {
+        DeliverCallback deliverCallback = (consumerTag, delivery) -> {
+            String correlationId = delivery.getProperties().getCorrelationId();
+            String replyTo = delivery.getProperties().getReplyTo();
+
+            try {
+                Request request = Request.deserialize(delivery.getBody());
+                System.out.println("Received handshake request: " + request.getCommand());
+
+                if (!request.isHandshake()) {
+                    sendResponse(new Response(String.format("Expected handshake request, got %s", request.getCommand())), correlationId, replyTo);
+                    return;
+                }
+
+                String connectionQueueName = request.getCommand();
+                this.channel.queueDeclare(connectionQueueName, false, false, false, null);
+                this.channel.queuePurge(connectionQueueName);
+
+                connectionQueueNames.add(connectionQueueName);
+                sendResponse(new Response("Handshake: OK"), correlationId, replyTo);
+
+                channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        };
+
+        channel.basicConsume(handshakeQueueName, false, deliverCallback, consumerTag -> {
+        });
     }
 
     /**
@@ -83,8 +121,11 @@ public class RPCServer {
             }
         };
 
-        channel.basicConsume(queueName, false, deliverCallback, consumerTag -> {
-        });
+        for (String connectionQueueName : connectionQueueNames) {
+            channel.basicConsume(connectionQueueName, false, deliverCallback, consumerTag -> {
+            });
+        }
+
     }
 
     /**

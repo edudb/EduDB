@@ -55,12 +55,19 @@ public class Client {
         Client client = Client.getInstance();
 
         String serverName = client.getServerNameFromUser();
-        client.setRpcClient(new RPCClient(serverName));
+
+        RPCClient rpcClient = new RPCClient(serverName);
+        client.setRpcClient(rpcClient);
+
         client.console.setPrompt(String.format("EduDB-%s> ", serverName));
 
 
         try {
-            client.rpcClient.initializeConnection();
+            rpcClient.initializeConnection();
+
+            Response handshakeResponse = rpcClient.handshake();
+            client.console.displayMessage(handshakeResponse.getMessage());
+
             while (true) {
                 String input = client.console.readLine();
                 String output = client.handler.handle(input);

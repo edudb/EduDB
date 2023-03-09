@@ -62,6 +62,7 @@ public class Server {
 
         try {
             server.rpcServer.initializeConnection();
+            server.rpcServer.handleHandshakes();
             server.rpcServer.handleRequests(server.handler);
         } catch (IOException | TimeoutException e) {
             e.printStackTrace();
