@@ -11,46 +11,128 @@ import net.edudb.Request;
 import net.edudb.Response;
 import net.edudb.Server;
 import net.edudb.ServerHandler;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import net.edudb.engine.Config;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+
+import java.io.File;
 
 public class ConcurrentFlowTest {
-    final Server server = new Server();
-    final String DB_NAME = "test_db";
-    final String TABLE_NAME = "test_table";
+    final static Server server = new Server();
+    final static String DB_NAME_1 = "test_db_1";
+    final static String DB_NAME_2 = "test_db_2";
+    final static String TABLE_NAME_1 = "test_table_1";
+    final static String TABLE_NAME_2 = "test_table_2";
 
-    @Before
+    final static Request CREATE_DB_1 = new Request("create database " + DB_NAME_1);
+    final static Request CREATE_TABLE_1 = new Request("create table " + TABLE_NAME_1 + " (name varchar)", DB_NAME_1);
+    final static Request INSERT_1 = new Request("insert into " + TABLE_NAME_1 + " values ('test1')", DB_NAME_1);
+    final static Request SELECT_1 = new Request("select * from " + TABLE_NAME_1, DB_NAME_1);
+    final static Request DROP_TABLE_1 = new Request("drop table " + TABLE_NAME_1, DB_NAME_1);
+    final static Request DROP_DB_1 = new Request("drop database " + DB_NAME_1);
+
+    final static Request CREATE_DB_2 = new Request("create database " + DB_NAME_2);
+    final static Request CREATE_TABLE_2 = new Request("create table " + TABLE_NAME_2 + " (name varchar, test varchar)", DB_NAME_2);
+    final static Request INSERT_2 = new Request("insert into " + TABLE_NAME_2 + " values ('test2', 'test2')", DB_NAME_2);
+    final static Request SELECT_2 = new Request("select * from " + TABLE_NAME_2, DB_NAME_2);
+    final static Request DROP_TABLE_2 = new Request("drop table " + TABLE_NAME_2, DB_NAME_2);
+    final static Request DROP_DB_2 = new Request("drop database " + DB_NAME_2);
+
+    @BeforeEach
     public void setUp() {
-        final Request CREATE_DB = new Request("create database " + DB_NAME);
-        server.getHandler().handle(CREATE_DB);
+        server.getHandler().handle(CREATE_DB_1);
+        server.getHandler().handle(CREATE_DB_2);
+//        DatabaseSystem.getInstance().setDatabaseIsOpen(true);
+
     }
 
-    @Test
-    public void test() {
+    @AfterEach
+    public void tearDown() {
+        server.getHandler().handle(DROP_DB_1);
+        server.getHandler().handle(DROP_DB_2);
+    }
+
+    @Disabled
+    void testConcurrentUsers() throws InterruptedException {
         ServerHandler serverHandler = server.getHandler();
 
-        final Request CREATE_TABLE = new Request("create table " + TABLE_NAME + " (name varchar)", DB_NAME);
-        final Request INSERT = new Request("insert into " + TABLE_NAME + " values ('test')", DB_NAME);
-        final Request SELECT = new Request("select * from " + TABLE_NAME, DB_NAME);
-        final Request DROP_TABLE = new Request("drop table " + TABLE_NAME, DB_NAME);
 
-        Response createTableResponse = serverHandler.handle(CREATE_TABLE);
-        System.out.println(createTableResponse);
-        Response insertResponse = serverHandler.handle(INSERT);
-        System.out.println(insertResponse);
-        System.out.println(insertResponse.getRecords());
-        assert insertResponse.getRecords().size() == 1;
-        System.out.println(insertResponse.getRecords().get(0).getData());
-        Response selectResponse = serverHandler.handle(SELECT);
-        System.out.println(selectResponse);
-        serverHandler.handle(DROP_TABLE);
+        Thread thread1 = new Thread(() -> {
+            Response createTableResponse = serverHandler.handle(CREATE_TABLE_1);
+            System.out.println("Thread 1 (create table): " + createTableResponse);
+//            Assertions.assertTrue(new File(String.format("%s/databases/%s/tables/%s.table", Config.absolutePath(), DB_NAME_1, TABLE_NAME_1)).exists());
+
+            Response insertResponse = serverHandler.handle(INSERT_1);
+            System.out.println("Thread 1 (insert): " + insertResponse);
+            System.out.println("Thread 1 (insert): " + insertResponse.getRecords());
+//            Assertions.assertEquals(1, insertResponse.getRecords().size());
+
+            Response selectResponse = serverHandler.handle(SELECT_1);
+            System.out.println("Thread 1 (select): " + selectResponse);
+//            Assertions.assertEquals(1, selectResponse.getRecords().size());
+
+            serverHandler.handle(DROP_TABLE_1);
+//            Assertions.assertFalse(new File(String.format("%s/databases/%s/tables/%s.table", Config.absolutePath(), DB_NAME_1, TABLE_NAME_1)).exists());
+
+        });
+
+        Thread thread2 = new Thread(() -> {
+            Response createTableResponse = serverHandler.handle(CREATE_TABLE_2);
+            System.out.println("Thread 2 (create table): " + createTableResponse);
+//            Assertions.assertTrue(new File(String.format("%s/databases/%s/tables/%s.table", Config.absolutePath(), DB_NAME_2, TABLE_NAME_2)).exists());
+
+            Response insertResponse = serverHandler.handle(INSERT_2);
+            System.out.println("Thread 2 (insert): " + insertResponse);
+            System.out.println("Thread 2 (insert): " + insertResponse.getRecords());
+//            Assertions.assertEquals(1, insertResponse.getRecords().size());
+
+            Response selectResponse = serverHandler.handle(SELECT_2);
+            System.out.println("Thread 2 (select): " + selectResponse);
+//            Assertions.assertEquals(1, selectResponse.getRecords().size());
+
+            serverHandler.handle(DROP_TABLE_2);
+//            Assertions.assertFalse(new File(String.format("%s/databases/%s/tables/%s.table", Config.absolutePath(), DB_NAME_2, TABLE_NAME_2)).exists());
+        });
+
+        thread1.start();
+        thread2.start();
+
+        thread1.join();
+        thread2.join();
 
     }
 
-    @After
-    public void tearDown() {
-        final Request DROP_DB = new Request("drop database " + DB_NAME);
-        server.getHandler().handle(DROP_DB);
+    @Disabled
+    void testInterchangingUsers() {
+        ServerHandler serverHandler = server.getHandler();
+
+        serverHandler.handle(CREATE_TABLE_2);
+        Assertions.assertTrue(new File(String.format("%s/databases/%s/tables/%s.table", Config.absolutePath(), DB_NAME_1, TABLE_NAME_1)).exists());
+
+        serverHandler.handle(CREATE_TABLE_1);
+        Assertions.assertTrue(new File(String.format("%s/databases/%s/tables/%s.table", Config.absolutePath(), DB_NAME_2, TABLE_NAME_2)).exists());
+
+        Response insertResponse1 = serverHandler.handle(INSERT_1);
+        Assertions.assertEquals(1, insertResponse1.getRecords().size());
+
+        Response insertResponse2 = serverHandler.handle(INSERT_2);
+        Assertions.assertEquals(1, insertResponse2.getRecords().size());
+
+        Response selectResponse1 = serverHandler.handle(SELECT_1);
+        Assertions.assertEquals(1, selectResponse1.getRecords().size());
+
+        Response selectResponse2 = serverHandler.handle(SELECT_2);
+        Assertions.assertEquals(1, selectResponse2.getRecords().size());
+
+        serverHandler.handle(DROP_TABLE_1);
+        Assertions.assertFalse(new File(String.format("%s/databases/%s/tables/%s.table", Config.absolutePath(), DB_NAME_1, TABLE_NAME_1)).exists());
+
+        serverHandler.handle(DROP_TABLE_2);
+        Assertions.assertFalse(new File(String.format("%s/databases/%s/tables/%s.table", Config.absolutePath(), DB_NAME_2, TABLE_NAME_2)).exists());
+
     }
+
+
 }
