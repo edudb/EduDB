@@ -13,6 +13,7 @@ import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import net.edudb.exceptions.RabbitMQConnectionException;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -52,12 +53,17 @@ public class RPCClient {
      * @throws TimeoutException If the connection to the server times out.
      * @author Ahmed Nasser Gaafar
      */
-    public void initializeConnection() throws IOException, TimeoutException {
+    public void initializeConnection() throws RabbitMQConnectionException {
         final String AMQP_URL = System.getProperty("AMQP_URL");
 
         ConnectionFactory factory = new ConnectionFactory();
-        this.connection = factory.newConnection(AMQP_URL);
-        this.channel = connection.createChannel();
+
+        try {
+            this.connection = factory.newConnection(AMQP_URL);
+            this.channel = this.connection.createChannel();
+        } catch (Exception e) {
+            throw new RabbitMQConnectionException("Could not connect to RabbitMQ.", e);
+        }
     }
 
     public Response handshake() {

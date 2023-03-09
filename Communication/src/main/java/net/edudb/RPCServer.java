@@ -10,6 +10,8 @@
 package net.edudb;
 
 import com.rabbitmq.client.*;
+import net.edudb.exceptions.RabbitMQConnectionException;
+import net.edudb.exceptions.RabbitMQCreateQueueException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,15 +49,25 @@ public class RPCServer {
      * @throws TimeoutException If the connection to the server times out.
      * @author Ahmed Nasser Gaafar
      */
-    public void initializeConnection() throws IOException, TimeoutException {
+    public void initializeConnection() throws RabbitMQConnectionException, RabbitMQCreateQueueException {
         final String AMQP_URL = System.getProperty("AMQP_URL");
 
         ConnectionFactory factory = new ConnectionFactory();
-        this.connection = factory.newConnection(AMQP_URL);
-        this.channel = connection.createChannel();
 
-        this.channel.queueDeclare(this.handshakeQueueName, false, false, false, null);
-        this.channel.queuePurge(this.handshakeQueueName);
+        try {
+            this.connection = factory.newConnection(AMQP_URL);
+            this.channel = this.connection.createChannel();
+        } catch (Exception e) {
+            throw new RabbitMQConnectionException("Could not connect to RabbitMQ.", e);
+        }
+
+        try {
+            this.channel.queueDeclare(this.handshakeQueueName, false, false, false, null);
+            this.channel.queuePurge(this.handshakeQueueName);
+        } catch (Exception e) {
+            throw new RabbitMQCreateQueueException("Could not create handshake queue.", e);
+        }
+
     }
 
     public void handleHandshakes() throws IOException {

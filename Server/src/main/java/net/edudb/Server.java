@@ -11,9 +11,10 @@ package net.edudb;
 
 import jline.console.ConsoleReader;
 import net.edudb.engine.DatabaseSystem;
+import net.edudb.exceptions.RabbitMQConnectionException;
+import net.edudb.exceptions.RabbitMQCreateQueueException;
 
 import java.io.IOException;
-import java.util.concurrent.TimeoutException;
 
 public class Server {
     private static final String DEFAULT_SERVER_NAME = "server";
@@ -64,8 +65,10 @@ public class Server {
             server.rpcServer.initializeConnection();
             server.rpcServer.handleHandshakes();
             server.rpcServer.handleRequests(server.handler);
-        } catch (IOException | TimeoutException e) {
-            e.printStackTrace();
+        } catch (RabbitMQCreateQueueException | RabbitMQConnectionException e) {
+            System.err.println(e.getMessage());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }

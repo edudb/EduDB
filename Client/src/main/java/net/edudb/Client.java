@@ -9,8 +9,7 @@
 
 package net.edudb;
 
-import java.io.IOException;
-import java.util.concurrent.TimeoutException;
+import net.edudb.exceptions.RabbitMQConnectionException;
 
 public class Client {
     private static Client instance = new Client();
@@ -73,10 +72,8 @@ public class Client {
                 String output = client.handler.handle(input);
                 client.console.displayMessage(output);
             }
-        } catch (IOException e) {
-            client.console.displayMessage(e.getMessage());
-        } catch (TimeoutException e) {
-            client.console.displayMessage(e.getMessage());
+        } catch (RabbitMQConnectionException e) {
+            System.err.println(e.getMessage());
         }
 
     }
