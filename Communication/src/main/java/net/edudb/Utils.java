@@ -12,6 +12,12 @@ package net.edudb;
 import java.util.UUID;
 
 public class Utils {
+    private final static String AMQP_URL = System.getProperty("AMQP_URL");
+
+
+    public static String getAMQPURL() {
+        return AMQP_URL;
+    }
 
     public static String getHandshakeQueueName(String serverName) {
         return String.format("%s_handshake_queue", serverName);

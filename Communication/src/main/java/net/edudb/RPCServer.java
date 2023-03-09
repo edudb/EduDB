@@ -50,12 +50,11 @@ public class RPCServer {
      * @author Ahmed Nasser Gaafar
      */
     public void initializeConnection() throws RabbitMQConnectionException, RabbitMQCreateQueueException {
-        final String AMQP_URL = System.getProperty("AMQP_URL");
 
         ConnectionFactory factory = new ConnectionFactory();
 
         try {
-            this.connection = factory.newConnection(AMQP_URL);
+            this.connection = factory.newConnection(Utils.getAMQPURL());
             this.channel = this.connection.createChannel();
         } catch (Exception e) {
             throw new RabbitMQConnectionException("Could not connect to RabbitMQ.", e);
