@@ -49,7 +49,7 @@ public class Parser {
      * @param strSQL The SQL string to parse.
      * @throws TranslationException
      */
-    public Response parseSQL(String strSQL) throws TranslationException {
+    public Response parseSQL(String strSQL) {
         sqlparser.setSqltext(strSQL.replace(";", ""));
         int ret = sqlparser.parse();
         if (ret == 0) {

@@ -48,6 +48,7 @@ public class FileManager {
             lines = (ArrayList<String>) Files.readAllLines(Paths.get(filePath));
         } catch (IOException e) {
             System.err.println("Error reading file: " + e.getMessage());
+            e.printStackTrace();
         }
         return lines;
     }

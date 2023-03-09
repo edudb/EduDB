@@ -42,7 +42,16 @@ public class CloseDatabaseExecutor implements ConsoleExecutorChain {
         if (command.toLowerCase().startsWith("close")) {
             Matcher matcher = Utility.getMatcher(command, regex);
             if (matcher.matches()) {
-                return new Response(DatabaseSystem.getInstance().close());
+                String databaseName = request.getDatabaseName();
+                if (databaseName == null) {
+                    return new Response("No database is open.");
+                }
+                boolean databaseClosed = DatabaseSystem.getInstance().close();
+                if (databaseClosed) {
+                    return new Response("Database " + databaseName + " closed successfully.", true, null);
+                } else {
+                    return new Response("Database " + databaseName + " could not be closed.");
+                }
             }
         }
         return nextElement.execute(request);

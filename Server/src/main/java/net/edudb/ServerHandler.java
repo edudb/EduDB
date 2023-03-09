@@ -10,7 +10,10 @@
 package net.edudb;
 
 
+import net.edudb.engine.DatabaseSystem;
 import net.edudb.executors.*;
+
+import java.util.concurrent.*;
 
 public class ServerHandler implements RequestHandler {
     private ConsoleExecutorChain chain;
@@ -39,7 +42,38 @@ public class ServerHandler implements RequestHandler {
     }
 
     public Response handle(Request request) {
-        Response response = chain.execute(request);
+//        Response response = chain.execute(request);
+//        return response;
+        return handleThread(request);
+    }
+
+    public Response handleThread(Request request) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+
+        Callable<Response> callable = () -> {
+            if (request.getDatabaseName() != null) {
+                DatabaseSystem.getInstance().setDatabaseName(request.getDatabaseName());
+                DatabaseSystem.getInstance().setDatabaseIsOpen(true);
+            }
+            return chain.execute(request);
+        };
+
+        Future<Response> future = executor.submit(callable);
+
+        executor.shutdown();
+        while (!executor.isTerminated()) {
+            // Wait for the thread to complete
+        }
+
+        Response response = null;
+        try {
+            response = future.get();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+
         return response;
     }
 }

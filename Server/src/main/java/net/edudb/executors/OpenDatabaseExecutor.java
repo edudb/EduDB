@@ -43,7 +43,13 @@ public class OpenDatabaseExecutor implements ConsoleExecutorChain {
         if (command.toLowerCase().startsWith("open")) {
             Matcher matcher = Utility.getMatcher(command, regex);
             if (matcher.matches()) {
-                return new Response(DatabaseSystem.getInstance().open(matcher.group(1)));
+                String databaseName = matcher.group(1);
+                boolean databaseOpened = DatabaseSystem.getInstance().open(databaseName);
+                if (databaseOpened) {
+                    return new Response("Database " + databaseName + " opened successfully.", true, databaseName);
+                } else {
+                    return new Response("Database " + databaseName + " does not exist.");
+                }
             }
         }
         return nextElement.execute(request);

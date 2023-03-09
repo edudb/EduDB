@@ -26,8 +26,7 @@ import java.util.Set;
  * Created by mohamed on 4/1/14.
  */
 public class Schema {
-
-    private static final Schema instance = new Schema();
+    private static ThreadLocal<Schema> instance = ThreadLocal.withInitial(() -> new Schema());
     private final HashMap<String, ArrayList<String>> schema;
 
     private Schema() {
@@ -36,7 +35,7 @@ public class Schema {
     }
 
     public static Schema getInstance() {
-        return instance;
+        return instance.get();
     }
 
     /**

@@ -28,8 +28,8 @@ public class DatabaseSystem {
 
     private static final DatabaseSystem instance = new DatabaseSystem();
     private final String databasesString = "databases";
-    private String databaseName;
     private boolean databaseIsOpen;
+    private ThreadLocal<String> databaseName = new ThreadLocal<>();
 
     private DatabaseSystem() {
     }
@@ -63,55 +63,47 @@ public class DatabaseSystem {
     }
 
     /**
-     * @return The name of the current open database.
-     */
-    public String getDatabaseName() {
-        return this.databaseName;
-    }
-
-    /**
-     * @return Whether the system has an open database.
-     */
-    public boolean databaseIsOpen() {
-        return this.databaseIsOpen;
-    }
-
-    /**
      * Opens a given database if it is available.
      *
      * @param databaseName The name of the database to open.
      */
-    public String open(String databaseName) {
-        if (databaseExists(databaseName)) {
-            this.databaseName = databaseName;
-            this.databaseIsOpen = true;
-            initializeDatabaseDirectories(this.databaseName);
-            Schema.getInstance().setSchema();
-            return "Opened database '" + databaseName + "'";
-        } else {
-            return "Database '" + databaseName + "' does not exist";
+//    public String open(String databaseName) {
+//        if (databaseExists(databaseName)) {
+//            setDatabaseName(databaseName);
+//            setDatabaseIsOpen(true);
+//            initializeDatabaseDirectories(getDatabaseName());
+//            Schema.getInstance().setSchema();
+//            return "Opened database '" + databaseName + "'";
+//        } else {
+//            return "Database '" + databaseName + "' does not exist";
+//        }
+//    }
+    public boolean open(String databaseName) {
+        if (!databaseExists(databaseName)) {
+            return false;
         }
+        setDatabaseName(databaseName);
+        setDatabaseIsOpen(true);
+        initializeDatabaseDirectories(getDatabaseName());
+        Schema.getInstance().setSchema();
+        return true;
     }
 
     /**
      * Closes the current open database, if any.
      */
-    public String close() {
-        if (!databaseIsOpen) {
-            return "No open database";
-        }
+    public boolean close() {
 
         BufferManager.getInstance().writeAll();
         TableManager.getInstance().writeAll();
 
-        String dbName = databaseName;
 
-        this.databaseName = null;
-        this.databaseIsOpen = false;
+        setDatabaseName(null);
+        setDatabaseIsOpen(false);
 
         Schema.getInstance().resetSchema();
 
-        return "Closed database '" + dbName + "'";
+        return true;
     }
 
     /**
@@ -119,16 +111,13 @@ public class DatabaseSystem {
      *
      * @param databaseName The name of the database to create.
      */
-    public String createDatabase(String databaseName) {
+    public boolean createDatabase(String databaseName) {
         if (databaseExists(databaseName)) {
-            return "Database '" + databaseName + "' does exist";
-        }
-        if (databaseIsOpen) {
-            close();
+            return false;
         }
         new File(Config.absolutePath() + databasesString + "/" + databaseName).mkdir();
-//		open(databaseName);
-        return "Created database '" + databaseName + "'" + "\r\n" + open(databaseName);
+
+        return true;
     }
 
     /**
@@ -141,9 +130,9 @@ public class DatabaseSystem {
         if (!databaseExists(databaseName)) {
             return "Database '" + databaseName + "' does not exist";
         }
-        if (databaseIsOpen) {
-            close();
-        }
+//        if (isDatabaseIsOpen()) {
+//            close();
+//        }
 
         Path directory = Paths.get(Config.absolutePath() + databasesString + "/" + databaseName);
         Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {
@@ -186,7 +175,7 @@ public class DatabaseSystem {
      * @param databaseName The name of the database to check.
      * @return The availability of the database.
      */
-    private boolean databaseExists(String databaseName) {
+    public boolean databaseExists(String databaseName) {
         return new File(Config.absolutePath() + databasesString + "/" + databaseName).exists();
     }
 
@@ -257,7 +246,7 @@ public class DatabaseSystem {
      * @param status The status of the exit.
      */
     public void exit(int status) {
-        if (databaseIsOpen) {
+        if (isDatabaseIsOpen()) {
             close();
         }
 
@@ -270,4 +259,23 @@ public class DatabaseSystem {
         System.exit(status);
     }
 
+    public void setDatabaseIsOpen(boolean databaseIsOpen) {
+        this.databaseIsOpen = databaseIsOpen;
+    }
+
+    public boolean isDatabaseIsOpen() {
+//        return this.databaseIsOpen;
+        return this.databaseName.get() != null;
+    }
+
+    /**
+     * @return The name of the current open database.
+     */
+    public String getDatabaseName() {
+        return this.databaseName.get();
+    }
+
+    public void setDatabaseName(String databaseName) {
+        this.databaseName.set(databaseName);
+    }
 }
