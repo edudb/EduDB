@@ -8,6 +8,8 @@
  */
 package net.edudb;
 
+import net.edudb.exceptions.SerializationException;
+
 import java.io.*;
 
 /**
@@ -37,18 +39,26 @@ public class Request implements Serializable {
         this.command = command;
     }
 
-    public static byte[] serialize(Request request) throws IOException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(bos);
-        oos.writeObject(request);
-        oos.flush();
-        return bos.toByteArray();
+    public static byte[] serialize(Request request) throws SerializationException {
+        try {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(bos);
+            oos.writeObject(request);
+            oos.flush();
+            return bos.toByteArray();
+        } catch (IOException e) {
+            throw new SerializationException("Error serializing request", e);
+        }
     }
 
-    public static Request deserialize(byte[] serializedData) throws IOException, ClassNotFoundException {
-        ByteArrayInputStream bis = new ByteArrayInputStream(serializedData);
-        ObjectInputStream ois = new ObjectInputStream(bis);
-        return (Request) ois.readObject();
+    public static Request deserialize(byte[] serializedData) throws SerializationException {
+        try {
+            ByteArrayInputStream bis = new ByteArrayInputStream(serializedData);
+            ObjectInputStream ois = new ObjectInputStream(bis);
+            return (Request) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            throw new SerializationException("Error deserializing request", e);
+        }
     }
 
     public String getId() {

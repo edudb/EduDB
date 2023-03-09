@@ -86,7 +86,13 @@ public class RPCClient {
      * @author Ahmed Nasser Gaafar
      */
     public Response call(Request request) throws IOException, InterruptedException, ExecutionException {
-        byte[] serializedRequest = Request.serialize(request);
+        byte[] serializedRequest = new byte[0];
+        try {
+            serializedRequest = Request.serialize(request);
+        } catch (SerializationException e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
 
         final String corrId = UUID.randomUUID().toString();
         String replyQueueName = channel.queueDeclare().getQueue();

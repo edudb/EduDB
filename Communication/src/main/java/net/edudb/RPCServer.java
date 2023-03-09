@@ -92,10 +92,6 @@ public class RPCServer {
                 sendResponse(new Response("Handshake: OK"), correlationId, replyTo);
 
                 channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
             } catch (SerializationException e) {
                 System.err.println(e.getMessage());
                 e.printStackTrace();
@@ -129,10 +125,6 @@ public class RPCServer {
 
                 channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
             } catch (SerializationException e) {
                 System.err.println(e.getMessage());
                 e.printStackTrace();
