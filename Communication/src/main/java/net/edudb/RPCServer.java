@@ -12,6 +12,7 @@ package net.edudb;
 import com.rabbitmq.client.*;
 import net.edudb.exceptions.RabbitMQConnectionException;
 import net.edudb.exceptions.RabbitMQCreateQueueException;
+import net.edudb.exceptions.SerializationException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -95,6 +96,9 @@ public class RPCServer {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e);
+            } catch (SerializationException e) {
+                System.err.println(e.getMessage());
+                e.printStackTrace();
             }
         };
 
@@ -129,6 +133,9 @@ public class RPCServer {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e);
+            } catch (SerializationException e) {
+                System.err.println(e.getMessage());
+                e.printStackTrace();
             }
         };
 
@@ -148,7 +155,7 @@ public class RPCServer {
      * @throws IOException
      * @author Ahmed Nasser Gaafar
      */
-    private void sendResponse(Response response, String correlationId, String replyTo) throws IOException {
+    private void sendResponse(Response response, String correlationId, String replyTo) throws IOException, SerializationException {
         byte[] serializedResponse = Response.serialize(response);
 
         AMQP.BasicProperties props = new AMQP.BasicProperties

@@ -14,6 +14,7 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import net.edudb.exceptions.RabbitMQConnectionException;
+import net.edudb.exceptions.SerializationException;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -104,8 +105,9 @@ public class RPCClient {
             if (delivery.getProperties().getCorrelationId().equals(corrId)) {
                 try {
                     response.complete(Response.deserialize(delivery.getBody()));
-                } catch (ClassNotFoundException e) {
-                    throw new RuntimeException(e);
+                } catch (SerializationException e) {
+                    System.err.println(e.getMessage());
+                    e.printStackTrace();
                 }
             }
         }, consumerTag -> {
