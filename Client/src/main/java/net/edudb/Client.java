@@ -9,8 +9,7 @@
 
 package net.edudb;
 
-import java.io.IOException;
-import java.util.concurrent.TimeoutException;
+import net.edudb.exceptions.RabbitMQConnectionException;
 
 public class Client {
     private static Client instance = new Client();
@@ -68,11 +67,19 @@ public class Client {
         Client client = Client.getInstance();
 
         String serverName = client.getServerNameFromUser();
-        client.setRpcClient(new RPCClient(serverName));
+
+        RPCClient rpcClient = new RPCClient(serverName);
+        client.setRpcClient(rpcClient);
+
+        client.console.setPrompt(String.format("EduDB-%s> ", serverName));
 
 
         try {
-            client.rpcClient.initializeConnection();
+            rpcClient.initializeConnection();
+
+            Response handshakeResponse = rpcClient.handshake();
+            client.console.displayMessage(handshakeResponse.getMessage());
+
             while (true) {
                 if (client.getConnectedDatabase() != null)
                     client.console.setPrompt(String.format("EduDB-%s-(%s)> ", serverName, client.getConnectedDatabase()));
@@ -83,10 +90,8 @@ public class Client {
                 String output = client.handler.handle(input);
                 client.console.displayMessage(output);
             }
-        } catch (IOException e) {
-            client.console.displayMessage(e.getMessage());
-        } catch (TimeoutException e) {
-            client.console.displayMessage(e.getMessage());
+        } catch (RabbitMQConnectionException e) {
+            System.err.println(e.getMessage());
         }
 
     }

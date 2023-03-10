@@ -10,11 +10,10 @@
 import net.edudb.Client;
 import net.edudb.ClientHandler;
 import net.edudb.RPCClient;
+import net.edudb.exceptions.RabbitMQConnectionException;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 
 public class MainFlowTest {
@@ -35,15 +34,16 @@ public class MainFlowTest {
 
 
     @BeforeAll
-    public static void setup() throws IOException, TimeoutException {
+    public static void setup() throws RabbitMQConnectionException {
         Client client = Client.getInstance();
         RPCClient rpcClient = new RPCClient("server");
         rpcClient.initializeConnection();
         client.setRpcClient(rpcClient);
+        rpcClient.handshake();
         handler = client.getHandler();
     }
 
-    @Disabled
+    @Test
     public void mainFlowTest() {
 
 

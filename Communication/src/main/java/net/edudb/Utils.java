@@ -7,39 +7,30 @@
  * /
  */
 
-package net.edudb.executors;
+package net.edudb;
+
+import java.util.UUID;
+
+public class Utils {
+    private final static String AMQP_URL = System.getProperty("AMQP_URL");
 
 
-import net.edudb.Client;
-import net.edudb.Request;
-import net.edudb.Response;
-
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-
-
-public class ForwardToServerExecutor implements ConsoleExecutorChain {
-
-    @Override
-    public void setNextElementInChain(ConsoleExecutorChain chainElement) {
+    public static String getAMQPURL() {
+        return AMQP_URL;
     }
 
-    @Override
-    public Response execute(String command) {
-        String connectedDatabase = Client.getInstance().getConnectedDatabase();
-        Request request = new Request(command, connectedDatabase);
+    public static String getHandshakeQueueName(String serverName) {
+        return String.format("%s_handshake_queue", serverName);
+    }
 
-        Response response;
-        try {
-            response = Client.getInstance().getRpcClient().sendRequest(request);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-        }
-        return response;
+
+    public static String getConnectionQueueName(String serverName, String clientID) {
+        return String.format("%s_%s_connection_queue", serverName, clientID);
+    }
+
+
+    public static String getUniqueID() {
+        return UUID.randomUUID().toString();
     }
 
 }

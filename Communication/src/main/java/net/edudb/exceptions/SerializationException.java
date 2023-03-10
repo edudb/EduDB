@@ -7,39 +7,14 @@
  * /
  */
 
-package net.edudb.executors;
+package net.edudb.exceptions;
 
-
-import net.edudb.Client;
-import net.edudb.Request;
-import net.edudb.Response;
-
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-
-
-public class ForwardToServerExecutor implements ConsoleExecutorChain {
-
-    @Override
-    public void setNextElementInChain(ConsoleExecutorChain chainElement) {
+public class SerializationException extends Exception {
+    public SerializationException(String message) {
+        super(message);
     }
 
-    @Override
-    public Response execute(String command) {
-        String connectedDatabase = Client.getInstance().getConnectedDatabase();
-        Request request = new Request(command, connectedDatabase);
-
-        Response response;
-        try {
-            response = Client.getInstance().getRpcClient().sendRequest(request);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-        }
-        return response;
+    public SerializationException(String message, Throwable cause) {
+        super(message, cause);
     }
-
 }

@@ -10,6 +10,9 @@
 package net.edudb;
 
 import com.rabbitmq.client.*;
+import net.edudb.exceptions.RabbitMQConnectionException;
+import net.edudb.exceptions.RabbitMQCreateQueueException;
+import net.edudb.exceptions.SerializationException;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
@@ -21,10 +24,10 @@ import java.util.concurrent.TimeoutException;
  * @author Ahmed Nasser Gaafar
  */
 public class RPCServer {
-    private String queueName;
+    private String handshakeQueueName;
     private Connection connection;
     private Channel channel;
-
+    private RequestHandler requestHandler;
 
     /**
      * Creates a new instance of RPCServer with the specified server name.
@@ -32,8 +35,9 @@ public class RPCServer {
      * @param serverName
      * @author Ahmed Nasser Gaafar
      */
-    public RPCServer(String serverName) {
-        this.queueName = String.format("%s_queue", serverName);
+    public RPCServer(String serverName, RequestHandler requestHandler) {
+        this.handshakeQueueName = Utils.getHandshakeQueueName(serverName);
+        this.requestHandler = requestHandler;
     }
 
     /**
@@ -43,49 +47,85 @@ public class RPCServer {
      * @throws TimeoutException If the connection to the server times out.
      * @author Ahmed Nasser Gaafar
      */
-    public void initializeConnection() throws IOException, TimeoutException {
-        final String AMQP_URL = System.getProperty("AMQP_URL");
+    public void initializeConnection() throws RabbitMQConnectionException, RabbitMQCreateQueueException {
 
         ConnectionFactory factory = new ConnectionFactory();
-        this.connection = factory.newConnection(AMQP_URL);
-        this.channel = connection.createChannel();
-        this.channel.queueDeclare(this.queueName, false, false, false, null);
-        this.channel.queuePurge(this.queueName);
+
+        try {
+            this.connection = factory.newConnection(Utils.getAMQPURL());
+            this.channel = this.connection.createChannel();
+            this.channel = this.connection.createChannel();
+        } catch (Exception e) {
+            throw new RabbitMQConnectionException("Could not connect to RabbitMQ.", e);
+        }
+
+        try {
+            this.channel.queueDeclare(this.handshakeQueueName, false, false, false, null);
+            this.channel.queuePurge(this.handshakeQueueName);
+            this.channel.basicConsume(this.handshakeQueueName, false, getHandshakeDeliverCallback(), consumerTag -> {
+            });
+        } catch (Exception e) {
+            throw new RabbitMQCreateQueueException("Could not create handshake queue.", e);
+        }
+
     }
 
-    /**
-     * Handles incoming requests from clients by invoking the specified RequestHandler instance.
-     *
-     * @param handler The RequestHandler instance to use for handling requests.
-     * @throws IOException
-     * @author Ahmed Nasser Gaafar
-     */
-    public void handleRequests(RequestHandler handler) throws IOException {
-        DeliverCallback deliverCallback = (consumerTag, delivery) -> {
+    private DeliverCallback getHandshakeDeliverCallback() {
+        return (consumerTag, delivery) -> {
             String correlationId = delivery.getProperties().getCorrelationId();
             String replyTo = delivery.getProperties().getReplyTo();
 
             try {
                 Request request = Request.deserialize(delivery.getBody());
+
+                if (request.getType() != RequestType.HANDSHAKE) {
+                    sendResponse(new Response(String.format("Expected handshake request, got %s", request.getCommand())), correlationId, replyTo);
+                    return;
+                }
+
+                System.out.println("Received handshake request: " + request.getCommand());
+                String connectionQueueName = request.getCommand();
+
+                this.channel.queueDeclare(connectionQueueName, false, false, false, null);
+                this.channel.queuePurge(connectionQueueName);
+                this.channel.basicConsume(connectionQueueName, false, getRequestDeliverCallback(this.requestHandler), consumerTag2 -> {
+                });
+
+                sendResponse(new Response("Handshake: OK"), correlationId, replyTo);
+                this.channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
+
+                System.out.println("Sent handshake response: OK");
+
+            } catch (SerializationException e) {
+                System.err.println(e.getMessage());
+                e.printStackTrace();
+            }
+        };
+    }
+
+    private DeliverCallback getRequestDeliverCallback(RequestHandler handler) {
+        return (consumerTag, delivery) -> {
+            String correlationId = delivery.getProperties().getCorrelationId();
+            String replyTo = delivery.getProperties().getReplyTo();
+
+            try {
+                Request request = Request.deserialize(delivery.getBody());
+
                 System.out.println("Received request: " + request.getCommand());
 
                 Response response = handler.handle(request);
-                System.out.println("Sending response: " + response.getMessage());
-
                 sendResponse(response, correlationId, replyTo);
+                this.channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
 
-                channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
+                System.out.println("Sent response: " + response.getMessage());
 
-            } catch (IOException e) {
+            } catch (SerializationException e) {
+                System.err.println(e.getMessage());
                 e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
             }
         };
-
-        channel.basicConsume(queueName, false, deliverCallback, consumerTag -> {
-        });
     }
+
 
     /**
      * Sends a response back to the client.
@@ -96,7 +136,7 @@ public class RPCServer {
      * @throws IOException
      * @author Ahmed Nasser Gaafar
      */
-    private void sendResponse(Response response, String correlationId, String replyTo) throws IOException {
+    private void sendResponse(Response response, String correlationId, String replyTo) throws IOException, SerializationException {
         byte[] serializedResponse = Response.serialize(response);
 
         AMQP.BasicProperties props = new AMQP.BasicProperties

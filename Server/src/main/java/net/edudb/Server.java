@@ -11,9 +11,10 @@ package net.edudb;
 
 import jline.console.ConsoleReader;
 import net.edudb.engine.DatabaseSystem;
+import net.edudb.exceptions.RabbitMQConnectionException;
+import net.edudb.exceptions.RabbitMQCreateQueueException;
 
 import java.io.IOException;
-import java.util.concurrent.TimeoutException;
 
 public class Server {
     private static final String DEFAULT_SERVER_NAME = "server";
@@ -57,14 +58,13 @@ public class Server {
         Server server = new Server();
 
         String serverName = getServerNameFromUser(args);
-        server.setRpcServer(new RPCServer(serverName));
+        server.setRpcServer(new RPCServer(serverName, server.handler));
         System.out.println(String.format("Starting server %s", serverName));
 
         try {
             server.rpcServer.initializeConnection();
-            server.rpcServer.handleRequests(server.handler);
-        } catch (IOException | TimeoutException e) {
-            e.printStackTrace();
+        } catch (RabbitMQCreateQueueException | RabbitMQConnectionException e) {
+            System.err.println(e.getMessage());
         }
     }
 }
