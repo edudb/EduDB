@@ -12,6 +12,7 @@ package net.edudb;
 
 import net.edudb.engine.DatabaseSystem;
 import net.edudb.executors.*;
+import net.edudb.statistics.Schema;
 
 import java.util.concurrent.*;
 
@@ -53,6 +54,7 @@ public class ServerHandler implements RequestHandler {
         Callable<Response> callable = () -> {
             if (request.getDatabaseName() != null) {
                 DatabaseSystem.getInstance().setDatabaseName(request.getDatabaseName());
+                Schema.getInstance();
                 DatabaseSystem.getInstance().setDatabaseIsOpen(true);
             }
             return chain.execute(request);
