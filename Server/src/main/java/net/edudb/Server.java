@@ -44,6 +44,8 @@ public class Server {
 
                 if (userInput.equals("")) {
                     return DEFAULT_SERVER_NAME;
+                } else {
+                    return userInput;
                 }
 
             } catch (IOException e) {
