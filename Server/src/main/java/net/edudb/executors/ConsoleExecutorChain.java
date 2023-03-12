@@ -10,6 +10,7 @@
 package net.edudb.executors;
 
 
+import net.edudb.Request;
 import net.edudb.Response;
 
 /**
@@ -18,7 +19,7 @@ import net.edudb.Response;
  *
  * @author Ahmed Abdul Badie
  */
-public interface ConsoleExecutorChain {
+public interface ConsoleExecutorChain { //TODO: rename this class
 
     /**
      * Connects an existing executor chain with the argument chain element.
@@ -32,8 +33,8 @@ public interface ConsoleExecutorChain {
      * {@link ConsoleExecutorChain} interface handles the execution of the
      * passed command according to their functionality.
      *
-     * @param string The command to execute.
+     * @param request The request to execute.
      */
-    Response execute(String string);
+    Response execute(Request request);
 
 }

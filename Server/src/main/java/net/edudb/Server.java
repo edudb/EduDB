@@ -44,6 +44,8 @@ public class Server {
 
                 if (userInput.equals("")) {
                     return DEFAULT_SERVER_NAME;
+                } else {
+                    return userInput;
                 }
 
             } catch (IOException e) {
@@ -58,17 +60,13 @@ public class Server {
         Server server = new Server();
 
         String serverName = getServerNameFromUser(args);
-        server.setRpcServer(new RPCServer(serverName));
+        server.setRpcServer(new RPCServer(serverName, server.handler));
         System.out.println(String.format("Starting server %s", serverName));
 
         try {
             server.rpcServer.initializeConnection();
-            server.rpcServer.handleHandshakes();
-            server.rpcServer.handleRequests(server.handler);
         } catch (RabbitMQCreateQueueException | RabbitMQConnectionException e) {
             System.err.println(e.getMessage());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 }

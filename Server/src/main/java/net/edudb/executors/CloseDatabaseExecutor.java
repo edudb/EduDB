@@ -9,6 +9,7 @@
 
 package net.edudb.executors;
 
+import net.edudb.Request;
 import net.edudb.Response;
 import net.edudb.engine.DatabaseSystem;
 import net.edudb.engine.Utility;
@@ -36,14 +37,24 @@ public class CloseDatabaseExecutor implements ConsoleExecutorChain {
     }
 
     @Override
-    public Response execute(String string) {
-        if (string.toLowerCase().startsWith("close")) {
-            Matcher matcher = Utility.getMatcher(string, regex);
+    public Response execute(Request request) {
+        String command = request.getCommand();
+        if (command.toLowerCase().startsWith("close")) {
+            Matcher matcher = Utility.getMatcher(command, regex);
             if (matcher.matches()) {
-                return new Response(DatabaseSystem.getInstance().close());
+                String databaseName = request.getDatabaseName();
+                if (databaseName == null) {
+                    return new Response("No database is open.");
+                }
+                boolean databaseClosed = DatabaseSystem.getInstance().close();
+                if (databaseClosed) {
+                    return new Response("Database " + databaseName + " closed successfully.", true, null);
+                } else {
+                    return new Response("Database " + databaseName + " could not be closed.");
+                }
             }
         }
-        return nextElement.execute(string);
+        return nextElement.execute(request);
     }
 
 }

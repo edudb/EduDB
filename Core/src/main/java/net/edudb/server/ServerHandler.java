@@ -42,17 +42,17 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
             System.out.println("Incoming string " + s);
             Matcher matcher = Utility.getMatcher(s, regex);
 
-            String messageID = "";
-
-            if (request.getId() != null
-                    && !request.getId().equals(""))
-                messageID = request.getId();
+//            String messageID = "";
+//:
+//            if (request.getId() != null
+//                    && !request.getId().equals(""))
+//                messageID = request.getId();
 
             ServerWriter.getInstance().setContext(ctx);
 
             Response response = Server.getExecutionChain().execute(s);
 
-            response.setId(messageID);
+//            response.setId(messageID);
             //Response response = new Response(result, null, null);
             //System.out.println(response.getMessage());
 //			if (response.getMessage().equals("relation"))

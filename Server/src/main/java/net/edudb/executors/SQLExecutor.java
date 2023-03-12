@@ -9,7 +9,7 @@
 
 package net.edudb.executors;
 
-import adipe.translate.TranslationException;
+import net.edudb.Request;
 import net.edudb.Response;
 import net.edudb.engine.DatabaseSystem;
 import net.edudb.parser.Parser;
@@ -26,21 +26,16 @@ public class SQLExecutor implements ConsoleExecutorChain {
     }
 
     @Override
-    public Response execute(String string) {
-        if (!DatabaseSystem.getInstance().databaseIsOpen()) {
-            //ServerWriter.getInstance().writeln("You must open a database first");
-            return new Response("You must open a database first");
+    public Response execute(Request request) {
+        if (request.getDatabaseName() == null) {
+            return new Response("You must connect to a database first");
+        }
+        if (!DatabaseSystem.getInstance().databaseExists(request.getDatabaseName())) {
+            return new Response("Database " + request.getDatabaseName() + " does not exist");
         }
 
+        DatabaseSystem.getInstance().setDatabaseName(request.getDatabaseName());
         Parser parser = new Parser();
-        try {
-
-            return parser.parseSQL(string);
-//            return new Response(parser.parseSQL(string).getMessage(), parser.parseSQL(string).getRecords(), null);
-//            return parser.parseSQL(string); //TODO: handle this response
-        } catch (TranslationException e) {
-            e.printStackTrace();
-        }
-        return new Response("");
+        return parser.parseSQL(request.getCommand());
     }
 }

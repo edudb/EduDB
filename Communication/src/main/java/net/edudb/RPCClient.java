@@ -68,24 +68,29 @@ public class RPCClient {
     public Response handshake() {
         Request request = new Request(this.connectionQueueName, RequestType.HANDSHAKE);
         try {
-            return this.call(request);
+            return this.sendRequest(request, this.handshakeQueueName);
         } catch (IOException | InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Response sendRequest(Request request) throws IOException, InterruptedException, ExecutionException {
+        return this.sendRequest(request, this.connectionQueueName);
     }
 
 
     /**
      * Sends a request message to the server and waits for a response message.
      *
-     * @param request The request to send to the server.
+     * @param request   The request to send to the server.
+     * @param queueName The name of the queue to send the request to.
      * @return The response from the server.
      * @throws IOException          If there is a problem with the IO while sending or receiving messages.
      * @throws InterruptedException If the thread is interrupted while waiting for the response.
      * @throws ExecutionException   If there is an error while processing the response.
      * @author Ahmed Nasser Gaafar
      */
-    public Response call(Request request) throws IOException, InterruptedException, ExecutionException {
+    public Response sendRequest(Request request, String queueName) throws IOException, InterruptedException, ExecutionException {
         byte[] serializedRequest = new byte[0];
         try {
             serializedRequest = Request.serialize(request);
@@ -103,7 +108,7 @@ public class RPCClient {
                 .replyTo(replyQueueName)
                 .build();
 
-        channel.basicPublish("", this.handshakeQueueName, props, serializedRequest);
+        channel.basicPublish("", queueName, props, serializedRequest);
 
         final CompletableFuture<Response> response = new CompletableFuture<>();
 

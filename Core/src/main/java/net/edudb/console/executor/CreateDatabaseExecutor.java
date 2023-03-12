@@ -41,7 +41,13 @@ public class CreateDatabaseExecutor implements ConsoleExecutorChain {
         if (string.toLowerCase().startsWith("create")) {
             Matcher matcher = Utility.getMatcher(string, regex);
             if (matcher.matches()) {
-                return new Response(DatabaseSystem.getInstance().createDatabase(matcher.group(1)));
+                String databaseName = matcher.group(1);
+                boolean databaseCreated = DatabaseSystem.getInstance().createDatabase(databaseName);
+                if (databaseCreated) {
+                    return new Response("Database " + databaseName + " created and opened successfully.");
+                } else {
+                    return new Response("Database " + databaseName + " already exists.");
+                }
 
             }
         }

@@ -35,6 +35,12 @@ public class ClientHandler {
 
     public String handle(String userCommand) {
         Response response = chain.execute(userCommand);
+
+        if (response.isConnectionUpdated()) {
+            String connectedDatabase = response.getConnectedDatabase();
+            Client.getInstance().setConnectedDatabase(connectedDatabase);
+        }
+
         return response.toString();
     }
 }

@@ -25,11 +25,13 @@ public class ForwardToServerExecutor implements ConsoleExecutorChain {
     }
 
     @Override
-    public Response execute(String string) {
-        Request request = new Request(null, string);
+    public Response execute(String command) {
+        String connectedDatabase = Client.getInstance().getConnectedDatabase();
+        Request request = new Request(command, connectedDatabase);
+
         Response response;
         try {
-            response = Client.getInstance().getRpcClient().call(request);
+            response = Client.getInstance().getRpcClient().sendRequest(request);
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {

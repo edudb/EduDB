@@ -9,6 +9,7 @@
 
 package net.edudb.executors;
 
+import net.edudb.Request;
 import net.edudb.Response;
 import net.edudb.engine.DatabaseSystem;
 import net.edudb.engine.Utility;
@@ -30,14 +31,15 @@ public class ListDatabasesExecutor implements ConsoleExecutorChain {
     }
 
     @Override
-    public Response execute(String string) {
-        if (string.toLowerCase().startsWith("list")) {
-            Matcher matcher = Utility.getMatcher(string, regex);
+    public Response execute(Request request) {
+        String command = request.getCommand();
+        if (command.toLowerCase().startsWith("list")) {
+            Matcher matcher = Utility.getMatcher(command, regex);
             if (matcher.matches()) {
                 return new Response(DatabaseSystem.getInstance().listDatabases());
             }
 
         }
-        return nextElement.execute(string);
+        return nextElement.execute(request);
     }
 }

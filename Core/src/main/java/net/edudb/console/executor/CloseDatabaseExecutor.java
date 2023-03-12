@@ -10,7 +10,6 @@
 package net.edudb.console.executor;
 
 import net.edudb.Response;
-import net.edudb.engine.DatabaseSystem;
 import net.edudb.engine.Utility;
 
 import java.util.regex.Matcher;
@@ -40,7 +39,9 @@ public class CloseDatabaseExecutor implements ConsoleExecutorChain {
         if (string.toLowerCase().startsWith("close")) {
             Matcher matcher = Utility.getMatcher(string, regex);
             if (matcher.matches()) {
-                return new Response(DatabaseSystem.getInstance().close());
+//                return new Response(DatabaseSystem.getInstance().close());
+                System.out.println("CLOSE DATABASE NOT WORKING, AND SHOULD BE REMOVED");
+                return null;
             }
         }
         return nextElement.execute(string);

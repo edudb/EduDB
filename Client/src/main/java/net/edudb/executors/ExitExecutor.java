@@ -10,6 +10,7 @@
 package net.edudb.executors;
 
 
+import net.edudb.Client;
 import net.edudb.Response;
 
 public class ExitExecutor implements ConsoleExecutorChain {
@@ -23,6 +24,7 @@ public class ExitExecutor implements ConsoleExecutorChain {
     @Override
     public Response execute(String string) {
         if (string.equalsIgnoreCase("exit")) {
+            Client.getInstance().getHandler().handle("close database"); // close the database is necessary to write the changes to the disk
             System.out.println("Exiting...");
             System.exit(0);
             return new Response("");

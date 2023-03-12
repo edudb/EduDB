@@ -9,6 +9,7 @@
 
 package net.edudb.executors;
 
+import net.edudb.Request;
 import net.edudb.Response;
 import net.edudb.data_type.DataType;
 import net.edudb.data_type.DataTypeFactory;
@@ -53,9 +54,10 @@ public class CopyExecutor implements ConsoleExecutorChain {
     }
 
     @Override
-    public Response execute(String string) {
-        if (string.toLowerCase().startsWith("copy")) {
-            Matcher matcher = Utility.getMatcher(string, regex);
+    public Response execute(Request request) {
+        String command = request.getCommand();
+        if (command.toLowerCase().startsWith("copy")) {
+            Matcher matcher = Utility.getMatcher(command, regex);
             if (matcher.matches()) {
                 String tableName = matcher.group(1);
                 if (!Schema.getInstance().chekTableExists(tableName)) {
@@ -110,7 +112,7 @@ public class CopyExecutor implements ConsoleExecutorChain {
 
             //return;
         }
-        return nextElement.execute(string);
+        return nextElement.execute(request);
     }
 
 }

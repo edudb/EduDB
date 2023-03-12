@@ -20,8 +20,8 @@ import java.io.*;
  */
 public class Request implements Serializable {
 
-    private String id;
     private String command;
+    private String databaseName;
     private RequestType type;
 
     public Request(String command) {
@@ -34,9 +34,9 @@ public class Request implements Serializable {
         this.type = type;
     }
 
-    public Request(String id, String command) {
-        this.id = id;
+    public Request(String command, String databaseName) {
         this.command = command;
+        this.databaseName = databaseName;
     }
 
     public static byte[] serialize(Request request) throws SerializationException {
@@ -61,13 +61,6 @@ public class Request implements Serializable {
         }
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getCommand() {
         return command;
@@ -75,6 +68,10 @@ public class Request implements Serializable {
 
     public void setCommand(String command) {
         this.command = command;
+    }
+
+    public String getDatabaseName() {
+        return databaseName;
     }
 
     public RequestType getType() {

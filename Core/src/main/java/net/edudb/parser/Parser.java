@@ -49,14 +49,13 @@ public class Parser {
      * @param strSQL The SQL string to parse.
      * @throws TranslationException
      */
-    public Response parseSQL(String strSQL) throws TranslationException {
+    public Response parseSQL(String strSQL) {
         sqlparser.setSqltext(strSQL.replace(";", ""));
         int ret = sqlparser.parse();
         if (ret == 0) {
             SQLStatementFactory statementFactory = new SQLStatementFactory();
             SQLStatement statement = statementFactory.makeSQLStatement(sqlparser.sqlstatements.get(0));
             if (statement == null) {
-                //ServerWriter.getInstance().writeln("Unsupported SQL statement");
                 return new Response("Unsupported SQL statement");
             }
 
@@ -69,7 +68,6 @@ public class Parser {
             return TransactionManager.getInstance().execute(transaction);
 
         } else {
-            //ServerWriter.getInstance().writeln(sqlparser.getErrormessage());
             return new Response(sqlparser.getErrormessage());
         }
     }

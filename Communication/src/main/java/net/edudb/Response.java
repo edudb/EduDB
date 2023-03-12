@@ -23,17 +23,31 @@ import java.util.ArrayList;
 public class Response implements Serializable {
 
     private String message;
-    private ArrayList<Record> records;
     private String id;
+    private ArrayList<Record> records;
+    private boolean connectionUpdated;
+    private String connectedDatabase;
 
     public Response(String message) {
         this.message = message;
+        this.connectionUpdated = false;
+    }
+
+    public Response(String message, ArrayList<Record> records) {
+        this.message = message;
+        this.records = records;
     }
 
     public Response(String message, ArrayList<Record> records, String id) {
         this.message = message;
-        this.records = records;
         this.id = id;
+        this.records = records;
+    }
+
+    public Response(String message, boolean connectionUpdated, String connectedDatabase) {
+        this.message = message;
+        this.connectedDatabase = connectedDatabase;
+        this.connectionUpdated = connectionUpdated;
     }
 
     public static byte[] serialize(Response response) throws SerializationException {
@@ -73,6 +87,15 @@ public class Response implements Serializable {
     public void setMessage(String message) {
         this.message = message;
     }
+
+    public boolean isConnectionUpdated() {
+        return connectionUpdated;
+    }
+
+    public String getConnectedDatabase() {
+        return connectedDatabase;
+    }
+
 
     public String getId() {
         return id;

@@ -29,7 +29,7 @@ public class SynchronizedTransaction extends Transaction {
     public Response run() {
         Relation relation = queryTreeExecutor.execute(plan);
 
-        return new Response("relation", Relation.toRecords(relation), null);
+        return new Response("relation", Relation.toRecords(relation));
     }
 
 }
