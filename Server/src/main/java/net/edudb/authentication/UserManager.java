@@ -26,8 +26,8 @@ import java.util.List;
 public class UserManager {
     private static final UserManager instance = new UserManager();
     private static final String USERS_FILE = Config.usersPath();
-    private static final String DEFAULT_ADMIN_USERNAME = "admin";
-    private static final String DEFAULT_ADMIN_PASSWORD = "$2a$12$qD2Tjdx12Y038rouRomQ0.FgTEEVlmS0niI5lKDfDhWX.9j1f3Wzi"; // TODO: Change this to a hashed password.
+    private static final String DEFAULT_ADMIN_USERNAME = System.getProperty("DEFAULT_ADMIN_USERNAME");
+    private static final String DEFAULT_ADMIN_PASSWORD = PasswordUtil.hashPassword(System.getProperty("DEFAULT_ADMIN_PASSWORD"));
     private static final String DEFAULT_ADMIN_ROLE = "admin";
 
     private UserManager() {
