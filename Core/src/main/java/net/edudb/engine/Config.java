@@ -37,34 +37,42 @@ public class Config {
      * @return The system's absolute path on disk.
      */
     public static String absolutePath() {
-        return System.getProperty("user.dir") + "/";
+        return System.getProperty("user.dir") + "/data/";
 //        return URLDecoder.decode(ClassLoader.getSystemClassLoader().getResource(".").getPath(), StandardCharsets.UTF_8);
+    }
+
+    public static String usersPath() {
+        return absolutePath() + "users.csv";
+    }
+
+    public static String databasesPath() {
+        return absolutePath() + "databases/";
     }
 
     /**
      * @return The path to the current open database. Null if no database is
      * currently open.
      */
-    public static String databasePath() {
-        return absolutePath() + "databases" + "/" + DatabaseSystem.getInstance().getDatabaseName();
+    public static String openedDatabasePath() {
+        return databasesPath() + DatabaseSystem.getInstance().getDatabaseName();
     }
 
     public static String schemaPath() {
-        return databasePath() + "/schema.txt";
+        return openedDatabasePath() + "/schema.txt";
     }
 
     /**
      * @return The path to the table files on disk.
      */
     public static String tablesPath() {
-        return databasePath() + "/tables/";
+        return openedDatabasePath() + "/tables/";
     }
 
     /**
      * @return The path to the page files on disk.
      */
     public static String pagesPath() {
-        return databasePath() + "/blocks/";
+        return openedDatabasePath() + "/blocks/";
     }
 
     /**
