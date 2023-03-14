@@ -43,7 +43,7 @@ public class Console {
     }
 
     public String readPassword(String prompt) throws UserInterruptException, EndOfFileException {
-        return lineReader.readLine(this.prompt, '*');
+        return lineReader.readLine(prompt, '*');
     }
 
     public void displayMessage(String message) {
