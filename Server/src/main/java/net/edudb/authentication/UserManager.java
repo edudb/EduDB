@@ -25,17 +25,22 @@ import java.util.List;
 
 public class UserManager {
     private static final UserManager instance = new UserManager();
-    private static final String USERS_FILE = Config.usersPath();
-    private static final String DEFAULT_ADMIN_USERNAME = System.getProperty("DEFAULT_ADMIN_USERNAME");
-    private static final String DEFAULT_ADMIN_PASSWORD = PasswordUtil.hashPassword(System.getProperty("DEFAULT_ADMIN_PASSWORD"));
-    private static final String DEFAULT_ADMIN_ROLE = "admin";
+    private static String USERS_FILE = Config.usersPath();
+    private static String DEFAULT_ADMIN_USERNAME = System.getProperty("DEFAULT_ADMIN_USERNAME");
+    private static String DEFAULT_ADMIN_PASSWORD = PasswordUtil.hashPassword(System.getProperty("DEFAULT_ADMIN_PASSWORD"));
+    private static String DEFAULT_ADMIN_ROLE = "admin";
 
     private UserManager() {
-    }
 
-    static {
-        instance.createUsersFile();
-        instance.createDefaultAdminUser();
+        //TODO: fix this, this is a temporary fix
+        USERS_FILE = Config.usersPath();
+        DEFAULT_ADMIN_USERNAME = "admin";
+        DEFAULT_ADMIN_PASSWORD = PasswordUtil.hashPassword("admin");
+        DEFAULT_ADMIN_ROLE = "admin";
+
+
+        createUsersFile();
+        createDefaultAdminUser();
     }
 
     public static UserManager getInstance() {
