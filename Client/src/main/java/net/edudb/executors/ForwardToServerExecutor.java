@@ -27,7 +27,10 @@ public class ForwardToServerExecutor implements ConsoleExecutorChain {
     @Override
     public Response execute(String command) {
         String connectedDatabase = Client.getInstance().getConnectedDatabase();
+        String authToken = Client.getInstance().getAuthToken();
+
         Request request = new Request(command, connectedDatabase);
+        request.setAuthToken(authToken);
 
         Response response;
         try {

@@ -15,6 +15,7 @@ public class Client {
     private static Client instance = new Client();
     private static final String DEFAULT_SERVER_NAME = "server";
     private String connectedDatabase;
+    private String authToken;
     private Console console;
     private RPCClient rpcClient;
     private ClientHandler handler;
@@ -36,6 +37,18 @@ public class Client {
             return DEFAULT_SERVER_NAME;
         }
 
+        return userInput;
+    }
+
+    private String getUsernameFromUser() {
+        String prompt = "Enter username: ";
+        String userInput = this.console.readLine(prompt);
+        return userInput;
+    }
+
+    private String getPasswordFromUser() {
+        String prompt = "Enter password: ";
+        String userInput = this.console.readPassword(prompt);
         return userInput;
     }
 
@@ -63,6 +76,14 @@ public class Client {
         this.connectedDatabase = connectedDatabase;
     }
 
+    public void setAuthToken(String authToken) {
+        this.authToken = authToken;
+    }
+
+    public String getAuthToken() {
+        return authToken;
+    }
+
     public static void main(String[] args) {
         Client client = Client.getInstance();
 
@@ -71,14 +92,25 @@ public class Client {
         RPCClient rpcClient = new RPCClient(serverName);
         client.setRpcClient(rpcClient);
 
-        client.console.setPrompt(String.format("EduDB-%s> ", serverName));
-
 
         try {
             rpcClient.initializeConnection();
 
-            Response handshakeResponse = rpcClient.handshake();
-            client.console.displayMessage(handshakeResponse.getMessage());
+            while (true) {
+                String username = client.getUsernameFromUser();
+                String password = client.getPasswordFromUser();
+                Response handshakeResponse = rpcClient.handshake(username, password);
+
+                client.console.displayMessage(handshakeResponse.getMessage());
+                if (handshakeResponse.getStatus() == ResponseStatus.HANDSHAKE_OK) {
+                    client.setAuthToken(handshakeResponse.getAuthToken());
+                    break;
+                } else {
+                    client.console.displayMessage("Please try again.");
+                }
+            }
+
+            client.console.setPrompt(String.format("EduDB-%s> ", serverName));
 
             while (true) {
                 if (client.getConnectedDatabase() != null)

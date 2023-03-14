@@ -25,9 +25,8 @@ import java.nio.file.attribute.BasicFileAttributes;
  * @author Ahmed Abdul Badie
  */
 public class DatabaseSystem {
-
     private static final DatabaseSystem instance = new DatabaseSystem();
-    private final String databasesString = "databases";
+    private final String DATABASES_DIR_NAME = "databases";
     private boolean databaseIsOpen;
     private ThreadLocal<String> databaseName = new ThreadLocal<>();
 
@@ -55,12 +54,10 @@ public class DatabaseSystem {
     private void initializeDatabaseDirectories(String databaseName) {
         createTablesDirectory(databaseName);
         createBlocksDirectory(databaseName);
-        /**
-         * Used to create index directory
-         */
         // createIndexesDirectory(databaseName);
         createSchemaFile(databaseName);
     }
+
 
     /**
      * Opens a given database if it is available.
@@ -115,7 +112,7 @@ public class DatabaseSystem {
         if (databaseExists(databaseName)) {
             return false;
         }
-        new File(Config.absolutePath() + databasesString + "/" + databaseName).mkdir();
+        new File(Config.absolutePath() + DATABASES_DIR_NAME + "/" + databaseName).mkdir();
 
         return true;
     }
@@ -134,7 +131,7 @@ public class DatabaseSystem {
 //            close();
 //        }
 
-        Path directory = Paths.get(Config.absolutePath() + databasesString + "/" + databaseName);
+        Path directory = Paths.get(Config.absolutePath() + DATABASES_DIR_NAME + "/" + databaseName);
         Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
@@ -159,7 +156,7 @@ public class DatabaseSystem {
      * @author Ahmed Nasser Gaafar
      */
     public String listDatabases() {
-        File databases = new File(Config.absolutePath() + databasesString);
+        File databases = new File(Config.absolutePath() + DATABASES_DIR_NAME);
         String[] databaseNames = databases.list();
         String result = "";
         for (String databaseName : databaseNames) {
@@ -176,16 +173,16 @@ public class DatabaseSystem {
      * @return The availability of the database.
      */
     public boolean databaseExists(String databaseName) {
-        return new File(Config.absolutePath() + databasesString + "/" + databaseName).exists();
+        return new File(Config.absolutePath() + DATABASES_DIR_NAME + "/" + databaseName).exists();
     }
 
     /**
      * Creates the database's root directory.
      */
     private void createDatabasesDirectory() {
-        File databases = new File(Config.absolutePath() + databasesString);
+        File databases = new File(Config.databasesPath());
         if (!databases.exists()) {
-            databases.mkdir();
+            databases.mkdirs();
         }
     }
 
@@ -195,7 +192,7 @@ public class DatabaseSystem {
      * @param databaseName The name of the database.
      */
     private void createTablesDirectory(String databaseName) {
-        File tables = new File(Config.absolutePath() + databasesString + "/" + databaseName + "/tables");
+        File tables = new File(Config.absolutePath() + DATABASES_DIR_NAME + "/" + databaseName + "/tables");
         if (!tables.exists()) {
             tables.mkdir();
         }
@@ -207,7 +204,7 @@ public class DatabaseSystem {
      * @param databaseName The name of the database.
      */
     private void createBlocksDirectory(String databaseName) {
-        File blocks = new File(Config.absolutePath() + databasesString + "/" + databaseName + "/blocks");
+        File blocks = new File(Config.absolutePath() + DATABASES_DIR_NAME + "/" + databaseName + "/blocks");
         if (!blocks.exists()) {
             blocks.mkdir();
         }
@@ -230,7 +227,7 @@ public class DatabaseSystem {
      * @param databaseName The name of the database.
      */
     private void createSchemaFile(String databaseName) {
-        File schema = new File(Config.absolutePath() + databasesString + "/" + databaseName + "/schema.txt");
+        File schema = new File(Config.absolutePath() + DATABASES_DIR_NAME + "/" + databaseName + "/schema.txt");
         if (!schema.exists()) {
             try {
                 schema.createNewFile();
