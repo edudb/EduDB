@@ -42,21 +42,21 @@ public class ConcurrentFlowTest {
 
     @BeforeEach
     public void setUp() {
-        server.getHandler().handle(CREATE_DB_1);
-        server.getHandler().handle(CREATE_DB_2);
+        server.getServerHandler().handle(CREATE_DB_1);
+        server.getServerHandler().handle(CREATE_DB_2);
 //        DatabaseSystem.getInstance().setDatabaseIsOpen(true);
 
     }
 
     @AfterEach
     public void tearDown() {
-        server.getHandler().handle(DROP_DB_1);
-        server.getHandler().handle(DROP_DB_2);
+        server.getServerHandler().handle(DROP_DB_1);
+        server.getServerHandler().handle(DROP_DB_2);
     }
 
     @Disabled
     void testConcurrentUsers() throws InterruptedException {
-        ServerHandler serverHandler = server.getHandler();
+        ServerHandler serverHandler = server.getServerHandler();
 
 
         Thread thread1 = new Thread(() -> {
@@ -106,7 +106,7 @@ public class ConcurrentFlowTest {
 
     @Disabled
     void testInterchangingUsers() {
-        ServerHandler serverHandler = server.getHandler();
+        ServerHandler serverHandler = server.getServerHandler();
 
         serverHandler.handle(CREATE_TABLE_2);
         Assertions.assertTrue(new File(String.format("%s/databases/%s/tables/%s.table", Config.absolutePath(), DB_NAME_1, TABLE_NAME_1)).exists());

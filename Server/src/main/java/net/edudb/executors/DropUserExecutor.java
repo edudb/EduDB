@@ -11,46 +11,47 @@ package net.edudb.executors;
 
 import net.edudb.Request;
 import net.edudb.Response;
-import net.edudb.engine.DatabaseSystem;
+import net.edudb.ResponseStatus;
+import net.edudb.authentication.Authentication;
+import net.edudb.authentication.JwtUtil;
+import net.edudb.authentication.UserRole;
 import net.edudb.engine.Utility;
+import net.edudb.exceptions.UserNotFoundException;
 
 import java.util.regex.Matcher;
 
-/**
- * Creates a new database in the system.
- *
- * @author Ahmed Abdul Badie
- */
-public class CreateDatabaseExecutor implements ConsoleExecutorChain {
+public class DropUserExecutor implements ConsoleExecutorChain {
     private ConsoleExecutorChain nextElement;
-    /**
-     * Matches strings of the form: <br>
-     * <br>
-     * <b>CREATE DATABASE database_name;</b> <br>
-     * <br>
-     * and captures the <b>database_name</b> in the matcher's group one.
-     */
-    private final String regex = "\\A(?:(?i)create)\\s+(?:(?i)database)\\s+(\\D\\w*)\\s*;?\\z";
+    private static final String REGEX = "\\A(?i)drop\\s+user\\s+(\\w+)\\s*;?\\z";
+
 
     @Override
     public void setNextElementInChain(ConsoleExecutorChain chainElement) {
         this.nextElement = chainElement;
     }
 
+
     @Override
     public Response execute(Request request) {
         String command = request.getCommand();
-        Matcher matcher = Utility.getMatcher(command, regex);
+        Matcher matcher = Utility.getMatcher(command, REGEX);
         if (matcher.matches()) {
-            String databaseName = matcher.group(1);
-            boolean databaseCreated = DatabaseSystem.getInstance().createDatabase(databaseName);
-            if (databaseCreated) {
-                return new Response("Database " + databaseName + " created successfully.");
-            } else {
-                return new Response("Database " + databaseName + " already exists.");
+
+            UserRole requesterRole = JwtUtil.getUserRole(request.getAuthToken());
+            if (requesterRole != UserRole.ADMIN) {
+                return new Response("Only admins can drop users", ResponseStatus.UNAUTHORIZED);
             }
+
+            String username = matcher.group(1).toLowerCase();
+            try {
+                Authentication.removeUser(username);
+            } catch (UserNotFoundException e) {
+                System.err.println(e.getMessage());
+                return new Response(e.getMessage());
+            }
+
+            return new Response(String.format("User %s dropped successfully", username), ResponseStatus.OK);
         }
         return nextElement.execute(request);
     }
-
 }
