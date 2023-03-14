@@ -7,42 +7,23 @@
  * /
  */
 
-package net.edudb.executors;
+package net.edudb.authentication;
 
-
-import net.edudb.Client;
-import net.edudb.Request;
+import net.edudb.HandshakeHandler;
 import net.edudb.Response;
+import net.edudb.ResponseStatus;
+import net.edudb.exceptions.AuthenticationFailedException;
 
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-
-
-public class ForwardToServerExecutor implements ConsoleExecutorChain {
-
+public class AuthHandler implements HandshakeHandler {
     @Override
-    public void setNextElementInChain(ConsoleExecutorChain chainElement) {
-    }
-
-    @Override
-    public Response execute(String command) {
-        String connectedDatabase = Client.getInstance().getConnectedDatabase();
-        String authToken = Client.getInstance().getAuthToken();
-
-        Request request = new Request(command, connectedDatabase);
-        request.setAuthToken(authToken);
-
-        Response response;
+    public Response authenticate(String username, String password) {
         try {
-            response = Client.getInstance().getRpcClient().sendRequest(request);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
+            String token = Authentication.login(username, password);
+            Response response = new Response("Login successful", ResponseStatus.HANDSHAKE_OK);
+            response.setAuthToken(token);
+            return response;
+        } catch (AuthenticationFailedException e) {
+            return new Response(e.getMessage(), ResponseStatus.HANDSHAKE_ERROR);
         }
-        return response;
     }
-
 }

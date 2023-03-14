@@ -10,6 +10,7 @@
 package net.edudb;
 
 
+import net.edudb.authentication.JwtUtil;
 import net.edudb.engine.DatabaseSystem;
 import net.edudb.executors.*;
 import net.edudb.statistics.Schema;
@@ -22,6 +23,8 @@ public class ServerHandler implements RequestHandler {
     public ServerHandler() {
         ConsoleExecutorChain[] executorChain = {
                 new InitializeExecutor(), //TODO: take care of this
+                new CreateUserExecutor(),
+                new DropUserExecutor(),
                 new ListDatabasesExecutor(),
                 new CreateDatabaseExecutor(),
                 new DropDatabaseExecutor(),
@@ -45,6 +48,10 @@ public class ServerHandler implements RequestHandler {
     public Response handle(Request request) {
 //        Response response = chain.execute(request);
 //        return response;
+        if (!JwtUtil.isValidToken(request.getAuthToken())) {
+            return new Response("Invalid token", ResponseStatus.ERROR);
+        }
+
         return handleThread(request);
     }
 

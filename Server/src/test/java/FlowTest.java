@@ -23,13 +23,13 @@ public class FlowTest {
     @Before
     public void setUp() {
         final Request CREATE_DB = new Request("create database " + DB_NAME);
-        server.getHandler().handle(CREATE_DB);
+        server.getServerHandler().handle(CREATE_DB);
     }
 
     @Test
     @org.junit.Ignore
     public void test() {
-        ServerHandler serverHandler = server.getHandler();
+        ServerHandler serverHandler = server.getServerHandler();
 
         final Request CREATE_TABLE = new Request("create table " + TABLE_NAME + " (name varchar)");
         final Request INSERT = new Request("insert into " + TABLE_NAME + " values ('test')");
@@ -52,6 +52,6 @@ public class FlowTest {
     @After
     public void tearDown() {
         final Request DROP_DB = new Request("drop database " + DB_NAME);
-        server.getHandler().handle(DROP_DB);
+        server.getServerHandler().handle(DROP_DB);
     }
 }

@@ -7,42 +7,37 @@
  * /
  */
 
-package net.edudb.executors;
+package net.edudb.authentication;
 
+import org.mindrot.jbcrypt.BCrypt;
 
-import net.edudb.Client;
-import net.edudb.Request;
-import net.edudb.Response;
+public class PasswordUtil {
 
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
+    private static final int WORKLOAD = 12;
 
+    /**
+     * Hashes a password using BCrypt.
+     *
+     * @param password The password to be hashed.
+     * @return The hashed password.
+     * @auther Ahmed Nasser Gaafar
+     */
+    public static String hashPassword(String password) {
+        String salt = BCrypt.gensalt(WORKLOAD);
+        String hashedPassword = BCrypt.hashpw(password, salt);
 
-public class ForwardToServerExecutor implements ConsoleExecutorChain {
-
-    @Override
-    public void setNextElementInChain(ConsoleExecutorChain chainElement) {
+        return hashedPassword;
     }
 
-    @Override
-    public Response execute(String command) {
-        String connectedDatabase = Client.getInstance().getConnectedDatabase();
-        String authToken = Client.getInstance().getAuthToken();
-
-        Request request = new Request(command, connectedDatabase);
-        request.setAuthToken(authToken);
-
-        Response response;
-        try {
-            response = Client.getInstance().getRpcClient().sendRequest(request);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-        }
-        return response;
+    /**
+     * Verifies a password using a hash.
+     *
+     * @param password
+     * @param hashedPassword
+     * @return True if the password is correct, false otherwise.
+     * @auther Ahmed Nasser Gaafar
+     */
+    public static boolean verifyPassword(String password, String hashedPassword) {
+        return BCrypt.checkpw(password, hashedPassword);
     }
-
 }

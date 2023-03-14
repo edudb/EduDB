@@ -7,42 +7,36 @@
  * /
  */
 
-package net.edudb.executors;
+package net.edudb.authentication;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import net.edudb.Client;
-import net.edudb.Request;
-import net.edudb.Response;
+public class JwtUtilTest {
+    private static final String USER_NAME = "test_username";
+    private static final UserRole ROLE = UserRole.USER;
 
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-
-
-public class ForwardToServerExecutor implements ConsoleExecutorChain {
-
-    @Override
-    public void setNextElementInChain(ConsoleExecutorChain chainElement) {
+    @Test
+    void generateToken() {
+        String token = JwtUtil.generateToken(USER_NAME, ROLE);
+        Assertions.assertNotNull(token);
     }
 
-    @Override
-    public Response execute(String command) {
-        String connectedDatabase = Client.getInstance().getConnectedDatabase();
-        String authToken = Client.getInstance().getAuthToken();
-
-        Request request = new Request(command, connectedDatabase);
-        request.setAuthToken(authToken);
-
-        Response response;
-        try {
-            response = Client.getInstance().getRpcClient().sendRequest(request);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-        }
-        return response;
+    @Test
+    void isValidToken() {
+        String token = JwtUtil.generateToken(USER_NAME, ROLE);
+        Assertions.assertTrue(JwtUtil.isValidToken(token));
     }
 
+    @Test
+    void getUsername() {
+        String token = JwtUtil.generateToken(USER_NAME, ROLE);
+        Assertions.assertEquals(USER_NAME, JwtUtil.getUsername(token));
+    }
+
+    @Test
+    void getUserRole() {
+        String token = JwtUtil.generateToken(USER_NAME, ROLE);
+        Assertions.assertEquals(ROLE, JwtUtil.getUserRole(token));
+    }
 }

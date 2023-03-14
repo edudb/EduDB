@@ -28,6 +28,7 @@ public class RPCServer {
     private Connection connection;
     private Channel channel;
     private RequestHandler requestHandler;
+    private HandshakeHandler handshakeHandler;
 
     /**
      * Creates a new instance of RPCServer with the specified server name.
@@ -35,9 +36,10 @@ public class RPCServer {
      * @param serverName
      * @author Ahmed Nasser Gaafar
      */
-    public RPCServer(String serverName, RequestHandler requestHandler) {
+    public RPCServer(String serverName, RequestHandler requestHandler, HandshakeHandler handshakeHandler) {
         this.handshakeQueueName = Utils.getHandshakeQueueName(serverName);
         this.requestHandler = requestHandler;
+        this.handshakeHandler = handshakeHandler;
     }
 
     /**
@@ -62,7 +64,7 @@ public class RPCServer {
         try {
             this.channel.queueDeclare(this.handshakeQueueName, false, false, false, null);
             this.channel.queuePurge(this.handshakeQueueName);
-            this.channel.basicConsume(this.handshakeQueueName, false, getHandshakeDeliverCallback(), consumerTag -> {
+            this.channel.basicConsume(this.handshakeQueueName, false, getHandshakeDeliverCallback(handshakeHandler), consumerTag -> {
             });
         } catch (Exception e) {
             throw new RabbitMQCreateQueueException("Could not create handshake queue.", e);
@@ -70,7 +72,7 @@ public class RPCServer {
 
     }
 
-    private DeliverCallback getHandshakeDeliverCallback() {
+    private DeliverCallback getHandshakeDeliverCallback(HandshakeHandler handler) {
         return (consumerTag, delivery) -> {
             String correlationId = delivery.getProperties().getCorrelationId();
             String replyTo = delivery.getProperties().getReplyTo();
@@ -83,18 +85,24 @@ public class RPCServer {
                     return;
                 }
 
-                System.out.println("Received handshake request: " + request.getCommand());
-                String connectionQueueName = request.getCommand();
+                System.out.println("Received handshake request: " + request.getConnectionQueueName());
 
-                this.channel.queueDeclare(connectionQueueName, false, false, false, null);
-                this.channel.queuePurge(connectionQueueName);
-                this.channel.basicConsume(connectionQueueName, false, getRequestDeliverCallback(this.requestHandler), consumerTag2 -> {
-                });
+                String connectionQueueName = request.getConnectionQueueName();
+                String username = request.getUsername();
+                String password = request.getPassword();
 
-                sendResponse(new Response("Handshake: OK"), correlationId, replyTo);
+                Response response = handler.authenticate(username, password);
+
+
+                if (response.getStatus() == ResponseStatus.HANDSHAKE_OK) {
+                    this.channel.queueDeclare(connectionQueueName, false, false, false, null);
+                    this.channel.queuePurge(connectionQueueName);
+                    this.channel.basicConsume(connectionQueueName, false, getRequestDeliverCallback(this.requestHandler), consumerTag2 -> {
+                    });
+                }
+
+                sendResponse(response, correlationId, replyTo);
                 this.channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
-
-                System.out.println("Sent handshake response: OK");
 
             } catch (SerializationException e) {
                 System.err.println(e.getMessage());

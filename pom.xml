@@ -28,6 +28,8 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <DEFAULT_ADMIN_USERNAME>admin</DEFAULT_ADMIN_USERNAME>
+        <DEFAULT_ADMIN_PASSWORD>admin</DEFAULT_ADMIN_PASSWORD>
     </properties>
 
     <dependencies>

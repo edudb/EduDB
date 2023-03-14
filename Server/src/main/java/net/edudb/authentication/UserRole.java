@@ -7,42 +7,34 @@
  * /
  */
 
-package net.edudb.executors;
+package net.edudb.authentication;
+
+import net.edudb.exceptions.InvalidRoleException;
+
+public enum UserRole {
+    ADMIN,
+    USER;
 
 
-import net.edudb.Client;
-import net.edudb.Request;
-import net.edudb.Response;
+    public static final UserRole DEFAULT_ROLE = USER;
 
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-
-
-public class ForwardToServerExecutor implements ConsoleExecutorChain {
-
-    @Override
-    public void setNextElementInChain(ConsoleExecutorChain chainElement) {
-    }
-
-    @Override
-    public Response execute(String command) {
-        String connectedDatabase = Client.getInstance().getConnectedDatabase();
-        String authToken = Client.getInstance().getAuthToken();
-
-        Request request = new Request(command, connectedDatabase);
-        request.setAuthToken(authToken);
-
-        Response response;
-        try {
-            response = Client.getInstance().getRpcClient().sendRequest(request);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
+    /**
+     * Converts a string to a UserRole. If the string is null, the default role is returned.
+     *
+     * @param role The role to be converted to a UserRole.
+     * @return The UserRole.
+     * @throws InvalidRoleException If the role is invalid.
+     * @auther Ahmed Nasser Gaafar
+     */
+    public static UserRole fromString(String role) throws InvalidRoleException {
+        if (role == null) {
+            return DEFAULT_ROLE;
         }
-        return response;
-    }
 
+        try {
+            return UserRole.valueOf(role.toUpperCase());
+        } catch (IllegalArgumentException ex) {
+            throw new InvalidRoleException("Invalid role: " + role);
+        }
+    }
 }
