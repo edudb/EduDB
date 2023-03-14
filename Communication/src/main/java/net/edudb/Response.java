@@ -27,10 +27,17 @@ public class Response implements Serializable {
     private ArrayList<Record> records;
     private boolean connectionUpdated;
     private String connectedDatabase;
+    private ResponseStatus status;
+    private String authToken;
 
     public Response(String message) {
         this.message = message;
         this.connectionUpdated = false;
+    }
+
+    public Response(String message, ResponseStatus status) {
+        this.message = message;
+        this.status = status;
     }
 
     public Response(String message, ArrayList<Record> records) {
@@ -103,6 +110,18 @@ public class Response implements Serializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public ResponseStatus getStatus() {
+        return status;
+    }
+
+    public String getAuthToken() {
+        return authToken;
+    }
+
+    public void setAuthToken(String authToken) {
+        this.authToken = authToken;
     }
 
     @Override

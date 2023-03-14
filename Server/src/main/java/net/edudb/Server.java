@@ -10,6 +10,7 @@
 package net.edudb;
 
 import jline.console.ConsoleReader;
+import net.edudb.authentication.AuthHandler;
 import net.edudb.engine.DatabaseSystem;
 import net.edudb.exceptions.RabbitMQConnectionException;
 import net.edudb.exceptions.RabbitMQCreateQueueException;
@@ -19,10 +20,12 @@ import java.io.IOException;
 public class Server {
     private static final String DEFAULT_SERVER_NAME = "server";
     private RPCServer rpcServer;
-    private ServerHandler handler;
+    private ServerHandler serverHandler;
+    private HandshakeHandler handshakeHandler;
 
     public Server() {
-        this.handler = new ServerHandler();
+        this.serverHandler = new ServerHandler();
+        this.handshakeHandler = new AuthHandler();
         DatabaseSystem.getInstance().initializeDirectories();
     }
 
@@ -30,8 +33,8 @@ public class Server {
         this.rpcServer = rpcServer;
     }
 
-    public ServerHandler getHandler() {
-        return handler;
+    public ServerHandler getServerHandler() {
+        return serverHandler;
     }
 
     private static String getServerNameFromUser(String[] args) {
@@ -60,7 +63,7 @@ public class Server {
         Server server = new Server();
 
         String serverName = getServerNameFromUser(args);
-        server.setRpcServer(new RPCServer(serverName, server.handler));
+        server.setRpcServer(new RPCServer(serverName, server.serverHandler, server.handshakeHandler));
         System.out.println(String.format("Starting server %s", serverName));
 
         try {

@@ -19,10 +19,15 @@ import java.io.*;
  * @author Fady Sameh
  */
 public class Request implements Serializable {
+    //TODO: this class should be refactored to subclasses
 
     private String command;
     private String databaseName;
     private RequestType type;
+    private String username;
+    private String password;
+    private String connectionQueueName;
+    private String authToken;
 
     public Request(String command) {
         this.command = command;
@@ -37,6 +42,13 @@ public class Request implements Serializable {
     public Request(String command, String databaseName) {
         this.command = command;
         this.databaseName = databaseName;
+    }
+
+    public Request(String username, String password, String connectionQueueName) {
+        this.type = RequestType.HANDSHAKE;
+        this.username = username;
+        this.password = password;
+        this.connectionQueueName = connectionQueueName;
     }
 
     public static byte[] serialize(Request request) throws SerializationException {
@@ -76,5 +88,25 @@ public class Request implements Serializable {
 
     public RequestType getType() {
         return type;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getConnectionQueueName() {
+        return connectionQueueName;
+    }
+
+    public String getAuthToken() {
+        return authToken;
+    }
+
+    public void setAuthToken(String authToken) {
+        this.authToken = authToken;
     }
 }
