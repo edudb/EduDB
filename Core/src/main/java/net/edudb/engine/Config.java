@@ -18,6 +18,24 @@ import net.edudb.structure.table.TableFileType;
  * @author Ahmed Abdul Badie
  */
 public class Config {
+    private static ThreadLocal<String> currentDatabaseName = new ThreadLocal<>();
+    private static ThreadLocal<String> currentWorkspace = new ThreadLocal<>();
+
+    public static void setCurrentDatabaseName(String name) {
+        currentDatabaseName.set(name);
+    }
+
+    public static String getCurrentDatabaseName() {
+        return currentDatabaseName.get();
+    }
+
+    public static void setCurrentWorkspace(String name) {
+        currentWorkspace.set(name);
+    }
+
+    public static String getCurrentWorkspace() {
+        return currentWorkspace.get();
+    }
 
     /**
      * @return The type of the block file to save to disk.
@@ -38,15 +56,22 @@ public class Config {
      */
     public static String absolutePath() {
         return System.getProperty("user.dir") + "/data/";
-//        return URLDecoder.decode(ClassLoader.getSystemClassLoader().getResource(".").getPath(), StandardCharsets.UTF_8);
     }
 
     public static String usersPath() {
         return absolutePath() + "users.csv";
     }
 
+    public static String workspacesPath() {
+        return absolutePath() + "workspaces/";
+    }
+
+    public static String currentWorkspacePath() {
+        return workspacesPath() + getCurrentWorkspace();
+    }
+
     public static String databasesPath() {
-        return absolutePath() + "databases/";
+        return currentWorkspacePath() + "/databases/";
     }
 
     /**
@@ -54,7 +79,7 @@ public class Config {
      * currently open.
      */
     public static String openedDatabasePath() {
-        return databasesPath() + DatabaseSystem.getInstance().getDatabaseName();
+        return databasesPath() + getCurrentDatabaseName();
     }
 
     public static String schemaPath() {

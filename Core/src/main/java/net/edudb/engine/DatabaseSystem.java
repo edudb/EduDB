@@ -26,9 +26,6 @@ import java.nio.file.attribute.BasicFileAttributes;
  */
 public class DatabaseSystem {
     private static final DatabaseSystem instance = new DatabaseSystem();
-    private final String DATABASES_DIR_NAME = "databases";
-    private boolean databaseIsOpen;
-    private ThreadLocal<String> databaseName = new ThreadLocal<>();
 
     private DatabaseSystem() {
     }
@@ -41,7 +38,7 @@ public class DatabaseSystem {
      * Creates the required directories for the system to work properly.
      */
     public void initializeDirectories() {
-        createDatabasesDirectory();
+//        createDatabasesDirectory();
     }
 
     /**
@@ -64,23 +61,11 @@ public class DatabaseSystem {
      *
      * @param databaseName The name of the database to open.
      */
-//    public String open(String databaseName) {
-//        if (databaseExists(databaseName)) {
-//            setDatabaseName(databaseName);
-//            setDatabaseIsOpen(true);
-//            initializeDatabaseDirectories(getDatabaseName());
-//            Schema.getInstance().setSchema();
-//            return "Opened database '" + databaseName + "'";
-//        } else {
-//            return "Database '" + databaseName + "' does not exist";
-//        }
-//    }
     public boolean open(String databaseName) {
         if (!databaseExists(databaseName)) {
             return false;
         }
         setDatabaseName(databaseName);
-        setDatabaseIsOpen(true);
         initializeDatabaseDirectories(getDatabaseName());
         Schema.getInstance().setSchema();
         return true;
@@ -96,7 +81,6 @@ public class DatabaseSystem {
 
 
         setDatabaseName(null);
-        setDatabaseIsOpen(false);
 
         Schema.getInstance().resetSchema();
 
@@ -112,7 +96,7 @@ public class DatabaseSystem {
         if (databaseExists(databaseName)) {
             return false;
         }
-        new File(Config.absolutePath() + DATABASES_DIR_NAME + "/" + databaseName).mkdir();
+        new File(Config.databasesPath() + databaseName).mkdirs();
 
         return true;
     }
@@ -131,7 +115,7 @@ public class DatabaseSystem {
 //            close();
 //        }
 
-        Path directory = Paths.get(Config.absolutePath() + DATABASES_DIR_NAME + "/" + databaseName);
+        Path directory = Paths.get(Config.databasesPath() + databaseName);
         Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
@@ -156,7 +140,8 @@ public class DatabaseSystem {
      * @author Ahmed Nasser Gaafar
      */
     public String listDatabases() {
-        File databases = new File(Config.absolutePath() + DATABASES_DIR_NAME);
+        File databases = new File(Config.databasesPath());
+        databases.mkdirs();
         String[] databaseNames = databases.list();
         String result = "";
         for (String databaseName : databaseNames) {
@@ -173,7 +158,7 @@ public class DatabaseSystem {
      * @return The availability of the database.
      */
     public boolean databaseExists(String databaseName) {
-        return new File(Config.absolutePath() + DATABASES_DIR_NAME + "/" + databaseName).exists();
+        return new File(Config.databasesPath() + databaseName).exists();
     }
 
     /**
@@ -192,7 +177,7 @@ public class DatabaseSystem {
      * @param databaseName The name of the database.
      */
     private void createTablesDirectory(String databaseName) {
-        File tables = new File(Config.absolutePath() + DATABASES_DIR_NAME + "/" + databaseName + "/tables");
+        File tables = new File(Config.databasesPath() + databaseName + "/tables");
         if (!tables.exists()) {
             tables.mkdir();
         }
@@ -204,7 +189,7 @@ public class DatabaseSystem {
      * @param databaseName The name of the database.
      */
     private void createBlocksDirectory(String databaseName) {
-        File blocks = new File(Config.absolutePath() + DATABASES_DIR_NAME + "/" + databaseName + "/blocks");
+        File blocks = new File(Config.databasesPath() + databaseName + "/blocks");
         if (!blocks.exists()) {
             blocks.mkdir();
         }
@@ -227,7 +212,7 @@ public class DatabaseSystem {
      * @param databaseName The name of the database.
      */
     private void createSchemaFile(String databaseName) {
-        File schema = new File(Config.absolutePath() + DATABASES_DIR_NAME + "/" + databaseName + "/schema.txt");
+        File schema = new File(Config.databasesPath() + databaseName + "/schema.txt");
         if (!schema.exists()) {
             try {
                 schema.createNewFile();
@@ -256,23 +241,18 @@ public class DatabaseSystem {
         System.exit(status);
     }
 
-    public void setDatabaseIsOpen(boolean databaseIsOpen) {
-        this.databaseIsOpen = databaseIsOpen;
-    }
-
     public boolean isDatabaseIsOpen() {
-//        return this.databaseIsOpen;
-        return this.databaseName.get() != null;
+        return Config.getCurrentDatabaseName() != null;
     }
 
     /**
      * @return The name of the current open database.
      */
     public String getDatabaseName() {
-        return this.databaseName.get();
+        return Config.getCurrentDatabaseName();
     }
 
     public void setDatabaseName(String databaseName) {
-        this.databaseName.set(databaseName);
+        Config.setCurrentDatabaseName(databaseName);
     }
 }

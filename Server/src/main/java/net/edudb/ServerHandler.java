@@ -11,7 +11,7 @@ package net.edudb;
 
 
 import net.edudb.authentication.JwtUtil;
-import net.edudb.engine.DatabaseSystem;
+import net.edudb.engine.Config;
 import net.edudb.executors.*;
 import net.edudb.statistics.Schema;
 
@@ -56,14 +56,15 @@ public class ServerHandler implements RequestHandler {
     }
 
     public Response handleThread(Request request) {
+        String workspace = JwtUtil.getUsername(request.getAuthToken());
+        String databaseName = request.getDatabaseName();
+
         ExecutorService executor = Executors.newSingleThreadExecutor();
 
         Callable<Response> callable = () -> {
-            if (request.getDatabaseName() != null) {
-                DatabaseSystem.getInstance().setDatabaseName(request.getDatabaseName());
-                Schema.getInstance();
-                DatabaseSystem.getInstance().setDatabaseIsOpen(true);
-            }
+            Config.setCurrentWorkspace(workspace);
+            Config.setCurrentDatabaseName(databaseName);
+            Schema.getInstance();
             return chain.execute(request);
         };
 
