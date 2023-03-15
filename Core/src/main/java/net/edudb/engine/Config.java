@@ -12,6 +12,8 @@ package net.edudb.engine;
 import net.edudb.block.BlockFileType;
 import net.edudb.structure.table.TableFileType;
 
+import java.io.File;
+
 /**
  * Stores the system's configuration.
  *
@@ -55,7 +57,7 @@ public class Config {
      * @return The system's absolute path on disk.
      */
     public static String absolutePath() {
-        return System.getProperty("user.dir") + "/data/";
+        return System.getProperty("user.dir") + File.separator + "data" + File.separator;
     }
 
     public static String usersPath() {
@@ -63,7 +65,7 @@ public class Config {
     }
 
     public static String workspacesPath() {
-        return absolutePath() + "workspaces/";
+        return absolutePath() + "workspaces" + File.separator;
     }
 
     public static String currentWorkspacePath() {
@@ -71,7 +73,7 @@ public class Config {
     }
 
     public static String databasesPath() {
-        return currentWorkspacePath() + "/databases/";
+        return currentWorkspacePath() + File.separator + "databases" + File.separator;
     }
 
     /**
@@ -83,21 +85,21 @@ public class Config {
     }
 
     public static String schemaPath() {
-        return openedDatabasePath() + "/schema.txt";
+        return openedDatabasePath() + File.separator + "schema.txt";
     }
 
     /**
      * @return The path to the table files on disk.
      */
     public static String tablesPath() {
-        return openedDatabasePath() + "/tables/";
+        return openedDatabasePath() + File.separator + "tables" + File.separator;
     }
 
     /**
      * @return The path to the page files on disk.
      */
     public static String pagesPath() {
-        return openedDatabasePath() + "/blocks/";
+        return openedDatabasePath() + File.separator + "blocks" + File.separator;
     }
 
     /**
