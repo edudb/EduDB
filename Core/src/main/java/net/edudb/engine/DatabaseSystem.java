@@ -96,7 +96,15 @@ public class DatabaseSystem {
         if (databaseExists(databaseName)) {
             return false;
         }
-        new File(Config.databasesPath() + databaseName).mkdirs();
+
+        new File(Config.databasePath(databaseName)).mkdirs();
+        new File(Config.tablesPath(databaseName)).mkdirs();
+        new File(Config.pagesPath(databaseName)).mkdirs();
+        try {
+            new File(Config.schemaPath(databaseName)).createNewFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         return true;
     }
@@ -177,7 +185,7 @@ public class DatabaseSystem {
      * @param databaseName The name of the database.
      */
     private void createTablesDirectory(String databaseName) {
-        File tables = new File(Config.databasesPath() + databaseName + "/tables");
+        File tables = new File(Config.tablesPath(databaseName));
         if (!tables.exists()) {
             tables.mkdir();
         }
@@ -212,7 +220,7 @@ public class DatabaseSystem {
      * @param databaseName The name of the database.
      */
     private void createSchemaFile(String databaseName) {
-        File schema = new File(Config.databasesPath() + databaseName + "/schema.txt");
+        File schema = new File(Config.schemaPath(databaseName));
         if (!schema.exists()) {
             try {
                 schema.createNewFile();
