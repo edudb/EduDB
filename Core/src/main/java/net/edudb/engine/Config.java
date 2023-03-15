@@ -64,16 +64,29 @@ public class Config {
         return absolutePath() + "users.csv";
     }
 
+    // ======================================== WORKSPACES ========================================
+
     public static String workspacesPath() {
         return absolutePath() + "workspaces" + File.separator;
     }
 
     public static String currentWorkspacePath() {
-        return workspacesPath() + getCurrentWorkspace();
+        return workspacePath(getCurrentWorkspace());
     }
 
+    public static String workspacePath(String workspaceName) {
+        return workspacesPath() + workspaceName + File.separator;
+    }
+
+    // ======================================== DATABASES ========================================
+
+
     public static String databasesPath() {
-        return currentWorkspacePath() + File.separator + "databases" + File.separator;
+        return databasesPath(getCurrentWorkspace());
+    }
+
+    public static String databasesPath(String workspaceName) {
+        return workspacePath(workspaceName) + File.separator + "databases" + File.separator;
     }
 
     /**
@@ -81,25 +94,76 @@ public class Config {
      * currently open.
      */
     public static String openedDatabasePath() {
-        return databasesPath() + getCurrentDatabaseName();
+        return databasePath(getCurrentWorkspace(), getCurrentDatabaseName());
     }
 
-    public static String schemaPath() {
-        return openedDatabasePath() + File.separator + "schema.txt";
+    public static String databasePath(String databaseName) {
+        return databasePath(getCurrentWorkspace(), databaseName);
     }
+
+    public static String databasePath(String workspaceName, String databaseName) {
+        return databasesPath(workspaceName) + databaseName + File.separator;
+    }
+
+    // ======================================== SCHEMAS ========================================
+
+    public static String schemaPath() {
+        return schemaPath(getCurrentWorkspace(), getCurrentDatabaseName());
+    }
+
+    public static String schemaPath(String databaseName) {
+        return schemaPath(getCurrentWorkspace(), databaseName);
+    }
+
+    public static String schemaPath(String workspaceName, String databaseName) {
+        return databasePath(workspaceName, databaseName) + "schema.txt";
+    }
+
+    // ======================================== TABLES ========================================
+
 
     /**
      * @return The path to the table files on disk.
      */
     public static String tablesPath() {
-        return openedDatabasePath() + File.separator + "tables" + File.separator;
+        return tablesPath(getCurrentWorkspace(), getCurrentDatabaseName());
     }
+
+    public static String tablesPath(String databaseName) {
+        return tablesPath(getCurrentWorkspace(), databaseName);
+    }
+
+    public static String tablesPath(String workspaceName, String databaseName) {
+        return databasePath(workspaceName, databaseName) + "tables" + File.separator;
+    }
+
+    public static String tablePath(String tableName) {
+        return tablePath(getCurrentWorkspace(), getCurrentDatabaseName(), tableName);
+    }
+
+    public static String tablePath(String databaseName, String tableName) {
+        return tablePath(getCurrentWorkspace(), databaseName, tableName);
+    }
+
+    public static String tablePath(String workspaceName, String databaseName, String tableName) {
+        return tablesPath(workspaceName, databaseName) + tableName + ".table";
+    }
+
+    // ======================================== PAGES ========================================
 
     /**
      * @return The path to the page files on disk.
      */
     public static String pagesPath() {
-        return openedDatabasePath() + File.separator + "blocks" + File.separator;
+        return pagesPath(getCurrentWorkspace(), getCurrentDatabaseName());
+    }
+
+    public static String pagesPath(String databaseName) {
+        return pagesPath(getCurrentWorkspace(), databaseName);
+    }
+
+    public static String pagesPath(String workspaceName, String databaseName) {
+        return databasePath(workspaceName, databaseName) + "blocks" + File.separator;
     }
 
     /**
