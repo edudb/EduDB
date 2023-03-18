@@ -92,7 +92,7 @@ public class TableManager { //TODO: revise the design
         tableBuffer.putIfAbsent(workspaceName, new HashMap<>());
         tableBuffer.get(workspaceName).putIfAbsent(databaseName, new HashMap<>());
         tableBuffer.get(workspaceName).get(databaseName).put(table.getName(), table);
-        FileManager.getInstance().writeTable(table);
+        FileManager.getInstance().writeTable(workspaceName, databaseName, table);
     }
 
     /**
