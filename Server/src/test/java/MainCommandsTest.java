@@ -17,13 +17,16 @@ import net.edudb.engine.Config;
 import net.edudb.engine.FileManager;
 import net.edudb.exceptions.AuthenticationFailedException;
 import net.edudb.exceptions.UserAlreadyExistException;
-import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainCommandsTest {
     Server server = new Server();
@@ -35,15 +38,18 @@ public class MainCommandsTest {
     private static final String DATABASE = "test_db";
     private static final String TABLE = "test_table";
 
-    @BeforeAll
-    public static void setup() throws UserAlreadyExistException, AuthenticationFailedException {
+    @BeforeEach
+    public void setup() throws UserAlreadyExistException, AuthenticationFailedException, IOException {
+        TestUtils.deleteDirectory(new File(Config.absolutePath()));
+        new File(Config.workspacesPath()).mkdirs();
+        new File(Config.usersPath()).createNewFile();
         Authentication.createUser(USERNAME, PASSWORD, UserRole.DEFAULT_ROLE);
         token = Authentication.login(USERNAME, PASSWORD);
 
     }
 
-    @AfterAll
-    public static void tearDown() {
+    @AfterEach
+    public void tearDown() {
         TestUtils.deleteDirectory(new File(Config.absolutePath()));
     }
 
@@ -83,13 +89,13 @@ public class MainCommandsTest {
     }
 
     @Test
-    public void testCreateTable() {
+    public void testCreateTable() throws FileNotFoundException {
         // Create database
         sendCommand(TestUtils.createDatabase.apply(DATABASE), null);
         // Create table
         sendCommand(TestUtils.createTable.apply(TABLE));
 
-        ArrayList<String> lines = FileManager.readFile(Config.schemaPath(USERNAME, DATABASE));
+        List<String> lines = FileManager.getInstance().readSchemaFile(USERNAME, DATABASE);
 
         Assertions.assertTrue(new File(Config.tablePath(USERNAME, DATABASE, TABLE)).exists());
         Assertions.assertEquals(1, lines.size());
@@ -98,7 +104,7 @@ public class MainCommandsTest {
     }
 
     @Test
-    public void testDropTable() {
+    public void testDropTable() throws FileNotFoundException {
         // Create database
         sendCommand(TestUtils.createDatabase.apply(DATABASE), null);
         // Create table

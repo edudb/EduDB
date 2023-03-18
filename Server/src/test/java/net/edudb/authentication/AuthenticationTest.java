@@ -10,16 +10,14 @@
 package net.edudb.authentication;
 
 import net.edudb.engine.Config;
-import net.edudb.engine.DatabaseSystem;
 import net.edudb.exceptions.AuthenticationFailedException;
 import net.edudb.exceptions.UserAlreadyExistException;
 import net.edudb.exceptions.UserNotFoundException;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
+import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 
 public class AuthenticationTest {
@@ -29,8 +27,9 @@ public class AuthenticationTest {
     private static final UserRole ROLE = UserRole.USER;
 
     @BeforeAll
-    public static void setup() {
-        DatabaseSystem.getInstance().initializeDirectories();
+    public static void setup() throws IOException {
+        new File(Config.workspacesPath()).mkdirs();
+        new File(Config.usersPath()).createNewFile();
     }
 
     @AfterEach
@@ -42,6 +41,13 @@ public class AuthenticationTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @AfterAll
+    public static void cleanUp() {
+        new File(Config.workspacesPath()).delete();
+        new File(Config.usersPath()).delete();
+        new File(Config.absolutePath()).delete();
     }
 
     @Test
