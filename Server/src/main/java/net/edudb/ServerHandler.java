@@ -11,16 +11,23 @@ package net.edudb;
 
 
 import net.edudb.authentication.JwtUtil;
-import net.edudb.engine.DatabaseSystem;
+import net.edudb.engine.Config;
 import net.edudb.executors.*;
 import net.edudb.statistics.Schema;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.*;
 
 public class ServerHandler implements RequestHandler {
+    private final int MAX_THREADS_PER_USER = 1;
+    private Map<String, ExecutorService> usersThreadPools; //FIXME: handle the case when a user is deleted or the client is closed
     private ConsoleExecutorChain chain;
 
     public ServerHandler() {
+
+        this.usersThreadPools = new HashMap<>();
+
         ConsoleExecutorChain[] executorChain = {
                 new InitializeExecutor(), //TODO: take care of this
                 new CreateUserExecutor(),
@@ -46,43 +53,42 @@ public class ServerHandler implements RequestHandler {
     }
 
     public Response handle(Request request) {
-//        Response response = chain.execute(request);
-//        return response;
         if (!JwtUtil.isValidToken(request.getAuthToken())) {
             return new Response("Invalid token", ResponseStatus.ERROR);
         }
 
-        return handleThread(request);
-    }
-
-    public Response handleThread(Request request) {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-
-        Callable<Response> callable = () -> {
-            if (request.getDatabaseName() != null) {
-                DatabaseSystem.getInstance().setDatabaseName(request.getDatabaseName());
-                Schema.getInstance();
-                DatabaseSystem.getInstance().setDatabaseIsOpen(true);
-            }
-            return chain.execute(request);
-        };
-
-        Future<Response> future = executor.submit(callable);
-
-        executor.shutdown();
-        while (!executor.isTerminated()) {
-            // Wait for the thread to complete
-        }
-
-        Response response = null;
         try {
-            response = future.get();
+            return handleThread(request);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } catch (ExecutionException e) {
             throw new RuntimeException(e);
         }
+    }
 
-        return response;
+    public Response handleThread(Request request) throws InterruptedException, ExecutionException {
+        String username = JwtUtil.getUsername(request.getAuthToken());
+        String databaseName = request.getDatabaseName();
+
+        usersThreadPools.putIfAbsent(username, Executors.newFixedThreadPool(MAX_THREADS_PER_USER));
+
+
+        Callable<Response> callable = () -> {
+            Config.setCurrentWorkspace(username);
+            if (databaseName != null) {
+                Config.setCurrentDatabaseName(databaseName);
+                Schema.getInstance(); //FIXME: this is a hack to load the schema and cause null pointer exception
+            }
+            return chain.execute(request);
+        };
+
+        Future<Response> future = usersThreadPools.get(username).submit(callable);
+
+        while (!future.isDone() && !future.isCancelled()) {
+            // Wait for the thread to complete
+            Thread.sleep(200);
+        }
+
+        return future.get();
     }
 }
