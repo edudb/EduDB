@@ -95,7 +95,7 @@ public class MainCommandsTest {
         // Create table
         sendCommand(TestUtils.createTable.apply(TABLE));
 
-        List<String> lines = FileManager.getInstance().readSchemaFile(USERNAME, DATABASE);
+        List<String> lines = FileManager.readFile(Config.schemaPath(USERNAME, DATABASE));
 
         Assertions.assertTrue(new File(Config.tablePath(USERNAME, DATABASE, TABLE)).exists());
         Assertions.assertEquals(1, lines.size());
