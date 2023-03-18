@@ -86,7 +86,7 @@ public class Config {
     }
 
     public static String databasesPath(String workspaceName) {
-        return workspacePath(workspaceName) + File.separator + "databases" + File.separator;
+        return workspacePath(workspaceName) + "databases" + File.separator;
     }
 
     /**
