@@ -10,7 +10,6 @@
 package net.edudb.structure.table;
 
 import net.edudb.engine.Config;
-import net.edudb.engine.DatabaseSystem;
 import net.edudb.engine.FileManager;
 import net.edudb.statistics.Schema;
 
@@ -24,10 +23,13 @@ import java.util.HashMap;
  *
  * @author Ahmed Abdul Badie
  */
-public class TableManager {
+public class TableManager { //TODO: revise the design
 
     private static final TableManager instance = new TableManager();
-    private final HashMap<String, HashMap<String, Table>> tableBuffer;
+    /**
+     * tableBuffer is a map [workspaceName, [databaseName, [tableName, table]]]
+     */
+    private final HashMap<String, HashMap<String, HashMap<String, Table>>> tableBuffer;
 
     private TableManager() {
         this.tableBuffer = new HashMap<>();
@@ -43,14 +45,23 @@ public class TableManager {
      *
      * @param tableName Name of the table to read.
      * @return The read table.
+     * @deprecated Use {@link TableManager#readTable(String, String, String)} instead.
      */
+    @Deprecated
     public synchronized Table read(String tableName) {
-        String databasesName = DatabaseSystem.getInstance().getDatabaseName(); //TODO: revise the design
-        tableBuffer.putIfAbsent(databasesName, new HashMap<>());
+        String workspaceName = Config.getCurrentWorkspace();
+        String databaseName = Config.getCurrentDatabaseName();
 
-        Table table = null;
+        return readTable(workspaceName, databaseName, tableName);
+    }
 
-        table = tableBuffer.get(databasesName).get(tableName);
+    public synchronized Table readTable(String workspaceName, String databaseName, String tableName) {
+        tableBuffer.putIfAbsent(workspaceName, new HashMap<>());
+        tableBuffer.get(workspaceName).putIfAbsent(databaseName, new HashMap<>());
+
+        Table table;
+
+        table = tableBuffer.get(workspaceName).get(databaseName).get(tableName);
 
         if (table != null) {
             return table;
@@ -58,15 +69,8 @@ public class TableManager {
 
         table = FileManager.getInstance().readTable(tableName);
 
-        // TableAbstractFactory tableFactory = new TableReaderFactory();
-        // TableReader tableReader = tableFactory.getReader(Config.tableType());
-        //
-        // try {
-        // table = tableReader.read(tableName);
-        tableBuffer.get(databasesName).put(tableName, table);
-        // } catch (ClassNotFoundException | IOException e) {
-        // e.printStackTrace();
-        // }
+        tableBuffer.get(workspaceName).get(databaseName).put(tableName, table);
+
         return table;
     }
 
@@ -74,34 +78,46 @@ public class TableManager {
      * Adds the table to the buffer pool and writes it to disk.
      *
      * @param table The table to write.
+     * @deprecated Use {@link TableManager#writeTable(String, String, Table)} instead.
      */
+    @Deprecated
     public synchronized void write(Table table) {
-        String databasesName = DatabaseSystem.getInstance().getDatabaseName(); //TODO: revise the design
-        tableBuffer.putIfAbsent(databasesName, new HashMap<>());
-        // TableAbstractFactory tableFactory = new TableWriterFactory();
-        // TableWriter tableWriter = tableFactory.getWriter(Config.tableType());
-        //
-        // try {
-        tableBuffer.get(databasesName).put(table.getName(), table);
+        String workspaceName = Config.getCurrentWorkspace();
+        String databaseName = Config.getCurrentDatabaseName();
+
+        writeTable(workspaceName, databaseName, table);
+    }
+
+    public synchronized void writeTable(String workspaceName, String databaseName, Table table) {
+        tableBuffer.putIfAbsent(workspaceName, new HashMap<>());
+        tableBuffer.get(workspaceName).putIfAbsent(databaseName, new HashMap<>());
+        tableBuffer.get(workspaceName).get(databaseName).put(table.getName(), table);
         FileManager.getInstance().writeTable(table);
-        // tableWriter.write(table);
-        // } catch (IOException e) {
-        // e.printStackTrace();
-        // }
     }
 
     /**
      * Writes all the tables to disk. Used when closing the database for the
      * data to be persisted.
+     *
+     * @deprecated Use {@link TableManager#writeAllTables(String, String)} instead.
      */
+    @Deprecated
     public void writeAll() {
-        String databasesName = DatabaseSystem.getInstance().getDatabaseName(); //TODO: revise the design
-        tableBuffer.putIfAbsent(databasesName, new HashMap<>());
+        String workspaceName = Config.getCurrentWorkspace();
+        String databaseName = Config.getCurrentDatabaseName();
 
-        for (Table table : tableBuffer.get(databasesName).values()) {
-            this.write(table);
+        writeAllTables(workspaceName, databaseName);
+    }
+
+    public void writeAllTables(String workspaceName, String databaseName) {
+        tableBuffer.putIfAbsent(workspaceName, new HashMap<>());
+        tableBuffer.get(workspaceName).putIfAbsent(databaseName, new HashMap<>());
+
+        for (Table table : tableBuffer.get(workspaceName).get(databaseName).values()) {
+            writeTable(workspaceName, databaseName, table);
         }
-        tableBuffer.clear();
+
+        tableBuffer.get(workspaceName).get(databaseName).clear();
     }
 
     /**
@@ -109,13 +125,23 @@ public class TableManager {
      * from the schema file, and removing the table from disk.
      *
      * @param table The table to delete.
+     * @deprecated Use {@link TableManager#deleteTable(String, String, Table)} instead.
      */
+    @Deprecated
     public void delete(Table table) {
-        String databasesName = DatabaseSystem.getInstance().getDatabaseName(); //TODO: revise the design
-        tableBuffer.putIfAbsent(databasesName, new HashMap<>());
+        String workspaceName = Config.getCurrentWorkspace();
+        String databaseName = Config.getCurrentDatabaseName();
+
+        deleteTable(workspaceName, databaseName, table);
+    }
+
+    public void deleteTable(String workspaceName, String databaseName, Table table) {
+        tableBuffer.putIfAbsent(workspaceName, new HashMap<>());
+        tableBuffer.get(workspaceName).putIfAbsent(databaseName, new HashMap<>());
 
         table.deletePages();
-
+        //FIXME: use new schema
+        // ------------------------------
         String path = Config.tablesPath() + table.getName() + ".table";
         File file = new File(path);
 
@@ -124,7 +150,9 @@ public class TableManager {
         }
 
         Schema.getInstance().removeTable(table.getName());
+        // ------------------------------
 
-        tableBuffer.get(databasesName).remove(table.getName());
+        tableBuffer.get(workspaceName).get(databaseName).remove(table.getName());
+
     }
 }
