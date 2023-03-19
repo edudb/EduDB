@@ -11,7 +11,7 @@ package net.edudb.executors;
 
 import net.edudb.Request;
 import net.edudb.Response;
-import net.edudb.engine.DatabaseSystem;
+import net.edudb.ResponseStatus;
 import net.edudb.parser.Parser;
 
 /**
@@ -23,18 +23,18 @@ public class SQLExecutor implements ConsoleExecutorChain {
 
     @Override
     public void setNextElementInChain(ConsoleExecutorChain chainElement) {
+        throw new UnsupportedOperationException("SQLExecutor should be the last element in the chain");
     }
 
     @Override
     public Response execute(Request request) {
-        if (request.getDatabaseName() == null) {
-            return new Response("You must connect to a database first");
-        }
-        if (!DatabaseSystem.getInstance().databaseExists(request.getDatabaseName())) {
-            return new Response("Database " + request.getDatabaseName() + " does not exist");
+
+        String databaseName = request.getDatabaseName();
+
+        if (databaseName == null) {
+            return new Response("You must open a database first", ResponseStatus.ERROR);
         }
 
-        DatabaseSystem.getInstance().setDatabaseName(request.getDatabaseName());
         Parser parser = new Parser();
         return parser.parseSQL(request.getCommand());
     }
