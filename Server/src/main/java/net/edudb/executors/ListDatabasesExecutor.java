@@ -11,9 +11,12 @@ package net.edudb.executors;
 
 import net.edudb.Request;
 import net.edudb.Response;
-import net.edudb.engine.DatabaseSystem;
+import net.edudb.ResponseStatus;
+import net.edudb.engine.DatabaseEngine;
 import net.edudb.engine.Utility;
+import net.edudb.exception.WorkspaceNotFoundException;
 
+import java.util.Arrays;
 import java.util.regex.Matcher;
 
 /**
@@ -22,7 +25,7 @@ import java.util.regex.Matcher;
  * @author Ahmed Nasser Gaafar
  */
 public class ListDatabasesExecutor implements ConsoleExecutorChain {
-    private final String regex = "\\A(?:(?i)list)\\s+(?:(?i)databases)\\s*;?\\z";
+    private static final String REGEX = "\\A(?:(?i)list)\\s+(?:(?i)databases)\\s*;?\\z";
     private ConsoleExecutorChain nextElement;
 
     @Override
@@ -33,13 +36,20 @@ public class ListDatabasesExecutor implements ConsoleExecutorChain {
     @Override
     public Response execute(Request request) {
         String command = request.getCommand();
-        if (command.toLowerCase().startsWith("list")) {
-            Matcher matcher = Utility.getMatcher(command, regex);
-            if (matcher.matches()) {
-                return new Response(DatabaseSystem.getInstance().listDatabases());
-            }
+        Matcher matcher = Utility.getMatcher(command, REGEX);
 
+        if (!matcher.matches()) {
+            return nextElement.execute(request);
         }
-        return nextElement.execute(request);
+
+        try {
+            String workspaceName = request.getWorkspaceName();
+            String[] databases = DatabaseEngine.getInstance().listDatabases(workspaceName);
+            String responseBody = String.join("\n ", Arrays.asList(databases));
+            return new Response(responseBody, ResponseStatus.OK);
+        } catch (WorkspaceNotFoundException e) {
+            return new Response(e.getMessage(), ResponseStatus.ERROR);
+        }
+
     }
 }
