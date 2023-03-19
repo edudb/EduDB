@@ -11,7 +11,6 @@ package net.edudb.engine;
 
 import net.edudb.buffer.BufferManager;
 import net.edudb.server.ServerWriter;
-import net.edudb.statistics.Schema;
 import net.edudb.structure.table.TableManager;
 
 import java.io.File;
@@ -67,7 +66,7 @@ public class DatabaseSystem {
         }
         setDatabaseName(databaseName);
         initializeDatabaseDirectories(getDatabaseName());
-        Schema.getInstance().setSchema();
+//        Schema.getInstance().setSchema();
         return true;
     }
 
@@ -82,7 +81,7 @@ public class DatabaseSystem {
 
         setDatabaseName(null);
 
-        Schema.getInstance().resetSchema();
+//        Schema.getInstance().resetSchema();
 
         return true;
     }
