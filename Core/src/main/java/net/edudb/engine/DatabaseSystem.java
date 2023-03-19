@@ -22,7 +22,9 @@ import java.nio.file.attribute.BasicFileAttributes;
  * Manages the system's databases and their required files and directories.
  *
  * @author Ahmed Abdul Badie
+ * @deprecated This class is deprecated and will be removed. use {@link DatabaseEngine} instead.
  */
+@Deprecated
 public class DatabaseSystem {
     private static final DatabaseSystem instance = new DatabaseSystem();
 

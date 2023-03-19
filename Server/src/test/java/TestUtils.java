@@ -8,16 +8,56 @@
  */
 
 import java.io.File;
-import java.util.function.Function;
 
 public class TestUtils {
-    public static Function<String, String> createDatabase = (databaseName) -> "create database " + databaseName;
-    public static Function<String, String> openDatabase = (databaseName) -> "open database " + databaseName;
-    public static Function<String, String> dropDatabase = (databaseName) -> "drop database " + databaseName;
-    public static Function<String, String> createTable = (tableName) -> "create table " + tableName + " (name varchar)";
-    public static Function<String, String> dropTable = (tableName) -> "drop table " + tableName;
-    public static Function<String, String> insert = (tableName) -> "insert into " + tableName + " values ('test')";
-    public static Function<String, String> select = (tableName) -> "select * from " + tableName;
+    public static String createDatabase(String databaseName) {
+        return "create database " + databaseName;
+    }
+
+    public static String dropDatabase(String databaseName) {
+        return "drop database " + databaseName;
+    }
+
+    public static String createTable(String tableName, String[] columns, String[] types) {
+        String query = "create table " + tableName + " (";
+        for (int i = 0; i < columns.length; i++) {
+            query += columns[i] + " " + types[i];
+        }
+        query += ")";
+        return query;
+    }
+
+    public static String dropTable(String tableName) {
+        return "drop table " + tableName;
+    }
+
+    public static String insert(String tableName, String[] values) {
+        String query = "insert into " + tableName + " values (";
+        for (int i = 0; i < values.length; i++) {
+            query += values[i] + " ";
+        }
+        query += ")";
+        return query;
+    }
+
+    public static String selectAll(String tableName) {
+        return "select * from " + tableName;
+    }
+
+    public static String select(String tableName, String column, String value) {
+        return "select * from " + tableName + " where " + column + " = '" + value + "'";
+    }
+
+    public static String update(String tableName, String column, String oldValue, String newValue) {
+        String query = "UPDATE " + tableName + " SET " + column + " = '" + newValue + "' where " + column + " = '" + oldValue + "'";
+        return query;
+    }
+
+    public static String delete(String tableName, String column, String value) {
+        String query = "delete from " + tableName + " where " + column + " = '" + value + "'";
+        return query;
+    }
+
 
     public static boolean deleteDirectory(File directoryToBeDeleted) {
         File[] allContents = directoryToBeDeleted.listFiles();
