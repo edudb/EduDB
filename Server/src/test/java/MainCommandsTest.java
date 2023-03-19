@@ -11,12 +11,14 @@ import net.edudb.Request;
 import net.edudb.Response;
 import net.edudb.Server;
 import net.edudb.ServerHandler;
-import net.edudb.authentication.Authentication;
-import net.edudb.authentication.UserRole;
 import net.edudb.engine.Config;
+import net.edudb.engine.DatabaseEngine;
 import net.edudb.engine.FileManager;
-import net.edudb.exceptions.AuthenticationFailedException;
-import net.edudb.exceptions.UserAlreadyExistException;
+import net.edudb.engine.authentication.Authentication;
+import net.edudb.engine.authentication.UserRole;
+import net.edudb.exception.AuthenticationFailedException;
+import net.edudb.exception.UserAlreadyExistException;
+import net.edudb.statistics.Schema;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,7 +45,7 @@ public class MainCommandsTest {
         TestUtils.deleteDirectory(new File(Config.absolutePath()));
         new File(Config.workspacesPath()).mkdirs();
         new File(Config.usersPath()).createNewFile();
-        Authentication.createUser(USERNAME, PASSWORD, UserRole.DEFAULT_ROLE);
+        DatabaseEngine.getInstance().createUser(USERNAME, PASSWORD, UserRole.DEFAULT_ROLE);
         token = Authentication.login(USERNAME, PASSWORD);
 
     }
@@ -51,6 +53,7 @@ public class MainCommandsTest {
     @AfterEach
     public void tearDown() {
         TestUtils.deleteDirectory(new File(Config.absolutePath()));
+        Schema.getInstance().reset();
     }
 
 
