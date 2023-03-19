@@ -9,7 +9,10 @@
 
 package net.edudb.engine;
 
+import net.edudb.exception.DirectoryNotFoundException;
+
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -53,4 +56,17 @@ public class Utility {
         return path + File.separator + name;
     }
 
+    public static void handleDatabaseFileStructureCorruption(DirectoryNotFoundException e) {
+        System.err.println("Database file structure is corrupted");
+        System.err.println(e);
+        e.printStackTrace();
+        System.exit(0);
+    }
+
+    public static void handleDatabaseFileStructureCorruption(FileNotFoundException e) {
+        System.err.println("Database file structure is corrupted");
+        System.err.println(e);
+        e.printStackTrace();
+        System.exit(0);
+    }
 }
