@@ -116,6 +116,10 @@ public class Response implements Serializable {
         return status;
     }
 
+    public void setStatus(ResponseStatus status) {
+        this.status = status;
+    }
+
     public String getAuthToken() {
         return authToken;
     }

@@ -10,8 +10,8 @@
 package net.edudb;
 
 
-import net.edudb.authentication.JwtUtil;
 import net.edudb.engine.Config;
+import net.edudb.engine.authentication.JwtUtil;
 import net.edudb.executors.*;
 import net.edudb.statistics.Schema;
 
@@ -29,7 +29,6 @@ public class ServerHandler implements RequestHandler {
         this.usersThreadPools = new HashMap<>();
 
         ConsoleExecutorChain[] executorChain = {
-                new InitializeExecutor(), //TODO: take care of this
                 new CreateUserExecutor(),
                 new DropUserExecutor(),
                 new ListDatabasesExecutor(),
@@ -37,8 +36,8 @@ public class ServerHandler implements RequestHandler {
                 new DropDatabaseExecutor(),
                 new OpenDatabaseExecutor(),
                 new CloseDatabaseExecutor(),
-                new CopyExecutor(),
                 new DropTableExecutor(),
+                new CopyExecutor(),
                 new SQLExecutor(),
         };
 
@@ -69,6 +68,7 @@ public class ServerHandler implements RequestHandler {
     public Response handleThread(Request request) throws InterruptedException, ExecutionException {
         String username = JwtUtil.getUsername(request.getAuthToken());
         String databaseName = request.getDatabaseName();
+        request.setWorkspaceName(username); //TODO: refactor this
 
         usersThreadPools.putIfAbsent(username, Executors.newFixedThreadPool(MAX_THREADS_PER_USER));
 
