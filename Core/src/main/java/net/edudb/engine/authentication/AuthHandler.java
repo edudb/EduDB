@@ -7,10 +7,23 @@
  * /
  */
 
-package net.edudb.exceptions;
+package net.edudb.engine.authentication;
 
-public class InvalidRoleException extends Exception {
-    public InvalidRoleException(String message) {
-        super(message);
+import net.edudb.HandshakeHandler;
+import net.edudb.Response;
+import net.edudb.ResponseStatus;
+import net.edudb.exception.AuthenticationFailedException;
+
+public class AuthHandler implements HandshakeHandler {
+    @Override
+    public Response authenticate(String username, String password) {
+        try {
+            String token = Authentication.login(username, password);
+            Response response = new Response("Login successful", ResponseStatus.HANDSHAKE_OK);
+            response.setAuthToken(token);
+            return response;
+        } catch (AuthenticationFailedException e) {
+            return new Response(e.getMessage(), ResponseStatus.HANDSHAKE_ERROR);
+        }
     }
 }

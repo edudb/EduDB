@@ -7,11 +7,11 @@
  * /
  */
 
-package net.edudb.authentication;
+package net.edudb.engine.authentication;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import net.edudb.exceptions.InvalidRoleException;
+import net.edudb.exception.InvalidRoleException;
 
 import java.util.Date;
 

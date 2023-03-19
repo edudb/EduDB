@@ -7,17 +7,10 @@
  * /
  */
 
-package net.edudb.authentication;
+package net.edudb.exception;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
-public class PasswordUtilTest {
-    private static final String PASSWORD = "password";
-
-    @Test
-    void hashAndValidatePassword() {
-        String hashedPassword = PasswordUtil.hashPassword(PASSWORD);
-        Assertions.assertTrue(PasswordUtil.verifyPassword(PASSWORD, hashedPassword));
+public class AuthenticationFailedException extends Exception {
+    public AuthenticationFailedException(String message) {
+        super(message);
     }
 }

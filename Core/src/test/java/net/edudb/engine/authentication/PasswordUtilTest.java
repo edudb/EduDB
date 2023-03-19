@@ -7,34 +7,17 @@
  * /
  */
 
-package net.edudb.authentication;
+package net.edudb.engine.authentication;
 
-import net.edudb.exceptions.InvalidRoleException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-public enum UserRole {
-    ADMIN,
-    USER;
+public class PasswordUtilTest {
+    private static final String PASSWORD = "password";
 
-
-    public static final UserRole DEFAULT_ROLE = USER;
-
-    /**
-     * Converts a string to a UserRole. If the string is null, the default role is returned.
-     *
-     * @param role The role to be converted to a UserRole.
-     * @return The UserRole.
-     * @throws InvalidRoleException If the role is invalid.
-     * @auther Ahmed Nasser Gaafar
-     */
-    public static UserRole fromString(String role) throws InvalidRoleException {
-        if (role == null) {
-            return DEFAULT_ROLE;
-        }
-
-        try {
-            return UserRole.valueOf(role.toUpperCase());
-        } catch (IllegalArgumentException ex) {
-            throw new InvalidRoleException("Invalid role: " + role);
-        }
+    @Test
+    void hashAndValidatePassword() {
+        String hashedPassword = PasswordUtil.hashPassword(PASSWORD);
+        Assertions.assertTrue(PasswordUtil.verifyPassword(PASSWORD, hashedPassword));
     }
 }
