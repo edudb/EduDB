@@ -9,138 +9,141 @@
 
 package net.edudb.statistics;
 
-import com.google.common.collect.Iterables;
 import net.edudb.engine.Config;
 import net.edudb.engine.FileManager;
+import net.edudb.engine.Utility;
+import net.edudb.exception.*;
 import net.edudb.structure.Column;
-import net.edudb.structure.table.Table;
-import net.edudb.structure.table.TableManager;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Set;
+import java.util.List;
+import java.util.Map;
 
-/**
- * Created by mohamed on 4/1/14.
- */
 public class Schema {
-    private static ThreadLocal<Schema> instance = ThreadLocal.withInitial(() -> new Schema());
-    private final HashMap<String, ArrayList<String>> schema;
-
-    private Schema() {
-        schema = new HashMap<>();
-        setSchema();
-    }
+    private static volatile Schema instance;
+    private Map<String, WorkspaceSchema> workspaces;
 
     public static Schema getInstance() {
-        return instance.get();
-    }
-
-    /**
-     * Checks the availability of the given table in the database's schema.
-     *
-     * @param tableName The name of the table to check.
-     * @return The availability of the table.
-     */
-    public boolean chekTableExists(String tableName) {
-        return schema.get(tableName) != null;
-    }
-
-    public void setSchema() {
-        ArrayList<String> lines = FileManager.readSchema();
-        for (String line : lines) {
-            putTable(line);
-        }
-    }
-
-    /**
-     * Returns the columns of the required table.
-     *
-     * @param tableName The name of the required table.
-     * @return Columns of the required table as an {@link ArrayList}.
-     */
-    public ArrayList<Column> getColumns(String tableName) {
-        ArrayList<Column> columns = new ArrayList<>();
-        Table table = TableManager.getInstance().read(tableName);
-        LinkedHashMap<String, String> columnTypes = table.getColumnTypes();
-        for (int i = 1; i <= columnTypes.size(); i++) {
-            String columnName = Iterables.get(columnTypes.keySet(), i - 1);
-            String columnType = Iterables.get(columnTypes.values(), i - 1);
-            columns.add(new Column(i, columnName, tableName, columnType));
-        }
-
-        return columns;
-    }
-
-    // add table to schema object
-    private void putTable(String line) {
-        String[] tokens = line.split(" ");
-        String TableName = tokens[0];
-        ArrayList<String> columns = new ArrayList<String>();
-        for (int i = 1; i < tokens.length; i += 2) {
-            String columnName = tokens[i];
-            columns.add(columnName);
-        }
-        schema.put(TableName, columns);
-    }
-
-    // add table to schema file
-    public void addTable(String line) {
-        putTable(line);
-        line += System.lineSeparator();
-        FileManager.writeFile(Config.schemaPath(), line, true);
-    }
-
-    public void removeTable(String tableName) {
-
-        ArrayList<String> schema = FileManager.readSchema();
-
-        String schemaData = "";
-
-        for (String string : schema) {
-            if (!string.startsWith(tableName)) {
-                schemaData += string + "\r\n";
+        if (instance == null) {
+            synchronized (Schema.class) {
+                if (instance == null) {
+                    instance = new Schema();
+                }
             }
         }
+        return instance;
+    }
 
-        File file = new File(Config.schemaPath());
-        if (file.exists()) {
-            file.delete();
+    private Schema() {
+        this.workspaces = new HashMap<>();
+
+        String[] workspacesList = new String[0];
+        try {
+            workspacesList = FileManager.getInstance().listWorkspaces();
+        } catch (DirectoryNotFoundException e) {
+            Utility.handleDatabaseFileStructureCorruption(e);
         }
+        for (String workspace : workspacesList) {
+            this.workspaces.put(workspace, null);
+        }
+    }
 
-        this.schema.remove(tableName);
+    public void reset() {
+        this.workspaces = new HashMap<>();
+    }
 
-        FileManager.writeFile(Config.schemaPath(), schemaData, false);
+    private void validateWorkspaceExists(String workspaceName) throws WorkspaceNotFoundException {
+        if (!containsWorkspace(workspaceName)) {
+            throw new WorkspaceNotFoundException(String.format("Workspace %s does not exist", workspaceName));
+        }
+    }
+
+    private void validateWorkspaceDoesNotExist(String workspaceName) throws WorkspaceAlreadyExistException {
+        if (containsWorkspace(workspaceName)) {
+            throw new WorkspaceAlreadyExistException(String.format("Workspace %s already exist", workspaceName));
+        }
+    }
+
+    public void loadWorkspace(String workspaceName) throws WorkspaceNotFoundException {
+        validateWorkspaceExists(workspaceName);
+        this.workspaces.put(workspaceName, new WorkspaceSchema(workspaceName));
+    }
+
+    public void offloadWorkspace(String workspaceName) throws WorkspaceNotFoundException {
+        validateWorkspaceExists(workspaceName);
+        this.workspaces.put(workspaceName, null);
+    }
+
+    private boolean isWorkspaceLoaded(String workspaceName) throws WorkspaceNotFoundException {
+        validateWorkspaceExists(workspaceName);
+        return this.workspaces.get(workspaceName) != null;
+    }
+
+    public WorkspaceSchema getWorkspace(String workspaceName) throws WorkspaceNotFoundException {
+        validateWorkspaceExists(workspaceName);
+
+        if (!isWorkspaceLoaded(workspaceName)) loadWorkspace(workspaceName);
+
+        return this.workspaces.get(workspaceName);
+    }
+
+    public DatabaseSchema getDatabase(String workspaceName, String databaseName) throws WorkspaceNotFoundException, DatabaseNotFoundException {
+        return getWorkspace(workspaceName).getDatabase(databaseName);
+    }
+
+    public DatabaseSchema getDatabase(String databaseName) throws WorkspaceNotFoundException, DatabaseNotFoundException {
+        return getWorkspace(Config.getCurrentWorkspace()).getDatabase(databaseName);
+    }
+
+    public TableSchema getTable(String workspaceName, String databaseName, String tableName) throws WorkspaceNotFoundException, DatabaseNotFoundException, TableNotFoundException {
+        return getDatabase(workspaceName, databaseName).getTable(tableName);
+    }
+
+    public TableSchema getTable(String tableName) throws WorkspaceNotFoundException, DatabaseNotFoundException, TableNotFoundException {
+        return getDatabase(Config.getCurrentWorkspace(), Config.getCurrentDatabaseName()).getTable(tableName);
+    }
+
+    public List<String> getTables() {
+        try {
+            return getDatabase(Config.getCurrentWorkspace(), Config.getCurrentDatabaseName()).getTables().keySet().stream().toList();
+        } catch (WorkspaceNotFoundException | DatabaseNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public ArrayList<Column> getColumns(String tableName) {
+        try {
+            return (ArrayList<Column>) getTable(tableName).getColumns();
+        } catch (WorkspaceNotFoundException | DatabaseNotFoundException | TableNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public HashMap<String, ArrayList<String>> getSchema() {
-        return schema;
-    }
-
-    public int getCount(String tableName) {
-        return schema.get(tableName).size();
-    }
-
-    public ArrayList<String> getColumnNames(String tableName) {
-        ArrayList<String> columnNames = new ArrayList<>();
-        int count = schema.get(tableName).size();
-        for (int i = 0; i < count; i++) {
-            columnNames.add(schema.get(tableName).get(i));
+        try {
+            return (HashMap<String, ArrayList<String>>) getDatabase(Config.getCurrentWorkspace(), Config.getCurrentDatabaseName()).getSchema();
+        } catch (WorkspaceNotFoundException | DatabaseNotFoundException e) {
+            throw new RuntimeException(e);
         }
-        return columnNames;
     }
 
-    public int getColumnNumber(String name, String tableName) {
-        return getColumnNames(tableName).indexOf(name);
+    public boolean containsWorkspace(String workspaceName) {
+        return this.workspaces.containsKey(workspaceName);
     }
 
-    public Set<String> getTableNames() {
-        return schema.keySet();
+    public void addWorkspace(String workspaceName) throws WorkspaceAlreadyExistException {
+        validateWorkspaceDoesNotExist(workspaceName);
+        this.workspaces.put(workspaceName, null);
     }
 
-    public void resetSchema() {
-        schema.clear();
+    public void removeWorkspace(String workspaceName) throws WorkspaceNotFoundException {
+        validateWorkspaceExists(workspaceName);
+        this.workspaces.remove(workspaceName);
     }
+    
+    public boolean checkTableExists(String tableName) {
+        return getTables().contains(tableName);
+    }
+
 }
