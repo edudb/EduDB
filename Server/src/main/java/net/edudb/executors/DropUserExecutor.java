@@ -12,11 +12,11 @@ package net.edudb.executors;
 import net.edudb.Request;
 import net.edudb.Response;
 import net.edudb.ResponseStatus;
-import net.edudb.authentication.Authentication;
-import net.edudb.authentication.JwtUtil;
-import net.edudb.authentication.UserRole;
+import net.edudb.engine.DatabaseEngine;
 import net.edudb.engine.Utility;
-import net.edudb.exceptions.UserNotFoundException;
+import net.edudb.engine.authentication.JwtUtil;
+import net.edudb.engine.authentication.UserRole;
+import net.edudb.exception.UserNotFoundException;
 
 import java.util.regex.Matcher;
 
@@ -35,23 +35,23 @@ public class DropUserExecutor implements ConsoleExecutorChain {
     public Response execute(Request request) {
         String command = request.getCommand();
         Matcher matcher = Utility.getMatcher(command, REGEX);
-        if (matcher.matches()) {
-
-            UserRole requesterRole = JwtUtil.getUserRole(request.getAuthToken());
-            if (requesterRole != UserRole.ADMIN) {
-                return new Response("Only admins can drop users", ResponseStatus.UNAUTHORIZED);
-            }
-
-            String username = matcher.group(1).toLowerCase();
-            try {
-                Authentication.removeUser(username);
-            } catch (UserNotFoundException e) {
-                System.err.println(e.getMessage());
-                return new Response(e.getMessage());
-            }
-
-            return new Response(String.format("User %s dropped successfully", username), ResponseStatus.OK);
+        if (!matcher.matches()) {
+            return nextElement.execute(request);
         }
-        return nextElement.execute(request);
+        UserRole requesterRole = JwtUtil.getUserRole(request.getAuthToken());
+        if (requesterRole != UserRole.ADMIN) {
+            return new Response("Only admins can drop users", ResponseStatus.UNAUTHORIZED);
+        }
+
+        String username = matcher.group(1).toLowerCase();
+
+        try {
+            DatabaseEngine.getInstance().dropUser(username);
+            return new Response(String.format("User %s dropped successfully", username), ResponseStatus.OK);
+        } catch (UserNotFoundException e) {
+            System.err.println(e.getMessage());
+            return new Response(e.getMessage(), ResponseStatus.ERROR);
+        }
     }
+
 }
