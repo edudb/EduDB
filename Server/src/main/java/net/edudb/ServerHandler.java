@@ -13,14 +13,13 @@ package net.edudb;
 import net.edudb.engine.Config;
 import net.edudb.engine.authentication.JwtUtil;
 import net.edudb.executors.*;
-import net.edudb.statistics.Schema;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.*;
 
 public class ServerHandler implements RequestHandler {
-    private final int MAX_THREADS_PER_USER = 1;
+    private static final int MAX_THREADS_PER_USER = 1;
     private Map<String, ExecutorService> usersThreadPools; //FIXME: handle the case when a user is deleted or the client is closed
     private ConsoleExecutorChain chain;
 
@@ -58,9 +57,7 @@ public class ServerHandler implements RequestHandler {
 
         try {
             return handleThread(request);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         }
     }
@@ -77,7 +74,6 @@ public class ServerHandler implements RequestHandler {
             Config.setCurrentWorkspace(username);
             if (databaseName != null) {
                 Config.setCurrentDatabaseName(databaseName);
-                Schema.getInstance(); //FIXME: this is a hack to load the schema and cause null pointer exception
             }
             return chain.execute(request);
         };
