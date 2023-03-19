@@ -141,7 +141,7 @@ public class Schema {
         validateWorkspaceExists(workspaceName);
         this.workspaces.remove(workspaceName);
     }
-    
+
     public boolean checkTableExists(String tableName) {
         return getTables().contains(tableName);
     }
