@@ -12,12 +12,12 @@ package net.edudb.executors;
 import net.edudb.Request;
 import net.edudb.Response;
 import net.edudb.ResponseStatus;
-import net.edudb.authentication.Authentication;
-import net.edudb.authentication.JwtUtil;
-import net.edudb.authentication.UserRole;
+import net.edudb.engine.DatabaseEngine;
 import net.edudb.engine.Utility;
-import net.edudb.exceptions.InvalidRoleException;
-import net.edudb.exceptions.UserAlreadyExistException;
+import net.edudb.engine.authentication.JwtUtil;
+import net.edudb.engine.authentication.UserRole;
+import net.edudb.exception.InvalidRoleException;
+import net.edudb.exception.UserAlreadyExistException;
 
 import java.util.regex.Matcher;
 
@@ -35,33 +35,33 @@ public class CreateUserExecutor implements ConsoleExecutorChain {
     public Response execute(Request request) {
         String command = request.getCommand();
         Matcher matcher = Utility.getMatcher(command, REGEX);
-        if (matcher.matches()) {
 
-            UserRole requesterRole = JwtUtil.getUserRole(request.getAuthToken());
-            if (requesterRole != UserRole.ADMIN) {
-                return new Response("Only admins can create users", ResponseStatus.UNAUTHORIZED);
-            }
-
-            String username = matcher.group(1).toLowerCase();
-            String password = matcher.group(2).toLowerCase();
-            UserRole role;
-
-            try {
-                role = UserRole.fromString(matcher.group(3));
-            } catch (InvalidRoleException e) {
-                System.err.println(e.getMessage());
-                return new Response(e.getMessage());
-            }
-
-            try {
-                Authentication.createUser(username, password, role);
-            } catch (UserAlreadyExistException e) {
-                System.err.println(e.getMessage());
-                return new Response(e.getMessage());
-            }
-
-            return new Response(String.format("User %s created successfully", username), ResponseStatus.OK);
+        if (!matcher.matches()) {
+            return nextElement.execute(request);
         }
-        return nextElement.execute(request);
+
+        UserRole requesterRole = JwtUtil.getUserRole(request.getAuthToken());
+        if (requesterRole != UserRole.ADMIN) {
+            return new Response("Only admins can create users", ResponseStatus.UNAUTHORIZED);
+        }
+
+        String username = matcher.group(1).toLowerCase();
+        String password = matcher.group(2).toLowerCase();
+        UserRole role;
+
+        try {
+            role = UserRole.fromString(matcher.group(3));
+        } catch (InvalidRoleException e) {
+            System.err.println(e.getMessage());
+            return new Response(e.getMessage(), ResponseStatus.ERROR);
+        }
+
+        try {
+            DatabaseEngine.getInstance().createUser(username, password, role);
+            return new Response(String.format("User %s created successfully", username), ResponseStatus.OK);
+        } catch (UserAlreadyExistException e) {
+            return new Response(e.getMessage(), ResponseStatus.ERROR);
+        }
+
     }
 }
