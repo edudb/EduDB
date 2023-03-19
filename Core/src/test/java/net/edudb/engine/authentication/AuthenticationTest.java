@@ -9,8 +9,8 @@
 
 package net.edudb.engine.authentication;
 
+import net.edudb.TestUtils;
 import net.edudb.engine.Config;
-import net.edudb.engine.TestUtils;
 import net.edudb.exception.AuthenticationFailedException;
 import net.edudb.exception.UserAlreadyExistException;
 import net.edudb.exception.UserNotFoundException;
