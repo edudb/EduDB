@@ -16,7 +16,6 @@ import net.edudb.ebtree.EBNode;
 import net.edudb.ebtree.EBTree;
 import net.edudb.master.MasterWriter;
 import net.edudb.query.QueryTree;
-import net.edudb.server.ServerWriter;
 import net.edudb.statistics.Schema;
 import ra.Term;
 
@@ -79,7 +78,7 @@ public class Translator {
                 nodes.add(result.getNode());
                 relationAlgebra = result.getString();
             } else {
-                ServerWriter.getInstance().write(new Response("No Match"));
+                System.err.println("No Match");
                 break;
             }
         }

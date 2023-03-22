@@ -19,7 +19,6 @@ import net.edudb.operator.CreateTableOperator;
 import net.edudb.operator.Operator;
 import net.edudb.relation.Relation;
 import net.edudb.relation.VolatileRelation;
-import net.edudb.server.ServerWriter;
 import net.edudb.statement.SQLCreateTableStatement;
 import net.edudb.structure.table.Table;
 
@@ -54,7 +53,7 @@ public class CreateTableExecutor extends PostOrderOperatorExecutor implements Op
             if (DataType.isSupported(dataTypeNames[i])) {
                 columnTypes.put(columnNames[i], dataTypeNames[i]);
             } else {
-                ServerWriter.getInstance().writeln("Type '" + dataTypeNames[i] + "' is not a supported type");
+                System.err.println("Type '" + dataTypeNames[i] + "' is not a supported type");
                 executable = false;
             }
         }

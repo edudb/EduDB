@@ -14,7 +14,6 @@ import net.edudb.operator.Operator;
 import net.edudb.operator.parameter.InsertOperatorParameter;
 import net.edudb.query.QueryNode;
 import net.edudb.query.QueryTree;
-import net.edudb.server.ServerWriter;
 import net.edudb.statement.SQLInsertStatement;
 import net.edudb.statement.SQLStatement;
 import net.edudb.statistics.Schema;
@@ -36,7 +35,7 @@ public class InsertPlan extends Plan {
         String tableName = statement.getTableName();
 
         if (!Schema.getInstance().checkTableExists(tableName)) {
-            ServerWriter.getInstance().writeln("Table '" + tableName + "' does not exist");
+            System.err.println("Table '" + tableName + "' does not exist");
             return null;
         }
 

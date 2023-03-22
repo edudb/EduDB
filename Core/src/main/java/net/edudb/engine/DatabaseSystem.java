@@ -10,7 +10,6 @@
 package net.edudb.engine;
 
 import net.edudb.buffer.BufferManager;
-import net.edudb.server.ServerWriter;
 import net.edudb.structure.table.TableManager;
 
 import java.io.File;
@@ -244,9 +243,9 @@ public class DatabaseSystem {
         /**
          * Writes exit to the client to close the connection.
          */
-        if (ServerWriter.getInstance().getContext() != null) {
-            ServerWriter.getInstance().writeln("[edudb::exit]");
-        }
+//        if (ServerWriter.getInstance().getContext() != null) {
+//            ServerWriter.getInstance().writeln("[edudb::exit]");
+//        }
         System.exit(status);
     }
 

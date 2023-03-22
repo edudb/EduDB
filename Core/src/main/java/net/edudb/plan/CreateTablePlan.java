@@ -11,7 +11,6 @@ package net.edudb.plan;
 
 import net.edudb.operator.CreateTableOperator;
 import net.edudb.query.QueryTree;
-import net.edudb.server.ServerWriter;
 import net.edudb.statement.SQLCreateTableStatement;
 import net.edudb.statement.SQLStatement;
 import net.edudb.statistics.Schema;
@@ -44,7 +43,7 @@ public class CreateTablePlan extends Plan {
             operator.setParameter(statement);
             plan = new QueryTree(operator);
         } else {
-            ServerWriter.getInstance().writeln("Table '" + tableName + "' does exist");
+            System.err.println("Table '" + tableName + "' does exist");
         }
         return plan;
     }

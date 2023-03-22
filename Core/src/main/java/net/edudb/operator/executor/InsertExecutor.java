@@ -9,7 +9,6 @@
 
 package net.edudb.operator.executor;
 
-import net.edudb.Response;
 import net.edudb.data_type.DataType;
 import net.edudb.data_type.DataTypeFactory;
 import net.edudb.exception.InvalidTypeValueException;
@@ -18,7 +17,6 @@ import net.edudb.operator.Operator;
 import net.edudb.operator.parameter.InsertOperatorParameter;
 import net.edudb.relation.Relation;
 import net.edudb.relation.VolatileRelation;
-import net.edudb.server.ServerWriter;
 import net.edudb.statement.SQLInsertStatement;
 import net.edudb.statistics.Schema;
 import net.edudb.structure.Column;
@@ -64,7 +62,7 @@ public class InsertExecutor extends PostOrderOperatorExecutor implements Operato
                     data.put(columns.get(i),
                             typeFactory.makeType(columnTypes.get(columns.get(i).getName()), values.get(i)));
                 } catch (InvalidTypeValueException e) {
-                    ServerWriter.getInstance().write(new Response(e.getMessage()));
+                    System.err.println(e.getMessage());
                     e.printStackTrace();
                 }
 

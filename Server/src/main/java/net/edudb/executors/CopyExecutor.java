@@ -15,7 +15,6 @@ import net.edudb.data_type.DataType;
 import net.edudb.data_type.DataTypeFactory;
 import net.edudb.engine.Utility;
 import net.edudb.exception.InvalidTypeValueException;
-import net.edudb.server.ServerWriter;
 import net.edudb.statistics.Schema;
 import net.edudb.structure.Column;
 import net.edudb.structure.Record;
@@ -90,7 +89,7 @@ public class CopyExecutor implements ConsoleExecutorChain {
                             try {
                                 data.put(column, typeFactory.makeType(column.getTypeName(), values[j]));
                             } catch (InvalidTypeValueException e) {
-                                ServerWriter.getInstance().write(new Response(e.getMessage()));
+                                System.err.println(e.getMessage());
                                 e.printStackTrace();
                             }
 
