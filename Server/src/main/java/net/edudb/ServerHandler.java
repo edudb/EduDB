@@ -28,7 +28,9 @@ public class ServerHandler implements RequestHandler {
         this.usersThreadPools = new HashMap<>();
 
         ConsoleExecutorChain[] executorChain = {
+                new CreateAdminExecutor(),
                 new CreateUserExecutor(),
+                new DropAdminExecutor(),
                 new DropUserExecutor(),
                 new ListDatabasesExecutor(),
                 new CreateDatabaseExecutor(),

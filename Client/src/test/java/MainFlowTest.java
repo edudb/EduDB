@@ -39,7 +39,7 @@ public class MainFlowTest {
         RPCClient rpcClient = new RPCClient("server");
         rpcClient.initializeConnection();
         client.setRpcClient(rpcClient);
-        rpcClient.handshake("admin", "admin");
+        rpcClient.handshake(null, "admin", "admin");
         handler = client.getHandler();
     }
 

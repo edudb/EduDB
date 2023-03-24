@@ -34,14 +34,6 @@ public class FileManager {
         return instance;
     }
 
-    public static ArrayList<String> readSchema() {
-        try {
-            return readFile(Config.schemaPath());
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     /**
      * Reads all lines from a file and returns them as a list of strings.
      *
@@ -49,7 +41,7 @@ public class FileManager {
      * @return a list of strings containing all lines from the file, or an empty list if an error occurs
      * @author Ahmed Nasser Gaafar
      */
-    public static ArrayList<String> readFile(String filePath) throws FileNotFoundException {
+    public ArrayList<String> readFile(String filePath) throws FileNotFoundException {
         ArrayList<String> lines = new ArrayList<>();
         try {
             lines = (ArrayList<String>) Files.readAllLines(Paths.get(filePath));
@@ -60,6 +52,15 @@ public class FileManager {
         return lines;
     }
 
+    public List<String[]> readCSV(String filePath) throws FileNotFoundException {
+        ArrayList<String> lines = readFile(filePath);
+        List<String[]> data = new ArrayList<>();
+        for (String line : lines) {
+            data.add(line.split(","));
+        }
+        return data;
+    }
+
     /**
      * Writes data to a file.
      *
@@ -68,7 +69,7 @@ public class FileManager {
      * @param append   true to append the data to the end of the file, false to overwrite the file
      * @author Ahmed Nasser Gaafar
      */
-    public static void writeFile(String filePath, String data, boolean append) {
+    public void writeFile(String filePath, String data, boolean append) {
         try {
             File file = new File(filePath);
             if (!file.exists()) {
@@ -80,6 +81,30 @@ public class FileManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+    public void writeCSV(String filePath, List<String[]> data) throws IOException {
+        StringBuilder builder = new StringBuilder();
+        for (String[] row : data) {
+            for (String cell : row) {
+                builder.append(cell).append(",");
+            }
+            builder.deleteCharAt(builder.length() - 1);
+            builder.append(System.lineSeparator());
+        }
+
+        writeFile(filePath, builder.toString(), false);
+    }
+
+    public void appendToCSV(String filePath, String[] data) {
+        StringBuilder builder = new StringBuilder();
+        for (String cell : data) {
+            builder.append(cell).append(",");
+        }
+        builder.deleteCharAt(builder.length() - 1);
+        builder.append(System.lineSeparator());
+        writeFile(filePath, builder.toString(), true);
     }
 
     /**
@@ -271,6 +296,11 @@ public class FileManager {
         directory.delete();
     }
 
+    private boolean isDirectoryExists(String path) {
+        File directory = new File(path);
+        return directory.exists();
+    }
+
     public void createFile(String path) throws FileAlreadyExistsException {
         File file = new File(path);
         if (file.exists()) {
@@ -312,7 +342,8 @@ public class FileManager {
         try {
             createDirectory(Config.workspacePath(workspaceName));
             createDirectory(Config.databasesPath(workspaceName));
-        } catch (DirectoryAlreadyExistsException e) {
+            createFile(Config.usersPath(workspaceName));
+        } catch (DirectoryAlreadyExistsException | FileAlreadyExistsException e) {
             throw new WorkspaceAlreadyExistException(String.format("workspace (%s) already exists", workspaceName), e);
         }
     }
@@ -323,6 +354,10 @@ public class FileManager {
         } catch (DirectoryNotFoundException e) {
             throw new WorkspaceNotFoundException(String.format("workspace (%s) is not found", workspaceName), e);
         }
+    }
+
+    public boolean isWorkspaceExists(String workspaceName) {
+        return isDirectoryExists(Config.workspacePath(workspaceName));
     }
 
     public void createDatabase(String workspaceName, String databaseName) throws DatabaseAlreadyExistException {

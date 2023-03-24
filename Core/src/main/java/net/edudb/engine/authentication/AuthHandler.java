@@ -16,9 +16,9 @@ import net.edudb.exception.AuthenticationFailedException;
 
 public class AuthHandler implements HandshakeHandler {
     @Override
-    public Response authenticate(String username, String password) {
+    public Response authenticate(String workspaceName, String username, String password) {
         try {
-            String token = Authentication.login(username, password);
+            String token = Authentication.login(workspaceName, username, password);
             Response response = new Response("Login successful", ResponseStatus.HANDSHAKE_OK);
             response.setAuthToken(token);
             return response;

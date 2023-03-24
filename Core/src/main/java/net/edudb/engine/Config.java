@@ -60,8 +60,12 @@ public class Config {
         return System.getProperty("user.dir") + File.separator + "data" + File.separator;
     }
 
-    public static String usersPath() {
-        return absolutePath() + "users.csv";
+    public static String adminsPath() {
+        return absolutePath() + "admins.csv";
+    }
+
+    public static String usersPath(String workspaceName) {
+        return workspacePath(workspaceName) + "users.csv";
     }
 
     // ======================================== WORKSPACES ========================================

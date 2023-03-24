@@ -18,6 +18,8 @@ import net.edudb.engine.authentication.Authentication;
 import net.edudb.engine.authentication.UserRole;
 import net.edudb.exception.AuthenticationFailedException;
 import net.edudb.exception.UserAlreadyExistException;
+import net.edudb.exception.WorkspaceAlreadyExistException;
+import net.edudb.exception.WorkspaceNotFoundException;
 import net.edudb.statistics.Schema;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -34,6 +36,7 @@ public class MainCommandsTest {
     Server server = new Server();
     ServerHandler serverHandler = server.getServerHandler();
 
+    private String WORKSPACE_NAME = "test";
     private static final String USERNAME = "test";
     private static final String PASSWORD = "test";
     private static String token;
@@ -46,12 +49,11 @@ public class MainCommandsTest {
     private static final String[] COLUMN_NEW_VALUES = {"new"};
 
     @BeforeEach
-    public void setup() throws UserAlreadyExistException, AuthenticationFailedException, IOException {
+    public void setup() throws UserAlreadyExistException, AuthenticationFailedException, IOException, WorkspaceNotFoundException, WorkspaceAlreadyExistException {
         TestUtils.deleteDirectory(new File(Config.absolutePath()));
-        new File(Config.workspacesPath()).mkdirs();
-        new File(Config.usersPath()).createNewFile();
-        DatabaseEngine.getInstance().createUser(USERNAME, PASSWORD, UserRole.DEFAULT_ROLE);
-        token = Authentication.login(USERNAME, PASSWORD);
+        DatabaseEngine.getInstance().createWorkspace(WORKSPACE_NAME);
+        DatabaseEngine.getInstance().createUser(USERNAME, PASSWORD, UserRole.USER, WORKSPACE_NAME);
+        token = Authentication.login(WORKSPACE_NAME, USERNAME, PASSWORD);
 
     }
 
@@ -103,7 +105,7 @@ public class MainCommandsTest {
         // Create table
         sendCommand(TestUtils.createTable(TABLE_NAME, COLUMN_NAMES, COLUMN_TYPES));
 
-        List<String> lines = FileManager.readFile(Config.schemaPath(USERNAME, DATABASE_NAME));
+        List<String> lines = FileManager.getInstance().readFile(Config.schemaPath(USERNAME, DATABASE_NAME));
 
         Assertions.assertTrue(new File(Config.tablePath(USERNAME, DATABASE_NAME, TABLE_NAME)).exists());
         Assertions.assertEquals(1, lines.size());
@@ -120,7 +122,7 @@ public class MainCommandsTest {
         // Drop table
         sendCommand(TestUtils.dropTable(TABLE_NAME));
 
-        ArrayList<String> lines = FileManager.readFile(Config.schemaPath(USERNAME, DATABASE_NAME));
+        ArrayList<String> lines = FileManager.getInstance().readFile(Config.schemaPath(USERNAME, DATABASE_NAME));
 
         Assertions.assertFalse(new File(Config.tablePath(USERNAME, DATABASE_NAME, TABLE_NAME)).exists());
         Assertions.assertEquals(0, lines.size());

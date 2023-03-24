@@ -22,7 +22,7 @@ public class Request implements Serializable {
     //TODO: this class should be refactored to subclasses
 
     private String command;
-    String workspaceName;
+    private String workspaceName;
     private String databaseName;
     private RequestType type;
     private String username;
@@ -45,8 +45,9 @@ public class Request implements Serializable {
         this.databaseName = databaseName;
     }
 
-    public Request(String username, String password, String connectionQueueName) {
+    public Request(String workspaceName, String username, String password, String connectionQueueName) {
         this.type = RequestType.HANDSHAKE;
+        this.workspaceName = workspaceName;
         this.username = username;
         this.password = password;
         this.connectionQueueName = connectionQueueName;

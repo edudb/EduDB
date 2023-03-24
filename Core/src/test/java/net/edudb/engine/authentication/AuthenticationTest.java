@@ -14,6 +14,7 @@ import net.edudb.engine.Config;
 import net.edudb.exception.AuthenticationFailedException;
 import net.edudb.exception.UserAlreadyExistException;
 import net.edudb.exception.UserNotFoundException;
+import net.edudb.exception.WorkspaceNotFoundException;
 import org.junit.jupiter.api.*;
 
 import java.io.File;
@@ -21,7 +22,8 @@ import java.io.IOException;
 import java.util.List;
 
 public class AuthenticationTest {
-    private static final String USER_NAME = "test_username";
+    private static final String WORKSPACE = "test_workspace";
+    private static final String USERNAME = "test_username";
     private static final String PASSWORD = "password";
     private static final String WRONG_PASSWORD = "wrong_password";
     private static final UserRole ROLE = UserRole.USER;
@@ -29,8 +31,9 @@ public class AuthenticationTest {
     @BeforeEach
     public void setup() throws IOException {
         TestUtils.deleteDirectory(Config.absolutePath());
-        new File(Config.workspacesPath()).mkdirs();
-        new File(Config.usersPath()).createNewFile();
+        new File(Config.workspacePath(WORKSPACE)).mkdirs();
+        new File(Config.usersPath(WORKSPACE)).createNewFile();
+        new File(Config.adminsPath()).createNewFile();
     }
 
     @AfterEach
@@ -41,50 +44,55 @@ public class AuthenticationTest {
     @AfterAll
     public static void cleanUp() {
         new File(Config.workspacesPath()).delete();
-        new File(Config.usersPath()).delete();
+        new File(Config.adminsPath()).delete();
         new File(Config.absolutePath()).delete();
     }
 
     @Test
-    public void createUser() throws UserAlreadyExistException {
-        Authentication.createUser(USER_NAME, PASSWORD, ROLE);
-        List<String[]> users = UserManager.getInstance().readAllUsers();
-        Assertions.assertEquals(1, users.size());
-        Assertions.assertEquals(USER_NAME, users.get(0)[0]);
-        Assertions.assertEquals(ROLE.toString(), users.get(0)[2]);
-        Assertions.assertTrue(PasswordUtil.verifyPassword(PASSWORD, users.get(0)[1]));
+    public void createUser() throws UserAlreadyExistException, WorkspaceNotFoundException {
+        Authentication.createUser(USERNAME, PASSWORD, ROLE, WORKSPACE);
+        List<String[]> users = UserManager.getInstance().readAllUsers(WORKSPACE);
+        for (String[] user : users) {
+            if (user[0].equals(USERNAME)) {
+                Assertions.assertEquals(USERNAME, user[0]);
+                Assertions.assertTrue(PasswordUtil.verifyPassword(PASSWORD, user[1]));
+                Assertions.assertEquals(ROLE.toString(), user[2]);
+                return;
+            }
+        }
+        Assertions.fail("User not found");
     }
 
     @Test
-    public void createDuplicatedUser() throws UserAlreadyExistException {
-        Authentication.createUser(USER_NAME, PASSWORD, ROLE);
-        Assertions.assertThrows(UserAlreadyExistException.class, () -> Authentication.createUser(USER_NAME, PASSWORD, ROLE));
+    public void createDuplicatedUser() throws UserAlreadyExistException, WorkspaceNotFoundException {
+        Authentication.createUser(USERNAME, PASSWORD, ROLE, WORKSPACE);
+        Assertions.assertThrows(UserAlreadyExistException.class, () -> Authentication.createUser(USERNAME, PASSWORD, ROLE, WORKSPACE));
     }
 
     @Test
-    void loginWithCorrectPassword() throws AuthenticationFailedException, UserAlreadyExistException {
-        Authentication.createUser(USER_NAME, PASSWORD, ROLE);
-        String token = Authentication.login(USER_NAME, PASSWORD);
+    void loginWithCorrectPassword() throws AuthenticationFailedException, UserAlreadyExistException, WorkspaceNotFoundException {
+        Authentication.createUser(USERNAME, PASSWORD, ROLE, WORKSPACE);
+        String token = Authentication.login(WORKSPACE, USERNAME, PASSWORD);
         Assertions.assertNotNull(token);
     }
 
     @Test
-    void loginWithWrongPassword() throws UserAlreadyExistException {
-        Authentication.createUser(USER_NAME, PASSWORD, ROLE);
-        Assertions.assertThrows(AuthenticationFailedException.class, () -> Authentication.login(USER_NAME, WRONG_PASSWORD));
+    void loginWithWrongPassword() throws UserAlreadyExistException, WorkspaceNotFoundException {
+        Authentication.createUser(USERNAME, PASSWORD, ROLE, WORKSPACE);
+        Assertions.assertThrows(AuthenticationFailedException.class, () -> Authentication.login(null, USERNAME, WRONG_PASSWORD));
 
     }
 
     @Test
-    void removeExistingUser() throws UserNotFoundException, UserAlreadyExistException {
-        Authentication.createUser(USER_NAME, PASSWORD, ROLE);
-        Authentication.removeUser(USER_NAME);
-        List<String[]> users = UserManager.getInstance().readAllUsers();
+    void removeExistingUser() throws UserNotFoundException, UserAlreadyExistException, WorkspaceNotFoundException {
+        Authentication.createUser(USERNAME, PASSWORD, ROLE, WORKSPACE);
+        Authentication.removeUser(WORKSPACE, USERNAME);
+        List<String[]> users = UserManager.getInstance().readAllUsers(WORKSPACE);
         Assertions.assertEquals(0, users.size());
     }
 
     @Test
     void removeNonExistingUser() {
-        Assertions.assertThrows(UserNotFoundException.class, () -> Authentication.removeUser(USER_NAME));
+        Assertions.assertThrows(UserNotFoundException.class, () -> Authentication.removeUser(WORKSPACE, USERNAME));
     }
 }

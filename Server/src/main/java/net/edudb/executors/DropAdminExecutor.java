@@ -17,14 +17,12 @@ import net.edudb.engine.Utility;
 import net.edudb.engine.authentication.JwtUtil;
 import net.edudb.engine.authentication.UserRole;
 import net.edudb.exception.UserNotFoundException;
-import net.edudb.exception.WorkspaceNotFoundException;
 
 import java.util.regex.Matcher;
 
-public class DropUserExecutor implements ConsoleExecutorChain {
+public class DropAdminExecutor implements ConsoleExecutorChain {
     private ConsoleExecutorChain nextElement;
-    private static final String REGEX = "\\A(?i)drop\\s+user\\s+(\\w+)" +
-            "\\s*(?:from\\s+workspace\\s+=\\s+\"([^\"]*)\")?\\s*;?\\z";
+    private static final String REGEX = "\\A(?i)drop\\s+admin\\s+(\\w+)\\s*;?\\z";
 
 
     @Override
@@ -37,39 +35,21 @@ public class DropUserExecutor implements ConsoleExecutorChain {
     public Response execute(Request request) {
         String command = request.getCommand();
         Matcher matcher = Utility.getMatcher(command, REGEX);
-
         if (!matcher.matches()) {
             return nextElement.execute(request);
         }
-
-
-        String username = matcher.group(1).toLowerCase();
-        String workspaceName = matcher.group(2);
-
         UserRole requesterRole = JwtUtil.getUserRole(request.getAuthToken());
-        String requesterWorkspace = JwtUtil.getWorkspaceName(request.getAuthToken());
-
-        if (requesterRole == UserRole.ADMIN) {
-            if (workspaceName == null) {
-                return new Response("As admin you must specify the workspace", ResponseStatus.ERROR);
-            }
-        } else if (requesterRole == UserRole.WORKSPACE_ADMIN) {
-            if (workspaceName == null) {
-                workspaceName = requesterWorkspace;
-            } else if (!workspaceName.equals(requesterWorkspace)) {
-                return new Response("Only admins can remove users from other workspaces", ResponseStatus.UNAUTHORIZED);
-            }
-        } else {
-            return new Response("Only admins and workspace_admins can remove users", ResponseStatus.UNAUTHORIZED);
+        if (requesterRole != UserRole.ADMIN) {
+            return new Response("Only admins can drop admins", ResponseStatus.UNAUTHORIZED);
         }
 
+        String username = matcher.group(1).toLowerCase();
         try {
-            DatabaseEngine.getInstance().dropUser(workspaceName, username);
-            return new Response(String.format("User %s dropped successfully", username), ResponseStatus.OK);
-        } catch (UserNotFoundException | WorkspaceNotFoundException e) {
+            DatabaseEngine.getInstance().dropAdmin(username);
+            return new Response(String.format("Admin %s dropped successfully", username), ResponseStatus.OK);
+        } catch (UserNotFoundException e) {
             System.err.println(e.getMessage());
             return new Response(e.getMessage(), ResponseStatus.ERROR);
         }
     }
-
 }

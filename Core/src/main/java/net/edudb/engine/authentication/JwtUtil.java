@@ -21,15 +21,17 @@ public class JwtUtil {
     /**
      * Generates a JWT token.
      *
-     * @param username The username of the user.
-     * @param userRole The role of the user.
+     * @param username      The username of the user.
+     * @param userRole      The role of the user.
+     * @param workspaceName The name of the workspace.
      * @return A JWT token.
      * @auther Ahmed Nasser Gaafar
      */
-    public static String generateToken(String username, UserRole userRole) {
+    public static String generateToken(String username, UserRole userRole, String workspaceName) {
         return Jwts.builder()
                 .setSubject(username)
                 .claim("role", userRole)
+                .claim("workspace", workspaceName)
                 .setIssuedAt(new Date())
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
@@ -87,5 +89,20 @@ public class JwtUtil {
             e.printStackTrace();
             return null;
         }
+    }
+
+    /**
+     * Parses a JWT token and returns the name of the workspace.
+     *
+     * @param token The token to be parsed.
+     * @return The name of the workspace.
+     * @auther Ahmed Nasser Gaafar
+     */
+    public static String getWorkspaceName(String token) {
+        return (String) Jwts.parser()
+                .setSigningKey(SECRET_KEY)
+                .parseClaimsJws(token)
+                .getBody()
+                .get("workspace");
     }
 }

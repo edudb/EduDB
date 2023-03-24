@@ -36,29 +36,39 @@ public class DatabaseEngine {
 
     public void start() {
         fileManager = FileManager.getInstance();
-        fileManager.createDirectoryIfNotExists(Config.databasesPath("admin")); //FIXME: refactor this
+        fileManager.createDirectoryIfNotExists(Config.workspacesPath()); //FIXME: refactor this
         schema = Schema.getInstance();
     }
 
-    public void createUser(String username, String password, UserRole role) throws UserAlreadyExistException {
+    public void createUser(String username, String password, UserRole role, String workspace) throws UserAlreadyExistException, WorkspaceNotFoundException {
+        Authentication.createUser(username, password, role, workspace);
 
-        Authentication.createUser(username, password, role);
-        try {
-            fileManager.createWorkspace(username);
-            schema.addWorkspace(username);
-        } catch (WorkspaceAlreadyExistException e) {
-            throw new RuntimeException(e);
-        }
     }
 
-    public void dropUser(String username) throws UserNotFoundException {
-        Authentication.removeUser(username);
-        try {
-            fileManager.deleteWorkspace(username);
-            schema.removeWorkspace(username);
-        } catch (WorkspaceNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+    public void dropUser(String workspace, String username) throws UserNotFoundException, WorkspaceNotFoundException {
+        Authentication.removeUser(workspace, username);
+    }
+
+    public void createAdmin(String username, String password) throws UserAlreadyExistException {
+        Authentication.createAdmin(username, password);
+    }
+
+    public void dropAdmin(String username) throws UserNotFoundException {
+        Authentication.removeAdmin(username);
+    }
+
+    public void createWorkspace(String workspaceName) throws WorkspaceAlreadyExistException {
+        fileManager.createWorkspace(workspaceName);
+        schema.addWorkspace(workspaceName);
+    }
+
+    public void dropWorkspace(String workspaceName) throws WorkspaceNotFoundException {
+        fileManager.deleteWorkspace(workspaceName);
+        schema.removeWorkspace(workspaceName);
+    }
+
+    public boolean isWorkspaceExist(String workspaceName) {
+        return schema.containsWorkspace(workspaceName);
     }
 
 

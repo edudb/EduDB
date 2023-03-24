@@ -9,37 +9,33 @@
 
 package net.edudb.engine.authentication;
 
-import com.opencsv.CSVReader;
-import com.opencsv.CSVWriter;
-import com.opencsv.exceptions.CsvException;
 import net.edudb.engine.Config;
+import net.edudb.engine.FileManager;
+import net.edudb.engine.Utility;
 import net.edudb.exception.InvalidRoleException;
 import net.edudb.exception.UserAlreadyExistException;
 import net.edudb.exception.UserNotFoundException;
+import net.edudb.exception.WorkspaceNotFoundException;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 import java.util.List;
 
 public class UserManager {
     private static final UserManager instance = new UserManager();
-    private static String USERS_FILE = Config.usersPath();
+    private static FileManager fileManager = FileManager.getInstance();
     private static String DEFAULT_ADMIN_USERNAME = System.getProperty("DEFAULT_ADMIN_USERNAME");
     private static String DEFAULT_ADMIN_PASSWORD = PasswordUtil.hashPassword(System.getProperty("DEFAULT_ADMIN_PASSWORD"));
-    private static String DEFAULT_ADMIN_ROLE = "admin";
 
     private UserManager() {
 
         //TODO: fix this, this is a temporary fix
-        USERS_FILE = Config.usersPath();
+        fileManager = FileManager.getInstance();
         DEFAULT_ADMIN_USERNAME = "admin";
         DEFAULT_ADMIN_PASSWORD = PasswordUtil.hashPassword("admin");
-        DEFAULT_ADMIN_ROLE = "admin";
 
-
-        createUsersFile();
+        createAdminsFile();
         createDefaultAdminUser();
     }
 
@@ -50,15 +46,12 @@ public class UserManager {
     /**
      * Creates the users file if it doesn't exist.
      */
-    private void createUsersFile() {
-        File users = new File(USERS_FILE);
-        users.getParentFile().mkdirs();
-        if (!users.exists()) {
-            try {
-                users.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    private void createAdminsFile() {
+        try {
+            String adminsFilePath = Config.adminsPath();
+            fileManager.createFile(adminsFilePath);
+        } catch (FileAlreadyExistsException e) {
+            // Do nothing
         }
     }
 
@@ -70,52 +63,70 @@ public class UserManager {
      */
     private void createDefaultAdminUser() {
         try {
-            writeUser(DEFAULT_ADMIN_USERNAME, DEFAULT_ADMIN_PASSWORD, DEFAULT_ADMIN_ROLE);
+            createAdmin(DEFAULT_ADMIN_USERNAME, DEFAULT_ADMIN_PASSWORD);
         } catch (UserAlreadyExistException e) {
             // Do nothing
-        } catch (InvalidRoleException e) {
-            throw new RuntimeException(e);
         }
     }
 
-
     /**
-     * Writes a user to disk. (Appends the user to the end of the users file)
+     * creates a new user in the specified workspace
      *
-     * @param username       the username of the user to write
-     * @param hashedPassword the hashed password of the user to write
-     * @param role           the role of the user to write
-     *                       (must be one of the values in {@link UserRole})
-     * @throws UserAlreadyExistException if a user with the same username already exists
-     * @throws InvalidRoleException      if the role is invalid
+     * @param username       the username of the user to create
+     * @param hashedPassword the hashed password of the user
+     * @param role           the role of the user to check (must be one of the values in {@link UserRole})
+     * @param workspaceName  the name of the workspace to create the user in
+     * @throws UserAlreadyExistException  if a user with the same username already exists
+     * @throws InvalidRoleException       if the role is invalid
+     * @throws WorkspaceNotFoundException if the workspace is not found
      * @author Ahmed Nasser Gaafar
      */
-    public void writeUser(String username, String hashedPassword, String role) throws UserAlreadyExistException, InvalidRoleException {
-
-        if (isUserExists(username)) {
-            throw new UserAlreadyExistException(String.format("User %s already exists", username));
+    public void createUser(String username, String hashedPassword, String role, String workspaceName) throws UserAlreadyExistException, InvalidRoleException, WorkspaceNotFoundException {
+        if (isUserExists(workspaceName, username)) {
+            throw new UserAlreadyExistException(String.format("User %s already exists in workspace %s", username, workspaceName));
         }
 
-        UserRole.fromString(role); // throws InvalidRoleException if role is invalid
+        UserRole userRole = UserRole.fromString(role); // throws InvalidRoleException if role is invalid
 
-        try (CSVWriter writer = new CSVWriter(new FileWriter(USERS_FILE, true))) {
-            String[] data = {username, hashedPassword, role};
-            writer.writeNext(data);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        if (userRole == UserRole.ADMIN) {
+            throw new InvalidRoleException("Admins cannot be assigned to a workspace");
         }
+
+        if (!fileManager.isWorkspaceExists(workspaceName)) {
+            throw new WorkspaceNotFoundException(String.format("Workspace %s not found", workspaceName));
+        }
+
+        String usersFilePath = Config.usersPath(workspaceName);
+        String[] data = {username, hashedPassword, role};
+        fileManager.appendToCSV(usersFilePath, data);
     }
 
     /**
-     * Reads a user from disk.
-     *
-     * @param username the username of the user to read
+     * @param username       the username of the admin to create
+     * @param hashedPassword the hashed password of the admin
+     * @throws UserAlreadyExistException if an admin with the same username already exists
+     * @author Ahmed Nasser Gaafar
+     */
+    public void createAdmin(String username, String hashedPassword) throws UserAlreadyExistException {
+        if (isAdminExists(username)) {
+            throw new UserAlreadyExistException(String.format("Admin %s already exists", username));
+        }
+
+        String adminsFilePath = Config.adminsPath();
+        String[] data = {username, hashedPassword};
+        fileManager.appendToCSV(adminsFilePath, data);
+    }
+
+    /**
+     * @param workspace the name of the workspace to read the users from
+     * @param username  the username of the user to read
      * @return the user as an array of strings (username, hashed password, role)
-     * @throws UserNotFoundException if the user does not exist
+     * @throws WorkspaceNotFoundException if the workspace is not found
+     * @throws UserNotFoundException      if the user does not exist
      * @author Ahmed Nasser Gaafar
      */
-    public String[] readUser(String username) throws UserNotFoundException {
-        List<String[]> users = readAllUsers();
+    public String[] readUser(String workspace, String username) throws WorkspaceNotFoundException, UserNotFoundException {
+        List<String[]> users = readAllUsers(workspace);
         for (String[] user : users) {
             if (user[0].equals(username)) {
                 return user;
@@ -125,62 +136,108 @@ public class UserManager {
     }
 
     /**
-     * Reads all users from disk.
-     *
-     * @return a list of users, each user is represented as an array of strings (username, hashed password, role)
+     * @param username the username of the admin to read
+     * @return the admin as an array of strings (username, hashed password)
+     * @throws UserNotFoundException if the admin does not exist
      * @author Ahmed Nasser Gaafar
      */
-    List<String[]> readAllUsers() {
-        try (CSVReader reader = new CSVReader(new FileReader(USERS_FILE))) {
-            return reader.readAll();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (CsvException e) {
-            throw new RuntimeException(e);
+    public String[] readAdmin(String username) throws UserNotFoundException {
+        List<String[]> admins = readAllAdmins();
+        for (String[] admin : admins) {
+            if (admin[0].equals(username)) {
+                return admin;
+            }
+        }
+        throw new UserNotFoundException(String.format("Admin %s not found", username));
+    }
+
+    /**
+     * @param workspace the name of the workspace to read the users from
+     * @return a list of users, each user is represented as an array of strings (username, hashed password, role)
+     * @throws WorkspaceNotFoundException if the workspace is not found
+     * @author Ahmed Nasser Gaafar
+     */
+    public List<String[]> readAllUsers(String workspace) throws WorkspaceNotFoundException {
+        String usersFilePath = Config.usersPath(workspace);
+
+        try {
+            return fileManager.readCSV(usersFilePath);
+        } catch (FileNotFoundException e) {
+            throw new WorkspaceNotFoundException(String.format("Workspace %s not found", workspace));
         }
     }
 
     /**
-     * Checks if a user exists in the users file.
-     *
-     * @param username the username to check
-     * @return true if the user exists, false otherwise
+     * @return a list of admins, each admin is represented as an array of strings (username, hashed password)
      * @author Ahmed Nasser Gaafar
      */
-    public boolean isUserExists(String username) {
+    public List<String[]> readAllAdmins() {
+        String usersFilePath = Config.adminsPath();
         try {
-            readUser(username);
+            return fileManager.readCSV(usersFilePath);
+        } catch (FileNotFoundException e) {
+            Utility.handleDatabaseFileStructureCorruption(e);
+        }
+        return null; // unreachable
+    }
+
+
+    public boolean isUserExists(String workspace, String username) throws WorkspaceNotFoundException {
+        try {
+            readUser(workspace, username);
             return true;
         } catch (UserNotFoundException e) {
             return false;
         }
     }
 
-    /**
-     * Removes a user from the users file.
-     *
-     * @param username the username of the user to remove
-     * @throws UserNotFoundException if the user does not exist
-     * @author Ahmed Nasser Gaafar
-     */
-    public void removeUser(String username) throws UserNotFoundException {
-        List<String[]> users = readAllUsers();
+    public boolean isAdminExists(String username) {
+        try {
+            readAdmin(username);
+            return true;
+        } catch (UserNotFoundException e) {
+            return false;
+        }
+    }
+
+    public void removeUser(String workspace, String username) throws WorkspaceNotFoundException, UserNotFoundException {
+        List<String[]> users = readAllUsers(workspace);
         List<String[]> filteredUsers = users.stream().filter(user -> !user[0].equals(username)).toList();
         if (filteredUsers.size() == users.size()) {
             throw new UserNotFoundException(String.format("User %s not found", username));
         }
-        overwriteUsers(filteredUsers);
+        overwriteUsers(workspace, filteredUsers);
+    }
+
+    public void removeAdmin(String username) throws UserNotFoundException {
+        List<String[]> admins = readAllAdmins();
+        List<String[]> filteredAdmins = admins.stream().filter(admin -> !admin[0].equals(username)).toList();
+        if (filteredAdmins.size() == admins.size()) {
+            throw new UserNotFoundException(String.format("Admin %s not found", username));
+        }
+        overwriteAdmins(filteredAdmins);
     }
 
     /**
      * Writes a list of users to disk. (Overwrites the existing users file)
      *
-     * @param users a list of users, each user is represented as an array of strings (username, hashed password, role)
+     * @param workspace the workspace to write the users to
+     * @param users     a list of users, each user is represented as an array of strings (username, hashed password, role)
      * @author Ahmed Nasser Gaafar
      */
-    private void overwriteUsers(List<String[]> users) {
-        try (CSVWriter writer = new CSVWriter(new FileWriter(USERS_FILE))) {
-            writer.writeAll(users);
+    private void overwriteUsers(String workspace, List<String[]> users) {
+        String usersFilePath = Config.usersPath(workspace);
+        try {
+            fileManager.writeCSV(usersFilePath, users);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void overwriteAdmins(List<String[]> admins) {
+        String adminsFilePath = Config.adminsPath();
+        try {
+            fileManager.writeCSV(adminsFilePath, admins);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

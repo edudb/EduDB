@@ -18,12 +18,15 @@ import net.edudb.engine.authentication.JwtUtil;
 import net.edudb.engine.authentication.UserRole;
 import net.edudb.exception.InvalidRoleException;
 import net.edudb.exception.UserAlreadyExistException;
+import net.edudb.exception.WorkspaceAlreadyExistException;
+import net.edudb.exception.WorkspaceNotFoundException;
 
 import java.util.regex.Matcher;
 
 public class CreateUserExecutor implements ConsoleExecutorChain {
     private ConsoleExecutorChain nextElement;
-    private static final String REGEX = "\\A(?i)create\\s+user\\s+(\\w+)\\s+with\\s+password\\s*=\\s*\"([^\"]*)\"\\s*(?:as\\s+(\\w+))?\\s*;?\\z";
+    private static final String REGEX = "\\A(?i)create\\s+user\\s+(\\w+)\\s+with\\s+password\\s*=\\s*\"([^\"]*)\"" +
+            "\\s*(?:as\\s+(\\w+))?\\s*(?:in\\s+workspace\\s*=\\s*\"([^\"]*)\")?\\s*;?\\z";
 
     @Override
     public void setNextElementInChain(ConsoleExecutorChain chainElement) {
@@ -40,13 +43,9 @@ public class CreateUserExecutor implements ConsoleExecutorChain {
             return nextElement.execute(request);
         }
 
-        UserRole requesterRole = JwtUtil.getUserRole(request.getAuthToken());
-        if (requesterRole != UserRole.ADMIN) {
-            return new Response("Only admins can create users", ResponseStatus.UNAUTHORIZED);
-        }
-
         String username = matcher.group(1).toLowerCase();
         String password = matcher.group(2).toLowerCase();
+        String workspaceName = matcher.group(4);
         UserRole role;
 
         try {
@@ -56,10 +55,42 @@ public class CreateUserExecutor implements ConsoleExecutorChain {
             return new Response(e.getMessage(), ResponseStatus.ERROR);
         }
 
+        if (role == UserRole.ADMIN) {
+            return new Response("Admins can not be assigned to workspaces, try workspace_admin", ResponseStatus.UNAUTHORIZED);
+        }
+
+        UserRole requesterRole = JwtUtil.getUserRole(request.getAuthToken());
+        String requesterWorkspace = JwtUtil.getWorkspaceName(request.getAuthToken());
+
+        if (requesterRole == UserRole.ADMIN) {
+            if (workspaceName == null) {
+                return new Response("As admin you must specify the workspace", ResponseStatus.ERROR);
+            }
+        } else if (requesterRole == UserRole.WORKSPACE_ADMIN) {
+            if (workspaceName == null) {
+                workspaceName = requesterWorkspace;
+            } else if (!workspaceName.equals(requesterWorkspace)) {
+                return new Response("Only admins can create users in other workspaces", ResponseStatus.UNAUTHORIZED);
+            }
+        } else {
+            return new Response("Only admins and workspace_admins can create users", ResponseStatus.UNAUTHORIZED);
+        }
+
         try {
-            DatabaseEngine.getInstance().createUser(username, password, role);
+            DatabaseEngine engine = DatabaseEngine.getInstance();
+
+            if (!engine.isWorkspaceExist(workspaceName)) {
+                try {
+                    engine.createWorkspace(workspaceName);
+                } catch (WorkspaceAlreadyExistException e) {
+                    // This should never happen
+                    e.printStackTrace();
+                }
+            }
+
+            engine.createUser(username, password, role, workspaceName);
             return new Response(String.format("User %s created successfully", username), ResponseStatus.OK);
-        } catch (UserAlreadyExistException e) {
+        } catch (UserAlreadyExistException | WorkspaceNotFoundException e) {
             return new Response(e.getMessage(), ResponseStatus.ERROR);
         }
 
