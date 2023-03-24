@@ -184,4 +184,8 @@ public class Config {
         return 1;
     }
 
+    public static int maxNumberOfRequestsPerWorkspacePerDay() {
+        return 100;
+    }
+
 }

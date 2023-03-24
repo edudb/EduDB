@@ -24,6 +24,8 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <REDIS_HOST>localhost</REDIS_HOST>
+        <REDIS_PORT>6379</REDIS_PORT>
     </properties>
 
     <build>
@@ -72,7 +74,11 @@
             <artifactId>jline</artifactId>
             <version>3.21.0</version>
         </dependency>
-
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>4.3.0</version>
+        </dependency>
 
     </dependencies>
 
