@@ -313,6 +313,14 @@ public class FileManager {
         }
     }
 
+    public void createFileIfNotExists(String path) {
+        try {
+            createFile(path);
+        } catch (FileAlreadyExistsException e) {
+            // do nothing
+        }
+    }
+
     public void deleteFile(String path) throws FileNotFoundException {
         File file = new File(path);
         if (!file.exists()) {

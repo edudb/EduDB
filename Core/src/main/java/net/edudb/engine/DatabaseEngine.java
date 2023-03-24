@@ -36,8 +36,13 @@ public class DatabaseEngine {
 
     public void start() {
         fileManager = FileManager.getInstance();
-        fileManager.createDirectoryIfNotExists(Config.workspacesPath()); //FIXME: refactor this
+        initializeDatabase();
         schema = Schema.getInstance();
+    }
+
+    private void initializeDatabase() {
+        fileManager.createDirectoryIfNotExists(Config.workspacesPath());
+        fileManager.createFileIfNotExists(Config.adminsPath());
     }
 
     public void createUser(String username, String password, UserRole role, String workspace) throws UserAlreadyExistException, WorkspaceNotFoundException {

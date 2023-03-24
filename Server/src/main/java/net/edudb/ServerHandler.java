@@ -28,6 +28,8 @@ public class ServerHandler implements RequestHandler {
         this.usersThreadPools = new HashMap<>();
 
         ConsoleExecutorChain[] executorChain = {
+                new AuthenticationChecker(),
+                new RequestLimiterChecker(),
                 new CreateAdminExecutor(),
                 new CreateUserExecutor(),
                 new DropAdminExecutor(),
@@ -53,10 +55,6 @@ public class ServerHandler implements RequestHandler {
     }
 
     public Response handle(Request request) {
-        if (!JwtUtil.isValidToken(request.getAuthToken())) {
-            return new Response("Invalid token", ResponseStatus.ERROR);
-        }
-
         try {
             return handleThread(request);
         } catch (InterruptedException | ExecutionException e) {
@@ -65,22 +63,23 @@ public class ServerHandler implements RequestHandler {
     }
 
     public Response handleThread(Request request) throws InterruptedException, ExecutionException {
-        String username = JwtUtil.getUsername(request.getAuthToken());
+        String workspaceName = JwtUtil.getWorkspaceName(request.getAuthToken());
         String databaseName = request.getDatabaseName();
-        request.setWorkspaceName(username); //TODO: refactor this
 
-        usersThreadPools.putIfAbsent(username, Executors.newFixedThreadPool(MAX_THREADS_PER_USER));
+        request.setWorkspaceName(workspaceName);
+
+        usersThreadPools.putIfAbsent(workspaceName, Executors.newFixedThreadPool(MAX_THREADS_PER_USER));
 
 
         Callable<Response> callable = () -> {
-            Config.setCurrentWorkspace(username);
+            Config.setCurrentWorkspace(workspaceName);
             if (databaseName != null) {
                 Config.setCurrentDatabaseName(databaseName);
             }
             return chain.execute(request);
         };
 
-        Future<Response> future = usersThreadPools.get(username).submit(callable);
+        Future<Response> future = usersThreadPools.get(workspaceName).submit(callable);
 
         while (!future.isDone() && !future.isCancelled()) {
             // Wait for the thread to complete
