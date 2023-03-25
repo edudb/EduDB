@@ -15,28 +15,35 @@ import org.junit.jupiter.api.Test;
 public class JwtUtilTest {
     private static final String USER_NAME = "test_username";
     private static final UserRole ROLE = UserRole.USER;
+    private static final String WORKSPACE_NAME = "test_workspace";
 
     @Test
     void generateToken() {
-        String token = JwtUtil.generateToken(USER_NAME, ROLE);
+        String token = JwtUtil.generateToken(USER_NAME, ROLE, WORKSPACE_NAME);
         Assertions.assertNotNull(token);
     }
 
     @Test
     void isValidToken() {
-        String token = JwtUtil.generateToken(USER_NAME, ROLE);
+        String token = JwtUtil.generateToken(USER_NAME, ROLE, WORKSPACE_NAME);
         Assertions.assertTrue(JwtUtil.isValidToken(token));
     }
 
     @Test
     void getUsername() {
-        String token = JwtUtil.generateToken(USER_NAME, ROLE);
+        String token = JwtUtil.generateToken(USER_NAME, ROLE, WORKSPACE_NAME);
         Assertions.assertEquals(USER_NAME, JwtUtil.getUsername(token));
     }
 
     @Test
     void getUserRole() {
-        String token = JwtUtil.generateToken(USER_NAME, ROLE);
+        String token = JwtUtil.generateToken(USER_NAME, ROLE, WORKSPACE_NAME);
         Assertions.assertEquals(ROLE, JwtUtil.getUserRole(token));
+    }
+
+    @Test
+    void getWorkspaceName() {
+        String token = JwtUtil.generateToken(USER_NAME, ROLE, WORKSPACE_NAME);
+        Assertions.assertEquals(WORKSPACE_NAME, JwtUtil.getWorkspaceName(token));
     }
 }

@@ -10,5 +10,5 @@
 package net.edudb;
 
 public interface HandshakeHandler {
-    Response authenticate(String username, String password);
+    Response authenticate(String workspaceName, String username, String password);
 }

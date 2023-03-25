@@ -40,6 +40,12 @@ public class Client {
         return userInput;
     }
 
+    private String getWorkspaceNameFromUser() {
+        String prompt = "Enter workspace name (leave it empty if you are logging as admin): ";
+        String userInput = this.console.readLine(prompt);
+        return userInput;
+    }
+
     private String getUsernameFromUser() {
         String prompt = "Enter username: ";
         String userInput = this.console.readLine(prompt);
@@ -97,9 +103,10 @@ public class Client {
             rpcClient.initializeConnection();
 
             while (true) {
+                String workspaceName = client.getWorkspaceNameFromUser();
                 String username = client.getUsernameFromUser();
                 String password = client.getPasswordFromUser();
-                Response handshakeResponse = rpcClient.handshake(username, password);
+                Response handshakeResponse = rpcClient.handshake(workspaceName, username, password);
 
                 client.console.displayMessage(handshakeResponse.getMessage());
                 if (handshakeResponse.getStatus() == ResponseStatus.HANDSHAKE_OK) {

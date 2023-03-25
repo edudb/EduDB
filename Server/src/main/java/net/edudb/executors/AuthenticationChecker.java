@@ -7,23 +7,28 @@
  * /
  */
 
-package net.edudb.engine.authentication;
+package net.edudb.executors;
 
-import net.edudb.HandshakeHandler;
+import net.edudb.Request;
 import net.edudb.Response;
 import net.edudb.ResponseStatus;
-import net.edudb.exception.AuthenticationFailedException;
+import net.edudb.engine.authentication.JwtUtil;
 
-public class AuthHandler implements HandshakeHandler {
+public class AuthenticationChecker implements ConsoleExecutorChain {
+    private ConsoleExecutorChain nextElement;
+
     @Override
-    public Response authenticate(String workspaceName, String username, String password) {
-        try {
-            String token = Authentication.login(workspaceName, username, password);
-            Response response = new Response("Login successful", ResponseStatus.HANDSHAKE_OK);
-            response.setAuthToken(token);
-            return response;
-        } catch (AuthenticationFailedException e) {
-            return new Response(e.getMessage(), ResponseStatus.HANDSHAKE_ERROR);
+    public void setNextElementInChain(ConsoleExecutorChain chainElement) {
+        this.nextElement = chainElement;
+    }
+
+
+    @Override
+    public Response execute(Request request) {
+        String token = request.getAuthToken();
+        if (!JwtUtil.isValidToken(token)) {
+            return new Response("Invalid token", ResponseStatus.ERROR);
         }
+        return nextElement.execute(request);
     }
 }

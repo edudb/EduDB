@@ -65,8 +65,8 @@ public class RPCClient {
         }
     }
 
-    public Response handshake(String username, String password) {
-        Request request = new Request(username, password, this.connectionQueueName); // handshake request
+    public Response handshake(String workspaceName, String username, String password) {
+        Request request = new Request(workspaceName, username, password, this.connectionQueueName); // handshake request
         try {
             return this.sendRequest(request, this.handshakeQueueName);
         } catch (IOException | InterruptedException | ExecutionException e) {

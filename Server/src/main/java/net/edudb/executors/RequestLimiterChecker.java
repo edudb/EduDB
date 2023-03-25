@@ -7,23 +7,32 @@
  * /
  */
 
-package net.edudb.engine.authentication;
+package net.edudb.executors;
 
-import net.edudb.HandshakeHandler;
+import net.edudb.Request;
+import net.edudb.RequestLimiter;
 import net.edudb.Response;
 import net.edudb.ResponseStatus;
-import net.edudb.exception.AuthenticationFailedException;
+import net.edudb.engine.authentication.JwtUtil;
+import net.edudb.engine.authentication.UserRole;
 
-public class AuthHandler implements HandshakeHandler {
+public class RequestLimiterChecker implements ConsoleExecutorChain {
+    private ConsoleExecutorChain nextElement;
+
     @Override
-    public Response authenticate(String workspaceName, String username, String password) {
-        try {
-            String token = Authentication.login(workspaceName, username, password);
-            Response response = new Response("Login successful", ResponseStatus.HANDSHAKE_OK);
-            response.setAuthToken(token);
-            return response;
-        } catch (AuthenticationFailedException e) {
-            return new Response(e.getMessage(), ResponseStatus.HANDSHAKE_ERROR);
+    public void setNextElementInChain(ConsoleExecutorChain chainElement) {
+        this.nextElement = chainElement;
+    }
+
+
+    @Override
+    public Response execute(Request request) {
+        String token = request.getAuthToken();
+        String workspace = JwtUtil.getWorkspaceName(token);
+        UserRole role = JwtUtil.getUserRole(token);
+        if (role != UserRole.ADMIN && !RequestLimiter.getInstance().allowRequest(workspace)) {
+            return new Response("Number of requests exceeded the daily limit", ResponseStatus.ERROR);
         }
+        return nextElement.execute(request);
     }
 }

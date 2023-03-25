@@ -88,10 +88,11 @@ public class RPCServer {
                 System.out.println("Received handshake request: " + request.getConnectionQueueName());
 
                 String connectionQueueName = request.getConnectionQueueName();
+                String workspaceName = request.getWorkspaceName();
                 String username = request.getUsername();
                 String password = request.getPassword();
 
-                Response response = handler.authenticate(username, password);
+                Response response = handler.authenticate(workspaceName, username, password);
 
 
                 if (response.getStatus() == ResponseStatus.HANDSHAKE_OK) {

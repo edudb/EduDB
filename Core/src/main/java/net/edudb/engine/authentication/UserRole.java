@@ -14,6 +14,7 @@ import net.edudb.exception.InvalidRoleException;
 
 public enum UserRole {
     ADMIN,
+    WORKSPACE_ADMIN,
     USER;
 
 
