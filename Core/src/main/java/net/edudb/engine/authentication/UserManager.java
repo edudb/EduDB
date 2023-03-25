@@ -7,15 +7,15 @@
  * /
  */
 
-package net.edudb.authentication;
+package net.edudb.engine.authentication;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import com.opencsv.exceptions.CsvException;
 import net.edudb.engine.Config;
-import net.edudb.exceptions.InvalidRoleException;
-import net.edudb.exceptions.UserAlreadyExistException;
-import net.edudb.exceptions.UserNotFoundException;
+import net.edudb.exception.InvalidRoleException;
+import net.edudb.exception.UserAlreadyExistException;
+import net.edudb.exception.UserNotFoundException;
 
 import java.io.File;
 import java.io.FileReader;

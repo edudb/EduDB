@@ -7,34 +7,10 @@
  * /
  */
 
-package net.edudb.authentication;
+package net.edudb.exception;
 
-import net.edudb.exceptions.InvalidRoleException;
-
-public enum UserRole {
-    ADMIN,
-    USER;
-
-
-    public static final UserRole DEFAULT_ROLE = USER;
-
-    /**
-     * Converts a string to a UserRole. If the string is null, the default role is returned.
-     *
-     * @param role The role to be converted to a UserRole.
-     * @return The UserRole.
-     * @throws InvalidRoleException If the role is invalid.
-     * @auther Ahmed Nasser Gaafar
-     */
-    public static UserRole fromString(String role) throws InvalidRoleException {
-        if (role == null) {
-            return DEFAULT_ROLE;
-        }
-
-        try {
-            return UserRole.valueOf(role.toUpperCase());
-        } catch (IllegalArgumentException ex) {
-            throw new InvalidRoleException("Invalid role: " + role);
-        }
+public class UserAlreadyExistException extends Exception {
+    public UserAlreadyExistException(String message) {
+        super(message);
     }
 }

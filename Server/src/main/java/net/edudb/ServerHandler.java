@@ -10,17 +10,16 @@
 package net.edudb;
 
 
-import net.edudb.authentication.JwtUtil;
 import net.edudb.engine.Config;
+import net.edudb.engine.authentication.JwtUtil;
 import net.edudb.executors.*;
-import net.edudb.statistics.Schema;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.*;
 
 public class ServerHandler implements RequestHandler {
-    private final int MAX_THREADS_PER_USER = 1;
+    private static final int MAX_THREADS_PER_USER = 1;
     private Map<String, ExecutorService> usersThreadPools; //FIXME: handle the case when a user is deleted or the client is closed
     private ConsoleExecutorChain chain;
 
@@ -29,7 +28,6 @@ public class ServerHandler implements RequestHandler {
         this.usersThreadPools = new HashMap<>();
 
         ConsoleExecutorChain[] executorChain = {
-                new InitializeExecutor(), //TODO: take care of this
                 new CreateUserExecutor(),
                 new DropUserExecutor(),
                 new ListDatabasesExecutor(),
@@ -37,8 +35,8 @@ public class ServerHandler implements RequestHandler {
                 new DropDatabaseExecutor(),
                 new OpenDatabaseExecutor(),
                 new CloseDatabaseExecutor(),
-                new CopyExecutor(),
                 new DropTableExecutor(),
+                new CopyExecutor(),
                 new SQLExecutor(),
         };
 
@@ -59,9 +57,7 @@ public class ServerHandler implements RequestHandler {
 
         try {
             return handleThread(request);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         }
     }
@@ -69,6 +65,7 @@ public class ServerHandler implements RequestHandler {
     public Response handleThread(Request request) throws InterruptedException, ExecutionException {
         String username = JwtUtil.getUsername(request.getAuthToken());
         String databaseName = request.getDatabaseName();
+        request.setWorkspaceName(username); //TODO: refactor this
 
         usersThreadPools.putIfAbsent(username, Executors.newFixedThreadPool(MAX_THREADS_PER_USER));
 
@@ -77,7 +74,6 @@ public class ServerHandler implements RequestHandler {
             Config.setCurrentWorkspace(username);
             if (databaseName != null) {
                 Config.setCurrentDatabaseName(databaseName);
-                Schema.getInstance(); //FIXME: this is a hack to load the schema and cause null pointer exception
             }
             return chain.execute(request);
         };

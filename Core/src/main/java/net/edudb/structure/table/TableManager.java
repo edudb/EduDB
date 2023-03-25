@@ -11,10 +11,15 @@ package net.edudb.structure.table;
 
 import net.edudb.engine.Config;
 import net.edudb.engine.FileManager;
-import net.edudb.statistics.Schema;
+import net.edudb.exception.DatabaseNotFoundException;
+import net.edudb.exception.TableAlreadyExistException;
+import net.edudb.exception.TableNotFoundException;
 
-import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 /**
  * TableManager is a singleton that is a wrapper class around
@@ -30,6 +35,8 @@ public class TableManager { //TODO: revise the design
      * tableBuffer is a map [workspaceName, [databaseName, [tableName, table]]]
      */
     private final HashMap<String, HashMap<String, HashMap<String, Table>>> tableBuffer;
+
+    private final FileManager fileManager = FileManager.getInstance();
 
     private TableManager() {
         this.tableBuffer = new HashMap<>();
@@ -74,25 +81,46 @@ public class TableManager { //TODO: revise the design
         return table;
     }
 
-    /**
-     * Adds the table to the buffer pool and writes it to disk.
-     *
-     * @param table The table to write.
-     * @deprecated Use {@link TableManager#writeTable(String, String, Table)} instead.
-     */
-    @Deprecated
-    public synchronized void write(Table table) {
-        String workspaceName = Config.getCurrentWorkspace();
-        String databaseName = Config.getCurrentDatabaseName();
+    public Table createTable(String workspaceName, String databaseName, String tableSchema, LinkedHashMap<String, String> columnTypes) throws TableAlreadyExistException, DatabaseNotFoundException {
+        String tableName = tableSchema.split(" ")[0];
 
+        // create table object
+        TableFactory tableFactory = new TableFactory();
+        Table table = tableFactory.makeTable(Config.tableType(), tableName);
+        table.setColumnTypes(columnTypes);
+
+        // create table files
+        try {
+            fileManager.createFile(Config.tablePath(workspaceName, databaseName, tableName));
+        } catch (FileAlreadyExistsException e) {
+            throw new TableAlreadyExistException(String.format("table (%s) already exists", tableName), e);
+        }
+        try {
+            fileManager.appendLineToFile(Config.schemaPath(workspaceName, databaseName), tableSchema);
+        } catch (FileNotFoundException e) {
+            throw new DatabaseNotFoundException(String.format("database (%s) is not found", databaseName), e);
+        }
+
+        // write table to disk and add it to the buffer pool
         writeTable(workspaceName, databaseName, table);
+
+        return table;
     }
+
 
     public synchronized void writeTable(String workspaceName, String databaseName, Table table) {
         tableBuffer.putIfAbsent(workspaceName, new HashMap<>());
         tableBuffer.get(workspaceName).putIfAbsent(databaseName, new HashMap<>());
         tableBuffer.get(workspaceName).get(databaseName).put(table.getName(), table);
-        FileManager.getInstance().writeTable(table);
+
+        TableAbstractFactory tableFactory = new TableWriterFactory();
+        TableWriter blockWriter = tableFactory.getWriter(Config.tableType());
+
+        try {
+            blockWriter.write(workspaceName, databaseName, table);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -125,32 +153,39 @@ public class TableManager { //TODO: revise the design
      * from the schema file, and removing the table from disk.
      *
      * @param table The table to delete.
-     * @deprecated Use {@link TableManager#deleteTable(String, String, Table)} instead.
+     * @deprecated Use {@link TableManager#deleteTable(String, String, String)} instead.
      */
     @Deprecated
     public void delete(Table table) {
         String workspaceName = Config.getCurrentWorkspace();
         String databaseName = Config.getCurrentDatabaseName();
 
-        deleteTable(workspaceName, databaseName, table);
+        try {
+            deleteTable(workspaceName, databaseName, table.getName());
+        } catch (TableNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (DatabaseNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public void deleteTable(String workspaceName, String databaseName, Table table) {
+    public void deleteTable(String workspaceName, String databaseName, String tableName) throws TableNotFoundException, DatabaseNotFoundException {
         tableBuffer.putIfAbsent(workspaceName, new HashMap<>());
         tableBuffer.get(workspaceName).putIfAbsent(databaseName, new HashMap<>());
 
+        Table table = readTable(workspaceName, databaseName, tableName);
         table.deletePages();
-        //FIXME: use new schema
-        // ------------------------------
-        String path = Config.tablesPath() + table.getName() + ".table";
-        File file = new File(path);
 
-        if (file.exists()) {
-            file.delete();
+        try {
+            fileManager.deleteFile(Config.tablePath(workspaceName, databaseName, tableName));
+        } catch (FileNotFoundException e) {
+            throw new TableNotFoundException(String.format("table (%s) is not found", tableName), e);
         }
-
-        Schema.getInstance().removeTable(table.getName());
-        // ------------------------------
+        try {
+            fileManager.removeLineFromFileWithPrefix(Config.schemaPath(workspaceName, databaseName), tableName);
+        } catch (FileNotFoundException e) {
+            throw new DatabaseNotFoundException(String.format("database (%s) is not found", databaseName), e);
+        }
 
         tableBuffer.get(workspaceName).get(databaseName).remove(table.getName());
 

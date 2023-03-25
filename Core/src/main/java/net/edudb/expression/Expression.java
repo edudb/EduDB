@@ -9,14 +9,12 @@
 
 package net.edudb.expression;
 
-import net.edudb.Response;
 import net.edudb.data_type.DataType;
 import net.edudb.data_type.DataTypeFactory;
 import net.edudb.data_type.GenericType;
 import net.edudb.ebtree.EBNode;
 import net.edudb.exception.InvalidTypeValueException;
 import net.edudb.operator.parameter.OperatorParameter;
-import net.edudb.server.ServerWriter;
 import net.edudb.structure.Column;
 
 import java.util.LinkedHashMap;
@@ -116,7 +114,7 @@ public class Expression implements BinaryExpressionNode, OperatorParameter {
             try {
                 value = new DataTypeFactory().makeType(leftColumn.getTypeName(), ((GenericType) this.value).getValue());
             } catch (InvalidTypeValueException e) {
-                ServerWriter.getInstance().write(new Response(e.getMessage()));
+                System.err.println(e.getMessage());
                 e.printStackTrace();
             }
 

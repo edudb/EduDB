@@ -10,8 +10,6 @@
 package net.edudb.engine;
 
 import net.edudb.buffer.BufferManager;
-import net.edudb.server.ServerWriter;
-import net.edudb.statistics.Schema;
 import net.edudb.structure.table.TableManager;
 
 import java.io.File;
@@ -23,7 +21,9 @@ import java.nio.file.attribute.BasicFileAttributes;
  * Manages the system's databases and their required files and directories.
  *
  * @author Ahmed Abdul Badie
+ * @deprecated This class is deprecated and will be removed. use {@link DatabaseEngine} instead.
  */
+@Deprecated
 public class DatabaseSystem {
     private static final DatabaseSystem instance = new DatabaseSystem();
 
@@ -67,7 +67,7 @@ public class DatabaseSystem {
         }
         setDatabaseName(databaseName);
         initializeDatabaseDirectories(getDatabaseName());
-        Schema.getInstance().setSchema();
+//        Schema.getInstance().setSchema();
         return true;
     }
 
@@ -82,7 +82,7 @@ public class DatabaseSystem {
 
         setDatabaseName(null);
 
-        Schema.getInstance().resetSchema();
+//        Schema.getInstance().resetSchema();
 
         return true;
     }
@@ -243,9 +243,9 @@ public class DatabaseSystem {
         /**
          * Writes exit to the client to close the connection.
          */
-        if (ServerWriter.getInstance().getContext() != null) {
-            ServerWriter.getInstance().writeln("[edudb::exit]");
-        }
+//        if (ServerWriter.getInstance().getContext() != null) {
+//            ServerWriter.getInstance().writeln("[edudb::exit]");
+//        }
         System.exit(status);
     }
 

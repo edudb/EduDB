@@ -11,8 +11,11 @@ package net.edudb.executors;
 
 import net.edudb.Request;
 import net.edudb.Response;
-import net.edudb.engine.DatabaseSystem;
+import net.edudb.ResponseStatus;
+import net.edudb.engine.DatabaseEngine;
 import net.edudb.engine.Utility;
+import net.edudb.exception.DatabaseAlreadyExistException;
+import net.edudb.exception.WorkspaceNotFoundException;
 
 import java.util.regex.Matcher;
 
@@ -30,7 +33,7 @@ public class CreateDatabaseExecutor implements ConsoleExecutorChain {
      * <br>
      * and captures the <b>database_name</b> in the matcher's group one.
      */
-    private final String regex = "\\A(?:(?i)create)\\s+(?:(?i)database)\\s+(\\D\\w*)\\s*;?\\z";
+    private static final String REGEX = "\\A(?:(?i)create)\\s+(?:(?i)database)\\s+(\\D\\w*)\\s*;?\\z";
 
     @Override
     public void setNextElementInChain(ConsoleExecutorChain chainElement) {
@@ -40,17 +43,21 @@ public class CreateDatabaseExecutor implements ConsoleExecutorChain {
     @Override
     public Response execute(Request request) {
         String command = request.getCommand();
-        Matcher matcher = Utility.getMatcher(command, regex);
-        if (matcher.matches()) {
-            String databaseName = matcher.group(1);
-            boolean databaseCreated = DatabaseSystem.getInstance().createDatabase(databaseName);
-            if (databaseCreated) {
-                return new Response("Database " + databaseName + " created successfully.");
-            } else {
-                return new Response("Database " + databaseName + " already exists.");
-            }
+        Matcher matcher = Utility.getMatcher(command, REGEX);
+
+        if (!matcher.matches()) {
+            return nextElement.execute(request);
         }
-        return nextElement.execute(request);
+
+        String workspaceName = request.getWorkspaceName();
+        String databaseName = matcher.group(1);
+
+        try {
+            DatabaseEngine.getInstance().createDatabase(workspaceName, databaseName);
+            return new Response("Database " + databaseName + " created successfully.", ResponseStatus.OK);
+        } catch (DatabaseAlreadyExistException | WorkspaceNotFoundException e) {
+            return new Response(e.getMessage(), ResponseStatus.ERROR);
+        }
     }
 
 }

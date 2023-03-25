@@ -7,17 +7,40 @@
  * /
  */
 
-package net.edudb.authentication;
+package net.edudb.statistics;
 
+import net.edudb.TestUtils;
+import net.edudb.engine.Config;
+import net.edudb.exception.WorkspaceAlreadyExistException;
+import net.edudb.exception.WorkspaceNotFoundException;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-public class PasswordUtilTest {
-    private static final String PASSWORD = "password";
+public class SchemaTest {
+    private static final String[] workspaces = {"workspace1", "workspace2", "workspace3"};
+
+    @BeforeAll
+    public static void setup() throws WorkspaceAlreadyExistException {
+        for (String workspace : workspaces) {
+            TestUtils.createDirectory(Config.workspacePath(workspace));
+            TestUtils.createDirectory(Config.databasesPath(workspace));
+        }
+    }
+
+    @AfterAll
+    public static void tearDown() {
+        TestUtils.deleteDirectory(Config.workspacesPath());
+    }
 
     @Test
-    void hashAndValidatePassword() {
-        String hashedPassword = PasswordUtil.hashPassword(PASSWORD);
-        Assertions.assertTrue(PasswordUtil.verifyPassword(PASSWORD, hashedPassword));
+    public void test() throws WorkspaceNotFoundException {
+        Schema generalSchema = Schema.getInstance();
+        for (String workspace : workspaces) {
+            Assertions.assertNotNull(generalSchema.getWorkspace(workspace));
+            Assertions.assertEquals(workspace, generalSchema.getWorkspace(workspace).getWorkspaceName());
+        }
     }
+
 }

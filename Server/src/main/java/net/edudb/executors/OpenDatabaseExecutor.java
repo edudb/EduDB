@@ -11,8 +11,11 @@ package net.edudb.executors;
 
 import net.edudb.Request;
 import net.edudb.Response;
-import net.edudb.engine.DatabaseSystem;
+import net.edudb.ResponseStatus;
+import net.edudb.engine.DatabaseEngine;
 import net.edudb.engine.Utility;
+import net.edudb.exception.DatabaseNotFoundException;
+import net.edudb.exception.WorkspaceNotFoundException;
 
 import java.util.regex.Matcher;
 
@@ -29,7 +32,7 @@ public class OpenDatabaseExecutor implements ConsoleExecutorChain {
      * <br>
      * and captures <b>database_name</b> in the matcher's group one.
      */
-    private final String regex = "\\A(?:(?i)open)\\s+(?:(?i)database)\\s+(\\D\\w*)\\s*;?\\z";
+    private static final String REGEX = "\\A(?:(?i)open)\\s+(?:(?i)database)\\s+(\\D\\w*)\\s*;?\\z";
     private ConsoleExecutorChain nextElement;
 
     @Override
@@ -40,19 +43,24 @@ public class OpenDatabaseExecutor implements ConsoleExecutorChain {
     @Override
     public Response execute(Request request) {
         String command = request.getCommand();
-        if (command.toLowerCase().startsWith("open")) {
-            Matcher matcher = Utility.getMatcher(command, regex);
-            if (matcher.matches()) {
-                String databaseName = matcher.group(1);
-                boolean databaseOpened = DatabaseSystem.getInstance().open(databaseName);
-                if (databaseOpened) {
-                    return new Response("Database " + databaseName + " opened successfully.", true, databaseName);
-                } else {
-                    return new Response("Database " + databaseName + " does not exist.");
-                }
-            }
+        Matcher matcher = Utility.getMatcher(command, REGEX);
+
+        if (!matcher.matches()) {
+            return nextElement.execute(request);
         }
-        return nextElement.execute(request);
+
+        String workspaceName = request.getWorkspaceName();
+        String databaseName = matcher.group(1);
+
+        try {
+            DatabaseEngine.getInstance().openDatabase(workspaceName, databaseName);
+            Response response = new Response("Database " + databaseName + " opened successfully.", true, databaseName);
+            response.setStatus(ResponseStatus.OK);
+            return response;
+        } catch (DatabaseNotFoundException | WorkspaceNotFoundException e) {
+            return new Response(e.getMessage(), ResponseStatus.ERROR);
+        }
+
     }
 
 }

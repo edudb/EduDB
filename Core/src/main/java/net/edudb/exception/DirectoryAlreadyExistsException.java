@@ -7,36 +7,10 @@
  * /
  */
 
-package net.edudb.authentication;
+package net.edudb.exception;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
-public class JwtUtilTest {
-    private static final String USER_NAME = "test_username";
-    private static final UserRole ROLE = UserRole.USER;
-
-    @Test
-    void generateToken() {
-        String token = JwtUtil.generateToken(USER_NAME, ROLE);
-        Assertions.assertNotNull(token);
-    }
-
-    @Test
-    void isValidToken() {
-        String token = JwtUtil.generateToken(USER_NAME, ROLE);
-        Assertions.assertTrue(JwtUtil.isValidToken(token));
-    }
-
-    @Test
-    void getUsername() {
-        String token = JwtUtil.generateToken(USER_NAME, ROLE);
-        Assertions.assertEquals(USER_NAME, JwtUtil.getUsername(token));
-    }
-
-    @Test
-    void getUserRole() {
-        String token = JwtUtil.generateToken(USER_NAME, ROLE);
-        Assertions.assertEquals(ROLE, JwtUtil.getUserRole(token));
+public class DirectoryAlreadyExistsException extends Exception {
+    public DirectoryAlreadyExistsException(String message) {
+        super(message);
     }
 }

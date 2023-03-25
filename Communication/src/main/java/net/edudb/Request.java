@@ -22,6 +22,7 @@ public class Request implements Serializable {
     //TODO: this class should be refactored to subclasses
 
     private String command;
+    String workspaceName;
     private String databaseName;
     private RequestType type;
     private String username;
@@ -108,5 +109,13 @@ public class Request implements Serializable {
 
     public void setAuthToken(String authToken) {
         this.authToken = authToken;
+    }
+
+    public String getWorkspaceName() {
+        return workspaceName;
+    }
+
+    public void setWorkspaceName(String workspaceName) {
+        this.workspaceName = workspaceName;
     }
 }

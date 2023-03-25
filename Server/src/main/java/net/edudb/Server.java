@@ -10,8 +10,8 @@
 package net.edudb;
 
 import jline.console.ConsoleReader;
-import net.edudb.authentication.AuthHandler;
-import net.edudb.engine.DatabaseSystem;
+import net.edudb.engine.DatabaseEngine;
+import net.edudb.engine.authentication.AuthHandler;
 import net.edudb.exceptions.RabbitMQConnectionException;
 import net.edudb.exceptions.RabbitMQCreateQueueException;
 
@@ -26,7 +26,7 @@ public class Server {
     public Server() {
         this.serverHandler = new ServerHandler();
         this.handshakeHandler = new AuthHandler();
-        DatabaseSystem.getInstance().initializeDirectories();
+        DatabaseEngine.getInstance().start();
     }
 
     public void setRpcServer(RPCServer rpcServer) {

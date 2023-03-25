@@ -7,37 +7,14 @@
  * /
  */
 
-package net.edudb.authentication;
+package net.edudb.exception;
 
-import org.mindrot.jbcrypt.BCrypt;
-
-public class PasswordUtil {
-
-    private static final int WORKLOAD = 12;
-
-    /**
-     * Hashes a password using BCrypt.
-     *
-     * @param password The password to be hashed.
-     * @return The hashed password.
-     * @auther Ahmed Nasser Gaafar
-     */
-    public static String hashPassword(String password) {
-        String salt = BCrypt.gensalt(WORKLOAD);
-        String hashedPassword = BCrypt.hashpw(password, salt);
-
-        return hashedPassword;
+public class WorkspaceAlreadyExistException extends Exception {
+    public WorkspaceAlreadyExistException(String message) {
+        super(message);
     }
 
-    /**
-     * Verifies a password using a hash.
-     *
-     * @param password
-     * @param hashedPassword
-     * @return True if the password is correct, false otherwise.
-     * @auther Ahmed Nasser Gaafar
-     */
-    public static boolean verifyPassword(String password, String hashedPassword) {
-        return BCrypt.checkpw(password, hashedPassword);
+    public WorkspaceAlreadyExistException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

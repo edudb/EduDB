@@ -58,7 +58,7 @@ public class CopyExecutor implements ConsoleExecutorChain {
             Matcher matcher = Utility.getMatcher(string, regex);
             if (matcher.matches()) {
                 String tableName = matcher.group(1);
-                if (!Schema.getInstance().chekTableExists(tableName)) {
+                if (!Schema.getInstance().checkTableExists(tableName)) {
                     //ServerWriter.getInstance().writeln("Table '" + tableName + "' is not available.");
                     return new Response("Table '" + tableName + "' is not available.");
                 }

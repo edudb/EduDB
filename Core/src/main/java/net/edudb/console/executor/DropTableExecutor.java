@@ -44,7 +44,7 @@ public class DropTableExecutor implements ConsoleExecutorChain {
             Matcher matcher = Utility.getMatcher(string, regex);
             if (matcher.matches()) {
                 String tableName = matcher.group(1);
-                if (!Schema.getInstance().chekTableExists(tableName)) {
+                if (!Schema.getInstance().checkTableExists(tableName)) {
                     //ServerWriter.getInstance().writeln("Table '" + tableName + "' does not exist");
                     return new Response("Table '" + tableName + "' does not exist");
                 }

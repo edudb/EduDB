@@ -30,7 +30,9 @@ public class Console {
             this.terminal = TerminalBuilder.terminal();
             this.lineReader = LineReaderBuilder.builder().terminal(terminal).build();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.err.println("Error in console");
+            e.printStackTrace();
+            System.exit(1);
         }
     }
 
@@ -58,6 +60,8 @@ public class Console {
     }
 
     public void setPrompt(String prompt) {
+        // color green
+        prompt = "\u001B[32m" + prompt + "\u001B[0m";
         this.prompt = prompt;
     }
 

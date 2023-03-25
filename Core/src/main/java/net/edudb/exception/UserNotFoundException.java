@@ -7,7 +7,7 @@
  * /
  */
 
-package net.edudb.exceptions;
+package net.edudb.exception;
 
 public class UserNotFoundException extends Exception {
     public UserNotFoundException(String message) {

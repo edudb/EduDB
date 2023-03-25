@@ -11,10 +11,12 @@ package net.edudb.executors;
 
 import net.edudb.Request;
 import net.edudb.Response;
+import net.edudb.ResponseStatus;
+import net.edudb.engine.DatabaseEngine;
 import net.edudb.engine.Utility;
-import net.edudb.statistics.Schema;
-import net.edudb.structure.table.Table;
-import net.edudb.structure.table.TableManager;
+import net.edudb.exception.DatabaseNotFoundException;
+import net.edudb.exception.TableNotFoundException;
+import net.edudb.exception.WorkspaceNotFoundException;
 
 import java.util.regex.Matcher;
 
@@ -32,7 +34,7 @@ public class DropTableExecutor implements ConsoleExecutorChain {
      * <br>
      * and captures the <b>table_name</b> in the matchers group one.
      */
-    private final String regex = "\\A(?:(?i)drop)\\s+(?:(?i)table)\\s+(\\D\\w*)\\s*;?\\z";
+    private static final String REGEX = "\\A(?:(?i)drop)\\s+(?:(?i)table)\\s+(\\D\\w*)\\s*;?\\z";
 
     @Override
     public void setNextElementInChain(ConsoleExecutorChain chainElement) {
@@ -42,24 +44,23 @@ public class DropTableExecutor implements ConsoleExecutorChain {
     @Override
     public Response execute(Request request) {
         String command = request.getCommand();
-        if (command.toLowerCase().startsWith("drop")) {
-            Matcher matcher = Utility.getMatcher(command, regex);
-            if (matcher.matches()) {
-                String tableName = matcher.group(1);
-                if (!Schema.getInstance().chekTableExists(tableName)) {
-                    //ServerWriter.getInstance().writeln("Table '" + tableName + "' does not exist");
-                    return new Response("Table '" + tableName + "' does not exist");
-                }
+        Matcher matcher = Utility.getMatcher(command, REGEX);
 
-                Table table = TableManager.getInstance().read(tableName);
-                TableManager.getInstance().delete(table);
-
-                //ServerWriter.getInstance().writeln("Dropped table '" + tableName + "'");
-
-                return new Response("Dropped table '" + tableName + "'");
-            }
+        if (!matcher.matches()) {
+            return nextElement.execute(request);
         }
-        return nextElement.execute(request);
+
+        String workspaceName = request.getWorkspaceName();
+        String databaseName = request.getDatabaseName();
+        String tableName = matcher.group(1);
+
+        try {
+            DatabaseEngine.getInstance().dropTable(workspaceName, databaseName, tableName);
+            return new Response(String.format("Table '%s' dropped successfully", tableName), ResponseStatus.OK);
+        } catch (TableNotFoundException | DatabaseNotFoundException | WorkspaceNotFoundException e) {
+            return new Response(e.getMessage(), ResponseStatus.ERROR);
+        }
+
     }
 
 }

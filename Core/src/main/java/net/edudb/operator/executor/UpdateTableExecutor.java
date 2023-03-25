@@ -9,7 +9,6 @@
 
 package net.edudb.operator.executor;
 
-import net.edudb.Response;
 import net.edudb.data_type.DataType;
 import net.edudb.data_type.DataTypeFactory;
 import net.edudb.exception.InvalidTypeValueException;
@@ -20,7 +19,6 @@ import net.edudb.operator.UpdateTableOperator;
 import net.edudb.operator.parameter.UpdateTableOperatorParameter;
 import net.edudb.relation.Relation;
 import net.edudb.relation.RelationIterator;
-import net.edudb.server.ServerWriter;
 import net.edudb.statistics.Schema;
 import net.edudb.structure.Column;
 import net.edudb.structure.Record;
@@ -61,7 +59,7 @@ public class UpdateTableExecutor extends PostOrderOperatorExecutor implements Op
                     try {
                         data.put(column, typeFactory.makeType(column.getTypeName(), assignmentValue));
                     } catch (InvalidTypeValueException e) {
-                        ServerWriter.getInstance().write(new Response(e.getMessage()));
+                        System.err.println(e.getMessage());
                         e.printStackTrace();
                     }
 

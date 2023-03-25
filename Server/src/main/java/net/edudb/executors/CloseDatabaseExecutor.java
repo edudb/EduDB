@@ -11,8 +11,11 @@ package net.edudb.executors;
 
 import net.edudb.Request;
 import net.edudb.Response;
-import net.edudb.engine.DatabaseSystem;
+import net.edudb.ResponseStatus;
+import net.edudb.engine.DatabaseEngine;
 import net.edudb.engine.Utility;
+import net.edudb.exception.DatabaseNotFoundException;
+import net.edudb.exception.WorkspaceNotFoundException;
 
 import java.util.regex.Matcher;
 
@@ -29,7 +32,7 @@ public class CloseDatabaseExecutor implements ConsoleExecutorChain {
      * <b>CLOSE DATABASE;<b><br>
      * <br>
      */
-    private final String regex = "\\A(?:(?i)close)\\s+(?:(?i)database)\\s*;?\\z";
+    private static final String REGEX = "\\A(?:(?i)close)\\s+(?:(?i)database)\\s*;?\\z";
 
     @Override
     public void setNextElementInChain(ConsoleExecutorChain chainElement) {
@@ -39,22 +42,25 @@ public class CloseDatabaseExecutor implements ConsoleExecutorChain {
     @Override
     public Response execute(Request request) {
         String command = request.getCommand();
-        if (command.toLowerCase().startsWith("close")) {
-            Matcher matcher = Utility.getMatcher(command, regex);
-            if (matcher.matches()) {
-                String databaseName = request.getDatabaseName();
-                if (databaseName == null) {
-                    return new Response("No database is open.");
-                }
-                boolean databaseClosed = DatabaseSystem.getInstance().close();
-                if (databaseClosed) {
-                    return new Response("Database " + databaseName + " closed successfully.", true, null);
-                } else {
-                    return new Response("Database " + databaseName + " could not be closed.");
-                }
-            }
+        Matcher matcher = Utility.getMatcher(command, REGEX);
+
+        if (!matcher.matches()) {
+            return nextElement.execute(request);
         }
-        return nextElement.execute(request);
+        String workspaceName = request.getWorkspaceName();
+        String databaseName = request.getDatabaseName();
+
+        if (databaseName == null) {
+            return new Response("No database is open.", ResponseStatus.ERROR);
+        }
+
+        try {
+            DatabaseEngine.getInstance().closeDatabase(workspaceName, databaseName);
+            return new Response(String.format("Database %s closed successfully.", databaseName), ResponseStatus.OK);
+        } catch (DatabaseNotFoundException | WorkspaceNotFoundException e) {
+            e.printStackTrace();
+            return new Response(e.getMessage(), ResponseStatus.ERROR);
+        }
     }
 
 }

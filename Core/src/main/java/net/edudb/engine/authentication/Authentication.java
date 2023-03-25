@@ -7,12 +7,12 @@
  * /
  */
 
-package net.edudb.authentication;
+package net.edudb.engine.authentication;
 
-import net.edudb.exceptions.AuthenticationFailedException;
-import net.edudb.exceptions.InvalidRoleException;
-import net.edudb.exceptions.UserAlreadyExistException;
-import net.edudb.exceptions.UserNotFoundException;
+import net.edudb.exception.AuthenticationFailedException;
+import net.edudb.exception.InvalidRoleException;
+import net.edudb.exception.UserAlreadyExistException;
+import net.edudb.exception.UserNotFoundException;
 
 public class Authentication {
     private static UserManager userManager = UserManager.getInstance();

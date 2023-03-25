@@ -7,10 +7,14 @@
  * /
  */
 
-package net.edudb.exceptions;
+package net.edudb.exception;
 
-public class UserAlreadyExistException extends Exception {
-    public UserAlreadyExistException(String message) {
+public class WorkspaceNotFoundException extends Exception {
+    public WorkspaceNotFoundException(String message) {
         super(message);
+    }
+
+    public WorkspaceNotFoundException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

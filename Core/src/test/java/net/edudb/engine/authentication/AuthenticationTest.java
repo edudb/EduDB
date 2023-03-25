@@ -7,16 +7,16 @@
  * /
  */
 
-package net.edudb.authentication;
+package net.edudb.engine.authentication;
 
+import net.edudb.TestUtils;
 import net.edudb.engine.Config;
-import net.edudb.exceptions.AuthenticationFailedException;
-import net.edudb.exceptions.UserAlreadyExistException;
-import net.edudb.exceptions.UserNotFoundException;
+import net.edudb.exception.AuthenticationFailedException;
+import net.edudb.exception.UserAlreadyExistException;
+import net.edudb.exception.UserNotFoundException;
 import org.junit.jupiter.api.*;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
@@ -26,21 +26,16 @@ public class AuthenticationTest {
     private static final String WRONG_PASSWORD = "wrong_password";
     private static final UserRole ROLE = UserRole.USER;
 
-    @BeforeAll
-    public static void setup() throws IOException {
+    @BeforeEach
+    public void setup() throws IOException {
+        TestUtils.deleteDirectory(Config.absolutePath());
         new File(Config.workspacesPath()).mkdirs();
         new File(Config.usersPath()).createNewFile();
     }
 
     @AfterEach
     public void tearDown() {
-        try {
-            FileWriter writer = new FileWriter(Config.usersPath());
-            writer.write("");
-            writer.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        TestUtils.deleteDirectory(Config.absolutePath());
     }
 
     @AfterAll

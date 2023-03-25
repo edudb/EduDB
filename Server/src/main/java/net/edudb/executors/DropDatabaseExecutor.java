@@ -11,10 +11,12 @@ package net.edudb.executors;
 
 import net.edudb.Request;
 import net.edudb.Response;
-import net.edudb.engine.DatabaseSystem;
+import net.edudb.ResponseStatus;
+import net.edudb.engine.DatabaseEngine;
 import net.edudb.engine.Utility;
+import net.edudb.exception.DatabaseNotFoundException;
+import net.edudb.exception.WorkspaceNotFoundException;
 
-import java.io.IOException;
 import java.util.regex.Matcher;
 
 /**
@@ -29,7 +31,7 @@ public class DropDatabaseExecutor implements ConsoleExecutorChain {
      * <b>DROP DATABASE database_name;</b><br><br>
      * and captures <b>database_name</b> in the matcher's group one.
      */
-    private final String regex = "\\A(?:(?i)drop)\\s+(?:(?i)database)\\s+(\\D\\w*)\\s*;?\\z";
+    private static final String REGEX = "\\A(?:(?i)drop)\\s+(?:(?i)database)\\s+(\\D\\w*)\\s*;?\\z";
 
     @Override
     public void setNextElementInChain(ConsoleExecutorChain chainElement) {
@@ -39,18 +41,22 @@ public class DropDatabaseExecutor implements ConsoleExecutorChain {
     @Override
     public Response execute(Request request) {
         String command = request.getCommand();
-        if (command.toLowerCase().startsWith("drop")) {
-            Matcher matcher = Utility.getMatcher(command, regex);
-            if (matcher.matches()) {
-                try {
-                    return new Response(DatabaseSystem.getInstance().dropDatabase(matcher.group(1)));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return new Response("");
-            }
+        Matcher matcher = Utility.getMatcher(command, REGEX);
+
+        if (!matcher.matches()) {
+            return nextElement.execute(request);
         }
-        return nextElement.execute(request);
+
+        String workspaceName = request.getWorkspaceName();
+        String databaseName = matcher.group(1);
+
+
+        try {
+            DatabaseEngine.getInstance().dropDatabase(workspaceName, databaseName);
+            return new Response("Database " + databaseName + " dropped successfully.", ResponseStatus.OK);
+        } catch (WorkspaceNotFoundException | DatabaseNotFoundException e) {
+            return new Response(e.getMessage(), ResponseStatus.ERROR);
+        }
     }
 
 }
