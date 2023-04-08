@@ -77,7 +77,8 @@ public class DatabaseEngine {
 
     public void dropWorkspace(String workspaceName) throws WorkspaceNotFoundException {
         fileManager.deleteWorkspace(workspaceName);
-        schema.removeWorkspace(workspaceName);
+        if (openedIterators.containsKey(workspaceName)) openedIterators.remove(workspaceName);
+        if (schema.containsWorkspace(workspaceName)) schema.removeWorkspace(workspaceName);
     }
 
     public boolean isWorkspaceExist(String workspaceName) {
@@ -103,15 +104,18 @@ public class DatabaseEngine {
         FileManager.getInstance().createDatabase(workspaceName, databaseName);
 
         WorkspaceSchema workspaceSchema = schema.getWorkspace(workspaceName);
-        if (!workspaceSchema.containsDatabase(databaseName))
-            workspaceSchema.addDatabase(databaseName);
+        if (!workspaceSchema.containsDatabase(databaseName)) workspaceSchema.addDatabase(databaseName);
     }
 
     public void dropDatabase(String workspaceName, String databaseName) throws DatabaseNotFoundException, WorkspaceNotFoundException {
         FileManager.getInstance().deleteDatabase(workspaceName, databaseName);
 
         WorkspaceSchema workspaceSchema = schema.getWorkspace(workspaceName);
-        workspaceSchema.removeDatabase(databaseName);
+        if (openedIterators.containsKey(workspaceName)) {
+            Map<String, Map<String, RelationIterator>> workspace = openedIterators.get(workspaceName);
+            if (workspace.containsKey(databaseName)) workspace.remove(databaseName);
+        }
+        if (workspaceSchema.containsDatabase(databaseName)) workspaceSchema.removeDatabase(databaseName);
     }
 
     public String[] listDatabases(String workspaceName) throws WorkspaceNotFoundException {

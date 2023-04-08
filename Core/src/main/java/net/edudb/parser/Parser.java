@@ -74,7 +74,7 @@ public class Parser {
             SynchronizedTransaction transaction = new SynchronizedTransaction(plan);
             Relation relation = TransactionManager.getInstance().execute(transaction);
 
-            Response response = new Response("Executed successfully");
+            Response response = new Response("Executed successfully", ResponseStatus.OK);
 
             if (statement.statementType() == SQLStatementType.SQLSelectStatement) {
                 RelationIterator iterator = relation.getIterator();
