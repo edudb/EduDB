@@ -44,6 +44,12 @@
             <artifactId>Core</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>hu.webarticum</groupId>
+            <artifactId>regexbee</artifactId>
+            <version>0.4.0</version>
+        </dependency>
+
     </dependencies>
 
 </project>

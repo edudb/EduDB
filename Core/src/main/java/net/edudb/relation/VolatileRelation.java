@@ -1,89 +1,90 @@
 /*
-EduDB is made available under the OSI-approved MIT license.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
+ *
+ * EduDB is made available under the OSI-approved MIT license.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * /
+ */
 
 package net.edudb.relation;
-
-import java.io.Serializable;
-import java.util.LinkedHashMap;
 
 import net.edudb.page.PageManager;
 import net.edudb.structure.Record;
 import net.edudb.structure.table.Table;
 
+import java.io.Serializable;
+import java.util.LinkedHashMap;
+
 /**
  * A relation that is not intended to be saved to disk.
  *
  * @author Ahmed Abdul Badie
- *
  */
 public class VolatileRelation implements Relation, Serializable {
 
-	private Table table;
-	private final PageManager pageManager;
+    private Table table;
+    private final PageManager pageManager;
+    private final RelationIterator iterator;
 
-	public VolatileRelation() {
-		this.pageManager = new PageManager();
-	}
+    public VolatileRelation() {
+        this.pageManager = new PageManager();
+        this.iterator = new RelationIterator(pageManager.getPageNames());
+    }
 
-	public VolatileRelation(Table table) {
-		this.table = table;
-		this.pageManager = table.getPageManager();
-	}
+    public VolatileRelation(Table table) {
+        this.table = table;
+        this.pageManager = table.getPageManager();
+        this.iterator = new RelationIterator(pageManager.getPageNames());
+    }
 
-	@Override
-	public RelationIterator getIterator() {
-		return new RelationIterator(pageManager.getPageNames());
-	}
+    @Override
+    public RelationIterator getIterator() {
+        return iterator;
+    }
 
-	@Override
-	public String getName() {
-		if (table == null) {
-			return null;
-		}
-		return table.getName();
-	}
+    @Override
+    public String getName() {
+        if (table == null) {
+            return null;
+        }
+        return table.getName();
+    }
 
-	@Override
-	public PageManager getPageManager() {
-		return pageManager;
-	}
+    @Override
+    public PageManager getPageManager() {
+        return pageManager;
+    }
 
-	@Override
-	public void addRecord(Record record) {
-		pageManager.addRecord(record);
-	}
+    @Override
+    public void addRecord(Record record) {
+        pageManager.addRecord(record);
+    }
 
-	@Override
-	public void deletePages() {
-		this.pageManager.deletePages();
-	}
+    @Override
+    public void deletePages() {
+        this.pageManager.deletePages();
+    }
 
-	@Override
-	public void setColumnTypes(LinkedHashMap<String, String> columnTypes) {
-		if (table == null) {
-			return;
-		}
-		table.setColumnTypes(columnTypes);
-	}
+    @Override
+    public void setColumnTypes(LinkedHashMap<String, String> columnTypes) {
+        if (table == null) {
+            return;
+        }
+        table.setColumnTypes(columnTypes);
+    }
 
-	@Override
-	public LinkedHashMap<String, String> getColumnTypes() {
-		if (table == null) {
-			return null;
-		}
-		return table.getColumnTypes();
-	}
+    @Override
+    public LinkedHashMap<String, String> getColumnTypes() {
+        if (table == null) {
+            return null;
+        }
+        return table.getColumnTypes();
+    }
 
-	@Override
-	public void print() {
-		pageManager.print();
-	}
+    @Override
+    public void print() {
+        pageManager.print();
+    }
 
 }

@@ -7,11 +7,33 @@
  * /
  */
 
-package net.edudb;
+package net.edudb.executors;
 
-public enum RequestType {
-    HANDSHAKE,
-    NORMAL,
-    NEXT_RESULT_SET,
-    CLOSE_RESULT_SET,
+import net.edudb.Request;
+import net.edudb.RequestType;
+import net.edudb.Response;
+import net.edudb.ResponseStatus;
+import net.edudb.engine.DatabaseEngine;
+
+public class CloseResultSetExecutor implements ConsoleExecutorChain {
+    private ConsoleExecutorChain nextElement;
+
+    @Override
+    public void setNextElementInChain(ConsoleExecutorChain chainElement) {
+        this.nextElement = chainElement;
+    }
+
+    @Override
+    public Response execute(Request request) {
+        if (request.getType() != RequestType.CLOSE_RESULT_SET) {
+            return nextElement.execute(request);
+        }
+        String workspaceName = request.getWorkspaceName();
+        String databaseName = request.getDatabaseName();
+        String resultSetId = request.getResultSetId();
+
+        DatabaseEngine.getInstance().closeResultSet(workspaceName, databaseName, resultSetId);
+
+        return new Response("ResultSet closed successfully.", ResponseStatus.OK);
+    }
 }

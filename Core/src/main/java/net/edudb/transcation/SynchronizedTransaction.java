@@ -9,7 +9,6 @@
 
 package net.edudb.transcation;
 
-import net.edudb.Response;
 import net.edudb.query.PostOrderTreeExecutor;
 import net.edudb.query.QueryTree;
 import net.edudb.relation.Relation;
@@ -26,10 +25,8 @@ public class SynchronizedTransaction extends Transaction {
         this.queryTreeExecutor = new PostOrderTreeExecutor();
     }
 
-    public Response run() {
-        Relation relation = queryTreeExecutor.execute(plan);
-
-        return new Response("relation", Relation.toRecords(relation));
+    public Relation run() {
+        return queryTreeExecutor.execute(plan);
     }
 
 }
