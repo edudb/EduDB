@@ -24,7 +24,7 @@ import java.util.regex.Matcher;
 public class DropUserExecutor implements ConsoleExecutorChain {
     private ConsoleExecutorChain nextElement;
     private static final String REGEX = "\\A(?i)drop\\s+user\\s+(\\w+)" +
-            "\\s*(?:from\\s+workspace\\s+=\\s+\"([^\"]*)\")?\\s*;?\\z";
+            "\\s*(?:from\\s+workspace\\s*=\\s*\"([^\"]*)\")?\\s*;?\\z";
 
 
     @Override
