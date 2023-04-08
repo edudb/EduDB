@@ -29,6 +29,7 @@ public class Response implements Serializable {
     private String connectedDatabase;
     private ResponseStatus status;
     private String authToken;
+    private String resultSetId;
 
     public Response(String message) {
         this.message = message;
@@ -128,16 +129,17 @@ public class Response implements Serializable {
         this.authToken = authToken;
     }
 
+    public String getResultSetId() {
+        return resultSetId;
+    }
+
+    public void setResultSetId(String resultSetId) {
+        this.resultSetId = resultSetId;
+    }
+
     @Override
     public String toString() {
-        String str = message;
-        if (records != null) {
-            str += "\n";
-            for (Record record : records) {
-                str += record.toString() + "\n";
-            }
-        }
-        return str;
+        return this.message;
     }
 
 }

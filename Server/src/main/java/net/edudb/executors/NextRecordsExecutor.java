@@ -7,43 +7,37 @@
  * /
  */
 
-package net.edudb.transcation;
+package net.edudb.executors;
 
-import net.edudb.relation.Relation;
+import net.edudb.Request;
+import net.edudb.RequestType;
+import net.edudb.Response;
+import net.edudb.engine.DatabaseEngine;
+import net.edudb.structure.Record;
 
-/**
- * A singleton that handles the execution of transactions.
- *
- * @author Ahmed Abdul Badie
- */
-public class TransactionManager {
+import java.util.ArrayList;
 
-    private static final TransactionManager instance = new TransactionManager();
+public class NextRecordsExecutor implements ConsoleExecutorChain {
+    private ConsoleExecutorChain nextElement;
 
-    private TransactionManager() {
+    @Override
+    public void setNextElementInChain(ConsoleExecutorChain chainElement) {
+        this.nextElement = chainElement;
     }
 
-    public static TransactionManager getInstance() {
-        return instance;
-    }
+    @Override
+    public Response execute(Request request) {
+        if (request.getType() != RequestType.NEXT_RESULT_SET) {
+            return nextElement.execute(request);
+        }
+        String workspaceName = request.getWorkspaceName();
+        String databaseName = request.getDatabaseName();
+        String resultSetId = request.getResultSetId();
+        int resultSetSize = request.getResultSetSize();
 
-    /**
-     * Executes a concurrent transaction.
-     *
-     * @param transaction The concurrent transaction to execute.
-     */
-    public String execute(ConcurrentTransaction transaction) {
-        Thread thread = new Thread(transaction);
-        thread.start();
-        return "";
-    }
+        ArrayList<Record> recordsList = (ArrayList<Record>) DatabaseEngine.getInstance().getNextRecord(
+                workspaceName, databaseName, resultSetId, resultSetSize);
 
-    /**
-     * Executes a synchronized transaction.
-     *
-     * @param transaction The synchronized transaction to execute.
-     */
-    public Relation execute(SynchronizedTransaction transaction) {
-        return transaction.run();
+        return new Response("", recordsList);
     }
 }

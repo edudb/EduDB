@@ -13,10 +13,16 @@ import adipe.translate.TranslationException;
 import gudusoft.gsqlparser.EDbVendor;
 import gudusoft.gsqlparser.TGSqlParser;
 import net.edudb.Response;
+import net.edudb.ResponseStatus;
+import net.edudb.engine.Config;
+import net.edudb.engine.DatabaseEngine;
 import net.edudb.plan.PlanFactory;
 import net.edudb.query.QueryTree;
+import net.edudb.relation.Relation;
+import net.edudb.relation.RelationIterator;
 import net.edudb.statement.SQLStatement;
 import net.edudb.statement.SQLStatementFactory;
+import net.edudb.statement.SQLStatementType;
 import net.edudb.transcation.SynchronizedTransaction;
 import net.edudb.transcation.TransactionManager;
 
@@ -55,8 +61,9 @@ public class Parser {
         if (ret == 0) {
             SQLStatementFactory statementFactory = new SQLStatementFactory();
             SQLStatement statement = statementFactory.makeSQLStatement(sqlparser.sqlstatements.get(0));
+
             if (statement == null) {
-                return new Response("Unsupported SQL statement");
+                return new Response("Unsupported SQL statement", ResponseStatus.ERROR);
             }
 
             QueryTree plan = planFactory.makePlan(statement);
@@ -65,8 +72,19 @@ public class Parser {
             }
 
             SynchronizedTransaction transaction = new SynchronizedTransaction(plan);
-            return TransactionManager.getInstance().execute(transaction);
+            Relation relation = TransactionManager.getInstance().execute(transaction);
 
+            Response response = new Response("Executed successfully");
+
+            if (statement.statementType() == SQLStatementType.SQLSelectStatement) {
+                RelationIterator iterator = relation.getIterator();
+                DatabaseEngine.getInstance().addResultSet(Config.getCurrentWorkspace(), Config.getCurrentDatabaseName(),
+                        iterator);
+
+                response.setResultSetId(iterator.getId());
+            }
+
+            return response;
         } else {
             return new Response(sqlparser.getErrormessage());
         }

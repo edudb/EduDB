@@ -29,6 +29,8 @@ public class Request implements Serializable {
     private String password;
     private String connectionQueueName;
     private String authToken;
+    private String resultSetId;
+    private int resultSetSize;
 
     public Request(String command) {
         this.command = command;
@@ -43,6 +45,13 @@ public class Request implements Serializable {
     public Request(String command, String databaseName) {
         this.command = command;
         this.databaseName = databaseName;
+    }
+
+    public Request(String resultSetId, int resultSetSize, RequestType type) {
+        this.command = "get_result_set";
+        this.resultSetId = resultSetId;
+        this.resultSetSize = resultSetSize;
+        this.type = type;
     }
 
     public Request(String workspaceName, String username, String password, String connectionQueueName) {
@@ -88,6 +97,14 @@ public class Request implements Serializable {
         return databaseName;
     }
 
+    public void setDatabaseName(String databaseName) {
+        this.databaseName = databaseName;
+    }
+
+    public void setResultSetId(String resultSetId) {
+        this.resultSetId = resultSetId;
+    }
+
     public RequestType getType() {
         return type;
     }
@@ -118,5 +135,13 @@ public class Request implements Serializable {
 
     public void setWorkspaceName(String workspaceName) {
         this.workspaceName = workspaceName;
+    }
+
+    public String getResultSetId() {
+        return resultSetId;
+    }
+
+    public int getResultSetSize() {
+        return resultSetSize;
     }
 }

@@ -13,20 +13,28 @@ import net.edudb.buffer.BufferManager;
 import net.edudb.engine.authentication.Authentication;
 import net.edudb.engine.authentication.UserRole;
 import net.edudb.exception.*;
+import net.edudb.relation.RelationIterator;
 import net.edudb.statistics.DatabaseSchema;
 import net.edudb.statistics.Schema;
 import net.edudb.statistics.WorkspaceSchema;
+import net.edudb.structure.Record;
 import net.edudb.structure.table.Table;
 import net.edudb.structure.table.TableManager;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DatabaseEngine {
     private static DatabaseEngine instance = new DatabaseEngine();
     private FileManager fileManager;
     private Schema schema;
+    private Map<String, Map<String, Map<String, RelationIterator>>> openedIterators; // <workspace, <database, <uuid, iterator>>
+
 
     private DatabaseEngine() {
+        openedIterators = new HashMap<>();
     }
 
 
@@ -95,7 +103,8 @@ public class DatabaseEngine {
         FileManager.getInstance().createDatabase(workspaceName, databaseName);
 
         WorkspaceSchema workspaceSchema = schema.getWorkspace(workspaceName);
-        workspaceSchema.addDatabase(databaseName);
+        if (!workspaceSchema.containsDatabase(databaseName))
+            workspaceSchema.addDatabase(databaseName);
     }
 
     public void dropDatabase(String workspaceName, String databaseName) throws DatabaseNotFoundException, WorkspaceNotFoundException {
@@ -129,6 +138,33 @@ public class DatabaseEngine {
         WorkspaceSchema workspaceSchema = schema.getWorkspace(workspaceName);
         DatabaseSchema databaseSchema = workspaceSchema.getDatabase(databaseName);
         databaseSchema.removeTable(tableName);
+    }
+
+    public void addResultSet(String workspaceName, String databaseName, RelationIterator iterator) {
+        openedIterators.putIfAbsent(workspaceName, new HashMap<>());
+        Map<String, Map<String, RelationIterator>> workspace = openedIterators.get(workspaceName);
+
+        workspace.putIfAbsent(databaseName, new HashMap<>());
+        Map<String, RelationIterator> database = workspace.get(databaseName);
+
+        database.put(iterator.getId(), iterator);
+    }
+
+    public void closeResultSet(String workspaceName, String databaseName, String resultSetId) {
+        Map<String, Map<String, RelationIterator>> workspace = openedIterators.get(workspaceName);
+        Map<String, RelationIterator> database = workspace.get(databaseName);
+        database.remove(resultSetId);
+    }
+
+    public List<Record> getNextRecord(String workspaceName, String databaseName, String resultSetId, int count) {
+        RelationIterator iterator = getIterator(workspaceName, databaseName, resultSetId);
+        return iterator.next(count);
+    }
+
+    private RelationIterator getIterator(String workspaceName, String databaseName, String uuid) {
+        Map<String, Map<String, RelationIterator>> workspace = openedIterators.getOrDefault(workspaceName, new HashMap<>());
+        Map<String, RelationIterator> database = workspace.getOrDefault(databaseName, new HashMap<>());
+        return database.get(uuid);
     }
 
 

@@ -34,6 +34,7 @@ public class ServerHandler implements RequestHandler {
                 new CreateUserExecutor(),
                 new DropAdminExecutor(),
                 new DropUserExecutor(),
+                new DropWorkspaceExecutor(),
                 new NoAdminAccess(), // As admins have no workspace, they can't access any database
                 new ListDatabasesExecutor(),
                 new CreateDatabaseExecutor(),
@@ -41,6 +42,8 @@ public class ServerHandler implements RequestHandler {
                 new OpenDatabaseExecutor(),
                 new CloseDatabaseExecutor(),
                 new DropTableExecutor(),
+                new NextRecordsExecutor(),
+                new CloseResultSetExecutor(),
                 new CopyExecutor(),
                 new SQLExecutor(),
         };
