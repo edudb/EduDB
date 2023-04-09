@@ -12,10 +12,16 @@ package net.edudb.executors;
 
 import net.edudb.Client;
 import net.edudb.Response;
+import net.edudb.ResponseStatus;
+import net.edudb.jdbc.EdudbResultSet;
+import net.edudb.structure.Record;
 
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 
-public class ExitExecutor implements ConsoleExecutorChain {
+
+public class ForwardQueryToServerExecutor implements ConsoleExecutorChain {
     private ConsoleExecutorChain nextElement;
 
     @Override
@@ -24,17 +30,21 @@ public class ExitExecutor implements ConsoleExecutorChain {
     }
 
     @Override
-    public Response execute(String string) {
-        if (string.equalsIgnoreCase("exit")) {
-            try {
-                Client.getInstance().getConnection().close();
-            } catch (SQLException e) {
-                System.err.println(e.getMessage());
-            }
-            System.out.println("Exiting...");
-            System.exit(0);
-            return null;
+    public Response execute(String command) {
+        if (!command.toLowerCase().startsWith("select")) {
+            return nextElement.execute(command);
         }
-        return nextElement.execute(string);
+
+        try {
+            Statement statement = Client.getInstance().getConnection().createStatement();
+            EdudbResultSet resultSet = (EdudbResultSet) statement.executeQuery(command);
+            ArrayList<Record> records = (ArrayList<Record>) resultSet.fetchAllAndGetRecords();
+            Response response = new Response("Executed successfully", records);
+            response.setStatus(ResponseStatus.OK);
+            return response;
+        } catch (SQLException e) {
+            return new Response(e.getMessage(), ResponseStatus.ERROR);
+        }
     }
+
 }
