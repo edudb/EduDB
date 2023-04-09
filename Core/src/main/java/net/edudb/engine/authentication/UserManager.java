@@ -18,7 +18,6 @@ import net.edudb.exception.UserNotFoundException;
 import net.edudb.exception.WorkspaceNotFoundException;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.util.List;
 
@@ -227,19 +226,12 @@ public class UserManager {
      */
     private void overwriteUsers(String workspace, List<String[]> users) {
         String usersFilePath = Config.usersPath(workspace);
-        try {
-            fileManager.writeCSV(usersFilePath, users);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        fileManager.writeCSV(usersFilePath, users);
+
     }
 
     private void overwriteAdmins(List<String[]> admins) {
         String adminsFilePath = Config.adminsPath();
-        try {
-            fileManager.writeCSV(adminsFilePath, admins);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        fileManager.writeCSV(adminsFilePath, admins);
     }
 }

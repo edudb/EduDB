@@ -20,6 +20,14 @@ import java.io.File;
  * @author Ahmed Abdul Badie
  */
 public class Config {
+    public static final int PAGE_SIZE = 100;
+    public static final int BUFFER_SIZE = 1;
+    public static final int MAX_REQUESTS_NUMBER_PER_WORKSPACE_PER_DAY = 1000;
+
+    private Config() {
+        throw new IllegalStateException("Utility class");
+    }
+
     private static ThreadLocal<String> currentDatabaseName = new ThreadLocal<>();
     private static ThreadLocal<String> currentWorkspace = new ThreadLocal<>();
 
@@ -37,6 +45,11 @@ public class Config {
 
     public static String getCurrentWorkspace() {
         return currentWorkspace.get();
+    }
+
+    public static void cleanThreadLocal() {
+        currentDatabaseName.remove();
+        currentWorkspace.remove();
     }
 
     /**
@@ -170,22 +183,7 @@ public class Config {
         return databasePath(workspaceName, databaseName) + "blocks" + File.separator;
     }
 
-    /**
-     * @return The maximum allowed number of records inside a page.
-     */
-    public static int pageSize() {
-        return 100;
+    public static String pagePath(String workspaceName, String databaseName, String pageName) {
+        return pagesPath(workspaceName, databaseName) + pageName + ".block";
     }
-
-    /**
-     * @return The maximum allowed number of pages in the page buffer pool.
-     */
-    public static int bufferSize() {
-        return 1;
-    }
-
-    public static int maxNumberOfRequestsPerWorkspacePerDay() {
-        return 100;
-    }
-
 }

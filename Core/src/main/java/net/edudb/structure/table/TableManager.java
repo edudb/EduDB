@@ -148,6 +148,15 @@ public class TableManager { //TODO: revise the design
         tableBuffer.get(workspaceName).get(databaseName).clear();
     }
 
+    public void writeAllTables() {
+        for (String workspaceName : tableBuffer.keySet()) {
+            for (String databaseName : tableBuffer.get(workspaceName).keySet()) {
+                writeAllTables(workspaceName, databaseName);
+            }
+        }
+    }
+
+
     /**
      * Deletes the table by deleting its pages from disk, removing the table
      * from the schema file, and removing the table from disk.

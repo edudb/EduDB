@@ -43,7 +43,7 @@ public class DropWorkspaceExecutor implements ConsoleExecutorChain {
             return new Response("Only admins can drop admins", ResponseStatus.UNAUTHORIZED);
         }
 
-        String workspaceName = matcher.group(1).toLowerCase();
+        String workspaceName = matcher.group(1);
         try {
             DatabaseEngine.getInstance().dropWorkspace(workspaceName);
             return new Response(String.format("Workspace %s dropped successfully", workspaceName), ResponseStatus.OK);

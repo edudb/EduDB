@@ -342,7 +342,7 @@ public class EdudbConnection implements Connection {
 
     @Override
     public String getSchema() throws SQLException {
-        throw new UnsupportedOperationException();
+        return this.connectedDatabase;
     }
 
     @Override

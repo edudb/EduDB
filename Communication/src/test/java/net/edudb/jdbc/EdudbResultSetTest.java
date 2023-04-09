@@ -69,6 +69,7 @@ public class EdudbResultSetTest {
         for (String[] row : TABLE_DATA) {
             statement.executeUpdate(CommandsGenerators.insertIntoTable(TABLE_NAME, row));
         }
+        statement.executeUpdate(CommandsGenerators.closeDatabase());
         connection.close();
     }
 

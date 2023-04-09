@@ -86,7 +86,7 @@ public class Parser {
 
             return response;
         } else {
-            return new Response(sqlparser.getErrormessage());
+            return new Response(sqlparser.getErrormessage(), ResponseStatus.ERROR);
         }
     }
 }

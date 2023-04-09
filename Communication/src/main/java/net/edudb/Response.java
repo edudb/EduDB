@@ -139,7 +139,13 @@ public class Response implements Serializable {
 
     @Override
     public String toString() {
-        return this.message;
+        StringBuilder builder = new StringBuilder(this.message);
+        if (this.records != null) {
+            for (Record record : this.records) {
+                builder.append("\n").append(record.toString());
+            }
+        }
+        return builder.toString();
     }
 
 }

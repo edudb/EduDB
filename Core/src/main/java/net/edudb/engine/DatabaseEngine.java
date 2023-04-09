@@ -25,16 +25,39 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class DatabaseEngine {
     private static DatabaseEngine instance = new DatabaseEngine();
     private FileManager fileManager;
     private Schema schema;
     private Map<String, Map<String, Map<String, RelationIterator>>> openedIterators; // <workspace, <database, <uuid, iterator>>
-
+    private ScheduledExecutorService backgroundThread;
 
     private DatabaseEngine() {
         openedIterators = new HashMap<>();
+        createBackgroundThreadToWriteBuffer();
+        setupOnCloseHandler();
+    }
+
+    private void createBackgroundThreadToWriteBuffer() {
+        backgroundThread = Executors.newScheduledThreadPool(1);
+
+        Runnable task = () -> BufferManager.getInstance().writeAll();
+
+        int initialDelay = 0;
+        int period = 1;
+        backgroundThread.scheduleAtFixedRate(task, initialDelay, period, TimeUnit.MINUTES);
+    }
+
+    private void setupOnCloseHandler() {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            BufferManager.getInstance().writeAll();
+            TableManager.getInstance().writeAllTables();
+            backgroundThread.shutdown();
+        }));
     }
 
 
@@ -76,6 +99,7 @@ public class DatabaseEngine {
     }
 
     public void dropWorkspace(String workspaceName) throws WorkspaceNotFoundException {
+        BufferManager.getInstance().removeWorkspace(workspaceName);
         fileManager.deleteWorkspace(workspaceName);
         if (openedIterators.containsKey(workspaceName)) openedIterators.remove(workspaceName);
         if (schema.containsWorkspace(workspaceName)) schema.removeWorkspace(workspaceName);
@@ -93,7 +117,7 @@ public class DatabaseEngine {
 
     public void closeDatabase(String workspaceName, String databaseName) throws DatabaseNotFoundException, WorkspaceNotFoundException {
 
-        BufferManager.getInstance().writeAll(); //FIXME: it will write the whole buffer, not just the database's buffer
+        BufferManager.getInstance().writeAll(workspaceName, databaseName);
         TableManager.getInstance().writeAllTables(workspaceName, databaseName);
 
         WorkspaceSchema workspaceSchema = schema.getWorkspace(workspaceName);
@@ -109,7 +133,7 @@ public class DatabaseEngine {
 
     public void dropDatabase(String workspaceName, String databaseName) throws DatabaseNotFoundException, WorkspaceNotFoundException {
         FileManager.getInstance().deleteDatabase(workspaceName, databaseName);
-
+        BufferManager.getInstance().removeDatabase(workspaceName, databaseName);
         WorkspaceSchema workspaceSchema = schema.getWorkspace(workspaceName);
         if (openedIterators.containsKey(workspaceName)) {
             Map<String, Map<String, RelationIterator>> workspace = openedIterators.get(workspaceName);
