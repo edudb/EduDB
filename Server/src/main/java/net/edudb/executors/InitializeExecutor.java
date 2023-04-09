@@ -30,7 +30,7 @@ public class InitializeExecutor implements ConsoleExecutorChain {
      * and captures <b>username</b> and <b>password</b> in the matcher's groups
      * one and two, respectively.
      */
-    private final String regex = "\\A\\[edudb\\:\\:(\\w+)\\:(\\w+)\\]\\z";
+    private final static String regex = "\\A\\[edudb\\:\\:(\\w+)\\:(\\w+)\\]\\z";
 
     @Override
     public void setNextElementInChain(ConsoleExecutorChain chainElement) {

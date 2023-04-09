@@ -70,6 +70,7 @@ public class RPCClient {
         try {
             return this.sendRequest(request, this.handshakeQueueName);
         } catch (IOException | InterruptedException | ExecutionException e) {
+            Thread.currentThread().interrupt();
             throw new RuntimeException(e);
         }
     }

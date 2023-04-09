@@ -35,8 +35,7 @@ public class ForwardQueryToServerExecutor implements ConsoleExecutorChain {
             return nextElement.execute(command);
         }
 
-        try {
-            Statement statement = Client.getInstance().getConnection().createStatement();
+        try (Statement statement = Client.getInstance().getConnection().createStatement()) {
             EdudbResultSet resultSet = (EdudbResultSet) statement.executeQuery(command);
             ArrayList<Record> records = (ArrayList<Record>) resultSet.fetchAllAndGetRecords();
             Response response = new Response("Executed successfully", records);

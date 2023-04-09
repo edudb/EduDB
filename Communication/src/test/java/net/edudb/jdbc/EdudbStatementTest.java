@@ -46,7 +46,7 @@ public class EdudbStatementTest {
     }
 
     @Test
-    public void testClose() throws SQLException {
+    void testClose() throws SQLException {
         statement.close();
         assertTrue(statement.isClosed());
 
@@ -59,7 +59,7 @@ public class EdudbStatementTest {
     }
 
     @Test
-    public void testSetFetchSize() throws SQLException {
+    void testSetFetchSize() throws SQLException {
         int fetchSize = 5;
         statement.setFetchSize(fetchSize);
         assertEquals(fetchSize, statement.getFetchSize());

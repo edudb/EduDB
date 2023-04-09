@@ -68,7 +68,7 @@ public class Parser {
 
             QueryTree plan = planFactory.makePlan(statement);
             if (plan == null) {
-                return new Response("");
+                return new Response("", ResponseStatus.ERROR);
             }
 
             SynchronizedTransaction transaction = new SynchronizedTransaction(plan);

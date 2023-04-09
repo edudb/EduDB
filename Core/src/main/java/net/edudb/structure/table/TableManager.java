@@ -19,7 +19,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * TableManager is a singleton that is a wrapper class around
@@ -28,7 +28,7 @@ import java.util.LinkedHashMap;
  *
  * @author Ahmed Abdul Badie
  */
-public class TableManager { //TODO: revise the design
+public class TableManager {
 
     private static final TableManager instance = new TableManager();
     /**
@@ -81,7 +81,7 @@ public class TableManager { //TODO: revise the design
         return table;
     }
 
-    public Table createTable(String workspaceName, String databaseName, String tableSchema, LinkedHashMap<String, String> columnTypes) throws TableAlreadyExistException, DatabaseNotFoundException {
+    public Table createTable(String workspaceName, String databaseName, String tableSchema, Map<String, String> columnTypes) throws TableAlreadyExistException, DatabaseNotFoundException {
         String tableName = tableSchema.split(" ")[0];
 
         // create table object
@@ -149,11 +149,9 @@ public class TableManager { //TODO: revise the design
     }
 
     public void writeAllTables() {
-        for (String workspaceName : tableBuffer.keySet()) {
-            for (String databaseName : tableBuffer.get(workspaceName).keySet()) {
-                writeAllTables(workspaceName, databaseName);
-            }
-        }
+        tableBuffer.forEach((workspaceName, databaseMap) ->
+                databaseMap.forEach((databaseName, tables) ->
+                        writeAllTables(workspaceName, databaseName)));
     }
 
 
@@ -171,9 +169,7 @@ public class TableManager { //TODO: revise the design
 
         try {
             deleteTable(workspaceName, databaseName, table.getName());
-        } catch (TableNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (DatabaseNotFoundException e) {
+        } catch (TableNotFoundException | DatabaseNotFoundException e) {
             throw new RuntimeException(e);
         }
     }

@@ -21,7 +21,7 @@ import java.util.Properties;
 
 import static org.junit.Assert.*;
 
-public class EdudbDriverTest {
+class EdudbDriverTest {
     /**
      * NOTE: This test class requires a running server instance and RabbitMQ.
      */
@@ -30,7 +30,7 @@ public class EdudbDriverTest {
     private static String ADMIN_PASSWORD = "admin";
 
     @Test
-    public void testConnection() throws SQLException {
+    void testConnection() throws SQLException {
         Connection conn = DriverManager.getConnection(getValidAdminConnectionUrl(), getCredentials());
         assertFalse(conn.isClosed());
         conn.close();
@@ -38,20 +38,20 @@ public class EdudbDriverTest {
     }
 
     @Test
-    public void testInvalidUrl() {
+    void testInvalidUrl() {
         Assertions.assertThrows(SQLException.class, () -> {
             DriverManager.getConnection(getInvalidConnectionUrl(), getCredentials());
         });
     }
 
     @Test
-    public void testAcceptsUrl() throws SQLException {
+    void testAcceptsUrl() throws SQLException {
         assertTrue(new EdudbDriver().acceptsURL(getValidConnectionUrl()));
         assertFalse(new EdudbDriver().acceptsURL(getInvalidConnectionUrl()));
     }
 
     @Test
-    public void testGetPropertyInfo() throws SQLException {
+    void testGetPropertyInfo() throws SQLException {
         EdudbDriver driver = new EdudbDriver();
         DriverPropertyInfo[] properties = driver.getPropertyInfo(getValidConnectionUrl(), null);
         assertEquals(0, properties.length);

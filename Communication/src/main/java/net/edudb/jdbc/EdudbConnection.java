@@ -30,7 +30,7 @@ public class EdudbConnection implements Connection {
         try {
             this.client.initializeConnection();
         } catch (RabbitMQConnectionException e) {
-            throw new RuntimeException(e);
+            throw new SQLException(e);
         }
         Response handshake = client.handshake(workspace, username, password);
         if (handshake.getStatus() == ResponseStatus.HANDSHAKE_OK) {
@@ -40,18 +40,19 @@ public class EdudbConnection implements Connection {
         }
     }
 
-    public Response sendSqlCommand(String sql) {
+    public Response sendSqlCommand(String sql) throws SQLException {
         Request request = new Request(sql, this.connectedDatabase);
         request.setAuthToken(authToken);
 
         try {
             return client.sendRequest(request);
         } catch (IOException | InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
+            Thread.currentThread().interrupt();
+            throw new SQLException(e);
         }
     }
 
-    public Response sendNextRecordsRequest(String iteratorId, int countOfRecords) {
+    public Response sendNextRecordsRequest(String iteratorId, int countOfRecords) throws SQLException {
         Request request = new Request(iteratorId, countOfRecords, RequestType.NEXT_RESULT_SET);
         request.setAuthToken(authToken);
         request.setDatabaseName(connectedDatabase);
@@ -59,11 +60,12 @@ public class EdudbConnection implements Connection {
         try {
             return client.sendRequest(request);
         } catch (IOException | InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
+            Thread.currentThread().interrupt();
+            throw new SQLException(e);
         }
     }
 
-    public Response sendCloseResultSetRequest(String iteratorId) {
+    public Response sendCloseResultSetRequest(String iteratorId) throws SQLException {
         Request request = new Request("close_result_set", RequestType.CLOSE_RESULT_SET);
         request.setResultSetId(iteratorId);
         request.setAuthToken(authToken);
@@ -72,7 +74,8 @@ public class EdudbConnection implements Connection {
         try {
             return client.sendRequest(request);
         } catch (IOException | InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
+            Thread.currentThread().interrupt();
+            throw new SQLException(e);
         }
     }
 
@@ -141,7 +144,7 @@ public class EdudbConnection implements Connection {
         try {
             client.closeConnection();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new SQLException(e);
         }
     }
 

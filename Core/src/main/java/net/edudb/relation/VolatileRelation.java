@@ -14,7 +14,7 @@ import net.edudb.structure.Record;
 import net.edudb.structure.table.Table;
 
 import java.io.Serializable;
-import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * A relation that is not intended to be saved to disk.
@@ -67,7 +67,7 @@ public class VolatileRelation implements Relation, Serializable {
     }
 
     @Override
-    public void setColumnTypes(LinkedHashMap<String, String> columnTypes) {
+    public void setColumnTypes(Map<String, String> columnTypes) {
         if (table == null) {
             return;
         }
@@ -75,7 +75,7 @@ public class VolatileRelation implements Relation, Serializable {
     }
 
     @Override
-    public LinkedHashMap<String, String> getColumnTypes() {
+    public Map<String, String> getColumnTypes() {
         if (table == null) {
             return null;
         }

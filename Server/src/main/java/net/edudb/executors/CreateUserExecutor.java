@@ -80,17 +80,12 @@ public class CreateUserExecutor implements ConsoleExecutorChain {
             DatabaseEngine engine = DatabaseEngine.getInstance();
 
             if (!engine.isWorkspaceExist(workspaceName)) {
-                try {
-                    engine.createWorkspace(workspaceName);
-                } catch (WorkspaceAlreadyExistException e) {
-                    // This should never happen
-                    e.printStackTrace();
-                }
+                engine.createWorkspace(workspaceName);
             }
 
             engine.createUser(username, password, role, workspaceName);
             return new Response(String.format("User %s created successfully", username), ResponseStatus.OK);
-        } catch (UserAlreadyExistException | WorkspaceNotFoundException e) {
+        } catch (UserAlreadyExistException | WorkspaceNotFoundException | WorkspaceAlreadyExistException e) {
             return new Response(e.getMessage(), ResponseStatus.ERROR);
         }
 

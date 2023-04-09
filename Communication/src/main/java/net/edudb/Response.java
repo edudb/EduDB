@@ -12,7 +12,7 @@ import net.edudb.exceptions.SerializationException;
 import net.edudb.structure.Record;
 
 import java.io.*;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * From this class, the response objects sent from
@@ -24,7 +24,7 @@ public class Response implements Serializable {
 
     private String message;
     private String id;
-    private ArrayList<Record> records;
+    private List<Record> records;
     private boolean connectionUpdated;
     private String connectedDatabase;
     private ResponseStatus status;
@@ -41,12 +41,12 @@ public class Response implements Serializable {
         this.status = status;
     }
 
-    public Response(String message, ArrayList<Record> records) {
+    public Response(String message, List<Record> records) {
         this.message = message;
         this.records = records;
     }
 
-    public Response(String message, ArrayList<Record> records, String id) {
+    public Response(String message, List<Record> records, String id) {
         this.message = message;
         this.id = id;
         this.records = records;
@@ -80,11 +80,11 @@ public class Response implements Serializable {
         }
     }
 
-    public ArrayList<Record> getRecords() {
+    public List<Record> getRecords() {
         return records;
     }
 
-    public void setRecords(ArrayList<Record> records) {
+    public void setRecords(List<Record> records) {
         this.records = records;
     }
 
@@ -141,8 +141,8 @@ public class Response implements Serializable {
     public String toString() {
         StringBuilder builder = new StringBuilder(this.message);
         if (this.records != null) {
-            for (Record record : this.records) {
-                builder.append("\n").append(record.toString());
+            for (Record currentRecord : this.records) {
+                builder.append("\n").append(currentRecord.toString());
             }
         }
         return builder.toString();

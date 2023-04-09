@@ -371,7 +371,7 @@ public class EdudbResultSet implements ResultSet {
     public boolean relative(int rows) throws SQLException {
         currentRecordIdx += rows;
         while (currentRecordIdx > records.size()) {
-            ArrayList<Record> fetchedRecords = fetchMoreRecords();
+            List<Record> fetchedRecords = fetchMoreRecords();
             if (fetchedRecords.isEmpty()) break;
             fetchedRecords.forEach(r -> this.records.add(r));
         }
@@ -388,7 +388,7 @@ public class EdudbResultSet implements ResultSet {
 
     }
 
-    private ArrayList<Record> fetchMoreRecords() throws SQLException {
+    private List<Record> fetchMoreRecords() throws SQLException {
         if (isClosed()) {
             throw new SQLException("ResultSet is closed");
         }

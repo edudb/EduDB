@@ -26,6 +26,7 @@ import net.edudb.structure.table.Table;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Executes the SQL INSERT INTO statement.
@@ -51,7 +52,7 @@ public class InsertExecutor extends PostOrderOperatorExecutor implements Operato
 
             DataTypeFactory typeFactory = new DataTypeFactory();
 
-            LinkedHashMap<String, String> columnTypes = table.getColumnTypes();
+            Map<String, String> columnTypes = table.getColumnTypes();
 
             ArrayList<Column> columns = Schema.getInstance().getColumns(table.getName());
             ArrayList<String> values = statement.getValueList();

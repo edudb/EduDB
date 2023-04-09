@@ -166,9 +166,20 @@ public class BufferManager {
         FileManager.getInstance().writePage(workspaceName, databaseName, page);
     }
 
+    public void createWorkspace(String workspaceName) {
+        pageBuffer.putIfAbsent(workspaceName, new HashMap<>());
+        replacement.putIfAbsent(workspaceName, new HashMap<>());
+    }
+
     public void removeWorkspace(String workspaceName) {
         pageBuffer.remove(workspaceName);
         replacement.remove(workspaceName);
+    }
+
+    public void createDatabase(String workspaceName, String databaseName) {
+        pageBuffer.get(workspaceName).putIfAbsent(databaseName, new LinkedHashMap<>());
+        replacement.get(workspaceName).putIfAbsent(databaseName,
+                new LRUPageReplacement(pageBuffer.get(workspaceName).get(databaseName)));
     }
 
     public void removeDatabase(String workspaceName, String databaseName) {
@@ -176,11 +187,4 @@ public class BufferManager {
         replacement.get(workspaceName).remove(databaseName);
     }
 
-    public Map<String, Map<String, LinkedHashMap<String, Page>>> getPageBuffer() {
-        return pageBuffer;
-    }
-
-    public Map<String, Map<String, PageReplacement>> getReplacement() {
-        return replacement;
-    }
 }

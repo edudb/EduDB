@@ -12,7 +12,11 @@ package net.edudb;
 import java.util.UUID;
 
 public class Utils {
-    private final static String AMQP_URL = System.getProperty("AMQP_URL");
+    private Utils() {
+        throw new IllegalStateException("Utility class");
+    }
+
+    private static final String AMQP_URL = System.getProperty("AMQP_URL");
 
 
     public static String getAMQPURL() {
