@@ -9,16 +9,17 @@
 
 package net.edudb;
 
-import net.edudb.exceptions.RabbitMQConnectionException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Properties;
 
 public class Client {
     private static Client instance = new Client();
     private static final String DEFAULT_SERVER_NAME = "server";
-    private String connectedDatabase;
-    private String authToken;
     private Console console;
-    private RPCClient rpcClient;
     private ClientHandler handler;
+    private Connection connection;
 
     private Client() {
         this.console = new Console();
@@ -42,96 +43,66 @@ public class Client {
 
     private String getWorkspaceNameFromUser() {
         String prompt = "Enter workspace name (leave it empty if you are logging as admin): ";
-        String userInput = this.console.readLine(prompt);
-        return userInput;
+        return this.console.readLine(prompt);
     }
 
     private String getUsernameFromUser() {
         String prompt = "Enter username: ";
-        String userInput = this.console.readLine(prompt);
-        return userInput;
+        return this.console.readLine(prompt);
     }
 
     private String getPasswordFromUser() {
         String prompt = "Enter password: ";
-        String userInput = this.console.readPassword(prompt);
-        return userInput;
-    }
-
-    public ClientHandler getHandler() {
-        return handler;
-    }
-
-    public void setRpcClient(RPCClient rpcClient) {
-        this.rpcClient = rpcClient;
+        return this.console.readPassword(prompt);
     }
 
     public Console getConsole() {
         return console;
     }
 
-    public RPCClient getRpcClient() {
-        return rpcClient;
+
+    public Connection getConnection() {
+        return connection;
     }
 
-    public String getConnectedDatabase() {
-        return connectedDatabase;
-    }
-
-    public void setConnectedDatabase(String connectedDatabase) {
-        this.connectedDatabase = connectedDatabase;
-    }
-
-    public void setAuthToken(String authToken) {
-        this.authToken = authToken;
-    }
-
-    public String getAuthToken() {
-        return authToken;
-    }
-
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ClassNotFoundException, SQLException {
         Client client = Client.getInstance();
 
-        String serverName = client.getServerNameFromUser();
+        while (true) {
+            String serverName = client.getServerNameFromUser();
+            String workspaceName = client.getWorkspaceNameFromUser();
+            String username = client.getUsernameFromUser();
+            String password = client.getPasswordFromUser();
 
-        RPCClient rpcClient = new RPCClient(serverName);
-        client.setRpcClient(rpcClient);
+            Properties properties = new Properties();
+            properties.setProperty("username", username);
+            properties.setProperty("password", password);
 
-
-        try {
-            rpcClient.initializeConnection();
-
-            while (true) {
-                String workspaceName = client.getWorkspaceNameFromUser();
-                String username = client.getUsernameFromUser();
-                String password = client.getPasswordFromUser();
-                Response handshakeResponse = rpcClient.handshake(workspaceName, username, password);
-
-                client.console.displayMessage(handshakeResponse.getMessage());
-                if (handshakeResponse.getStatus() == ResponseStatus.HANDSHAKE_OK) {
-                    client.setAuthToken(handshakeResponse.getAuthToken());
-                    break;
+            Class.forName("net.edudb.jdbc.EdudbDriver");
+            try {
+                if (workspaceName.equals("")) {
+                    client.connection = DriverManager.getConnection(String.format("jdbc:edudb://%s", serverName), properties);
                 } else {
-                    client.console.displayMessage("Please try again.");
+                    client.connection = DriverManager.getConnection(String.format("jdbc:edudb://%s:%s", serverName, workspaceName), properties);
                 }
+                client.console.setPrompt("EduDB> ");
+                client.console.displayMessage("You are now connected to the server.");
+                break;
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+                client.console.displayMessage("Please try again.");
             }
-
-            client.console.setPrompt(String.format("EduDB-%s> ", serverName));
-
-            while (true) {
-                if (client.getConnectedDatabase() != null)
-                    client.console.setPrompt(String.format("EduDB-%s-(%s)> ", serverName, client.getConnectedDatabase()));
-                else {
-                    client.console.setPrompt(String.format("EduDB-%s> ", serverName));
-                }
-                String input = client.console.readLine();
-                String output = client.handler.handle(input);
-                client.console.displayMessage(output);
-            }
-        } catch (RabbitMQConnectionException e) {
-            System.err.println(e.getMessage());
         }
 
+        while (true) {
+            if (client.connection.getSchema() == null)
+                client.console.setPrompt("EduDB> ");
+            else {
+                client.console.setPrompt(String.format("EduDB-(%s)> ", client.connection.getSchema()));
+            }
+            String input = client.console.readLine();
+            String output = client.handler.handle(input);
+            client.console.displayMessage(output);
+        }
     }
 }

@@ -179,7 +179,7 @@ public class MetaManager implements MetaDAO, Runnable {
 
     public ArrayList<Record> getAll(String tableName) {
         Response response = forwardCommand("select * from " + tableName);
-        return response.getRecords();
+        return (ArrayList<Record>) response.getRecords();
     }
 
     public void writeTable(String tableName, String tableMetadata) {

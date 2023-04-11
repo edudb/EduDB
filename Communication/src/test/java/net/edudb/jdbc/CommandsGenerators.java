@@ -42,8 +42,8 @@ public class CommandsGenerators {
         return String.format("OPEN DATABASE %s", databaseName);
     }
 
-    static String closeDatabase(String databaseName) {
-        return String.format("CLOSE DATABASE %s", databaseName);
+    static String closeDatabase() {
+        return "CLOSE DATABASE";
     }
 
     static String dropDatabase(String databaseName) {

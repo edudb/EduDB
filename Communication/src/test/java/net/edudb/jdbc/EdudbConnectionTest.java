@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class EdudbConnectionTest {
+class EdudbConnectionTest {
     private static String SERVER_NAME = "server";
     private static String ADMIN_USERNAME = "admin";
     private static String ADMIN_PASSWORD = "admin";
@@ -28,21 +28,21 @@ public class EdudbConnectionTest {
     private static String USER_WORKSPACE_NAME = "workspace";
 
     @Test
-    public void testConstructorWithGoodCredentials() throws SQLException {
+    void testConstructorWithGoodCredentials() throws SQLException {
         EdudbConnection conn = new EdudbConnection(SERVER_NAME, null, ADMIN_USERNAME, ADMIN_PASSWORD);
         Assertions.assertNotNull(conn);
         Assertions.assertNotNull(conn.getAuthToken());
     }
 
     @Test
-    public void testConstructorThrowsExceptionOnBadCredentials() {
+    void testConstructorThrowsExceptionOnBadCredentials() {
         Assertions.assertThrows(SQLException.class, () -> {
             new EdudbConnection(SERVER_NAME, null, BAD_USERNAME, BAD_PASSWORD);
         });
     }
 
     @Test
-    public void testSendSqlCommandReturnsResponse() throws SQLException {
+    void testSendSqlCommandReturnsResponse() throws SQLException {
         EdudbConnection conn = new EdudbConnection(SERVER_NAME, null, ADMIN_USERNAME, ADMIN_PASSWORD);
         Response response = conn.sendSqlCommand(CommandsGenerators.createUser(USER_USERNAME, USER_PASSWORD, USER_WORKSPACE_NAME));
         Assertions.assertNotNull(response);
@@ -54,13 +54,13 @@ public class EdudbConnectionTest {
 
 
     @Test
-    public void testGetClientReturnsClient() throws SQLException {
+    void testGetClientReturnsClient() throws SQLException {
         EdudbConnection conn = new EdudbConnection(SERVER_NAME, null, ADMIN_USERNAME, ADMIN_PASSWORD);
         Assertions.assertNotNull(conn.getClient());
     }
 
     @Test
-    public void testCreateStatementReturnsStatement() throws SQLException {
+    void testCreateStatementReturnsStatement() throws SQLException {
         EdudbConnection conn = new EdudbConnection(SERVER_NAME, null, ADMIN_USERNAME, ADMIN_PASSWORD);
         Statement statement = conn.createStatement();
         Assertions.assertNotNull(statement);

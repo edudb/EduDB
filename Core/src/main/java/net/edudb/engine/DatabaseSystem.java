@@ -9,9 +9,6 @@
 
 package net.edudb.engine;
 
-import net.edudb.buffer.BufferManager;
-import net.edudb.structure.table.TableManager;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
@@ -76,8 +73,8 @@ public class DatabaseSystem {
      */
     public boolean close() {
 
-        BufferManager.getInstance().writeAll();
-        TableManager.getInstance().writeAll();
+//        BufferManager.getInstance().writeAll();
+//        TableManager.getInstance().writeAll();
 
 
         setDatabaseName(null);

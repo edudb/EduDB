@@ -48,7 +48,7 @@ public class BinaryPage extends Page implements Serializable {
 
     public BinaryPage() {
         this.name = Utility.generateUUID();
-        this.records = new Record[Config.pageSize()];
+        this.records = new Record[Config.PAGE_SIZE];
         this.nextLocation = 0;
         this.openCount = 0;
     }

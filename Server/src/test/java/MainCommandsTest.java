@@ -21,6 +21,7 @@ import net.edudb.exception.UserAlreadyExistException;
 import net.edudb.exception.WorkspaceAlreadyExistException;
 import net.edudb.exception.WorkspaceNotFoundException;
 import net.edudb.statistics.Schema;
+import net.edudb.structure.Record;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +33,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainCommandsTest {
+class MainCommandsTest {
     Server server = new Server();
     ServerHandler serverHandler = server.getServerHandler();
 
@@ -49,7 +50,7 @@ public class MainCommandsTest {
     private static final String[] COLUMN_NEW_VALUES = {"new"};
 
     @BeforeEach
-    public void setup() throws UserAlreadyExistException, AuthenticationFailedException, IOException, WorkspaceNotFoundException, WorkspaceAlreadyExistException {
+    void setup() throws UserAlreadyExistException, AuthenticationFailedException, IOException, WorkspaceNotFoundException, WorkspaceAlreadyExistException {
         TestUtils.deleteDirectory(new File(Config.absolutePath()));
         DatabaseEngine.getInstance().createWorkspace(WORKSPACE_NAME);
         DatabaseEngine.getInstance().createUser(USERNAME, PASSWORD, UserRole.USER, WORKSPACE_NAME);
@@ -58,13 +59,13 @@ public class MainCommandsTest {
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         TestUtils.deleteDirectory(new File(Config.absolutePath()));
         Schema.getInstance().reset();
     }
 
 
-    public Response sendCommand(String command, String database) {
+    Response sendCommand(String command, String database) {
         Request request = new Request(command, database);
         request.setAuthToken(token);
         return serverHandler.handle(request);
@@ -75,7 +76,7 @@ public class MainCommandsTest {
     }
 
     @Test
-    public void testCreateDatabase() {
+    void testCreateDatabase() {
         // Create database
         sendCommand(TestUtils.createDatabase(DATABASE_NAME), null);
 
@@ -86,7 +87,7 @@ public class MainCommandsTest {
     }
 
     @Test
-    public void testDropDatabase() {
+    void testDropDatabase() {
         // Create database
         sendCommand(TestUtils.createDatabase(DATABASE_NAME), null);
         // Drop database
@@ -99,7 +100,7 @@ public class MainCommandsTest {
     }
 
     @Test
-    public void testCreateTable() throws FileNotFoundException {
+    void testCreateTable() throws FileNotFoundException {
         // Create database
         sendCommand(TestUtils.createDatabase(DATABASE_NAME), null);
         // Create table
@@ -114,7 +115,7 @@ public class MainCommandsTest {
     }
 
     @Test
-    public void testDropTable() throws FileNotFoundException {
+    void testDropTable() throws FileNotFoundException {
         // Create database
         sendCommand(TestUtils.createDatabase(DATABASE_NAME), null);
         // Create table
@@ -129,7 +130,7 @@ public class MainCommandsTest {
     }
 
     @Test
-    public void testInsert() {
+    void testInsert() {
         // Create database
         sendCommand(TestUtils.createDatabase(DATABASE_NAME), null);
         // Create table
@@ -139,12 +140,15 @@ public class MainCommandsTest {
         // Select
         Response selectResponse = sendCommand(TestUtils.selectAll(TABLE_NAME));
 
-        Assertions.assertEquals(1, selectResponse.getRecords().size());
-        Assertions.assertEquals(COLUMN_VALUES[0], selectResponse.getRecords().get(0).getData().values().toArray()[0].toString());
+        Assertions.assertNotNull(selectResponse.getResultSetId());
+        String resultSetId = selectResponse.getResultSetId();
+        List<Record> records = DatabaseEngine.getInstance().getNextRecord(WORKSPACE_NAME, DATABASE_NAME, resultSetId, 100);
+        Assertions.assertEquals(1, records.size());
+        Assertions.assertEquals(COLUMN_VALUES[0], records.get(0).getData().values().toArray()[0].toString());
     }
 
     @Test
-    public void testUpdate() {
+    void testUpdate() {
         // Create database
         sendCommand(TestUtils.createDatabase(DATABASE_NAME), null);
         // Create table
@@ -156,12 +160,15 @@ public class MainCommandsTest {
         // Select
         Response selectResponse = sendCommand(TestUtils.selectAll(TABLE_NAME));
 
-        Assertions.assertEquals(1, selectResponse.getRecords().size());
-        Assertions.assertEquals(COLUMN_NEW_VALUES[0], selectResponse.getRecords().get(0).getData().values().toArray()[0].toString());
+        Assertions.assertNotNull(selectResponse.getResultSetId());
+        String resultSetId = selectResponse.getResultSetId();
+        List<Record> records = DatabaseEngine.getInstance().getNextRecord(WORKSPACE_NAME, DATABASE_NAME, resultSetId, 100);
+        Assertions.assertEquals(1, records.size());
+        Assertions.assertEquals(COLUMN_NEW_VALUES[0], records.get(0).getData().values().toArray()[0].toString());
     }
 
     @Test
-    public void testDelete() {
+    void testDelete() {
         // Create database
         sendCommand(TestUtils.createDatabase(DATABASE_NAME), null);
         // Create table
@@ -173,11 +180,15 @@ public class MainCommandsTest {
         // Select
         Response selectResponse = sendCommand(TestUtils.selectAll(TABLE_NAME));
 
-        Assertions.assertEquals(0, selectResponse.getRecords().size());
+        Assertions.assertNotNull(selectResponse.getResultSetId());
+        String resultSetId = selectResponse.getResultSetId();
+        List<Record> records = DatabaseEngine.getInstance().getNextRecord(WORKSPACE_NAME, DATABASE_NAME, resultSetId, 100);
+        Assertions.assertEquals(0, records.size());
     }
 
     @Test
-    public void testSelect() {
+    void testSelect() {
+        //TODO: fix
         // Create database
         sendCommand(TestUtils.createDatabase(DATABASE_NAME), null);
         // Create table
@@ -188,8 +199,12 @@ public class MainCommandsTest {
         // Select
         Response selectResponse = sendCommand(TestUtils.select(TABLE_NAME, COLUMN_NAMES[0], COLUMN_VALUES[0]));
 
-        Assertions.assertEquals(1, selectResponse.getRecords().size());
-        Assertions.assertEquals(COLUMN_VALUES[0], selectResponse.getRecords().get(0).getData().values().toArray()[0].toString());
+        Assertions.assertNotNull(selectResponse.getResultSetId());
+        String resultSetId = selectResponse.getResultSetId();
+        List<Record> records = DatabaseEngine.getInstance().getNextRecord(WORKSPACE_NAME, DATABASE_NAME, resultSetId, 100);
+        Assertions.assertEquals(1, records.size());
+        Assertions.assertEquals(COLUMN_VALUES[0], records.get(0).getData().values().toArray()[0].toString());
+
     }
 
 }

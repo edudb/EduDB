@@ -18,11 +18,9 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.sql.Date;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class EdudbResultSet implements ResultSet {
     EdudbStatement statement;
@@ -63,6 +61,13 @@ public class EdudbResultSet implements ResultSet {
             return;
         }
         records.get(0).getData().keySet().forEach(key -> columnIndexes.put(key.getName(), columnIndexes.size()));
+    }
+
+    public List<Record> fetchAllAndGetRecords() throws SQLException {
+        while (next()) {
+            // do nothing
+        }
+        return records;
     }
 
     @Override
@@ -366,7 +371,7 @@ public class EdudbResultSet implements ResultSet {
     public boolean relative(int rows) throws SQLException {
         currentRecordIdx += rows;
         while (currentRecordIdx > records.size()) {
-            ArrayList<Record> fetchedRecords = fetchMoreRecords();
+            List<Record> fetchedRecords = fetchMoreRecords();
             if (fetchedRecords.isEmpty()) break;
             fetchedRecords.forEach(r -> this.records.add(r));
         }
@@ -383,7 +388,7 @@ public class EdudbResultSet implements ResultSet {
 
     }
 
-    private ArrayList<Record> fetchMoreRecords() throws SQLException {
+    private List<Record> fetchMoreRecords() throws SQLException {
         if (isClosed()) {
             throw new SQLException("ResultSet is closed");
         }

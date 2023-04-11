@@ -84,7 +84,7 @@ public class FileManager {
     }
 
 
-    public void writeCSV(String filePath, List<String[]> data) throws IOException {
+    public void writeCSV(String filePath, List<String[]> data) {
         StringBuilder builder = new StringBuilder();
         for (String[] row : data) {
             for (String cell : row) {
@@ -113,12 +113,12 @@ public class FileManager {
      * @param pageName The name of the page to read.
      * @return The read page.
      */
-    public Page readPage(String pageName) {
+    public Page readPage(String workspaceName, String databaseName, String pageName) {
         BlockAbstractFactory blockFactory = new BlockReaderFactory();
         BlockReader blockReader = blockFactory.getReader(Config.blockType());
 
         try {
-            return blockReader.read(pageName);
+            return blockReader.read(workspaceName, databaseName, pageName);
         } catch (ClassNotFoundException | IOException e) {
             e.printStackTrace();
         }
@@ -130,12 +130,12 @@ public class FileManager {
      *
      * @param page The page to write.
      */
-    public void writePage(Page page) {
+    public void writePage(String workspaceName, String databaseName, Page page) {
         BlockAbstractFactory blockFactory = new BlockWriterFactory();
         BlockWriter blockWriter = blockFactory.getWriter(Config.blockType());
 
         try {
-            blockWriter.write(page);
+            blockWriter.write(workspaceName, databaseName, page);
         } catch (IOException e) {
             e.printStackTrace();
         }

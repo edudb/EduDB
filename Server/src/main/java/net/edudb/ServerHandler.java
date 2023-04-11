@@ -24,8 +24,8 @@ public class ServerHandler implements RequestHandler {
     private ConsoleExecutorChain chain;
 
     public ServerHandler() {
-
         this.usersThreadPools = new HashMap<>();
+        setupOnCloseHandler();
 
         ConsoleExecutorChain[] executorChain = {
                 new AuthenticationChecker(),
@@ -49,6 +49,14 @@ public class ServerHandler implements RequestHandler {
         };
 
         this.chain = connectChain(executorChain);
+    }
+
+    private void setupOnCloseHandler() {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            for (ExecutorService executorService : usersThreadPools.values()) {
+                executorService.shutdown();
+            }
+        }));
     }
 
     private static ConsoleExecutorChain connectChain(ConsoleExecutorChain[] chain) {
@@ -80,7 +88,9 @@ public class ServerHandler implements RequestHandler {
             if (databaseName != null) {
                 Config.setCurrentDatabaseName(databaseName);
             }
-            return chain.execute(request);
+            Response response = chain.execute(request);
+            Config.cleanThreadLocal();
+            return response;
         };
 
         Future<Response> future = usersThreadPools.get(workspaceName).submit(callable);

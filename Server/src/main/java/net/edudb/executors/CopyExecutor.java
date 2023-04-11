@@ -60,7 +60,6 @@ public class CopyExecutor implements ConsoleExecutorChain {
             if (matcher.matches()) {
                 String tableName = matcher.group(1);
                 if (!Schema.getInstance().checkTableExists(tableName)) {
-                    //ServerWriter.getInstance().writeln("Table '" + tableName + "' is not available.");
                     return new Response("Table '" + tableName + "' is not available.");
                 }
                 Table table = TableManager.getInstance().read(tableName);
@@ -99,17 +98,14 @@ public class CopyExecutor implements ConsoleExecutorChain {
                         table.addRecord(record);
                         ++count;
                     }
-                    //ServerWriter.getInstance().writeln("Copied '" + count + "' records");
                     return new Response("Copied '" + count + "' records");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             } else {
-                //ServerWriter.getInstance().writeln("Unknown command 'copy'");
                 return new Response("Unknown command 'copy'");
             }
 
-            //return;
         }
         return nextElement.execute(request);
     }

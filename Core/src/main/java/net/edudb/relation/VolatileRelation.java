@@ -14,7 +14,7 @@ import net.edudb.structure.Record;
 import net.edudb.structure.table.Table;
 
 import java.io.Serializable;
-import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * A relation that is not intended to be saved to disk.
@@ -25,22 +25,19 @@ public class VolatileRelation implements Relation, Serializable {
 
     private Table table;
     private final PageManager pageManager;
-    private final RelationIterator iterator;
 
     public VolatileRelation() {
         this.pageManager = new PageManager();
-        this.iterator = new RelationIterator(pageManager.getPageNames());
     }
 
     public VolatileRelation(Table table) {
         this.table = table;
         this.pageManager = table.getPageManager();
-        this.iterator = new RelationIterator(pageManager.getPageNames());
     }
 
     @Override
     public RelationIterator getIterator() {
-        return iterator;
+        return new RelationIterator(pageManager.getPageNames());
     }
 
     @Override
@@ -67,7 +64,7 @@ public class VolatileRelation implements Relation, Serializable {
     }
 
     @Override
-    public void setColumnTypes(LinkedHashMap<String, String> columnTypes) {
+    public void setColumnTypes(Map<String, String> columnTypes) {
         if (table == null) {
             return;
         }
@@ -75,7 +72,7 @@ public class VolatileRelation implements Relation, Serializable {
     }
 
     @Override
-    public LinkedHashMap<String, String> getColumnTypes() {
+    public Map<String, String> getColumnTypes() {
         if (table == null) {
             return null;
         }

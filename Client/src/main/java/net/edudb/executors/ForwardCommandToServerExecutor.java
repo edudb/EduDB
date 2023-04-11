@@ -11,38 +11,28 @@ package net.edudb.executors;
 
 
 import net.edudb.Client;
-import net.edudb.Request;
 import net.edudb.Response;
+import net.edudb.ResponseStatus;
 
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 
-public class ForwardToServerExecutor implements ConsoleExecutorChain {
+public class ForwardCommandToServerExecutor implements ConsoleExecutorChain {
 
     @Override
     public void setNextElementInChain(ConsoleExecutorChain chainElement) {
+        throw new RuntimeException("ForwardCommandToServerExecutor is the last element in the chain");
     }
 
     @Override
     public Response execute(String command) {
-        String connectedDatabase = Client.getInstance().getConnectedDatabase();
-        String authToken = Client.getInstance().getAuthToken();
-
-        Request request = new Request(command, connectedDatabase);
-        request.setAuthToken(authToken);
-
-        Response response;
-        try {
-            response = Client.getInstance().getRpcClient().sendRequest(request);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
+        try (Statement statement = Client.getInstance().getConnection().createStatement()) {
+            statement.executeUpdate(command);
+            return new Response("Executed successfully", ResponseStatus.OK);
+        } catch (SQLException e) {
+            return new Response(e.getMessage(), ResponseStatus.ERROR);
         }
-        return response;
     }
 
 }

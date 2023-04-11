@@ -13,6 +13,8 @@ package net.edudb.executors;
 import net.edudb.Client;
 import net.edudb.Response;
 
+import java.sql.SQLException;
+
 public class ExitExecutor implements ConsoleExecutorChain {
     private ConsoleExecutorChain nextElement;
 
@@ -24,10 +26,14 @@ public class ExitExecutor implements ConsoleExecutorChain {
     @Override
     public Response execute(String string) {
         if (string.equalsIgnoreCase("exit")) {
-            Client.getInstance().getHandler().handle("close database"); // close the database is necessary to write the changes to the disk
+            try {
+                Client.getInstance().getConnection().close();
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+            }
             System.out.println("Exiting...");
             System.exit(0);
-            return new Response("");
+            return null;
         }
         return nextElement.execute(string);
     }

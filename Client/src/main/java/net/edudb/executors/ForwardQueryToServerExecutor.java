@@ -9,55 +9,41 @@
 
 package net.edudb.executors;
 
-import net.edudb.Request;
+
+import net.edudb.Client;
 import net.edudb.Response;
-import net.edudb.engine.Utility;
+import net.edudb.ResponseStatus;
+import net.edudb.jdbc.EdudbResultSet;
+import net.edudb.structure.Record;
 
-import java.util.regex.Matcher;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 
-/**
- * Handles the initialization of the connection with the client.
- *
- * @author Ahmed Abdul Badie
- */
-public class InitializeExecutor implements ConsoleExecutorChain {
+
+public class ForwardQueryToServerExecutor implements ConsoleExecutorChain {
     private ConsoleExecutorChain nextElement;
-    /**
-     * Matches strings of the form: <br>
-     * <br>
-     * <b>[edudb::username::password]</b><br>
-     * <br>
-     * and captures <b>username</b> and <b>password</b> in the matcher's groups
-     * one and two, respectively.
-     */
-    private final static String regex = "\\A\\[edudb\\:\\:(\\w+)\\:(\\w+)\\]\\z";
 
     @Override
     public void setNextElementInChain(ConsoleExecutorChain chainElement) {
         this.nextElement = chainElement;
     }
 
-    //	TODO: handle this logic
     @Override
-    public Response execute(Request request) {
-        String command = request.getCommand();
-        if (command.toLowerCase().startsWith("[edudb::")) {
-            Matcher matcher = Utility.getMatcher(command, regex);
-            if (matcher.matches()) {
-                /**
-                 * Write anything to the client to initialize a connection with
-                 * it.
-                 *
-                 */
-                if (matcher.group(1).equals("admin") && matcher.group(2).equals("admin")) {
-                    return new Response("[edudb::init]");
-                } else {
-                    return new Response("[edudb::mismatch]");
-                }
-
-            }
+    public Response execute(String command) {
+        if (!command.toLowerCase().startsWith("select")) {
+            return nextElement.execute(command);
         }
-        return nextElement.execute(request);
+
+        try (Statement statement = Client.getInstance().getConnection().createStatement()) {
+            EdudbResultSet resultSet = (EdudbResultSet) statement.executeQuery(command);
+            ArrayList<Record> records = (ArrayList<Record>) resultSet.fetchAllAndGetRecords();
+            Response response = new Response("Executed successfully", records);
+            response.setStatus(ResponseStatus.OK);
+            return response;
+        } catch (SQLException e) {
+            return new Response(e.getMessage(), ResponseStatus.ERROR);
+        }
     }
 
 }
