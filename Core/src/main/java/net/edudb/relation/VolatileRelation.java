@@ -25,22 +25,19 @@ public class VolatileRelation implements Relation, Serializable {
 
     private Table table;
     private final PageManager pageManager;
-    private final RelationIterator iterator;
 
     public VolatileRelation() {
         this.pageManager = new PageManager();
-        this.iterator = new RelationIterator(pageManager.getPageNames());
     }
 
     public VolatileRelation(Table table) {
         this.table = table;
         this.pageManager = table.getPageManager();
-        this.iterator = new RelationIterator(pageManager.getPageNames());
     }
 
     @Override
     public RelationIterator getIterator() {
-        return iterator;
+        return new RelationIterator(pageManager.getPageNames());
     }
 
     @Override
