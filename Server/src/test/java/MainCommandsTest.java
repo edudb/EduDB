@@ -188,7 +188,6 @@ class MainCommandsTest {
 
     @Test
     void testSelect() {
-        //TODO: fix
         // Create database
         sendCommand(TestUtils.createDatabase(DATABASE_NAME), null);
         // Create table

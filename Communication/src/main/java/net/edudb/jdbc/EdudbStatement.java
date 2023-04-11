@@ -15,7 +15,7 @@ import net.edudb.ResponseStatus;
 import java.sql.*;
 
 public class EdudbStatement implements Statement {
-    private EdudbConnection connection;
+    private final EdudbConnection connection;
     private EdudbResultSet resultSet;
     private int fetchSize;
     private boolean isClosed;
