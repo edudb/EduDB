@@ -22,7 +22,8 @@ import java.io.File;
 public class Config {
     public static final int PAGE_SIZE = 100;
     public static final int BUFFER_SIZE = 1;
-    public static final int MAX_REQUESTS_NUMBER_PER_WORKSPACE_PER_DAY = 1000;
+    public static final int MAX_REQUESTS_NUMBER_PER_WORKSPACE = 1000;
+    public static final long DURATION_OF_REQUESTS_LIMIT_IN_SECONDS = (long) 60 * 60 * 24; // 1 day
 
     private Config() {
         throw new IllegalStateException("Utility class");
