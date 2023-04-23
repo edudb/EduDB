@@ -13,7 +13,6 @@ import net.edudb.Response;
 import net.edudb.engine.DatabaseSystem;
 import net.edudb.engine.Utility;
 
-import java.io.IOException;
 import java.util.regex.Matcher;
 
 /**
@@ -40,12 +39,7 @@ public class DropDatabaseExecutor implements ConsoleExecutorChain {
         if (string.toLowerCase().startsWith("drop")) {
             Matcher matcher = Utility.getMatcher(string, regex);
             if (matcher.matches()) {
-                try {
-                    return new Response(DatabaseSystem.getInstance().dropDatabase(matcher.group(1)));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return new Response("");
+                return new Response(DatabaseSystem.getInstance().dropDatabase(matcher.group(1)));
             }
         }
         return nextElement.execute(string);

@@ -98,20 +98,12 @@ public class Config {
         return absolutePath().resolve("workspaces");
     }
 
-    public static Path currentWorkspacePath() {
-        return workspacePath(getCurrentWorkspace());
-    }
-
     public static Path workspacePath(String workspaceName) {
         return workspacesPath().resolve(workspaceName);
     }
 
     // ======================================== DATABASES ========================================
 
-
-    public static Path databasesPath() {
-        return databasesPath(getCurrentWorkspace());
-    }
 
     public static Path databasesPath(String workspaceName) {
         return workspacePath(workspaceName).resolve("databases");
@@ -121,28 +113,11 @@ public class Config {
      * @return The path to the current open database. Null if no database is
      * currently open.
      */
-    public static Path openedDatabasePath() {
-        return databasePath(getCurrentWorkspace(), getCurrentDatabaseName());
-
-    }
-
-    public static Path databasePath(String databaseName) {
-        return databasePath(getCurrentWorkspace(), databaseName);
-    }
-
     public static Path databasePath(String workspaceName, String databaseName) {
         return databasesPath(workspaceName).resolve(databaseName);
     }
 
     // ======================================== SCHEMAS ========================================
-
-    public static Path schemaPath() {
-        return schemaPath(getCurrentWorkspace(), getCurrentDatabaseName());
-    }
-
-    public static Path schemaPath(String databaseName) {
-        return schemaPath(getCurrentWorkspace(), databaseName);
-    }
 
     public static Path schemaPath(String workspaceName, String databaseName) {
         return databasePath(workspaceName, databaseName).resolve("schema.txt");
@@ -154,24 +129,8 @@ public class Config {
     /**
      * @return The path to the table files on disk.
      */
-    public static Path tablesPath() {
-        return databasePath(getCurrentWorkspace(), getCurrentDatabaseName()).resolve("tables");
-    }
-
-    public static Path tablesPath(String databaseName) {
-        return tablesPath(getCurrentWorkspace(), databaseName);
-    }
-
     public static Path tablesPath(String workspaceName, String databaseName) {
         return databasePath(workspaceName, databaseName).resolve("tables");
-    }
-
-    public static Path tablePath(String tableName) {
-        return tablesPath().resolve(tableName + ".table");
-    }
-
-    public static Path tablePath(String databaseName, String tableName) {
-        return tablePath(getCurrentWorkspace(), databaseName, tableName);
     }
 
     public static Path tablePath(String workspaceName, String databaseName, String tableName) {
@@ -183,14 +142,6 @@ public class Config {
     /**
      * @return The path to the page files on disk.
      */
-    public static Path pagesPath() {
-        return pagesPath(getCurrentWorkspace(), getCurrentDatabaseName());
-    }
-
-    public static Path pagesPath(String databaseName) {
-        return pagesPath(getCurrentWorkspace(), databaseName);
-    }
-
     public static Path pagesPath(String workspaceName, String databaseName) {
         return databasePath(workspaceName, databaseName).resolve("blocks");
     }

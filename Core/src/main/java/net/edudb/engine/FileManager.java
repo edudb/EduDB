@@ -167,12 +167,12 @@ public class FileManager {
      * @param tableName The name of the table to read.
      * @return The read table.
      */
-    public Table readTable(String tableName) {
+    public Table readTable(String workspaceName, String databaseName, String tableName) {
         TableAbstractFactory tableFactory = new TableReaderFactory();
         TableReader tableReader = tableFactory.getReader(Config.tableType());
 
         try {
-            return tableReader.read(tableName);
+            return tableReader.read(workspaceName, databaseName, tableName);
         } catch (ClassNotFoundException | IOException e) {
             e.printStackTrace();
         }

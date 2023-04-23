@@ -25,8 +25,9 @@ import java.nio.file.Path;
 public class BinaryTableReader extends TableReader {
 
     @Override
-    public Table read(String tableName) throws IOException, ClassNotFoundException {
-        Path tablePath = Config.tablePath(tableName);
+    public Table read(String workspaceName, String databaseName, String tableName)
+            throws IOException, ClassNotFoundException {
+        Path tablePath = Config.tablePath(workspaceName, databaseName, tableName);
         try (InputStream fileIn = Files.newInputStream(tablePath)) {
             ObjectInputStream in = new ObjectInputStream(fileIn);
             Table table = (Table) in.readObject();

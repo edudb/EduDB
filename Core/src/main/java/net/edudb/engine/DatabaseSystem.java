@@ -9,10 +9,7 @@
 
 package net.edudb.engine;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
 
 /**
  * Manages the system's databases and their required files and directories.
@@ -90,9 +87,11 @@ public class DatabaseSystem {
      * @param databaseName The name of the database to create.
      */
     public boolean createDatabase(String databaseName) {
-        if (databaseExists(databaseName)) {
-            return false;
-        }
+        throw new UnsupportedOperationException("This method is deprecated and will be removed. use {@link DatabaseEngine} instead.");
+
+//        if (databaseExists(databaseName)) {
+//            return false;
+//        }
 
 //        new File(Config.databasePath(databaseName)).mkdirs();
 //        new File(Config.tablesPath(databaseName)).mkdirs();
@@ -103,7 +102,7 @@ public class DatabaseSystem {
 //            throw new RuntimeException(e);
 //        }
 
-        return true;
+//        return true;
     }
 
     /**
@@ -112,30 +111,31 @@ public class DatabaseSystem {
      * @param databaseName The name of the database to drop.
      * @throws IOException
      */
-    public String dropDatabase(String databaseName) throws IOException {
-        if (!databaseExists(databaseName)) {
-            return "Database '" + databaseName + "' does not exist";
-        }
+    public String dropDatabase(String databaseName) {
+        throw new UnsupportedOperationException("This method is deprecated and will be removed. use {@link DatabaseEngine} instead.");
+//        if (!databaseExists(databaseName)) {
+//            return "Database '" + databaseName + "' does not exist";
+//        }
 //        if (isDatabaseIsOpen()) {
 //            close();
 //        }
 
-        Path directory = Paths.get(Config.databasesPath() + databaseName);
-        Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                Files.delete(file);
-                return FileVisitResult.CONTINUE;
-            }
+//        Path directory = Paths.get(Config.databasesPath() + databaseName);
+//        Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {
+//            @Override
+//            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+//                Files.delete(file);
+//                return FileVisitResult.CONTINUE;
+//            }
+//
+//            @Override
+//            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+//                Files.delete(dir);
+//                return FileVisitResult.CONTINUE;
+//            }
+//        });
 
-            @Override
-            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-                Files.delete(dir);
-                return FileVisitResult.CONTINUE;
-            }
-        });
-
-        return "Dropped database '" + databaseName + "'";
+//        return "Dropped database '" + databaseName + "'";
     }
 
     /**
@@ -145,14 +145,16 @@ public class DatabaseSystem {
      * @author Ahmed Nasser Gaafar
      */
     public String listDatabases() {
+        throw new UnsupportedOperationException("This method is deprecated and will be removed. use {@link DatabaseEngine} instead.");
+
 //        File databases = new File(Config.databasesPath());
 //        databases.mkdirs();
 //        String[] databaseNames = databases.list();
-        String result = "";
+//        String result = "";
 //        for (String databaseName : databaseNames) {
 //            result += "* " + databaseName + "\r\n";
 //        }
-        return result;
+//        return result;
     }
 
 
@@ -163,7 +165,9 @@ public class DatabaseSystem {
      * @return The availability of the database.
      */
     public boolean databaseExists(String databaseName) {
-        return new File(Config.databasesPath() + databaseName).exists();
+        throw new UnsupportedOperationException("This method is deprecated and will be removed. use {@link DatabaseEngine} instead.");
+
+//        return new File(Config.databasesPath() + databaseName).exists();
     }
 
     /**
@@ -194,10 +198,12 @@ public class DatabaseSystem {
      * @param databaseName The name of the database.
      */
     private void createBlocksDirectory(String databaseName) {
-        File blocks = new File(Config.databasesPath() + databaseName + "/blocks");
-        if (!blocks.exists()) {
-            blocks.mkdir();
-        }
+        throw new UnsupportedOperationException("This method is deprecated and will be removed. use {@link DatabaseEngine} instead.");
+
+//        File blocks = new File(Config.databasesPath() + databaseName + "/blocks");
+//        if (!blocks.exists()) {
+//            blocks.mkdir();
+//        }
     }
 
     /**
