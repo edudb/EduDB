@@ -74,7 +74,7 @@ public class TableManager {
             return table;
         }
 
-        table = FileManager.getInstance().readTable(tableName);
+        table = FileManager.getInstance().readTable(workspaceName, databaseName, tableName);
 
         tableBuffer.get(workspaceName).get(databaseName).put(tableName, table);
 
@@ -187,7 +187,7 @@ public class TableManager {
             throw new TableNotFoundException(String.format("table (%s) is not found", tableName), e);
         }
         try {
-            fileManager.removeLineFromFileWithPrefix(Config.schemaPath(workspaceName, databaseName), tableName);
+            fileManager.removeLineFromFileWithPrefix(Config.schemaPath(workspaceName, databaseName), tableName + " ");
         } catch (FileNotFoundException e) {
             throw new DatabaseNotFoundException(String.format("database (%s) is not found", databaseName), e);
         }
