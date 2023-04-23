@@ -9,7 +9,8 @@
 
 package net.edudb.statistics;
 
-import net.edudb.TestUtils;
+import com.google.common.jimfs.Configuration;
+import com.google.common.jimfs.Jimfs;
 import net.edudb.engine.Config;
 import net.edudb.exception.WorkspaceAlreadyExistException;
 import net.edudb.exception.WorkspaceNotFoundException;
@@ -18,20 +19,29 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.nio.file.FileSystem;
+import java.nio.file.Files;
+
 public class SchemaTest {
+    private static FileSystem fs; // in-memory file system for testing
     private static final String[] workspaces = {"workspace1", "workspace2", "workspace3"};
 
     @BeforeAll
-    public static void setup() throws WorkspaceAlreadyExistException {
+    public static void setup() throws WorkspaceAlreadyExistException, IOException {
+        fs = Jimfs.newFileSystem(Configuration.unix());
+        Config.setAbsolutePath(fs.getPath("test"));
+
+
         for (String workspace : workspaces) {
-            TestUtils.createDirectory(Config.workspacePath(workspace));
-            TestUtils.createDirectory(Config.databasesPath(workspace));
+            Files.createDirectories(Config.databasesPath(workspace));
         }
     }
 
     @AfterAll
-    public static void tearDown() {
-        TestUtils.deleteDirectory(Config.workspacesPath());
+    public static void tearDown() throws IOException {
+        Config.setAbsolutePath(null);
+        fs.close();
     }
 
     @Test

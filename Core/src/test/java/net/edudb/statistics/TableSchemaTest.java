@@ -9,35 +9,47 @@
 
 package net.edudb.statistics;
 
-import net.edudb.TestUtils;
+import com.google.common.jimfs.Configuration;
+import com.google.common.jimfs.Jimfs;
 import net.edudb.engine.Config;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.FileSystem;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 
 public class TableSchemaTest {
+    private static FileSystem fs; // in-memory file system for testing
     private static final String WORKSPACE_NAME = "workspace";
     private static final String DATABASE_NAME = "database";
     private static final String TABLE = "table1 name varchar country varchar";
 
     @BeforeAll
-    public static void setup() throws FileNotFoundException {
-        TestUtils.createDirectory(Config.tablesPath(WORKSPACE_NAME, DATABASE_NAME));
-        TestUtils.createFile(Config.tablePath(WORKSPACE_NAME, DATABASE_NAME, TABLE.split(" ")[0]));
-        TestUtils.appendLineToFile(Config.schemaPath(WORKSPACE_NAME, DATABASE_NAME), TABLE);
+    public static void setup() throws IOException {
+        fs = Jimfs.newFileSystem(Configuration.unix());
+        Config.setAbsolutePath(fs.getPath("test"));
+
+        String tableName = TABLE.split(" ")[0];
+        Files.createDirectories(Config.tablesPath(WORKSPACE_NAME, DATABASE_NAME));
+        Files.createFile(Config.tablePath(WORKSPACE_NAME, DATABASE_NAME, tableName));
+        Files.createFile(Config.schemaPath(WORKSPACE_NAME, DATABASE_NAME));
+        Files.write(Config.schemaPath(WORKSPACE_NAME, DATABASE_NAME),
+                (TABLE + System.lineSeparator()).getBytes(), StandardOpenOption.APPEND);
     }
 
     @AfterAll
-    public static void tearDown() {
-        TestUtils.deleteDirectory(Config.absolutePath());
+    public static void tearDown() throws IOException {
+        Config.setAbsolutePath(null);
+        fs.close();
     }
 
     @Test
-    public void test() {
+    void test() {
         TableSchema tableSchema = new TableSchema(WORKSPACE_NAME, DATABASE_NAME, TABLE);
         String[] tokens = TABLE.split(" ");
         String tableName = tokens[0];

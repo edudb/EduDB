@@ -7,8 +7,6 @@
  * /
  */
 
-import java.io.File;
-
 public class TestUtils {
     public static String createDatabase(String databaseName) {
         return "create database " + databaseName;
@@ -58,14 +56,4 @@ public class TestUtils {
         return query;
     }
 
-
-    public static boolean deleteDirectory(File directoryToBeDeleted) {
-        File[] allContents = directoryToBeDeleted.listFiles();
-        if (allContents != null) {
-            for (File file : allContents) {
-                deleteDirectory(file);
-            }
-        }
-        return directoryToBeDeleted.delete();
-    }
 }

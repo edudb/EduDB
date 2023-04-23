@@ -12,15 +12,26 @@ package net.edudb.jdbc;
 import net.edudb.data_type.TimestampType;
 import net.edudb.exception.InvalidTypeValueException;
 import org.junit.jupiter.api.*;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+@Testcontainers
 public class EdudbResultSetTest {
     /**
      * NOTE: This test class requires a running server instance and RabbitMQ.
      */
+
+//    @Container
+//    public static GenericContainer redis = new GenericContainer(DockerImageName.parse("redis:5.0.3-alpine"))
+//            .withExposedPorts(6379);
+//
+//    @Container
+//    public static GenericContainer rabbitmq = new GenericContainer(DockerImageName.parse("rabbitmq:3.7.7-management"))
+//            .withExposedPorts(5672, 15672);
+
     private static String SERVER_NAME = "server";
     private static String ADMIN_USERNAME = "admin";
     private static String ADMIN_PASSWORD = "admin";
@@ -48,6 +59,14 @@ public class EdudbResultSetTest {
 
     @BeforeAll
     public static void setup() throws ClassNotFoundException, SQLException {
+
+//        System.setProperty("REDIS_HOST", redis.getHost());
+//        System.setProperty("REDIS_PORT", String.valueOf(redis.getFirstMappedPort()));
+//
+//        System.setProperty("AMQP_URL", String.format("amqp://%s:%s"
+//                , rabbitmq.getHost(), rabbitmq.getFirstMappedPort()));
+
+
         // create a unique workspace to avoid reaching the limit of requests per day
         USER_WORKSPACE = String.format("TEST_WORKSPACE_%s", System.currentTimeMillis());
         // create the user

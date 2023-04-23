@@ -7,6 +7,8 @@
  * /
  */
 
+import com.google.common.jimfs.Configuration;
+import com.google.common.jimfs.Jimfs;
 import net.edudb.Request;
 import net.edudb.Response;
 import net.edudb.Server;
@@ -23,7 +25,7 @@ import net.edudb.exception.WorkspaceNotFoundException;
 import net.edudb.statistics.Schema;
 import net.edudb.structure.Record;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
@@ -31,9 +33,9 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
+import java.io.IOException;
+import java.nio.file.FileSystem;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,11 +43,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Testcontainers
 class MainCommandsTest {
     @Container
-    public GenericContainer redis = new GenericContainer(DockerImageName.parse("redis:5.0.3-alpine"))
+    public static GenericContainer redis = new GenericContainer(DockerImageName.parse("redis:5.0.3-alpine"))
             .withExposedPorts(6379);
+    private static FileSystem fs; // in-memory file system for testing
 
-    Server server = new Server();
-    ServerHandler serverHandler = server.getServerHandler();
+    private static ServerHandler serverHandler;
 
     private final String WORKSPACE_NAME = "test";
     private static final String USERNAME = "test";
@@ -59,13 +61,19 @@ class MainCommandsTest {
     private static final String[] COLUMN_VALUES_2 = {"old2"};
     private static final String[] COLUMN_NEW_VALUES = {"new"};
 
-    @BeforeEach
-    void setup() throws UserAlreadyExistException, AuthenticationFailedException, WorkspaceNotFoundException, WorkspaceAlreadyExistException {
+    @BeforeAll
+    static void beforeAll() throws IOException {
         System.setProperty("REDIS_HOST", redis.getHost());
         System.setProperty("REDIS_PORT", String.valueOf(redis.getFirstMappedPort()));
+    }
 
+    @BeforeEach
+    void setup() throws UserAlreadyExistException, AuthenticationFailedException, WorkspaceNotFoundException, WorkspaceAlreadyExistException, IOException {
+        fs = Jimfs.newFileSystem(Configuration.unix());
+        Config.setAbsolutePath(fs.getPath("test"));
 
-        TestUtils.deleteDirectory(new File(Config.absolutePath()));
+        serverHandler = (new Server()).getServerHandler();
+
         DatabaseEngine.getInstance().createWorkspace(WORKSPACE_NAME);
         DatabaseEngine.getInstance().createUser(USERNAME, PASSWORD, UserRole.USER, WORKSPACE_NAME);
         token = Authentication.login(WORKSPACE_NAME, USERNAME, PASSWORD);
@@ -73,9 +81,10 @@ class MainCommandsTest {
     }
 
     @AfterEach
-    void tearDown() {
-        TestUtils.deleteDirectory(new File(Config.absolutePath()));
+    void tearDown() throws IOException {
         Schema.getInstance().reset();
+        Config.setAbsolutePath(null);
+        fs.close();
     }
 
 
@@ -93,10 +102,13 @@ class MainCommandsTest {
     void testCreateDatabase() {
         // Create database
         sendCommand(TestUtils.createDatabase(DATABASE_NAME), null);
-        assertThat(new File(Config.databasePath(USERNAME, DATABASE_NAME))).exists();
-        assertThat(new File(Config.tablesPath(USERNAME, DATABASE_NAME))).exists();
-        assertThat(new File(Config.pagesPath(USERNAME, DATABASE_NAME))).exists();
-        assertThat(new File(Config.schemaPath(USERNAME, DATABASE_NAME))).exists();
+
+        assertThat(Config.databasePath(USERNAME, DATABASE_NAME)).exists();
+        assertThat(Config.tablesPath(USERNAME, DATABASE_NAME)).exists();
+        assertThat(Config.pagesPath(USERNAME, DATABASE_NAME)).exists();
+        assertThat(Config.schemaPath(USERNAME, DATABASE_NAME)).exists();
+
+
     }
 
     @Test
@@ -106,10 +118,11 @@ class MainCommandsTest {
         // Drop database
         sendCommand(TestUtils.dropDatabase(DATABASE_NAME));
 
-        Assertions.assertFalse(new File(Config.databasePath(USERNAME, DATABASE_NAME)).exists());
-        Assertions.assertFalse(new File(Config.tablesPath(USERNAME, DATABASE_NAME)).exists());
-        Assertions.assertFalse(new File(Config.pagesPath(USERNAME, DATABASE_NAME)).exists());
-        Assertions.assertFalse(new File(Config.schemaPath(USERNAME, DATABASE_NAME)).exists());
+        assertThat(Config.databasePath(USERNAME, DATABASE_NAME)).doesNotExist();
+        assertThat(Config.tablesPath(USERNAME, DATABASE_NAME)).doesNotExist();
+        assertThat(Config.pagesPath(USERNAME, DATABASE_NAME)).doesNotExist();
+        assertThat(Config.schemaPath(USERNAME, DATABASE_NAME)).doesNotExist();
+
     }
 
     @Test
@@ -121,10 +134,9 @@ class MainCommandsTest {
 
         List<String> lines = FileManager.getInstance().readFile(Config.schemaPath(USERNAME, DATABASE_NAME));
 
-        Assertions.assertTrue(new File(Config.tablePath(USERNAME, DATABASE_NAME, TABLE_NAME)).exists());
-        Assertions.assertEquals(1, lines.size());
-        Assertions.assertEquals(TABLE_NAME, lines.get(0).split(" ")[0]);
-
+        assertThat(Config.tablePath(USERNAME, DATABASE_NAME, TABLE_NAME)).exists();
+        assertThat(lines).hasSize(1);
+        assertThat(lines.get(0).split(" ")[0]).isEqualTo(TABLE_NAME);
     }
 
     @Test
@@ -136,10 +148,10 @@ class MainCommandsTest {
         // Drop table
         sendCommand(TestUtils.dropTable(TABLE_NAME));
 
-        ArrayList<String> lines = FileManager.getInstance().readFile(Config.schemaPath(USERNAME, DATABASE_NAME));
+        List<String> lines = FileManager.getInstance().readFile(Config.schemaPath(USERNAME, DATABASE_NAME));
 
-        Assertions.assertFalse(new File(Config.tablePath(USERNAME, DATABASE_NAME, TABLE_NAME)).exists());
-        Assertions.assertEquals(0, lines.size());
+        assertThat(Config.tablePath(USERNAME, DATABASE_NAME, TABLE_NAME)).doesNotExist();
+        assertThat(lines).isEmpty();
     }
 
     @Test
@@ -153,11 +165,11 @@ class MainCommandsTest {
         // Select
         Response selectResponse = sendCommand(TestUtils.selectAll(TABLE_NAME));
 
-        Assertions.assertNotNull(selectResponse.getResultSetId());
+        assertThat(selectResponse.getResultSetId()).isNotNull();
         String resultSetId = selectResponse.getResultSetId();
         List<Record> records = DatabaseEngine.getInstance().getNextRecord(WORKSPACE_NAME, DATABASE_NAME, resultSetId, 100);
-        Assertions.assertEquals(1, records.size());
-        Assertions.assertEquals(COLUMN_VALUES[0], records.get(0).getData().values().toArray()[0].toString());
+        assertThat(records).hasSize(1);
+        assertThat(records.get(0).getData().values().toArray()[0]).hasToString(COLUMN_VALUES[0]);
     }
 
     @Test
