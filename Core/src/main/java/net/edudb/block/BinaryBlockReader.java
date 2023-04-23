@@ -12,9 +12,11 @@ package net.edudb.block;
 import net.edudb.engine.Config;
 import net.edudb.page.Page;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * A block reader that reads binary page files from disk.
@@ -26,7 +28,8 @@ public class BinaryBlockReader implements BlockReader {
     @Override
     public Page read(String workspaceName, String databaseName, String blockName) throws IOException, ClassNotFoundException {
         Page page;
-        try (FileInputStream fileIn = new FileInputStream(Config.pagePath(workspaceName, databaseName, blockName))) {
+        Path pagePath = Config.pagePath(workspaceName, databaseName, blockName);
+        try (InputStream fileIn = Files.newInputStream(pagePath)) {
             ObjectInputStream in = new ObjectInputStream(fileIn);
             page = (Page) in.readObject();
             in.close();

@@ -94,14 +94,14 @@ public class DatabaseSystem {
             return false;
         }
 
-        new File(Config.databasePath(databaseName)).mkdirs();
-        new File(Config.tablesPath(databaseName)).mkdirs();
-        new File(Config.pagesPath(databaseName)).mkdirs();
-        try {
-            new File(Config.schemaPath(databaseName)).createNewFile();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+//        new File(Config.databasePath(databaseName)).mkdirs();
+//        new File(Config.tablesPath(databaseName)).mkdirs();
+//        new File(Config.pagesPath(databaseName)).mkdirs();
+//        try {
+//            new File(Config.schemaPath(databaseName)).createNewFile();
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
 
         return true;
     }
@@ -145,13 +145,13 @@ public class DatabaseSystem {
      * @author Ahmed Nasser Gaafar
      */
     public String listDatabases() {
-        File databases = new File(Config.databasesPath());
-        databases.mkdirs();
-        String[] databaseNames = databases.list();
+//        File databases = new File(Config.databasesPath());
+//        databases.mkdirs();
+//        String[] databaseNames = databases.list();
         String result = "";
-        for (String databaseName : databaseNames) {
-            result += "* " + databaseName + "\r\n";
-        }
+//        for (String databaseName : databaseNames) {
+//            result += "* " + databaseName + "\r\n";
+//        }
         return result;
     }
 
@@ -170,10 +170,10 @@ public class DatabaseSystem {
      * Creates the database's root directory.
      */
     private void createDatabasesDirectory() {
-        File databases = new File(Config.databasesPath());
-        if (!databases.exists()) {
-            databases.mkdirs();
-        }
+//        File databases = new File(Config.databasesPath());
+//        if (!databases.exists()) {
+//            databases.mkdirs();
+//        }
     }
 
     /**
@@ -182,10 +182,10 @@ public class DatabaseSystem {
      * @param databaseName The name of the database.
      */
     private void createTablesDirectory(String databaseName) {
-        File tables = new File(Config.tablesPath(databaseName));
-        if (!tables.exists()) {
-            tables.mkdir();
-        }
+//        File tables = new File(Config.tablesPath(databaseName));
+//        if (!tables.exists()) {
+//            tables.mkdir();
+//        }
     }
 
     /**
@@ -217,14 +217,14 @@ public class DatabaseSystem {
      * @param databaseName The name of the database.
      */
     private void createSchemaFile(String databaseName) {
-        File schema = new File(Config.schemaPath(databaseName));
-        if (!schema.exists()) {
-            try {
-                schema.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+//        File schema = new File(Config.schemaPath(databaseName));
+//        if (!schema.exists()) {
+//            try {
+//                schema.createNewFile();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
     }
 
     /**

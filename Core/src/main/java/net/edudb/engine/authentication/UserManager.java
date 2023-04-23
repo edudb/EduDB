@@ -19,6 +19,7 @@ import net.edudb.exception.WorkspaceNotFoundException;
 
 import java.io.FileNotFoundException;
 import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Path;
 import java.util.List;
 
 public class UserManager {
@@ -47,8 +48,7 @@ public class UserManager {
      */
     private void createAdminsFile() {
         try {
-            String adminsFilePath = Config.adminsPath();
-            fileManager.createFile(adminsFilePath);
+            fileManager.createFile(Config.adminsPath());
         } catch (FileAlreadyExistsException e) {
             // Do nothing
         }
@@ -95,7 +95,7 @@ public class UserManager {
             throw new WorkspaceNotFoundException(String.format("Workspace %s not found", workspaceName));
         }
 
-        String usersFilePath = Config.usersPath(workspaceName);
+        Path usersFilePath = Config.usersPath(workspaceName);
         String[] data = {username, hashedPassword, role};
         fileManager.appendToCSV(usersFilePath, data);
     }
@@ -111,7 +111,7 @@ public class UserManager {
             throw new UserAlreadyExistException(String.format("Admin %s already exists", username));
         }
 
-        String adminsFilePath = Config.adminsPath();
+        Path adminsFilePath = Config.adminsPath();
         String[] data = {username, hashedPassword};
         fileManager.appendToCSV(adminsFilePath, data);
     }
@@ -157,7 +157,7 @@ public class UserManager {
      * @author Ahmed Nasser Gaafar
      */
     public List<String[]> readAllUsers(String workspace) throws WorkspaceNotFoundException {
-        String usersFilePath = Config.usersPath(workspace);
+        Path usersFilePath = Config.usersPath(workspace);
 
         try {
             return fileManager.readCSV(usersFilePath);
@@ -171,7 +171,7 @@ public class UserManager {
      * @author Ahmed Nasser Gaafar
      */
     public List<String[]> readAllAdmins() {
-        String usersFilePath = Config.adminsPath();
+        Path usersFilePath = Config.adminsPath();
         try {
             return fileManager.readCSV(usersFilePath);
         } catch (FileNotFoundException e) {
@@ -225,13 +225,13 @@ public class UserManager {
      * @author Ahmed Nasser Gaafar
      */
     private void overwriteUsers(String workspace, List<String[]> users) {
-        String usersFilePath = Config.usersPath(workspace);
+        Path usersFilePath = Config.usersPath(workspace);
         fileManager.writeCSV(usersFilePath, users);
 
     }
 
     private void overwriteAdmins(List<String[]> admins) {
-        String adminsFilePath = Config.adminsPath();
+        Path adminsFilePath = Config.adminsPath();
         fileManager.writeCSV(adminsFilePath, admins);
     }
 }

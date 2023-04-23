@@ -12,9 +12,11 @@ package net.edudb.block;
 import net.edudb.engine.Config;
 import net.edudb.page.Page;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * A block writer that writes binary page files to disk.
@@ -24,7 +26,8 @@ import java.io.ObjectOutputStream;
 public class BinaryBlockWriter implements BlockWriter {
     @Override
     public void write(String workspaceName, String databaseName, Page page) throws IOException {
-        try (FileOutputStream fileOut = new FileOutputStream(Config.pagePath(workspaceName, databaseName, page.getName()))) {
+        Path pagePath = Config.pagePath(workspaceName, databaseName, page.getName());
+        try (OutputStream fileOut = Files.newOutputStream(pagePath)) {
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(page);
             out.close();

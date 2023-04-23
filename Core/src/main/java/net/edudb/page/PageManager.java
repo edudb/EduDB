@@ -11,9 +11,9 @@ package net.edudb.page;
 
 import net.edudb.buffer.BufferManager;
 import net.edudb.engine.Config;
+import net.edudb.engine.FileManager;
 import net.edudb.structure.Record;
 
-import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -74,10 +74,7 @@ public class PageManager implements Pageable, Serializable {
     public void deletePages(String workspaceName, String databaseName) {
         addWorkspaceAndDatabaseIfNotPresent(workspaceName, databaseName);
         for (String pageName : pageNames.get(workspaceName).get(databaseName)) {
-            File page = new File(Config.pagePath(workspaceName, databaseName, pageName));
-            if (page.exists()) {
-                page.delete();
-            }
+            FileManager.getInstance().deletePage(workspaceName, databaseName, pageName);
         }
         pageNames.get(workspaceName).get(databaseName).clear();
     }
