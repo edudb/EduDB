@@ -165,6 +165,7 @@ public class RPCServer {
      * @author Ahmed Nasser Gaafar
      */
     public void closeConnection() throws IOException, TimeoutException {
+        this.channel.queueDelete(this.handshakeQueueName);
         this.channel.close();
         this.connection.close();
     }
