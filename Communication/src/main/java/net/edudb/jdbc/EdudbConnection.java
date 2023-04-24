@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
+import java.util.concurrent.TimeoutException;
 
 public class EdudbConnection implements Connection {
     private final RPCClient client;
@@ -143,7 +144,7 @@ public class EdudbConnection implements Connection {
         isClosed = true;
         try {
             client.closeConnection();
-        } catch (IOException e) {
+        } catch (IOException | TimeoutException e) {
             throw new SQLException(e);
         }
     }

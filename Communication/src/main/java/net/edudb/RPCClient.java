@@ -136,7 +136,9 @@ public class RPCClient {
      * @throws IOException If there is a problem with the IO while closing the connection.
      * @author Ahmed Nasser Gaafar
      */
-    public void closeConnection() throws IOException {
+    public void closeConnection() throws IOException, TimeoutException {
+        this.channel.queueDelete(this.connectionQueueName);
+        this.channel.close();
         this.connection.close();
     }
 

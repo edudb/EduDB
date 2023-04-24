@@ -15,10 +15,10 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class Client {
-    private static Client instance = new Client();
+    private static final Client instance = new Client();
     private static final String DEFAULT_SERVER_NAME = "server";
-    private Console console;
-    private ClientHandler handler;
+    private final Console console;
+    private final ClientHandler handler;
     private Connection connection;
 
     private Client() {

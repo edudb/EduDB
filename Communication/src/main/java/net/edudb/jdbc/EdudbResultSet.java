@@ -23,13 +23,13 @@ import java.sql.*;
 import java.util.*;
 
 public class EdudbResultSet implements ResultSet {
-    EdudbStatement statement;
-    private ArrayList<Record> records;
-    private int firstRecordIdx;
+    private static final int FIRST_RECORD_INDEX = 1;
+    private final EdudbStatement statement;
+    private final String iteratorId;
+    private final Map<String, Integer> columnIndexes;
+    private final ArrayList<Record> records;
     private int currentRecordIdx;
-    private Map<String, Integer> columnIndexes;
     private DataType[] currentRecord;
-    private String iteratorId;
     private int fetchSize;
     private boolean isClosed;
 
@@ -37,7 +37,6 @@ public class EdudbResultSet implements ResultSet {
         this.iteratorId = iteratorId;
         this.statement = statement;
         this.records = new ArrayList<>();
-        this.firstRecordIdx = 1;
         this.currentRecordIdx = 0;
         this.columnIndexes = new HashMap<>();
         this.currentRecord = null;
@@ -50,7 +49,7 @@ public class EdudbResultSet implements ResultSet {
     }
 
     private boolean isCurrentRowIdxValid() {
-        return firstRecordIdx <= currentRecordIdx && currentRecordIdx <= records.size();
+        return FIRST_RECORD_INDEX <= currentRecordIdx && currentRecordIdx <= records.size();
     }
 
     private void fillColumnIndexes() {
@@ -311,7 +310,7 @@ public class EdudbResultSet implements ResultSet {
 
     @Override
     public boolean isBeforeFirst() throws SQLException {
-        return currentRecordIdx == firstRecordIdx - 1;
+        return currentRecordIdx == FIRST_RECORD_INDEX - 1;
     }
 
     @Override
@@ -321,7 +320,7 @@ public class EdudbResultSet implements ResultSet {
 
     @Override
     public boolean isFirst() throws SQLException {
-        return currentRecordIdx == firstRecordIdx;
+        return currentRecordIdx == FIRST_RECORD_INDEX;
     }
 
     @Override
@@ -331,7 +330,7 @@ public class EdudbResultSet implements ResultSet {
 
     @Override
     public void beforeFirst() throws SQLException {
-        currentRecordIdx = firstRecordIdx - 1;
+        currentRecordIdx = FIRST_RECORD_INDEX - 1;
     }
 
     @Override
@@ -343,7 +342,7 @@ public class EdudbResultSet implements ResultSet {
     public boolean first() throws SQLException {
         if (records.isEmpty())
             return false;
-        currentRecordIdx = firstRecordIdx;
+        currentRecordIdx = FIRST_RECORD_INDEX;
         return true;
     }
 
