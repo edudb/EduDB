@@ -17,15 +17,19 @@ import net.edudb.structure.table.TableAbstractFactory;
 import net.edudb.structure.table.TableReader;
 import net.edudb.structure.table.TableReaderFactory;
 
-import java.io.*;
-import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class FileManager {
     private static final FileManager instance = new FileManager();
+    private static final String PATH_NOT_FOUND_FORMAT = "(%s) is not found";
+    private static final String PATH_ALREADY_EXISTS_FORMAT = "(%s) already exists";
 
     private FileManager() {
     }
@@ -41,22 +45,28 @@ public class FileManager {
      * @return a list of strings containing all lines from the file, or an empty list if an error occurs
      * @author Ahmed Nasser Gaafar
      */
-    public ArrayList<String> readFile(String filePath) throws FileNotFoundException {
-        ArrayList<String> lines = new ArrayList<>();
-        try {
-            lines = (ArrayList<String>) Files.readAllLines(Paths.get(filePath));
-        } catch (IOException e) {
-            throw new FileNotFoundException(String.format("(%s) is not found", filePath));
+    public List<String> readFile(Path filePath) throws FileNotFoundException {
+        if (!isFileExists(filePath)) {
+            throw new FileNotFoundException(String.format(PATH_NOT_FOUND_FORMAT, filePath));
         }
-        lines.removeIf(String::isEmpty);
-        return lines;
+
+        try {
+            List<String> lines = Files.readAllLines(filePath);
+            lines.removeIf(String::isEmpty);
+            return lines;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public List<String[]> readCSV(String filePath) throws FileNotFoundException {
-        ArrayList<String> lines = readFile(filePath);
+    public List<String[]> readCSV(Path filePath) throws FileNotFoundException {
+        List<String> lines = readFile(filePath);
         List<String[]> data = new ArrayList<>();
         for (String line : lines) {
-            data.add(line.split(","));
+            String[] row = Arrays.stream(line.split(","))
+                    .map(String::trim).toArray(String[]::new);
+
+            data.add(row);
         }
         return data;
     }
@@ -69,22 +79,24 @@ public class FileManager {
      * @param append   true to append the data to the end of the file, false to overwrite the file
      * @author Ahmed Nasser Gaafar
      */
-    public void writeFile(String filePath, String data, boolean append) {
-        try {
-            File file = new File(filePath);
-            if (!file.exists()) {
-                file.createNewFile();
+    public void writeFile(Path filePath, String data, boolean append) {
+        if (!isFileExists(filePath)) {
+            try {
+                createFile(filePath);
+            } catch (FileAlreadyExistsException e) {
+                e.printStackTrace();
             }
-            BufferedWriter writer = new BufferedWriter(new FileWriter(file, append));
-            writer.write(data + System.lineSeparator());
-            writer.close();
+        }
+        try {
+            Files.write(filePath, data.getBytes(),
+                    append ? StandardOpenOption.APPEND : StandardOpenOption.TRUNCATE_EXISTING);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
 
-    public void writeCSV(String filePath, List<String[]> data) {
+    public void writeCSV(Path filePath, List<String[]> data) {
         StringBuilder builder = new StringBuilder();
         for (String[] row : data) {
             for (String cell : row) {
@@ -97,7 +109,7 @@ public class FileManager {
         writeFile(filePath, builder.toString(), false);
     }
 
-    public void appendToCSV(String filePath, String[] data) {
+    public void appendToCSV(Path filePath, String[] data) {
         StringBuilder builder = new StringBuilder();
         for (String cell : data) {
             builder.append(cell).append(",");
@@ -141,18 +153,26 @@ public class FileManager {
         }
     }
 
+    public void deletePage(String workspaceName, String databaseName, String pageName) {
+        try {
+            Files.deleteIfExists(Config.pagePath(workspaceName, databaseName, pageName));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     /**
      * Reads a table from disk using a table reader.
      *
      * @param tableName The name of the table to read.
      * @return The read table.
      */
-    public Table readTable(String tableName) {
+    public Table readTable(String workspaceName, String databaseName, String tableName) {
         TableAbstractFactory tableFactory = new TableReaderFactory();
         TableReader tableReader = tableFactory.getReader(Config.tableType());
 
         try {
-            return tableReader.read(tableName);
+            return tableReader.read(workspaceName, databaseName, tableName);
         } catch (ClassNotFoundException | IOException e) {
             e.printStackTrace();
         }
@@ -166,17 +186,16 @@ public class FileManager {
      * @throws DirectoryNotFoundException if the given directory does not exist
      * @author Ahmed Nasser Gaafar
      */
-    public String[] listDirectories(String path) throws DirectoryNotFoundException {
-        File directory = new File(path);
-        if (!directory.exists()) {
-            throw new DirectoryNotFoundException(String.format("(%s) is not found", path));
+    public String[] listDirectories(Path path) throws DirectoryNotFoundException {
+        if (!isDirectoryExists(path)) {
+            throw new DirectoryNotFoundException(String.format(PATH_NOT_FOUND_FORMAT, path));
         }
-        File[] subDirectories = directory.listFiles(File::isDirectory);
-        String[] subDirectoriesNames = new String[subDirectories.length];
-        for (int i = 0; i < subDirectories.length; i++) {
-            subDirectoriesNames[i] = subDirectories[i].getName();
+
+        try (Stream<Path> paths = Files.list(path)) {
+            return paths.map(Path::getFileName).map(Path::toString).toArray(String[]::new);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        return subDirectoriesNames;
     }
 
     /**
@@ -184,18 +203,17 @@ public class FileManager {
      * @return an array of strings containing the names of the files of the given directory without the extension
      * @throws DirectoryNotFoundException if the given directory does not exist
      */
-    public String[] listFiles(String path) throws DirectoryNotFoundException {
-        File directory = new File(path);
-        if (!directory.exists()) {
-            throw new DirectoryNotFoundException(String.format("(%s) is not found", path));
+    public String[] listFiles(Path path) throws DirectoryNotFoundException {
+        if (!isDirectoryExists(path)) {
+            throw new DirectoryNotFoundException(String.format(PATH_NOT_FOUND_FORMAT, path));
         }
-        File[] files = directory.listFiles(File::isFile);
-        String[] filesNames = new String[files.length];
-        for (int i = 0; i < files.length; i++) {
-            String fileName = files[i].getName();
-            filesNames[i] = fileName.split("\\.")[0];
+
+        try (Stream<Path> paths = Files.list(path)) {
+            return paths.map(Path::getFileName).map(Path::toString)
+                    .map(s -> s.split("\\.")[0]).toArray(String[]::new);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        return filesNames;
     }
 
     /**
@@ -231,7 +249,7 @@ public class FileManager {
     /**
      * @param workspaceName the name of the workspace that contains the database to list its pages
      * @param databaseName  the name of the database to list its pages
-     * @return an array of strings containing the names of the pages in the given database
+     * @return an list of strings containing the names of the pages in the given database
      * @throws FileNotFoundException if the given workspace or database does not exist
      * @author Ahmed Nasser Gaafar
      */
@@ -244,19 +262,22 @@ public class FileManager {
      * @throws DirectoryAlreadyExistsException if the given directory already exists
      * @author Ahmed Nasser Gaafar
      */
-    public void createDirectory(String path) throws DirectoryAlreadyExistsException {
-        File directory = new File(path);
-        if (directory.exists()) {
-            throw new DirectoryAlreadyExistsException(String.format("(%s) already exists", path));
+    public void createDirectory(Path path) throws DirectoryAlreadyExistsException {
+        if (isDirectoryExists(path)) {
+            throw new DirectoryAlreadyExistsException(String.format(PATH_ALREADY_EXISTS_FORMAT, path));
         }
-        directory.mkdirs();
+        try {
+            Files.createDirectories(path);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
      * @param path the path of the directory to create if not exists
      * @author Ahmed Nasser Gaafar
      */
-    public void createDirectoryIfNotExists(String path) {
+    public void createDirectoryIfNotExists(Path path) {
         try {
             createDirectory(path);
         } catch (DirectoryAlreadyExistsException e) {
@@ -270,50 +291,47 @@ public class FileManager {
      * @throws DirectoryNotFoundException if the given directory does not exist
      * @author Ahmed Nasser Gaafar
      */
-    public void deleteDirectory(String path) throws DirectoryNotFoundException {
-        File directory = new File(path);
-        if (!directory.exists()) {
-            throw new DirectoryNotFoundException(String.format("(%s) is not found", path));
+    public void deleteDirectory(Path path) throws DirectoryNotFoundException {
+        if (!isDirectoryExists(path)) {
+            throw new DirectoryNotFoundException(String.format(PATH_NOT_FOUND_FORMAT, path));
         }
-        deleteDirectoryRecursively(directory);
-    }
 
-    /**
-     * @param directory the directory to delete recursively
-     * @author Ahmed Nasser Gaafar
-     */
-    private void deleteDirectoryRecursively(File directory) {
-        File[] files = directory.listFiles();
-        if (files != null) {
-            for (File file : files) {
-                if (file.isDirectory()) {
-                    deleteDirectoryRecursively(file);
-                } else {
-                    file.delete();
+        try {
+            Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    Files.delete(file);
+                    return FileVisitResult.CONTINUE;
                 }
-            }
+
+                @Override
+                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                    Files.delete(dir);
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        directory.delete();
+
     }
 
-    private boolean isDirectoryExists(String path) {
-        File directory = new File(path);
-        return directory.exists();
+    private boolean isDirectoryExists(Path path) {
+        return Files.exists(path);
     }
 
-    public void createFile(String path) throws FileAlreadyExistsException {
-        File file = new File(path);
-        if (file.exists()) {
-            throw new FileAlreadyExistsException(String.format("(%s) already exists", path));
+    public void createFile(Path path) throws FileAlreadyExistsException {
+        if (isFileExists(path)) {
+            throw new FileAlreadyExistsException(String.format(PATH_ALREADY_EXISTS_FORMAT, path));
         }
         try {
-            file.createNewFile();
+            Files.createFile(path);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void createFileIfNotExists(String path) {
+    public void createFileIfNotExists(Path path) {
         try {
             createFile(path);
         } catch (FileAlreadyExistsException e) {
@@ -321,29 +339,40 @@ public class FileManager {
         }
     }
 
-    public void deleteFile(String path) throws FileNotFoundException {
-        File file = new File(path);
-        if (!file.exists()) {
-            throw new FileNotFoundException(String.format("(%s) is not found", path));
+    public void deleteFile(Path path) throws FileNotFoundException {
+        if (!isFileExists(path)) {
+            throw new FileNotFoundException(String.format(PATH_NOT_FOUND_FORMAT, path));
         }
-        file.delete();
+        try {
+            Files.delete(path);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public void appendLineToFile(String path, String line) throws FileNotFoundException {
-        if (!new File(path).exists()) {
-            throw new FileNotFoundException(String.format("(%s) is not found", path));
+    public boolean isFileExists(Path path) {
+        return Files.exists(path);
+    }
+
+    public void appendLineToFile(Path path, String line) throws FileNotFoundException {
+        if (!isFileExists(path)) {
+            throw new FileNotFoundException(String.format(PATH_NOT_FOUND_FORMAT, path));
         }
         writeFile(path, line, true);
     }
 
-    public void removeLineFromFileWithPrefix(String path, String prefix) throws FileNotFoundException {
-        List<String> lines = readFile(path);
-        StringBuilder newFileData = new StringBuilder();
-        for (String line : lines) {
-            if (line.startsWith(prefix)) continue;
-            newFileData.append(line);
+    public void removeLineFromFileWithPrefix(Path path, String prefix) throws FileNotFoundException {
+        if (!isFileExists(path)) {
+            throw new FileNotFoundException(String.format(PATH_NOT_FOUND_FORMAT, path));
         }
-        writeFile(path, newFileData.toString(), false);
+
+        try {
+            List<String> lines = Files.readAllLines(path);
+            List<String> newLines = lines.stream().filter(line -> !line.startsWith(prefix)).toList();
+            Files.write(path, newLines);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void createWorkspace(String workspaceName) throws WorkspaceAlreadyExistException {

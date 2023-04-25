@@ -9,19 +9,25 @@
 
 package net.edudb.engine.authentication;
 
-import net.edudb.TestUtils;
+import com.google.common.jimfs.Configuration;
+import com.google.common.jimfs.Jimfs;
 import net.edudb.engine.Config;
 import net.edudb.exception.AuthenticationFailedException;
 import net.edudb.exception.UserAlreadyExistException;
 import net.edudb.exception.UserNotFoundException;
 import net.edudb.exception.WorkspaceNotFoundException;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystem;
+import java.nio.file.Files;
 import java.util.List;
 
-public class AuthenticationTest {
+class AuthenticationTest {
+    private static FileSystem fs; // in-memory file system for testing
     private static final String WORKSPACE = "test_workspace";
     private static final String USERNAME = "test_username";
     private static final String PASSWORD = "password";
@@ -30,26 +36,22 @@ public class AuthenticationTest {
 
     @BeforeEach
     public void setup() throws IOException {
-        TestUtils.deleteDirectory(Config.absolutePath());
-        new File(Config.workspacePath(WORKSPACE)).mkdirs();
-        new File(Config.usersPath(WORKSPACE)).createNewFile();
-        new File(Config.adminsPath()).createNewFile();
+        fs = Jimfs.newFileSystem(Configuration.unix());
+        Config.setAbsolutePath(fs.getPath("test"));
+
+        Files.createDirectories(Config.workspacePath(WORKSPACE));
+        Files.createFile(Config.adminsPath());
+        Files.createFile(Config.usersPath(WORKSPACE));
     }
 
     @AfterEach
-    public void tearDown() {
-        TestUtils.deleteDirectory(Config.absolutePath());
-    }
-
-    @AfterAll
-    public static void cleanUp() {
-        new File(Config.workspacesPath()).delete();
-        new File(Config.adminsPath()).delete();
-        new File(Config.absolutePath()).delete();
+    void tearDown() throws IOException {
+        Config.setAbsolutePath(null);
+        fs.close();
     }
 
     @Test
-    public void createUser() throws UserAlreadyExistException, WorkspaceNotFoundException {
+    void createUser() throws UserAlreadyExistException, WorkspaceNotFoundException {
         Authentication.createUser(USERNAME, PASSWORD, ROLE, WORKSPACE);
         List<String[]> users = UserManager.getInstance().readAllUsers(WORKSPACE);
         for (String[] user : users) {
@@ -64,7 +66,7 @@ public class AuthenticationTest {
     }
 
     @Test
-    public void createDuplicatedUser() throws UserAlreadyExistException, WorkspaceNotFoundException {
+    void createDuplicatedUser() throws UserAlreadyExistException, WorkspaceNotFoundException {
         Authentication.createUser(USERNAME, PASSWORD, ROLE, WORKSPACE);
         Assertions.assertThrows(UserAlreadyExistException.class, () -> Authentication.createUser(USERNAME, PASSWORD, ROLE, WORKSPACE));
     }
@@ -89,6 +91,16 @@ public class AuthenticationTest {
         Authentication.removeUser(WORKSPACE, USERNAME);
         List<String[]> users = UserManager.getInstance().readAllUsers(WORKSPACE);
         Assertions.assertEquals(0, users.size());
+    }
+
+
+    @Test
+    void removeExistingUserWithCommonPrefix() throws UserNotFoundException, UserAlreadyExistException, WorkspaceNotFoundException {
+        Authentication.createUser(USERNAME, PASSWORD, ROLE, WORKSPACE);
+        Authentication.createUser(USERNAME + "_temp", PASSWORD, ROLE, WORKSPACE);
+        Authentication.removeUser(WORKSPACE, USERNAME);
+        List<String[]> users = UserManager.getInstance().readAllUsers(WORKSPACE);
+        Assertions.assertEquals(1, users.size());
     }
 
     @Test

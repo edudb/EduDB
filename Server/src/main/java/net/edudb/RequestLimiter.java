@@ -9,27 +9,20 @@
 
 package net.edudb;
 
-import net.edudb.engine.Config;
 import redis.clients.jedis.Jedis;
 
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 
 public class RequestLimiter {
-    private static RequestLimiter instance;
     private final Jedis jedis;
+    private final int maxRequestsNumber;
+    private final long duration;
 
-    private RequestLimiter() {
-        String host = System.getProperty("REDIS_HOST", "localhost");
-        int port = Integer.parseInt(System.getProperty("REDIS_PORT", "6379"));
-        this.jedis = new Jedis(host, port);
-    }
-
-    public static synchronized RequestLimiter getInstance() {
-        if (instance == null) {
-            instance = new RequestLimiter();
-        }
-        return instance;
+    public RequestLimiter(Jedis jedis, int maxRequestsNumber, long duration) {
+        this.jedis = jedis;
+        this.maxRequestsNumber = maxRequestsNumber;
+        this.duration = duration;
     }
 
     public boolean allowRequest(String userId) {
@@ -38,8 +31,8 @@ public class RequestLimiter {
         String key = String.format("%s:%d", userId, epochStart);
         long requestCount = jedis.incr(key);
         if (requestCount == 1) {
-            jedis.expire(key, 24 * 60 * 60); // expire in 24 hours
+            jedis.expire(key, duration);
         }
-        return requestCount <= Config.MAX_REQUESTS_NUMBER_PER_WORKSPACE_PER_DAY;
+        return requestCount <= maxRequestsNumber;
     }
 }

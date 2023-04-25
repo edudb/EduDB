@@ -12,7 +12,7 @@ package net.edudb.engine.authentication;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class PasswordUtilTest {
+class PasswordUtilTest {
     private static final String PASSWORD = "password";
 
     @Test

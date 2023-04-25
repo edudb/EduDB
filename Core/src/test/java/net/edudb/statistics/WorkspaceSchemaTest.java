@@ -9,7 +9,8 @@
 
 package net.edudb.statistics;
 
-import net.edudb.TestUtils;
+import com.google.common.jimfs.Configuration;
+import com.google.common.jimfs.Jimfs;
 import net.edudb.engine.Config;
 import net.edudb.exception.DatabaseAlreadyExistException;
 import net.edudb.exception.DatabaseNotFoundException;
@@ -18,23 +19,32 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.nio.file.FileSystem;
+import java.nio.file.Files;
+
 public class WorkspaceSchemaTest {
+    private static FileSystem fs; // in-memory file system for testing
+
     private static final String WORKSPACE_NAME = "workspace";
     private static final String[] DATABASES_NAMES = {"database1", "database2", "database3"};
 
     @BeforeAll
-    public static void setup() throws DatabaseAlreadyExistException {
+    public static void setup() throws DatabaseAlreadyExistException, IOException {
+        fs = Jimfs.newFileSystem(Configuration.unix());
+        Config.setAbsolutePath(fs.getPath("test"));
+
         for (String database : DATABASES_NAMES) {
-            TestUtils.createDirectory(Config.databasePath(WORKSPACE_NAME, database));
-            TestUtils.createDirectory(Config.tablesPath(WORKSPACE_NAME, database));
-            TestUtils.createDirectory(Config.pagesPath(WORKSPACE_NAME, database));
-            TestUtils.createFile(Config.schemaPath(WORKSPACE_NAME, database));
+            Files.createDirectories(Config.tablesPath(WORKSPACE_NAME, database));
+            Files.createDirectories(Config.pagesPath(WORKSPACE_NAME, database));
+            Files.createFile(Config.schemaPath(WORKSPACE_NAME, database));
         }
     }
 
     @AfterAll
-    public static void tearDown() {
-        TestUtils.deleteDirectory(Config.absolutePath());
+    public static void tearDown() throws IOException {
+        Config.setAbsolutePath(null);
+        fs.close();
     }
 
     @Test

@@ -13,8 +13,10 @@ import net.edudb.Request;
 import net.edudb.RequestLimiter;
 import net.edudb.Response;
 import net.edudb.ResponseStatus;
+import net.edudb.engine.Config;
 import net.edudb.engine.authentication.JwtUtil;
 import net.edudb.engine.authentication.UserRole;
+import redis.clients.jedis.Jedis;
 
 public class RequestLimiterChecker implements ConsoleExecutorChain {
     private ConsoleExecutorChain nextElement;
@@ -27,10 +29,26 @@ public class RequestLimiterChecker implements ConsoleExecutorChain {
 
     @Override
     public Response execute(Request request) {
+        // request data
         String token = request.getAuthToken();
         String workspace = JwtUtil.getWorkspaceName(token);
         UserRole role = JwtUtil.getUserRole(token);
-        if (role != UserRole.ADMIN && !RequestLimiter.getInstance().allowRequest(workspace)) {
+
+        if (role == UserRole.ADMIN) {
+            return nextElement.execute(request);
+        }
+
+        // connect to redis
+        String host = System.getProperty("REDIS_HOST", "localhost");
+        int port = Integer.parseInt(System.getProperty("REDIS_PORT", "6379"));
+        Jedis jedis = new Jedis(host, port);
+
+        // check user daily limit
+        int maxRequestsNumber = Config.MAX_REQUESTS_NUMBER_PER_WORKSPACE;
+        long duration = Config.DURATION_OF_REQUESTS_LIMIT_IN_SECONDS;
+        RequestLimiter requestLimiter = new RequestLimiter(jedis, maxRequestsNumber, duration);
+
+        if (!requestLimiter.allowRequest(workspace)) {
             return new Response("Number of requests exceeded the daily limit", ResponseStatus.ERROR);
         }
         return nextElement.execute(request);

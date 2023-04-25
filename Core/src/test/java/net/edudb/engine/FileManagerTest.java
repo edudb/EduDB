@@ -9,76 +9,257 @@
 
 package net.edudb.engine;
 
-import net.edudb.TestUtils;
+import com.google.common.jimfs.Configuration;
+import com.google.common.jimfs.Jimfs;
 import net.edudb.exception.DatabaseAlreadyExistException;
 import net.edudb.exception.DirectoryAlreadyExistsException;
 import net.edudb.exception.DirectoryNotFoundException;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
-import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.FileSystem;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
-public class FileManagerTest {
-    private static FileManager fileManager = FileManager.getInstance();
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+class FileManagerTest {
+    private static FileSystem fs; // in-memory file system for testing
+    private static final FileManager fileManager = FileManager.getInstance();
     private static final String[] DIRECTORIES = {"dir1", "dir2"};
     private static final String NON_EXISTING_DIRECTORY = "nonExistingDirectory";
     private static final String[] FILES = {"file1", "file2"};
-    private static final String NON_EXISTING_FILE = "nonExistingFile";
     private static final String[] WORKSPACES = {"workspace1", "workspace2"};
     private static final String[] DATABASES = {"database1", "database2"};
     private static final String[] TABLES = {"table1", "table2"};
 
     @BeforeEach
-    public void setup() throws DirectoryAlreadyExistsException, DirectoryNotFoundException {
-        TestUtils.createDirectory(Config.absolutePath());
+    public void setup() throws DirectoryAlreadyExistsException, DirectoryNotFoundException, IOException {
+        fs = Jimfs.newFileSystem(Configuration.unix());
+        Config.setAbsolutePath(fs.getPath("test"));
+        Files.createDirectories(Config.absolutePath());
     }
 
     @AfterEach
-    public void tearDown() {
-        TestUtils.deleteDirectory(Config.absolutePath());
+    public void tearDown() throws IOException {
+        Config.setAbsolutePath(null);
+        fs.close();
     }
 
     @Test
-    public void testListDirectories() throws DirectoryNotFoundException, DirectoryAlreadyExistsException {
-        for (String dir : DIRECTORIES) {
-            fileManager.createDirectory(Config.absolutePath() + File.separator + dir);
+    @DisplayName("should return list of lines in file")
+    void testReadFile() throws IOException {
+        String[] lines = {"line1", "line2"};
+        Path path = fs.getPath("test/file");
+        Files.write(path, Arrays.asList(lines));
+
+        List<String> readLines = fileManager.readFile(path);
+
+        assertThat(readLines).containsExactly(lines);
+    }
+
+    @Test
+    @DisplayName("should throw FileNotFoundException if file does not exist")
+    void testReadFileOfNonExistingFile() {
+        Path path = fs.getPath("test/nonExistingFile");
+
+        assertThatThrownBy(() -> fileManager.readFile(path))
+                .isInstanceOf(FileNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("should return list of arrays of strings in csv file")
+    void testReadCSV() throws IOException {
+        String[] lines = {"name, age", "John, 20", "Mary, 21"};
+        List<String[]> expectedLines = Arrays.asList(
+                new String[]{"name", "age"},
+                new String[]{"John", "20"},
+                new String[]{"Mary", "21"}
+        );
+        Path path = fs.getPath("test/file");
+        Files.write(path, Arrays.asList(lines));
+
+        List<String[]> readLines = fileManager.readCSV(path);
+
+        assertThat(readLines).containsExactly(expectedLines.toArray(new String[0][0]));
+    }
+
+    @Test
+    @DisplayName("should throw FileNotFoundException if file does not exist")
+    void testReadCSVOfNonExistingFile() {
+        Path path = fs.getPath("test/nonExistingFile");
+
+        assertThatThrownBy(() -> fileManager.readCSV(path))
+                .isInstanceOf(FileNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("should overwrite file if it exists")
+    void testOverwriteFile1() throws IOException {
+        Path path = fs.getPath("test/file");
+        String content = "content";
+        Files.createFile(path);
+        Files.write(path, "old content".getBytes());
+
+        fileManager.writeFile(path, content, false);
+
+        assertThat(path).exists().hasContent(content);
+    }
+
+    @Test
+    @DisplayName("should create file if it does not exist")
+    void testOverwriteFile2() {
+        Path path = fs.getPath("test/file");
+        String content = "content";
+
+        fileManager.writeFile(path, content, false);
+
+        assertThat(path).exists().hasContent(content);
+    }
+
+    @Test
+    @DisplayName("should append to file if file exists")
+    void testAppendToFile1() throws IOException {
+        Path path = fs.getPath("test/file");
+        String content = "content";
+        Files.createFile(path);
+
+        fileManager.writeFile(path, content, true);
+
+        assertThat(path).exists().hasContent(content);
+
+        fileManager.writeFile(path, content, true);
+
+        assertThat(path).exists().hasContent(content + content);
+    }
+
+    @Test
+    @DisplayName("should create file if it does not exist")
+    void testAppendToFile2() {
+        Path path = fs.getPath("test/file");
+        String content = "content";
+
+        fileManager.writeFile(path, content, true);
+
+        assertThat(path).exists().hasContent(content);
+    }
+
+    @Test
+    @DisplayName("should write csv to file and create file if it does not exist")
+    void testWriteCSV() {
+        Path path = fs.getPath("test/file");
+        List<String[]> lines = Arrays.asList(
+                new String[]{"name", "age"},
+                new String[]{"John", "20"},
+                new String[]{"Mary", "21"}
+        );
+        String expectedLines = "name,age\n" +
+                "John,20\n" +
+                "Mary,21\n";
+
+        fileManager.writeCSV(path, lines);
+
+        assertThat(path).exists().hasContent(expectedLines);
+    }
+
+    @Test
+    @DisplayName("should write csv to file and overwrite file if it exists")
+    void testWriteCSV2() throws IOException {
+        Path path = fs.getPath("test/file");
+        List<String[]> lines = Arrays.asList(
+                new String[]{"name", "age"},
+                new String[]{"John", "20"},
+                new String[]{"Mary", "21"}
+        );
+        String expectedLines = "name,age\n" +
+                "John,20\n" +
+                "Mary,21\n";
+        Files.createFile(path);
+        Files.write(path, "old content".getBytes());
+
+        fileManager.writeCSV(path, lines);
+
+        assertThat(path).exists().hasContent(expectedLines);
+    }
+
+    @Test
+    @DisplayName("should append csv to file and create file if it does not exist")
+    void testAppendCSV() {
+        Path path = fs.getPath("test/file");
+        String[] lines = new String[]{"name", "age"};
+        String expectedLines = "name,age\n";
+
+        fileManager.appendToCSV(path, lines);
+
+        assertThat(path).exists().hasContent(expectedLines);
+    }
+
+    @Test
+    @DisplayName("should append csv to file and append to file if it exists")
+    void testAppendCSV2() throws IOException {
+        Path path = fs.getPath("test/file");
+        String oldContent = "old,content\n";
+        String[] lineToWrite = new String[]{"name", "age"};
+        String expectedLines = oldContent + "name,age\n";
+        Files.createFile(path);
+        Files.write(path, oldContent.getBytes());
+
+        fileManager.appendToCSV(path, lineToWrite);
+
+        assertThat(path).exists().hasContent(expectedLines);
+    }
+
+    @Test
+    @DisplayName(("should list all directories in given directory if it exists"))
+    void testListDirectories() throws DirectoryNotFoundException, IOException {
+        String[] directories = {"dir1", "dir2", "dir3"};
+        Path path = fs.getPath("test");
+        for (String dir : directories) {
+            Files.createDirectory(path.resolve(dir));
         }
+
         String[] listedDirectories = fileManager.listDirectories(Config.absolutePath());
-        Arrays.sort(listedDirectories);
-        Assertions.assertArrayEquals(DIRECTORIES, listedDirectories);
+
+        assertThat(listedDirectories).containsExactlyElementsOf(Arrays.asList(directories));
     }
 
     @Test
-    public void testListDirectoriesOfNonExistingDirectory() {
-        Assertions.assertThrows(DirectoryNotFoundException.class, () -> {
-            fileManager.listDirectories(Config.absolutePath() + File.separator + NON_EXISTING_DIRECTORY);
-        });
+    @DisplayName("should throw DirectoryNotFoundException if directory does not exist")
+    void testListDirectoriesOfNonExistingDirectory() {
+        Path path = fs.getPath(NON_EXISTING_DIRECTORY);
+        assertThatThrownBy(() -> fileManager.listDirectories(path))
+                .isInstanceOf(DirectoryNotFoundException.class);
     }
 
     @Test
-    public void testListFiles() throws DirectoryNotFoundException {
-        for (String file : FILES) {
-            TestUtils.createFile(Config.absolutePath() + File.separator + file);
+    @DisplayName("should list all files in given directory if it exists")
+    void testListFiles() throws DirectoryNotFoundException, IOException {
+        String[] files = {"file1.txt", "file2.mp2", "file3.pdf"};
+        String[] expectedFiles = {"file1", "file2", "file3"};
+        Path path = fs.getPath("test");
+        for (String file : files) {
+            Files.createFile(path.resolve(file));
         }
-        String[] listedFiles = fileManager.listFiles(Config.absolutePath());
-        Arrays.sort(listedFiles);
-        Assertions.assertArrayEquals(FILES, listedFiles);
+
+        String[] listedFiles = fileManager.listFiles(path);
+
+        assertThat(listedFiles).containsExactlyElementsOf(Arrays.asList(expectedFiles));
     }
 
     @Test
-    public void testListFilesOfNonExistingDirectory() {
-        Assertions.assertThrows(DirectoryNotFoundException.class, () -> {
-            fileManager.listFiles(Config.absolutePath() + File.separator + NON_EXISTING_DIRECTORY);
-        });
+    @DisplayName("should throw DirectoryNotFoundException if directory does not exist")
+    void testListFilesOfNonExistingDirectory() {
+        Path path = fs.getPath(NON_EXISTING_DIRECTORY);
+        assertThatThrownBy(() -> fileManager.listFiles(path))
+                .isInstanceOf(DirectoryNotFoundException.class);
     }
 
     @Test
-    public void testListWorkspaces() throws DirectoryNotFoundException, DirectoryAlreadyExistsException {
+    void testListWorkspaces() throws DirectoryNotFoundException, DirectoryAlreadyExistsException {
         for (String workspace : WORKSPACES) {
             fileManager.createDirectory(Config.workspacePath(workspace));
         }
@@ -88,7 +269,7 @@ public class FileManagerTest {
     }
 
     @Test
-    public void testListDatabases() throws DirectoryNotFoundException, DirectoryAlreadyExistsException {
+    void testListDatabases() throws DirectoryNotFoundException, DirectoryAlreadyExistsException {
         for (String database : DATABASES) {
             fileManager.createDirectory(Config.databasePath(WORKSPACES[0], database));
         }
@@ -98,10 +279,10 @@ public class FileManagerTest {
     }
 
     @Test
-    public void testListTables() throws DirectoryNotFoundException, DatabaseAlreadyExistException {
+    void testListTables() throws DirectoryNotFoundException, DatabaseAlreadyExistException, IOException {
         fileManager.createDatabase(WORKSPACES[0], DATABASES[0]);
         for (String table : TABLES) {
-            TestUtils.createFile(Config.tablePath(WORKSPACES[0], DATABASES[0], table));
+            Files.createFile(Config.tablePath(WORKSPACES[0], DATABASES[0], table));
         }
         String[] listedTables = fileManager.listTables(WORKSPACES[0], DATABASES[0]);
         Arrays.sort(listedTables);
@@ -109,9 +290,8 @@ public class FileManagerTest {
     }
 
     @Test
-    public void testReadSchemaFile() throws FileNotFoundException, DatabaseAlreadyExistException {
+    void testReadSchemaFile() throws IOException, DatabaseAlreadyExistException {
         fileManager.createDatabase(WORKSPACES[0], DATABASES[0]);
-        TestUtils.createFile(Config.schemaPath(WORKSPACES[0], DATABASES[0]));
         fileManager.appendLineToFile(Config.schemaPath(WORKSPACES[0], DATABASES[0]), "schema");
         List<String> lines = fileManager.readSchemaFile(WORKSPACES[0], DATABASES[0]);
         Assertions.assertEquals(1, lines.size());
@@ -119,8 +299,8 @@ public class FileManagerTest {
     }
 
     @Test
-    public void testReadSchemaFileOfNonExistingDatabase() throws DatabaseAlreadyExistException {
-        TestUtils.createDirectory(Config.databasePath(WORKSPACES[0], DATABASES[0]));
+    void testReadSchemaFileOfNonExistingDatabase() throws IOException {
+        Files.createDirectories(Config.databasePath(WORKSPACES[0], DATABASES[0]));
         Assertions.assertThrows(FileNotFoundException.class, () -> {
             fileManager.readSchemaFile(WORKSPACES[0], DATABASES[0]);
         });

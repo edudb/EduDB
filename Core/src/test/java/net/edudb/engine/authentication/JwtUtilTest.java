@@ -12,7 +12,7 @@ package net.edudb.engine.authentication;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class JwtUtilTest {
+class JwtUtilTest {
     private static final String USER_NAME = "test_username";
     private static final UserRole ROLE = UserRole.USER;
     private static final String WORKSPACE_NAME = "test_workspace";

@@ -11,9 +11,11 @@ package net.edudb.structure.table;
 
 import net.edudb.engine.Config;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * A table information writer that writes binary table information files to disk.
@@ -24,11 +26,12 @@ public class BinaryTableWriter extends TableWriter {
 
     @Override
     public void write(String workspaceName, String databaseName, Table table) throws IOException {
-        FileOutputStream fileOut = new FileOutputStream(Config.tablePath(workspaceName, databaseName, table.getName()));
-        ObjectOutputStream out = new ObjectOutputStream(fileOut);
-        out.writeObject(table);
-        out.close();
-        fileOut.close();
+        Path tablePath = Config.tablePath(workspaceName, databaseName, table.getName());
+        try (OutputStream fileOut = Files.newOutputStream(tablePath)) {
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(table);
+            out.close();
+        }
     }
 
 }

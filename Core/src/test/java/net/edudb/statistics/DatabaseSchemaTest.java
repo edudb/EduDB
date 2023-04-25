@@ -9,7 +9,8 @@
 
 package net.edudb.statistics;
 
-import net.edudb.TestUtils;
+import com.google.common.jimfs.Configuration;
+import com.google.common.jimfs.Jimfs;
 import net.edudb.engine.Config;
 import net.edudb.exception.TableNotFoundException;
 import org.junit.jupiter.api.AfterAll;
@@ -17,29 +18,40 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.FileSystem;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 
 public class DatabaseSchemaTest {
+    private static FileSystem fs; // in-memory file system for testing
     private static final String WORKSPACE_NAME = "workspace";
     private static final String DATABASE_NAME = "database";
     private static final String[] TABLES = {"table1 name varchar", "table2 state varchar"};
 
     @BeforeAll
-    public static void setup() throws FileNotFoundException {
+    public static void setup() throws IOException {
+        fs = Jimfs.newFileSystem(Configuration.unix());
+        Config.setAbsolutePath(fs.getPath("test"));
+
+        Files.createDirectories(Config.tablesPath(WORKSPACE_NAME, DATABASE_NAME));
+        Files.createFile(Config.schemaPath(WORKSPACE_NAME, DATABASE_NAME));
+
         for (String table : TABLES) {
-            TestUtils.createDirectory(Config.tablesPath(WORKSPACE_NAME, DATABASE_NAME));
-            TestUtils.createFile(Config.tablePath(WORKSPACE_NAME, DATABASE_NAME, table.split(" ")[0]));
-            TestUtils.appendLineToFile(Config.schemaPath(WORKSPACE_NAME, DATABASE_NAME), table);
+            Files.createFile(Config.tablePath(WORKSPACE_NAME, DATABASE_NAME, table.split(" ")[0]));
+            Files.write(Config.schemaPath(WORKSPACE_NAME, DATABASE_NAME),
+                    (table + System.lineSeparator()).getBytes(), StandardOpenOption.APPEND);
         }
     }
 
     @AfterAll
-    public static void tearDown() {
-        TestUtils.deleteDirectory(Config.absolutePath());
+    public static void tearDown() throws IOException {
+        Config.setAbsolutePath(null);
+        fs.close();
     }
 
     @Test
-    public void test() throws TableNotFoundException {
+    void test() throws TableNotFoundException {
         DatabaseSchema databaseSchema = new DatabaseSchema(WORKSPACE_NAME, DATABASE_NAME);
         Assertions.assertEquals(DATABASE_NAME, databaseSchema.getDatabaseName());
         for (String table : TABLES) {
