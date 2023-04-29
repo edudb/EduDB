@@ -93,4 +93,6 @@ public interface Record {
      */
     boolean isDeleted();
 
+    DataType getValue(String columnName);
+
 }

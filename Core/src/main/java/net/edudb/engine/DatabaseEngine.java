@@ -13,6 +13,7 @@ import net.edudb.buffer.BufferManager;
 import net.edudb.engine.authentication.Authentication;
 import net.edudb.engine.authentication.UserRole;
 import net.edudb.exception.*;
+import net.edudb.index.IndexManager;
 import net.edudb.relation.RelationIterator;
 import net.edudb.statistics.DatabaseSchema;
 import net.edudb.statistics.Schema;
@@ -34,6 +35,7 @@ public class DatabaseEngine {
     private FileManager fileManager;
     private BufferManager bufferManager;
     private TableManager tableManager;
+    private IndexManager indexManager;
     private Schema schema;
     private Map<String, Map<String, Map<String, RelationIterator>>> openedIterators; // <workspace, <database, <uuid, iterator>>
     private ScheduledExecutorService backgroundThread;
@@ -71,6 +73,7 @@ public class DatabaseEngine {
         fileManager = FileManager.getInstance();
         bufferManager = BufferManager.getInstance();
         tableManager = TableManager.getInstance();
+        indexManager = IndexManager.getInstance();
         initializeDatabase();
         schema = Schema.getInstance();
     }
@@ -196,6 +199,16 @@ public class DatabaseEngine {
         Map<String, Map<String, RelationIterator>> workspace = openedIterators.getOrDefault(workspaceName, new HashMap<>());
         Map<String, RelationIterator> database = workspace.getOrDefault(databaseName, new HashMap<>());
         return database.get(uuid);
+    }
+
+    public void createIndex(String workspaceName, String databaseName, String tableName, String columnName)
+            throws IndexAlreadyExistException {
+        Table table = tableManager.readTable(workspaceName, databaseName, tableName);
+        indexManager.createIndex(workspaceName, databaseName, table, columnName);
+    }
+
+    public void dropIndex(String workspaceName, String databaseName, String tableName, String columnName) throws IndexNotFoundException {
+        indexManager.dropIndex(workspaceName, databaseName, tableName, columnName);
     }
 
 

@@ -42,6 +42,8 @@ public class ServerHandler implements RequestHandler {
                 new OpenDatabaseExecutor(),
                 new CloseDatabaseExecutor(),
                 new DropTableExecutor(),
+                new CreateIndexExecutor(),
+                new DropIndexExecutor(),
                 new NextRecordsExecutor(),
                 new CloseResultSetExecutor(),
                 new CopyExecutor(),

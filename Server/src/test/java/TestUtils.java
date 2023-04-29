@@ -56,4 +56,12 @@ public class TestUtils {
         return query;
     }
 
+    public static String createIndex(String tableName, String columnName) {
+        return "create index on " + tableName + " (" + columnName + " );";
+    }
+
+    public static String dropIndex(String tableName, String columnName) {
+        return "drop index on " + tableName + " (" + columnName + " );";
+    }
+
 }

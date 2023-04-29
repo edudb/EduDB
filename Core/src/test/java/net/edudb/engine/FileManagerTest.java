@@ -305,5 +305,4 @@ class FileManagerTest {
             fileManager.readSchemaFile(WORKSPACES[0], DATABASES[0]);
         });
     }
-
 }

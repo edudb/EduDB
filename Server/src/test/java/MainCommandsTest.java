@@ -13,6 +13,8 @@ import net.edudb.Request;
 import net.edudb.Response;
 import net.edudb.Server;
 import net.edudb.ServerHandler;
+import net.edudb.data_type.DataType;
+import net.edudb.data_type.VarCharType;
 import net.edudb.engine.Config;
 import net.edudb.engine.DatabaseEngine;
 import net.edudb.engine.FileManager;
@@ -22,21 +24,27 @@ import net.edudb.exception.AuthenticationFailedException;
 import net.edudb.exception.UserAlreadyExistException;
 import net.edudb.exception.WorkspaceAlreadyExistException;
 import net.edudb.exception.WorkspaceNotFoundException;
+import net.edudb.index.Index;
+import net.edudb.index.IndexManager;
 import net.edudb.statistics.Schema;
 import net.edudb.structure.Record;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -45,7 +53,9 @@ class MainCommandsTest {
     @Container
     public static GenericContainer redis = new GenericContainer(DockerImageName.parse("redis:5.0.3-alpine"))
             .withExposedPorts(6379);
-    private static FileSystem fs; // in-memory file system for testing
+    private static FileSystem fs; // in-memory file system for testing (not working with indexes)
+    @TempDir
+    File tempDir;
 
     private static ServerHandler serverHandler;
 
@@ -230,4 +240,51 @@ class MainCommandsTest {
         assertThat(records.get(0).getData().values().toArray()[0]).hasToString(COLUMN_VALUES[0]);
     }
 
+
+    @Test
+    void testCreateIndex() {
+        Config.setAbsolutePath(tempDir.toPath()); // you can not use fs with indices tests
+        // Create database
+        sendCommand(TestUtils.createDatabase(DATABASE_NAME), null);
+        // Create table
+        sendCommand(TestUtils.createTable(TABLE_NAME, COLUMN_NAMES, COLUMN_TYPES));
+        // Insert
+        sendCommand(TestUtils.insert(TABLE_NAME, COLUMN_VALUES));
+        sendCommand(TestUtils.insert(TABLE_NAME, COLUMN_VALUES_2));
+
+        // Create index
+        sendCommand(TestUtils.createIndex(TABLE_NAME, COLUMN_NAMES[0]));
+        assertThat(Config.indexPath(USERNAME, DATABASE_NAME, TABLE_NAME, COLUMN_NAMES[0])).exists();
+
+        Optional<Index<DataType>> indexOptional = IndexManager.getInstance()
+                .getIndex(WORKSPACE_NAME, DATABASE_NAME, TABLE_NAME, COLUMN_NAMES[0]);
+        assertThat(indexOptional).isPresent();
+
+        Index<DataType> index = indexOptional.get();
+        Set<String> result = index.search(new VarCharType(COLUMN_VALUES[0]));
+        assertThat(result).hasSize(1);
+    }
+
+    @Test
+    void testDropIndex() {
+        Config.setAbsolutePath(tempDir.toPath()); // you can not use fs with indices tests
+        // Create database
+        sendCommand(TestUtils.createDatabase(DATABASE_NAME), null);
+        // Create table
+        sendCommand(TestUtils.createTable(TABLE_NAME, COLUMN_NAMES, COLUMN_TYPES));
+        // Insert
+        sendCommand(TestUtils.insert(TABLE_NAME, COLUMN_VALUES));
+        sendCommand(TestUtils.insert(TABLE_NAME, COLUMN_VALUES_2));
+        // Create index
+        sendCommand(TestUtils.createIndex(TABLE_NAME, COLUMN_NAMES[0]));
+
+        // Drop Index
+        sendCommand(TestUtils.dropIndex(TABLE_NAME, COLUMN_NAMES[0]));
+
+        Optional<Index<DataType>> indexOptional = IndexManager.getInstance()
+                .getIndex(WORKSPACE_NAME, DATABASE_NAME, TABLE_NAME, COLUMN_NAMES[0]);
+        assertThat(indexOptional).isEmpty();
+
+        assertThat(Config.indexPath(USERNAME, DATABASE_NAME, TABLE_NAME, COLUMN_NAMES[0])).doesNotExist();
+    }
 }
