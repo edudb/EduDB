@@ -65,7 +65,7 @@ public class CreateTableExecutor extends PostOrderOperatorExecutor implements Op
 
         String tableSchemaLine = statement.getTableName();
         tableSchemaLine += " " + statement.getColumnList();
-
+        tableSchemaLine = tableSchemaLine.replace(",", "");
 
         String workspaceName = Config.getCurrentWorkspace();
         String databaseName = Config.getCurrentDatabaseName();

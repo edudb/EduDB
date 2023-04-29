@@ -287,4 +287,25 @@ class MainCommandsTest {
 
         assertThat(Config.indexPath(USERNAME, DATABASE_NAME, TABLE_NAME, COLUMN_NAMES[0])).doesNotExist();
     }
+
+    @Test
+    void testUpdateIndexOnInsert() {
+        Config.setAbsolutePath(tempDir.toPath()); // you can not use fs with indices tests
+        // Create database
+        sendCommand(TestUtils.createDatabase(DATABASE_NAME), null);
+        // Create table
+        sendCommand(TestUtils.createTable(TABLE_NAME, COLUMN_NAMES, COLUMN_TYPES));
+        // Create index
+        sendCommand(TestUtils.createIndex(TABLE_NAME, COLUMN_NAMES[0]));
+        // Insert
+        sendCommand(TestUtils.insert(TABLE_NAME, COLUMN_VALUES_2));
+
+        Optional<Index<DataType>> indexOptional = IndexManager.getInstance()
+                .getIndex(WORKSPACE_NAME, DATABASE_NAME, TABLE_NAME, COLUMN_NAMES[0]);
+        assertThat(indexOptional).isPresent();
+
+        Index<DataType> index = indexOptional.get();
+        Set<String> result = index.search(new VarCharType(COLUMN_VALUES_2[0]));
+        assertThat(result).hasSize(1);
+    }
 }

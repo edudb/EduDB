@@ -54,8 +54,8 @@ public class VolatileRelation implements Relation, Serializable {
     }
 
     @Override
-    public void addRecord(Record record) {
-        pageManager.addRecord(record);
+    public String addRecord(Record record) {
+        return pageManager.addRecord(record);
     }
 
     @Override

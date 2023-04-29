@@ -36,7 +36,7 @@ public interface Table extends OperatorParameter {
      *
      * @param record The record to add.
      */
-    void addRecord(Record record);
+    String addRecord(Record record);
 
     /**
      * @param columnTypes Linked Hash Map that holds each column name and its type name.
