@@ -120,6 +120,13 @@ public class Schema {
         }
     }
 
+    public Column getColumnByOrder(String tableName, int columnOrder) {
+        Column column = new Column(columnOrder);
+        ArrayList<Column> columns = getColumns(tableName);
+        int columnIdx = columns.indexOf(column);
+        return columns.get(columnIdx);
+    }
+
     public HashMap<String, ArrayList<String>> getSchema() {
         try {
             return (HashMap<String, ArrayList<String>>) getDatabase(Config.getCurrentWorkspace(), Config.getCurrentDatabaseName()).getSchema();

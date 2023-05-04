@@ -41,7 +41,7 @@ public class RelationIterator implements Iterator<Record> {
 
     public RelationIterator(ArrayList<String> pageNames) {
         this.pageNames = pageNames;
-        if (this.pageNames.size() > 0) {
+        if (!this.pageNames.isEmpty()) {
             this.currentPage = BufferManager.getInstance().read(pageNames.get(currentPageIndex++));
             this.currentPage.open();
             this.currentIndex = 0;
@@ -116,5 +116,9 @@ public class RelationIterator implements Iterator<Record> {
 
     public String getId() {
         return id;
+    }
+
+    public Page getCurrentPage() {
+        return currentPage;
     }
 }

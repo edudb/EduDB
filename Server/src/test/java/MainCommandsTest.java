@@ -13,6 +13,9 @@ import net.edudb.Request;
 import net.edudb.Response;
 import net.edudb.Server;
 import net.edudb.ServerHandler;
+import net.edudb.data_type.DataType;
+import net.edudb.data_type.TimestampType;
+import net.edudb.data_type.VarCharType;
 import net.edudb.engine.Config;
 import net.edudb.engine.DatabaseEngine;
 import net.edudb.engine.FileManager;
@@ -22,21 +25,24 @@ import net.edudb.exception.AuthenticationFailedException;
 import net.edudb.exception.UserAlreadyExistException;
 import net.edudb.exception.WorkspaceAlreadyExistException;
 import net.edudb.exception.WorkspaceNotFoundException;
+import net.edudb.index.Index;
 import net.edudb.statistics.Schema;
 import net.edudb.structure.Record;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.io.TempDir;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.FileSystem;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -45,7 +51,9 @@ class MainCommandsTest {
     @Container
     public static GenericContainer redis = new GenericContainer(DockerImageName.parse("redis:5.0.3-alpine"))
             .withExposedPorts(6379);
-    private static FileSystem fs; // in-memory file system for testing
+    private static FileSystem fs; // in-memory file system for testing (not working with indexes)
+    @TempDir
+    File tempDir;
 
     private static ServerHandler serverHandler;
 
@@ -55,14 +63,21 @@ class MainCommandsTest {
     private static String token;
     private static final String DATABASE_NAME = "test_db";
     private static final String TABLE_NAME = "test_table";
-    private static final String[] COLUMN_NAMES = {"name"};
-    private static final String[] COLUMN_TYPES = {"varchar"};
-    private static final String[] COLUMN_VALUES = {"old"};
-    private static final String[] COLUMN_VALUES_2 = {"old2"};
-    private static final String[] COLUMN_NEW_VALUES = {"new"};
+    private static final String[][] TABLE_SCHEMA = {
+            {"name", "varchar"},
+            {"age", "integer"},
+            {"male", "boolean"},
+            {"salary", "decimal"},
+            {"birthday", "timestamp"}
+    };
+    private static final String[][] TABLE_DATA = {
+            {"John", "20", "true", "100.0", "2000-01-01 10:00:00"},
+            {"Mary", "21", "false", "200.0", "1999-01-01 01:00:00"},
+            {"John", "22", "true", "300.0", "1990-01-01 00:20:00"}
+    };
 
     @BeforeAll
-    static void beforeAll() throws IOException {
+    static void beforeAll() {
         System.setProperty("REDIS_HOST", redis.getHost());
         System.setProperty("REDIS_PORT", String.valueOf(redis.getFirstMappedPort()));
     }
@@ -98,10 +113,25 @@ class MainCommandsTest {
         return sendCommand(command, DATABASE_NAME);
     }
 
+    void validateRecord(Record record, String[] expectedValuesAsStrings) {
+        List<DataType> values = new ArrayList<>(record.getData().values());
+        assertThat(values).hasSize(expectedValuesAsStrings.length);
+
+        for (int i = 0; i < values.size(); i++) {
+            DataType value = values.get(i);
+            String expectedString = expectedValuesAsStrings[i];
+            if (value instanceof TimestampType) {
+                assertThat(value).isNotNull().hasToString(expectedString + ".0");
+            } else {
+                assertThat(value).isNotNull().hasToString(expectedString);
+            }
+        }
+    }
+
     @Test
     void testCreateDatabase() {
         // Create database
-        sendCommand(TestUtils.createDatabase(DATABASE_NAME), null);
+        sendCommand(CommandsGenerators.createDatabase(DATABASE_NAME), null);
 
         assertThat(Config.databasePath(USERNAME, DATABASE_NAME)).exists();
         assertThat(Config.tablesPath(USERNAME, DATABASE_NAME)).exists();
@@ -114,9 +144,9 @@ class MainCommandsTest {
     @Test
     void testDropDatabase() {
         // Create database
-        sendCommand(TestUtils.createDatabase(DATABASE_NAME), null);
+        sendCommand(CommandsGenerators.createDatabase(DATABASE_NAME), null);
         // Drop database
-        sendCommand(TestUtils.dropDatabase(DATABASE_NAME));
+        sendCommand(CommandsGenerators.dropDatabase(DATABASE_NAME));
 
         assertThat(Config.databasePath(USERNAME, DATABASE_NAME)).doesNotExist();
         assertThat(Config.tablesPath(USERNAME, DATABASE_NAME)).doesNotExist();
@@ -128,10 +158,10 @@ class MainCommandsTest {
     @Test
     void testCreateTable() throws FileNotFoundException {
         // Create database
-        sendCommand(TestUtils.createDatabase(DATABASE_NAME), null);
+        sendCommand(CommandsGenerators.createDatabase(DATABASE_NAME), null);
         // Create table
-        sendCommand(TestUtils.createTable(TABLE_NAME, COLUMN_NAMES, COLUMN_TYPES));
-
+        Response response = sendCommand(CommandsGenerators.createTable(TABLE_NAME, TABLE_SCHEMA));
+        System.out.println(response);
         List<String> lines = FileManager.getInstance().readFile(Config.schemaPath(USERNAME, DATABASE_NAME));
 
         assertThat(Config.tablePath(USERNAME, DATABASE_NAME, TABLE_NAME)).exists();
@@ -142,11 +172,11 @@ class MainCommandsTest {
     @Test
     void testDropTable() throws FileNotFoundException {
         // Create database
-        sendCommand(TestUtils.createDatabase(DATABASE_NAME), null);
+        sendCommand(CommandsGenerators.createDatabase(DATABASE_NAME), null);
         // Create table
-        sendCommand(TestUtils.createTable(TABLE_NAME, COLUMN_NAMES, COLUMN_TYPES));
+        sendCommand(CommandsGenerators.createTable(TABLE_NAME, TABLE_SCHEMA));
         // Drop table
-        sendCommand(TestUtils.dropTable(TABLE_NAME));
+        sendCommand(CommandsGenerators.dropTable(TABLE_NAME));
 
         List<String> lines = FileManager.getInstance().readFile(Config.schemaPath(USERNAME, DATABASE_NAME));
 
@@ -157,53 +187,93 @@ class MainCommandsTest {
     @Test
     void testInsert() {
         // Create database
-        sendCommand(TestUtils.createDatabase(DATABASE_NAME), null);
+        sendCommand(CommandsGenerators.createDatabase(DATABASE_NAME), null);
         // Create table
-        sendCommand(TestUtils.createTable(TABLE_NAME, COLUMN_NAMES, COLUMN_TYPES));
+        sendCommand(CommandsGenerators.createTable(TABLE_NAME, TABLE_SCHEMA));
         // Insert
-        sendCommand(TestUtils.insert(TABLE_NAME, COLUMN_VALUES));
+        sendCommand(CommandsGenerators.insertIntoTable(TABLE_NAME, TABLE_DATA[0]));
         // Select
-        Response selectResponse = sendCommand(TestUtils.selectAll(TABLE_NAME));
+        Response selectResponse = sendCommand(CommandsGenerators.selectFromTable(TABLE_NAME));
 
         assertThat(selectResponse.getResultSetId()).isNotNull();
         String resultSetId = selectResponse.getResultSetId();
         List<Record> records = DatabaseEngine.getInstance().getNextRecord(WORKSPACE_NAME, DATABASE_NAME, resultSetId, 100);
         assertThat(records).hasSize(1);
-        assertThat(records.get(0).getData().values().toArray()[0]).hasToString(COLUMN_VALUES[0]);
+
+        validateRecord(records.get(0), TABLE_DATA[0]);
     }
 
     @Test
     void testUpdate() {
         // Create database
-        sendCommand(TestUtils.createDatabase(DATABASE_NAME), null);
+        sendCommand(CommandsGenerators.createDatabase(DATABASE_NAME), null);
         // Create table
-        sendCommand(TestUtils.createTable(TABLE_NAME, COLUMN_NAMES, COLUMN_TYPES));
+        sendCommand(CommandsGenerators.createTable(TABLE_NAME, TABLE_SCHEMA));
         // Insert
-        sendCommand(TestUtils.insert(TABLE_NAME, COLUMN_VALUES));
+        sendCommand(CommandsGenerators.insertIntoTable(TABLE_NAME, TABLE_DATA[0]));
+        sendCommand(CommandsGenerators.insertIntoTable(TABLE_NAME, TABLE_DATA[1]));
         // Update
-        sendCommand(TestUtils.update(TABLE_NAME, COLUMN_NAMES[0], COLUMN_VALUES[0], COLUMN_NEW_VALUES[0]));
+        sendCommand(CommandsGenerators.updateTable(TABLE_NAME,
+                new String[][]{{TABLE_SCHEMA[1][0], TABLE_DATA[1][1]}},
+                new String[][]{{TABLE_SCHEMA[0][0], TABLE_DATA[0][0]}}));
         // Select
-        Response selectResponse = sendCommand(TestUtils.selectAll(TABLE_NAME));
+        Response selectResponse = sendCommand(CommandsGenerators.selectFromTable(TABLE_NAME, new String[][]{
+                {TABLE_SCHEMA[1][0], TABLE_DATA[1][1]}
+        }));
 
         assertThat(selectResponse.getResultSetId()).isNotNull();
         String resultSetId = selectResponse.getResultSetId();
         List<Record> records = DatabaseEngine.getInstance().getNextRecord(WORKSPACE_NAME, DATABASE_NAME, resultSetId, 100);
-        assertThat(records).hasSize(1);
-        assertThat(records.get(0).getData().values().toArray()[0]).hasToString(COLUMN_NEW_VALUES[0]);
+        assertThat(records).hasSize(2);
+
+        String[] expectedRecord = TABLE_DATA[0];
+        expectedRecord[1] = TABLE_DATA[1][1];
+
+        validateRecord(records.get(0), expectedRecord);
+        validateRecord(records.get(1), TABLE_DATA[1]);
+    }
+
+    @Test
+    void testUpdate2() {
+        // Create database
+        sendCommand(CommandsGenerators.createDatabase(DATABASE_NAME), null);
+        // Create table
+        sendCommand(CommandsGenerators.createTable(TABLE_NAME, TABLE_SCHEMA));
+        // Insert
+        sendCommand(CommandsGenerators.insertIntoTable(TABLE_NAME, TABLE_DATA[0]));
+        sendCommand(CommandsGenerators.insertIntoTable(TABLE_NAME, TABLE_DATA[2]));
+        // Update
+        sendCommand(CommandsGenerators.updateTable(TABLE_NAME,
+                new String[][]{{TABLE_SCHEMA[0][0], TABLE_DATA[1][0]}},
+                new String[][]{{TABLE_SCHEMA[1][0], TABLE_DATA[2][1]}}
+        ));
+        // Select
+        Response selectResponse = sendCommand(CommandsGenerators.selectFromTable(TABLE_NAME));
+
+        assertThat(selectResponse.getResultSetId()).isNotNull();
+        String resultSetId = selectResponse.getResultSetId();
+        List<Record> records = DatabaseEngine.getInstance().getNextRecord(WORKSPACE_NAME, DATABASE_NAME, resultSetId, 100);
+        assertThat(records).hasSize(2);
+
+        String[] expectedRecord = TABLE_DATA[2];
+        expectedRecord[0] = TABLE_DATA[1][0];
+
+        validateRecord(records.get(0), TABLE_DATA[0]);
+        validateRecord(records.get(1), expectedRecord);
     }
 
     @Test
     void testDelete() {
         // Create database
-        sendCommand(TestUtils.createDatabase(DATABASE_NAME), null);
+        sendCommand(CommandsGenerators.createDatabase(DATABASE_NAME), null);
         // Create table
-        sendCommand(TestUtils.createTable(TABLE_NAME, COLUMN_NAMES, COLUMN_TYPES));
+        sendCommand(CommandsGenerators.createTable(TABLE_NAME, TABLE_SCHEMA));
         // Insert
-        sendCommand(TestUtils.insert(TABLE_NAME, COLUMN_VALUES));
+        sendCommand(CommandsGenerators.insertIntoTable(TABLE_NAME, TABLE_DATA[0]));
         // Delete
-        sendCommand(TestUtils.delete(TABLE_NAME, COLUMN_NAMES[0], COLUMN_VALUES[0]));
+        sendCommand(CommandsGenerators.deleteFromTable(TABLE_NAME, new String[][]{{TABLE_SCHEMA[0][0], TABLE_DATA[0][0]}}));
         // Select
-        Response selectResponse = sendCommand(TestUtils.selectAll(TABLE_NAME));
+        Response selectResponse = sendCommand(CommandsGenerators.selectFromTable(TABLE_NAME));
 
         assertThat(selectResponse.getResultSetId()).isNotNull();
         String resultSetId = selectResponse.getResultSetId();
@@ -214,20 +284,227 @@ class MainCommandsTest {
     @Test
     void testSelect() {
         // Create database
-        sendCommand(TestUtils.createDatabase(DATABASE_NAME), null);
+        sendCommand(CommandsGenerators.createDatabase(DATABASE_NAME), null);
         // Create table
-        sendCommand(TestUtils.createTable(TABLE_NAME, COLUMN_NAMES, COLUMN_TYPES));
+        sendCommand(CommandsGenerators.createTable(TABLE_NAME, TABLE_SCHEMA));
         // Insert
-        sendCommand(TestUtils.insert(TABLE_NAME, COLUMN_VALUES));
-        sendCommand(TestUtils.insert(TABLE_NAME, COLUMN_VALUES_2));
+        sendCommand(CommandsGenerators.insertIntoTable(TABLE_NAME, TABLE_DATA[0]));
+        sendCommand(CommandsGenerators.insertIntoTable(TABLE_NAME, TABLE_DATA[1]));
         // Select
-        Response selectResponse = sendCommand(TestUtils.select(TABLE_NAME, COLUMN_NAMES[0], COLUMN_VALUES[0]));
+        Response selectResponse = sendCommand(CommandsGenerators.selectFromTable(TABLE_NAME, new String[][]{
+                {TABLE_SCHEMA[0][0], TABLE_DATA[0][0]}
+        }));
 
         assertThat(selectResponse.getResultSetId()).isNotNull();
         String resultSetId = selectResponse.getResultSetId();
         List<Record> records = DatabaseEngine.getInstance().getNextRecord(WORKSPACE_NAME, DATABASE_NAME, resultSetId, 100);
         assertThat(records).hasSize(1);
-        assertThat(records.get(0).getData().values().toArray()[0]).hasToString(COLUMN_VALUES[0]);
+        validateRecord(records.get(0), TABLE_DATA[0]);
     }
 
+    @Test
+    @DisplayName("should select with multiple conditions")
+    void testSelect2() {
+        // Create database
+        sendCommand(CommandsGenerators.createDatabase(DATABASE_NAME), null);
+        // Create table
+        sendCommand(CommandsGenerators.createTable(TABLE_NAME, TABLE_SCHEMA));
+        // Insert
+        sendCommand(CommandsGenerators.insertIntoTable(TABLE_NAME, TABLE_DATA[0]));
+        sendCommand(CommandsGenerators.insertIntoTable(TABLE_NAME, TABLE_DATA[1]));
+        // Select
+        Response selectResponse = sendCommand(CommandsGenerators.selectFromTable(TABLE_NAME, new String[][]{
+                {TABLE_SCHEMA[0][0], TABLE_DATA[0][0]},
+                {TABLE_SCHEMA[1][0], TABLE_DATA[0][1]}
+        }));
+
+        assertThat(selectResponse.getResultSetId()).isNotNull();
+        String resultSetId = selectResponse.getResultSetId();
+        List<Record> records = DatabaseEngine.getInstance().getNextRecord(WORKSPACE_NAME, DATABASE_NAME, resultSetId, 100);
+        assertThat(records).hasSize(1);
+        validateRecord(records.get(0), TABLE_DATA[0]);
+    }
+
+
+    @Test
+    void testCreateIndex() {
+        Config.setAbsolutePath(tempDir.toPath()); // you can not use fs with indices tests
+        // Create database
+        sendCommand(CommandsGenerators.createDatabase(DATABASE_NAME), null);
+        // Create table
+        sendCommand(CommandsGenerators.createTable(TABLE_NAME, TABLE_SCHEMA));
+        // Insert
+        sendCommand(CommandsGenerators.insertIntoTable(TABLE_NAME, TABLE_DATA[0]));
+        sendCommand(CommandsGenerators.insertIntoTable(TABLE_NAME, TABLE_DATA[1]));
+
+        // Create index
+        sendCommand(CommandsGenerators.createIndex(TABLE_NAME, TABLE_SCHEMA[0][0]));
+        assertThat(Config.indexPath(USERNAME, DATABASE_NAME, TABLE_NAME, TABLE_SCHEMA[0][0])).exists();
+
+        Optional<Index<DataType>> indexOptional = DatabaseEngine.getInstance().getIndexManager()
+                .getIndex(WORKSPACE_NAME, DATABASE_NAME, TABLE_NAME, TABLE_SCHEMA[0][0]);
+        assertThat(indexOptional).isPresent();
+
+        Index<DataType> index = indexOptional.get();
+        Set<String> result = index.search(new VarCharType(TABLE_DATA[0][0]));
+        assertThat(result).hasSize(1);
+    }
+
+    @Test
+    void testDropIndex() {
+        Config.setAbsolutePath(tempDir.toPath()); // you can not use fs with indices tests
+        // Create database
+        sendCommand(CommandsGenerators.createDatabase(DATABASE_NAME), null);
+        // Create table
+        sendCommand(CommandsGenerators.createTable(TABLE_NAME, TABLE_SCHEMA));
+        // Insert
+        sendCommand(CommandsGenerators.insertIntoTable(TABLE_NAME, TABLE_DATA[0]));
+        sendCommand(CommandsGenerators.insertIntoTable(TABLE_NAME, TABLE_DATA[1]));
+        // Create index
+        sendCommand(CommandsGenerators.createIndex(TABLE_NAME, TABLE_SCHEMA[0][0]));
+
+        // Drop Index
+        sendCommand(CommandsGenerators.dropIndex(TABLE_NAME, TABLE_SCHEMA[0][0]));
+
+        Optional<Index<DataType>> indexOptional = DatabaseEngine.getInstance().getIndexManager()
+                .getIndex(WORKSPACE_NAME, DATABASE_NAME, TABLE_NAME, TABLE_SCHEMA[0][0]);
+        assertThat(indexOptional).isEmpty();
+
+        assertThat(Config.indexPath(USERNAME, DATABASE_NAME, TABLE_NAME, TABLE_SCHEMA[0][0])).doesNotExist();
+    }
+
+    @Test
+    void testUpdateIndexOnInsert() {
+        Config.setAbsolutePath(tempDir.toPath()); // you can not use fs with indices tests
+        // Create database
+        sendCommand(CommandsGenerators.createDatabase(DATABASE_NAME), null);
+        // Create table
+        sendCommand(CommandsGenerators.createTable(TABLE_NAME, TABLE_SCHEMA));
+        // Create index
+        sendCommand(CommandsGenerators.createIndex(TABLE_NAME, TABLE_SCHEMA[0][0]));
+        // Insert
+        sendCommand(CommandsGenerators.insertIntoTable(TABLE_NAME, TABLE_DATA[0]));
+
+        Optional<Index<DataType>> indexOptional = DatabaseEngine.getInstance().getIndexManager()
+                .getIndex(WORKSPACE_NAME, DATABASE_NAME, TABLE_NAME, TABLE_SCHEMA[0][0]);
+        assertThat(indexOptional).isPresent();
+
+        Index<DataType> index = indexOptional.get();
+        Set<String> result = index.search(new VarCharType(TABLE_DATA[0][0]));
+        assertThat(result).hasSize(1);
+    }
+
+    @Test
+    void testSelectUsingIndex() {
+        Config.setAbsolutePath(tempDir.toPath()); // you can not use fs with indices tests
+        // Create database
+        sendCommand(CommandsGenerators.createDatabase(DATABASE_NAME), null);
+        // Create table
+        sendCommand(CommandsGenerators.createTable(TABLE_NAME, TABLE_SCHEMA));
+        // Insert
+        sendCommand(CommandsGenerators.insertIntoTable(TABLE_NAME, TABLE_DATA[0]));
+        // Create index
+        sendCommand(CommandsGenerators.createIndex(TABLE_NAME, TABLE_SCHEMA[0][0]));
+
+        // Select
+        Response selectResponse = sendCommand(CommandsGenerators.selectFromTable(TABLE_NAME, new String[][]{
+                {TABLE_SCHEMA[0][0], TABLE_DATA[0][0]}
+        }));
+
+        assertThat(selectResponse.getResultSetId()).isNotNull();
+        String resultSetId = selectResponse.getResultSetId();
+        List<Record> records = DatabaseEngine.getInstance().getNextRecord(WORKSPACE_NAME, DATABASE_NAME, resultSetId, 100);
+        assertThat(records).hasSize(1);
+        validateRecord(records.get(0), TABLE_DATA[0]);
+    }
+
+    @Test
+    @DisplayName("should select with index correctly after deletion")
+    void testSelectUsingIndexAfterDeletion() {
+        Config.setAbsolutePath(tempDir.toPath()); // you can not use fs with indices tests
+        // Create database
+        sendCommand(CommandsGenerators.createDatabase(DATABASE_NAME), null);
+        // Create table
+        sendCommand(CommandsGenerators.createTable(TABLE_NAME, TABLE_SCHEMA));
+        // Insert
+        sendCommand(CommandsGenerators.insertIntoTable(TABLE_NAME, TABLE_DATA[0]));
+        sendCommand(CommandsGenerators.insertIntoTable(TABLE_NAME, TABLE_DATA[1]));
+        // Create index
+        sendCommand(CommandsGenerators.createIndex(TABLE_NAME, TABLE_SCHEMA[0][0]));
+        // Delete
+        sendCommand(CommandsGenerators.deleteFromTable(TABLE_NAME, new String[][]{
+                {TABLE_SCHEMA[0][0], TABLE_DATA[0][0]}
+        }));
+
+        // Select
+        Response selectResponse = sendCommand(CommandsGenerators.selectFromTable(TABLE_NAME, new String[][]{
+                {TABLE_SCHEMA[0][0], TABLE_DATA[0][0]}
+        }));
+
+        assertThat(selectResponse.getResultSetId()).isNotNull();
+        String resultSetId = selectResponse.getResultSetId();
+        List<Record> records = DatabaseEngine.getInstance().getNextRecord(WORKSPACE_NAME, DATABASE_NAME, resultSetId, 100);
+        assertThat(records).isEmpty();
+    }
+
+    @Test
+    @DisplayName("should select with index correctly after partial deletion")
+    void testSelectUsingIndexAfterDeletion2() {
+        Config.setAbsolutePath(tempDir.toPath()); // you can not use fs with indices tests
+        // Create database
+        sendCommand(CommandsGenerators.createDatabase(DATABASE_NAME), null);
+        // Create table
+        sendCommand(CommandsGenerators.createTable(TABLE_NAME, TABLE_SCHEMA));
+        // Insert
+        sendCommand(CommandsGenerators.insertIntoTable(TABLE_NAME, TABLE_DATA[0]));
+        sendCommand(CommandsGenerators.insertIntoTable(TABLE_NAME, TABLE_DATA[2]));
+        // Create index
+        sendCommand(CommandsGenerators.createIndex(TABLE_NAME, TABLE_SCHEMA[0][0]));
+        // Delete
+        sendCommand(CommandsGenerators.deleteFromTable(TABLE_NAME, new String[][]{
+                {TABLE_SCHEMA[1][0], TABLE_DATA[0][1]}
+        }));
+
+        // Select
+        Response selectResponse = sendCommand(CommandsGenerators.selectFromTable(TABLE_NAME, new String[][]{
+                {TABLE_SCHEMA[0][0], TABLE_DATA[2][0]}
+        }));
+
+        assertThat(selectResponse.getResultSetId()).isNotNull();
+        String resultSetId = selectResponse.getResultSetId();
+        List<Record> records = DatabaseEngine.getInstance().getNextRecord(WORKSPACE_NAME, DATABASE_NAME, resultSetId, 100);
+        assertThat(records).hasSize(1);
+        validateRecord(records.get(0), TABLE_DATA[2]);
+    }
+
+    @Test
+    @DisplayName("should select with index correctly after update")
+    void testSelectUsingIndexAfterUpdate() {
+        Config.setAbsolutePath(tempDir.toPath()); // you can not use fs with indices tests
+        // Create database
+        sendCommand(CommandsGenerators.createDatabase(DATABASE_NAME), null);
+        // Create table
+        sendCommand(CommandsGenerators.createTable(TABLE_NAME, TABLE_SCHEMA));
+        // Insert
+        sendCommand(CommandsGenerators.insertIntoTable(TABLE_NAME, TABLE_DATA[0]));
+        sendCommand(CommandsGenerators.insertIntoTable(TABLE_NAME, TABLE_DATA[2]));
+        // Create index
+        sendCommand(CommandsGenerators.createIndex(TABLE_NAME, TABLE_SCHEMA[0][0]));
+        // Update
+        sendCommand(CommandsGenerators.updateTable(TABLE_NAME,
+                new String[][]{{TABLE_SCHEMA[0][0], TABLE_DATA[1][0]}},
+                new String[][]{{TABLE_SCHEMA[1][0], TABLE_DATA[2][1]}}
+        ));
+
+        // Select
+        Response selectResponse = sendCommand(CommandsGenerators.selectFromTable(TABLE_NAME, new String[][]{
+                {TABLE_SCHEMA[0][0], TABLE_DATA[0][0]},
+        }));
+
+        assertThat(selectResponse.getResultSetId()).isNotNull();
+        String resultSetId = selectResponse.getResultSetId();
+        List<Record> records = DatabaseEngine.getInstance().getNextRecord(WORKSPACE_NAME, DATABASE_NAME, resultSetId, 100);
+        assertThat(records).hasSize(1);
+        validateRecord(records.get(0), TABLE_DATA[0]);
+    }
 }

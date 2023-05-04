@@ -17,6 +17,7 @@ import net.edudb.structure.table.TableAbstractFactory;
 import net.edudb.structure.table.TableReader;
 import net.edudb.structure.table.TableReaderFactory;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.*;
@@ -402,6 +403,7 @@ public class FileManager {
             createDirectory(Config.databasePath(workspaceName, databaseName));
             createDirectory(Config.tablesPath(workspaceName, databaseName));
             createDirectory(Config.pagesPath(workspaceName, databaseName));
+            createDirectory(Config.indexesPath(workspaceName, databaseName));
             createFile(Config.schemaPath(workspaceName, databaseName));
         } catch (DirectoryAlreadyExistsException | FileAlreadyExistsException e) {
             throw new DatabaseAlreadyExistException(String.format("database (%s) already exists", databaseName), e);
@@ -416,4 +418,35 @@ public class FileManager {
         }
     }
 
+    public File createIndex(String workspaceName, String databaseName, String tableName, String columnName) {
+        String indexName = Config.getIndexName(tableName, columnName);
+        Path indexPath = Config.indexPath(workspaceName, databaseName, indexName);
+        return indexPath.toFile();
+    }
+
+    public void deleteIndex(String workspaceName, String databaseName, String tableName, String columnName)
+            throws IndexNotFoundException {
+        try {
+            String indexName = Config.getIndexName(tableName, columnName);
+            deleteDirectory(Config.indexPath(workspaceName, databaseName, indexName));
+        } catch (DirectoryNotFoundException e) {
+            throw new IndexNotFoundException(String.format("index (%s) is not found", columnName), e);
+        }
+    }
+
+    /**
+     * @param workspaceName the name of the workspace
+     * @param databaseName  the name of the database
+     * @return the names of the tables and their columns in the database ex: [[table1, column1], [table1, column2]]
+     * @throws DatabaseNotFoundException if the given database does not exist
+     */
+    public String[][] readIndices(String workspaceName, String databaseName) throws DatabaseNotFoundException {
+        Path indicesPath = Config.indexesPath(workspaceName, databaseName);
+        try {
+            String[] files = listFiles(indicesPath);
+            return Arrays.stream(files).map(fileName -> fileName.split("_")).toArray(String[][]::new);
+        } catch (DirectoryNotFoundException e) {
+            throw new DatabaseNotFoundException(String.format("database (%s) is not found", databaseName), e);
+        }
+    }
 }

@@ -96,11 +96,11 @@ public class PageManager implements Pageable, Serializable {
      * @deprecated Use {@link #addRecord(String, String, Record)} instead.
      */
     @Deprecated
-    public synchronized void addRecord(Record record) {
-        addRecord(Config.getCurrentWorkspace(), Config.getCurrentDatabaseName(), record);
+    public synchronized String addRecord(Record record) {
+        return addRecord(Config.getCurrentWorkspace(), Config.getCurrentDatabaseName(), record);
     }
 
-    public synchronized void addRecord(String workspaceName, String databaseName, Record record) {
+    public synchronized String addRecord(String workspaceName, String databaseName, Record record) {
         addWorkspaceAndDatabaseIfNotPresent(workspaceName, databaseName);
 
         Page page;
@@ -119,6 +119,7 @@ public class PageManager implements Pageable, Serializable {
             BufferManager.getInstance().write(workspaceName, databaseName, newPage);
         }
         page.close();
+        return page.getName();
     }
 
     /**

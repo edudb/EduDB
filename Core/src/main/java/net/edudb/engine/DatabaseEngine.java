@@ -13,6 +13,7 @@ import net.edudb.buffer.BufferManager;
 import net.edudb.engine.authentication.Authentication;
 import net.edudb.engine.authentication.UserRole;
 import net.edudb.exception.*;
+import net.edudb.index.IndexManager;
 import net.edudb.relation.RelationIterator;
 import net.edudb.statistics.DatabaseSchema;
 import net.edudb.statistics.Schema;
@@ -34,6 +35,7 @@ public class DatabaseEngine {
     private FileManager fileManager;
     private BufferManager bufferManager;
     private TableManager tableManager;
+    private IndexManager indexManager;
     private Schema schema;
     private Map<String, Map<String, Map<String, RelationIterator>>> openedIterators; // <workspace, <database, <uuid, iterator>>
     private ScheduledExecutorService backgroundThread;
@@ -47,7 +49,10 @@ public class DatabaseEngine {
     private void createBackgroundThreadToWriteBuffer() {
         backgroundThread = Executors.newScheduledThreadPool(1);
 
-        Runnable task = () -> BufferManager.getInstance().writeAll();
+        Runnable task = () -> {
+            bufferManager.writeAll();
+            indexManager.flushAllIndices();
+        };
 
         int initialDelay = 0;
         int period = 1;
@@ -56,8 +61,9 @@ public class DatabaseEngine {
 
     private void setupOnCloseHandler() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            BufferManager.getInstance().writeAll();
-            TableManager.getInstance().writeAllTables();
+            bufferManager.writeAll();
+            tableManager.writeAllTables();
+            indexManager.flushAllIndices();
             backgroundThread.shutdown();
         }));
     }
@@ -71,6 +77,7 @@ public class DatabaseEngine {
         fileManager = FileManager.getInstance();
         bufferManager = BufferManager.getInstance();
         tableManager = TableManager.getInstance();
+        indexManager = new IndexManager();
         initializeDatabase();
         schema = Schema.getInstance();
     }
@@ -118,14 +125,18 @@ public class DatabaseEngine {
     public void openDatabase(String workspaceName, String databaseName) throws DatabaseNotFoundException, WorkspaceNotFoundException {
         WorkspaceSchema workspaceSchema = schema.getWorkspace(workspaceName);
         workspaceSchema.loadDatabase(databaseName);
+        indexManager.loadDatabaseIndices(workspaceName, databaseName);
     }
 
     public void closeDatabase(String workspaceName, String databaseName) throws DatabaseNotFoundException, WorkspaceNotFoundException {
         bufferManager.writeAll(workspaceName, databaseName);
         tableManager.writeAllTables(workspaceName, databaseName);
+        indexManager.flushDatabaseIndices(workspaceName, databaseName);
 
         WorkspaceSchema workspaceSchema = schema.getWorkspace(workspaceName);
         workspaceSchema.offloadDatabase(databaseName);
+        indexManager.offloadDatabaseIndices(workspaceName, databaseName);
+
     }
 
     public void createDatabase(String workspaceName, String databaseName) throws DatabaseAlreadyExistException, WorkspaceNotFoundException {
@@ -139,11 +150,12 @@ public class DatabaseEngine {
     public void dropDatabase(String workspaceName, String databaseName) throws DatabaseNotFoundException, WorkspaceNotFoundException {
         fileManager.deleteDatabase(workspaceName, databaseName);
         bufferManager.removeDatabase(workspaceName, databaseName);
+        indexManager.offloadDatabaseIndices(workspaceName, databaseName);
 
         WorkspaceSchema workspaceSchema = schema.getWorkspace(workspaceName);
         if (openedIterators.containsKey(workspaceName)) {
             Map<String, Map<String, RelationIterator>> workspace = openedIterators.get(workspaceName);
-            if (workspace.containsKey(databaseName)) workspace.remove(databaseName);
+            workspace.remove(databaseName);
         }
         if (workspaceSchema.containsDatabase(databaseName)) workspaceSchema.removeDatabase(databaseName);
     }
@@ -165,6 +177,7 @@ public class DatabaseEngine {
 
     public void dropTable(String workspaceName, String databaseName, String tableName) throws TableNotFoundException, DatabaseNotFoundException, WorkspaceNotFoundException {
         tableManager.deleteTable(workspaceName, databaseName, tableName);
+        indexManager.dropTableIndices(workspaceName, databaseName, tableName);
 
         WorkspaceSchema workspaceSchema = schema.getWorkspace(workspaceName);
         DatabaseSchema databaseSchema = workspaceSchema.getDatabase(databaseName);
@@ -198,5 +211,18 @@ public class DatabaseEngine {
         return database.get(uuid);
     }
 
+    public void createIndex(String workspaceName, String databaseName, String tableName, String columnName)
+            throws IndexAlreadyExistException {
+        Table table = tableManager.readTable(workspaceName, databaseName, tableName);
+        indexManager.createIndex(workspaceName, databaseName, table, columnName);
+    }
 
+    public void dropIndex(String workspaceName, String databaseName, String tableName, String columnName) throws IndexNotFoundException {
+        indexManager.dropIndex(workspaceName, databaseName, tableName, columnName);
+    }
+
+
+    public IndexManager getIndexManager() {
+        return indexManager;
+    }
 }

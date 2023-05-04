@@ -149,4 +149,23 @@ public class Config {
     public static Path pagePath(String workspaceName, String databaseName, String pageName) {
         return pagesPath(workspaceName, databaseName).resolve(pageName + ".block");
     }
+
+    // ======================================== INDEXES ========================================
+    public static Path indexesPath(String workspaceName, String databaseName) {
+        return databasePath(workspaceName, databaseName).resolve("indexes");
+    }
+
+    public static Path indexPath(String workspaceName, String databaseName, String tableName, String columnName) {
+        String indexName = getIndexName(tableName, columnName);
+        return indexesPath(workspaceName, databaseName).resolve(indexName + ".index");
+    }
+
+
+    public static Path indexPath(String workspaceName, String databaseName, String indexName) {
+        return indexesPath(workspaceName, databaseName).resolve(indexName + ".index");
+    }
+
+    public static String getIndexName(String tableName, String columnName) {
+        return tableName + "_" + columnName;
+    }
 }

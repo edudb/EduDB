@@ -12,6 +12,7 @@ package net.edudb.engine;
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
 import net.edudb.exception.DatabaseAlreadyExistException;
+import net.edudb.exception.DatabaseNotFoundException;
 import net.edudb.exception.DirectoryAlreadyExistsException;
 import net.edudb.exception.DirectoryNotFoundException;
 import org.junit.jupiter.api.*;
@@ -36,6 +37,7 @@ class FileManagerTest {
     private static final String[] WORKSPACES = {"workspace1", "workspace2"};
     private static final String[] DATABASES = {"database1", "database2"};
     private static final String[] TABLES = {"table1", "table2"};
+    private static final String[] COLUMNS = {"column1", "column2"};
 
     @BeforeEach
     public void setup() throws DirectoryAlreadyExistsException, DirectoryNotFoundException, IOException {
@@ -306,4 +308,13 @@ class FileManagerTest {
         });
     }
 
+    @Test
+    void readIndices() throws IOException, DatabaseNotFoundException {
+        Files.createDirectories(Config.indexesPath(WORKSPACES[0], DATABASES[0]));
+        Files.createFile(Config.indexPath(WORKSPACES[0], DATABASES[0], TABLES[0], COLUMNS[0]));
+        Files.createFile(Config.indexPath(WORKSPACES[0], DATABASES[0], TABLES[0], COLUMNS[1]));
+        String[][] indices = fileManager.readIndices(WORKSPACES[0], DATABASES[0]);
+        assertThat(indices).hasDimensions(2, 2)
+                .isDeepEqualTo(new String[][]{{TABLES[0], COLUMNS[0]}, {TABLES[0], COLUMNS[1]}});
+    }
 }

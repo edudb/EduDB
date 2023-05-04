@@ -7,42 +7,10 @@
  * /
  */
 
-package net.edudb.expression;
+package net.edudb.operator.parameter;
 
-import net.edudb.data_type.DataType;
-import net.edudb.ebtree.EBNode;
-import net.edudb.ebtree.EBTree;
-import net.edudb.structure.Column;
+import net.edudb.expression.ExpressionTree;
 
-import java.util.LinkedHashMap;
-
-/**
- * A tree that consists of binary expression nodes. Used for expression trees
- * that are evaluated against records.
- *
- * @author Ahmed Abdul Badie
- */
-public class BinaryExpressionTree extends EBTree implements ExpressionTree {
-
-    public BinaryExpressionTree(BinaryExpressionNode root) {
-        super(root);
-    }
-
-    @Override
-    public void addNode(EBNode node) {
-        if (this.root != null) {
-            this.root.setParent(node);
-            ((BinaryExpressionNode) node).setLeftChild(this.root);
-            this.root = node;
-            ++this.levels;
-            return;
-        }
-        setRoot(node);
-    }
-
-    @Override
-    public boolean evaluate(LinkedHashMap<Column, DataType> data) {
-        return ((BinaryExpressionNode) this.root).evaluate(data);
-    }
-
+public record FilterOperatorParameter(String tableName, String columnName,
+                                      ExpressionTree expressionTree) implements OperatorParameter {
 }

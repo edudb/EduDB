@@ -78,6 +78,10 @@ public class Expression implements BinaryExpressionNode, OperatorParameter {
     public void setRightChild(EBNode rightChild) {
     }
 
+    public DataType getValue() {
+        return value;
+    }
+
     @Override
     public boolean evaluate(LinkedHashMap<Column, DataType> data) {
         /**

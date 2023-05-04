@@ -11,7 +11,10 @@ package net.edudb.operator.executor;
 
 import net.edudb.data_type.DataType;
 import net.edudb.data_type.DataTypeFactory;
+import net.edudb.engine.Config;
+import net.edudb.engine.DatabaseEngine;
 import net.edudb.exception.InvalidTypeValueException;
+import net.edudb.index.Index;
 import net.edudb.operator.InsertOperator;
 import net.edudb.operator.Operator;
 import net.edudb.operator.parameter.InsertOperatorParameter;
@@ -27,6 +30,7 @@ import net.edudb.structure.table.Table;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Executes the SQL INSERT INTO statement.
@@ -70,9 +74,27 @@ public class InsertExecutor extends PostOrderOperatorExecutor implements Operato
             }
 
             Record record = new TableRecord(data);
-            table.addRecord(record);
 
             Relation relation = new VolatileRelation(table);
+
+            // update index if exists
+            String workspaceName = Config.getCurrentWorkspace();
+            String databaseName = Config.getCurrentDatabaseName();
+            String tableName = table.getName();
+            String pageName = table.addRecord(record);
+
+            for (int i = 0; i < size; i++) {
+                String columnName = columns.get(i).getName();
+                Optional<Index<DataType>> indexOptional = DatabaseEngine.getInstance().getIndexManager()
+                        .getIndex(workspaceName, databaseName, tableName, columnName);
+
+                if (indexOptional.isPresent()) {
+                    Index<DataType> index = indexOptional.get();
+                    DataType key = data.get(columns.get(i));
+                    index.insert(key, pageName);
+                }
+            }
+
             return relation;
         }
         return nextElement.execute(operator);
