@@ -9,12 +9,15 @@
 
 package net.edudb.operator.executor;
 
-/**
- * Executes the relational algebra Filter operator.
- */
-
+import net.edudb.data_type.DataType;
+import net.edudb.data_type.GenericType;
+import net.edudb.data_type.VarCharType;
+import net.edudb.engine.Config;
+import net.edudb.engine.DatabaseEngine;
 import net.edudb.expression.BinaryExpressionTree;
+import net.edudb.expression.Expression;
 import net.edudb.expression.ExpressionTree;
+import net.edudb.index.Index;
 import net.edudb.operator.FilterOperator;
 import net.edudb.operator.Operator;
 import net.edudb.operator.parameter.FilterOperatorParameter;
@@ -23,7 +26,10 @@ import net.edudb.relation.RelationIterator;
 import net.edudb.relation.VolatileRelation;
 import net.edudb.structure.Record;
 
-public class FilterExecutor extends PostOrderOperatorExecutor implements OperatorExecutionChain {
+import java.util.ArrayList;
+import java.util.Set;
+
+public class IndexFilterExecutor extends PostOrderOperatorExecutor implements OperatorExecutionChain {
 
     private OperatorExecutionChain nextElement;
 
@@ -32,26 +38,38 @@ public class FilterExecutor extends PostOrderOperatorExecutor implements Operato
         this.nextElement = chainElement;
     }
 
+
     @Override
     public Relation execute(Operator operator) {
-        if (operator instanceof FilterOperator filter && !filter.isIndexFilter()) {
-            ExpressionTree tree = ((FilterOperatorParameter) filter.getParameter()).expressionTree();
+        if (operator instanceof FilterOperator filter && filter.isIndexFilter()) {
+            System.out.println("Using Index");
+            FilterOperatorParameter indexFilterOperator = (FilterOperatorParameter) filter.getParameter();
+            String workspaceName = Config.getCurrentWorkspace();
+            String databaseName = Config.getCurrentDatabaseName();
+            String tableName = indexFilterOperator.tableName();
+            String columnName = indexFilterOperator.columnName();
+            ExpressionTree expressionTree = indexFilterOperator.expressionTree();
 
-            Relation relation = getChain().execute((Operator) filter.getChild());
+            Expression expression = (Expression) ((BinaryExpressionTree) expressionTree).getRoot();
+            String value = ((GenericType) expression.getValue()).getValue();
 
-            RelationIterator ri = relation.getIterator();
+            Index<DataType> index = DatabaseEngine.getInstance().getIndexManager().getIndex(workspaceName, databaseName, tableName, columnName).get();
+
+            Set<String> pages = index.search(new VarCharType(value));
+            RelationIterator relationIterator = new RelationIterator(new ArrayList<>(pages));
+
             Relation resultRelation = new VolatileRelation();
 
-            while (ri.hasNext()) {
-                Record r = ri.next();
-                if (r.evaluate((BinaryExpressionTree) tree)) {
+            while (relationIterator.hasNext()) {
+                Record r = relationIterator.next();
+                if (r.evaluate((BinaryExpressionTree) expressionTree)) {
                     resultRelation.addRecord(r);
                 }
             }
 
             return resultRelation;
+
         }
         return nextElement.execute(operator);
     }
-
 }

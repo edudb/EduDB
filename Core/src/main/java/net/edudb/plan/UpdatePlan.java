@@ -9,11 +9,11 @@
 
 package net.edudb.plan;
 
-import net.edudb.expression.BinaryExpressionTree;
 import net.edudb.expression.ExpressionTree;
 import net.edudb.operator.FilterOperator;
 import net.edudb.operator.RelationOperator;
 import net.edudb.operator.UpdateTableOperator;
+import net.edudb.operator.parameter.FilterOperatorParameter;
 import net.edudb.operator.parameter.RelationOperatorParameter;
 import net.edudb.operator.parameter.UpdateTableOperatorParameter;
 import net.edudb.query.QueryTree;
@@ -68,7 +68,8 @@ public class UpdatePlan extends Plan {
                     .translate("select * from " + statement.getTableName() + " " + statement.getWhereClause());
             QueryTree queryTree = translator.processRelationalAlgebra(ra);
             FilterOperator filter = (FilterOperator) queryTree.getRoot();
-            expressionTree = (BinaryExpressionTree) filter.getParameter();
+            FilterOperatorParameter parameter1 = (FilterOperatorParameter) filter.getParameter();
+            expressionTree = parameter1.expressionTree();
         }
 
         UpdateTableOperatorParameter updateParameter = new UpdateTableOperatorParameter(statement.getAssignemnts(),

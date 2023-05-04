@@ -291,7 +291,32 @@ class MainCommandsTest {
         sendCommand(CommandsGenerators.insertIntoTable(TABLE_NAME, TABLE_DATA[0]));
         sendCommand(CommandsGenerators.insertIntoTable(TABLE_NAME, TABLE_DATA[1]));
         // Select
-        Response selectResponse = sendCommand(CommandsGenerators.selectFromTable(TABLE_NAME, new String[][]{{TABLE_SCHEMA[0][0], TABLE_DATA[0][0]}}));
+        Response selectResponse = sendCommand(CommandsGenerators.selectFromTable(TABLE_NAME, new String[][]{
+                {TABLE_SCHEMA[0][0], TABLE_DATA[0][0]}
+        }));
+
+        assertThat(selectResponse.getResultSetId()).isNotNull();
+        String resultSetId = selectResponse.getResultSetId();
+        List<Record> records = DatabaseEngine.getInstance().getNextRecord(WORKSPACE_NAME, DATABASE_NAME, resultSetId, 100);
+        assertThat(records).hasSize(1);
+        validateRecord(records.get(0), TABLE_DATA[0]);
+    }
+
+    @Test
+    @DisplayName("should select with multiple conditions")
+    void testSelect2() {
+        // Create database
+        sendCommand(CommandsGenerators.createDatabase(DATABASE_NAME), null);
+        // Create table
+        sendCommand(CommandsGenerators.createTable(TABLE_NAME, TABLE_SCHEMA));
+        // Insert
+        sendCommand(CommandsGenerators.insertIntoTable(TABLE_NAME, TABLE_DATA[0]));
+        sendCommand(CommandsGenerators.insertIntoTable(TABLE_NAME, TABLE_DATA[1]));
+        // Select
+        Response selectResponse = sendCommand(CommandsGenerators.selectFromTable(TABLE_NAME, new String[][]{
+                {TABLE_SCHEMA[0][0], TABLE_DATA[0][0]},
+                {TABLE_SCHEMA[1][0], TABLE_DATA[0][1]}
+        }));
 
         assertThat(selectResponse.getResultSetId()).isNotNull();
         String resultSetId = selectResponse.getResultSetId();
