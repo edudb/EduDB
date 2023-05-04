@@ -70,4 +70,13 @@ class IndexManagerTest {
 
         assertThat(indexPath).doesNotExist();
     }
+
+    @Test
+    void loadDatabaseIndices() throws IOException, DatabaseNotFoundException {
+        Files.createDirectories(Config.indexesPath(WORKSPACE_NAME, DATABASE_NAME));
+        File file = Config.indexPath(WORKSPACE_NAME, DATABASE_NAME, TABLE_NAME, COLUMN_NAME).toFile();
+        new BtreeIndex<>(file);
+        indexManager.loadDatabaseIndices(WORKSPACE_NAME, DATABASE_NAME);
+        assertThat(indexManager.getIndex(WORKSPACE_NAME, DATABASE_NAME, TABLE_NAME, COLUMN_NAME)).isNotNull();
+    }
 }

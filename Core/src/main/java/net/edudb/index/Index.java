@@ -19,4 +19,8 @@ public interface Index<T extends DataType> {
     void delete(T key);
 
     Set<String> search(T key);
+
+    void flush();
+
+    void close();
 }

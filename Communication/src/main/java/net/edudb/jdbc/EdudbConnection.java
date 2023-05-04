@@ -143,6 +143,7 @@ public class EdudbConnection implements Connection {
         }
         isClosed = true;
         try {
+            sendSqlCommand("close database");
             client.closeConnection();
         } catch (IOException | TimeoutException e) {
             throw new SQLException(e);

@@ -74,4 +74,23 @@ public class BtreeIndex<T extends DataType> implements Index<T> {
         }
         return pages;
     }
+
+    @Override
+    public void flush() {
+        try {
+            this.index.flush();
+        } catch (BTreeException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void close() {
+        try {
+            this.index.flush();
+            this.index.close();
+        } catch (BTreeException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

@@ -49,7 +49,10 @@ public class DatabaseEngine {
     private void createBackgroundThreadToWriteBuffer() {
         backgroundThread = Executors.newScheduledThreadPool(1);
 
-        Runnable task = () -> BufferManager.getInstance().writeAll();
+        Runnable task = () -> {
+            bufferManager.writeAll();
+            indexManager.flushAllIndices();
+        };
 
         int initialDelay = 0;
         int period = 1;
@@ -58,8 +61,9 @@ public class DatabaseEngine {
 
     private void setupOnCloseHandler() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            BufferManager.getInstance().writeAll();
-            TableManager.getInstance().writeAllTables();
+            bufferManager.writeAll();
+            tableManager.writeAllTables();
+            indexManager.flushAllIndices();
             backgroundThread.shutdown();
         }));
     }
@@ -121,14 +125,18 @@ public class DatabaseEngine {
     public void openDatabase(String workspaceName, String databaseName) throws DatabaseNotFoundException, WorkspaceNotFoundException {
         WorkspaceSchema workspaceSchema = schema.getWorkspace(workspaceName);
         workspaceSchema.loadDatabase(databaseName);
+        indexManager.loadDatabaseIndices(workspaceName, databaseName);
     }
 
     public void closeDatabase(String workspaceName, String databaseName) throws DatabaseNotFoundException, WorkspaceNotFoundException {
         bufferManager.writeAll(workspaceName, databaseName);
         tableManager.writeAllTables(workspaceName, databaseName);
+        indexManager.flushDatabaseIndices(workspaceName, databaseName);
 
         WorkspaceSchema workspaceSchema = schema.getWorkspace(workspaceName);
         workspaceSchema.offloadDatabase(databaseName);
+        indexManager.offloadDatabaseIndices(workspaceName, databaseName);
+
     }
 
     public void createDatabase(String workspaceName, String databaseName) throws DatabaseAlreadyExistException, WorkspaceNotFoundException {
@@ -142,11 +150,12 @@ public class DatabaseEngine {
     public void dropDatabase(String workspaceName, String databaseName) throws DatabaseNotFoundException, WorkspaceNotFoundException {
         fileManager.deleteDatabase(workspaceName, databaseName);
         bufferManager.removeDatabase(workspaceName, databaseName);
+        indexManager.offloadDatabaseIndices(workspaceName, databaseName);
 
         WorkspaceSchema workspaceSchema = schema.getWorkspace(workspaceName);
         if (openedIterators.containsKey(workspaceName)) {
             Map<String, Map<String, RelationIterator>> workspace = openedIterators.get(workspaceName);
-            if (workspace.containsKey(databaseName)) workspace.remove(databaseName);
+            workspace.remove(databaseName);
         }
         if (workspaceSchema.containsDatabase(databaseName)) workspaceSchema.removeDatabase(databaseName);
     }
@@ -168,6 +177,7 @@ public class DatabaseEngine {
 
     public void dropTable(String workspaceName, String databaseName, String tableName) throws TableNotFoundException, DatabaseNotFoundException, WorkspaceNotFoundException {
         tableManager.deleteTable(workspaceName, databaseName, tableName);
+        indexManager.dropTableIndices(workspaceName, databaseName, tableName);
 
         WorkspaceSchema workspaceSchema = schema.getWorkspace(workspaceName);
         DatabaseSchema databaseSchema = workspaceSchema.getDatabase(databaseName);

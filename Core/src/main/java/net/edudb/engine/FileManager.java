@@ -434,5 +434,19 @@ public class FileManager {
         }
     }
 
-
+    /**
+     * @param workspaceName the name of the workspace
+     * @param databaseName  the name of the database
+     * @return the names of the tables and their columns in the database ex: [[table1, column1], [table1, column2]]
+     * @throws DatabaseNotFoundException if the given database does not exist
+     */
+    public String[][] readIndices(String workspaceName, String databaseName) throws DatabaseNotFoundException {
+        Path indicesPath = Config.indexesPath(workspaceName, databaseName);
+        try {
+            String[] files = listFiles(indicesPath);
+            return Arrays.stream(files).map(fileName -> fileName.split("_")).toArray(String[][]::new);
+        } catch (DirectoryNotFoundException e) {
+            throw new DatabaseNotFoundException(String.format("database (%s) is not found", databaseName), e);
+        }
+    }
 }
