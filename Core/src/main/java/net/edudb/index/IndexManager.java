@@ -25,19 +25,10 @@ import java.util.Map;
 import java.util.Optional;
 
 public class IndexManager {
-    private static IndexManager instance;
     private final FileManager fileManager;
     private final Map<String, Map<String, Map<String, Map<String, Index<DataType>>>>> indexes;
 
-    public static IndexManager getInstance() {
-        if (instance == null) {
-            instance = new IndexManager();
-        }
-        return instance;
-    }
-
-
-    private IndexManager() {
+    public IndexManager() {
         fileManager = FileManager.getInstance();
         indexes = new HashMap<>();
     }
@@ -54,6 +45,11 @@ public class IndexManager {
     public void removeIndexFromMemory(String workspace, String databaseName,
                                       String tableName, String columnName) {
         indexes.get(workspace).get(databaseName).get(tableName).remove(columnName);
+    }
+
+
+    public void loadDatabaseIndices(String workspaceName, String DatabaseName) {
+        //TODO: implement
     }
 
     public void createIndex(String workspace, String databaseName,

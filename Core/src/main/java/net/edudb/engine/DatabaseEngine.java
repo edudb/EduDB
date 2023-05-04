@@ -73,7 +73,7 @@ public class DatabaseEngine {
         fileManager = FileManager.getInstance();
         bufferManager = BufferManager.getInstance();
         tableManager = TableManager.getInstance();
-        indexManager = IndexManager.getInstance();
+        indexManager = new IndexManager();
         initializeDatabase();
         schema = Schema.getInstance();
     }
@@ -212,4 +212,7 @@ public class DatabaseEngine {
     }
 
 
+    public IndexManager getIndexManager() {
+        return indexManager;
+    }
 }

@@ -12,9 +12,9 @@ package net.edudb.operator.executor;
 import net.edudb.data_type.DataType;
 import net.edudb.data_type.DataTypeFactory;
 import net.edudb.engine.Config;
+import net.edudb.engine.DatabaseEngine;
 import net.edudb.exception.InvalidTypeValueException;
 import net.edudb.index.Index;
-import net.edudb.index.IndexManager;
 import net.edudb.operator.InsertOperator;
 import net.edudb.operator.Operator;
 import net.edudb.operator.parameter.InsertOperatorParameter;
@@ -85,7 +85,7 @@ public class InsertExecutor extends PostOrderOperatorExecutor implements Operato
 
             for (int i = 0; i < size; i++) {
                 String columnName = columns.get(i).getName();
-                Optional<Index<DataType>> indexOptional = IndexManager.getInstance()
+                Optional<Index<DataType>> indexOptional = DatabaseEngine.getInstance().getIndexManager()
                         .getIndex(workspaceName, databaseName, tableName, columnName);
 
                 if (indexOptional.isPresent()) {
