@@ -122,6 +122,10 @@ public class IndexManager {
     }
 
     public void dropTableIndices(String workspace, String databaseName, String tableName) {
+        if (!indexes.containsKey(workspace) || !indexes.get(workspace).containsKey(databaseName) ||
+                !indexes.get(workspace).get(databaseName).containsKey(tableName)) {
+            return;
+        }
         Map<String, Index<DataType>> tableIndices = indexes.get(workspace).get(databaseName).get(tableName);
         for (Map.Entry<String, Index<DataType>> columnIndices : tableIndices.entrySet()) {
             try {
