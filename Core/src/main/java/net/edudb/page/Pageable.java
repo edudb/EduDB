@@ -21,18 +21,18 @@ public interface Pageable {
     /**
      * @return ArrayList<String> of page names holding the data.
      */
-    ArrayList<String> getPageNames(String workspaceName, String databaseName);
+    ArrayList<String> getPageNames();
 
     /**
      * Adds a new page name to the page names list.
      *
      * @param pageName Name of the page to add.
      */
-    void addPageName(String workspaceName, String databaseName, String pageName);
+    void addPageName(String pageName);
 
     /**
      * Deletes the pages from disk.
      */
-    void deletePages(String workspaceName, String databaseName);
+    void deletePages();
 
 }

@@ -14,10 +14,9 @@ import net.edudb.engine.Config;
 import net.edudb.engine.FileManager;
 import net.edudb.structure.Record;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A structure that manages pages.
@@ -26,117 +25,67 @@ import java.util.Map;
  */
 public class PageManager implements Pageable, Serializable {
 
+    @Serial
     private static final long serialVersionUID = -6801103344946561955L;
-
-    /**
-     * List of page names the manager is responsible for.
-     */
-    private final Map<String, Map<String, ArrayList<String>>> pageNames;
+    private final ArrayList<String> pageNames;
 
     public PageManager() {
-        this.pageNames = new HashMap<>();
+        this.pageNames = new ArrayList<>();
     }
 
-    private void addWorkspaceAndDatabaseIfNotPresent(String workspaceName, String databaseName) {
-        pageNames.putIfAbsent(workspaceName, new HashMap<>());
-        pageNames.get(workspaceName).putIfAbsent(databaseName, new ArrayList<>());
-    }
-
-    /**
-     * @deprecated Use {@link #getPageNames(String, String)} instead.
-     */
-    @Deprecated
+    @Override
     public ArrayList<String> getPageNames() {
-        return getPageNames(Config.getCurrentWorkspace(), Config.getCurrentDatabaseName());
+        return pageNames;
     }
 
     @Override
-    public ArrayList<String> getPageNames(String workspaceName, String databaseName) {
-        addWorkspaceAndDatabaseIfNotPresent(workspaceName, databaseName);
-        return pageNames.get(workspaceName).get(databaseName);
+    public void addPageName(String pageName) {
+        pageNames.add(pageName);
     }
 
     @Override
-    public void addPageName(String workspaceName, String databaseName, String pageName) {
-        addWorkspaceAndDatabaseIfNotPresent(workspaceName, databaseName);
-        pageNames.get(workspaceName).get(databaseName).add(pageName);
-    }
-
-    /**
-     * @deprecated Use {@link #deletePages(String, String)} instead.
-     */
-    @Deprecated
     public void deletePages() {
-        deletePages(Config.getCurrentWorkspace(), Config.getCurrentDatabaseName());
-    }
-
-    @Override
-    public void deletePages(String workspaceName, String databaseName) {
-        addWorkspaceAndDatabaseIfNotPresent(workspaceName, databaseName);
-        for (String pageName : pageNames.get(workspaceName).get(databaseName)) {
-            FileManager.getInstance().deletePage(workspaceName, databaseName, pageName);
+        for (String pageName : pageNames) {
+            FileManager.getInstance().deletePage(Config.getCurrentWorkspace(), Config.getCurrentDatabaseName(), pageName);
         }
-        pageNames.get(workspaceName).get(databaseName).clear();
+        pageNames.clear();
     }
 
-    private synchronized Page createPage(String workspaceName, String databaseName) {
-        addWorkspaceAndDatabaseIfNotPresent(workspaceName, databaseName);
-
+    private synchronized Page createPage() {
         PageFactory pageFactory = new PageFactory();
         Page page = pageFactory.makePage(Config.blockType());
-        pageNames.get(workspaceName).get(databaseName).add(page.getName());
+        pageNames.add(page.getName());
 
         return page;
     }
 
-    /**
-     * Adds a record to the last page.
-     *
-     * @param record Record to be added to a page.
-     * @deprecated Use {@link #addRecord(String, String, Record)} instead.
-     */
-    @Deprecated
     public synchronized String addRecord(Record record) {
-        return addRecord(Config.getCurrentWorkspace(), Config.getCurrentDatabaseName(), record);
-    }
-
-    public synchronized String addRecord(String workspaceName, String databaseName, Record record) {
-        addWorkspaceAndDatabaseIfNotPresent(workspaceName, databaseName);
-
+        String workspaceName = Config.getCurrentWorkspace();
+        String databaseName = Config.getCurrentDatabaseName();
         Page page;
-        if (pageNames.get(workspaceName).get(databaseName).isEmpty()) {
-            Page newPage = createPage(workspaceName, databaseName);
+        if (pageNames.isEmpty()) {
+            Page newPage = createPage();
             BufferManager.getInstance().write(workspaceName, databaseName, newPage);
         }
 
-        String pageName = pageNames.get(workspaceName).get(databaseName).get(pageNames.get(workspaceName).get(databaseName).size() - 1);
+        String pageName = pageNames.get(pageNames.size() - 1);
         page = BufferManager.getInstance().read(workspaceName, databaseName, pageName);
 
-        page.open();
+//        page.open();
         page.addRecord(record);
         if (page.isFull()) {
-            Page newPage = createPage(workspaceName, databaseName);
+            Page newPage = createPage();
             BufferManager.getInstance().write(workspaceName, databaseName, newPage);
         }
-        page.close();
+//        page.close();
         return page.getName();
+
     }
 
-    /**
-     * @deprecated Use {@link #print(String, String)} instead.
-     */
-    @Deprecated
     public void print() {
-        print(Config.getCurrentWorkspace(), Config.getCurrentDatabaseName());
-    }
-
-    public void print(String workspaceName, String databaseName) {
-        addWorkspaceAndDatabaseIfNotPresent(workspaceName, databaseName);
-
-        for (String pageName : pageNames.get(workspaceName).get(databaseName)) {
-            Page page = BufferManager.getInstance().read(workspaceName, databaseName, pageName);
-            page.print();
+        for (String pageName : pageNames) {
+            Page page = BufferManager.getInstance().read(Config.getCurrentWorkspace(), Config.getCurrentDatabaseName(), pageName);
+            System.out.println(page);
         }
     }
-
 }
