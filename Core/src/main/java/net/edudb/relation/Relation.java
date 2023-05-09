@@ -35,9 +35,10 @@ public interface Relation extends Table {
         if (relation == null) {
             return;
         }
-        RelationIterator relationIterator = relation.getIterator();
-        while (relationIterator.hasNext()) {
-            System.out.println(relationIterator.next());
+        try (RelationIterator relationIterator = relation.getIterator()) {
+            while (relationIterator.hasNext()) {
+                System.out.println(relationIterator.next());
+            }
         }
     }
 
@@ -47,9 +48,10 @@ public interface Relation extends Table {
         }
 
         String stringRelation = "";
-        RelationIterator relationIterator = relation.getIterator();
-        while (relationIterator.hasNext()) {
-            stringRelation += relationIterator.next() + "\r\n";
+        try (RelationIterator relationIterator = relation.getIterator()) {
+            while (relationIterator.hasNext()) {
+                stringRelation += relationIterator.next() + "\r\n";
+            }
         }
 
         return stringRelation;
@@ -61,9 +63,10 @@ public interface Relation extends Table {
 
         ArrayList<Record> records = new ArrayList<Record>();
 
-        RelationIterator relationIterator = relation.getIterator();
-        while (relationIterator.hasNext()) {
-            records.add(relationIterator.next());
+        try (RelationIterator relationIterator = relation.getIterator()) {
+            while (relationIterator.hasNext()) {
+                records.add(relationIterator.next());
+            }
         }
 
         return records;

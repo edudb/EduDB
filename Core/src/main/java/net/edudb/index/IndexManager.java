@@ -106,12 +106,13 @@ public class IndexManager {
         addIndexToMemory(workspace, databaseName, table.getName(), columnName, index);
 
         Relation relation = new VolatileRelation(table);
-        RelationIterator relationIterator = relation.getIterator();
-        while (relationIterator.hasNext()) {
-            String pageName = relationIterator.getCurrentPage().getName();
-            Record currentRecord = relationIterator.next();
-            DataType data = currentRecord.getValue(columnName);
-            index.insert(data, pageName);
+        try (RelationIterator relationIterator = relation.getIterator()) {
+            while (relationIterator.hasNext()) {
+                String pageName = relationIterator.getCurrentPage().getName();
+                Record currentRecord = relationIterator.next();
+                DataType data = currentRecord.getValue(columnName);
+                index.insert(data, pageName);
+            }
         }
     }
 

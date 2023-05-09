@@ -56,14 +56,15 @@ public class IndexFilterExecutor extends PostOrderOperatorExecutor implements Op
             Index<DataType> index = DatabaseEngine.getInstance().getIndexManager().getIndex(workspaceName, databaseName, tableName, columnName).get();
 
             Set<String> pages = index.search(new VarCharType(value));
-            RelationIterator relationIterator = new RelationIterator(new ArrayList<>(pages));
 
             Relation resultRelation = new VolatileRelation();
 
-            while (relationIterator.hasNext()) {
-                Record r = relationIterator.next();
-                if (r.evaluate((BinaryExpressionTree) expressionTree)) {
-                    resultRelation.addRecord(r);
+            try (RelationIterator relationIterator = new RelationIterator(new ArrayList<>(pages))) {
+                while (relationIterator.hasNext()) {
+                    Record r = relationIterator.next();
+                    if (r.evaluate((BinaryExpressionTree) expressionTree)) {
+                        resultRelation.addRecord(r);
+                    }
                 }
             }
 

@@ -11,9 +11,12 @@ package net.edudb.page;
 
 import net.edudb.engine.Config;
 import net.edudb.engine.Utility;
+import net.edudb.exception.LockIsNotAcquiredException;
 import net.edudb.structure.Record;
 
+import java.io.Serial;
 import java.io.Serializable;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * A page that is saved to disk as binary data.
@@ -21,22 +24,12 @@ import java.io.Serializable;
  * @author Ahmed Abdul Badie
  */
 public class BinaryPage extends Page implements Serializable {
-
+    @Serial
     private static final long serialVersionUID = 4813060042690551966L;
 
-    /**
-     * Name of the page.
-     */
     private final String name;
-
-    /**
-     * Array holding the records in the page.
-     */
+    private final ReentrantLock lock;
     private final Record[] records;
-
-    /**
-     * The location in the page where the next record should be placed next.
-     */
     private int nextLocation;
 
     /**
@@ -44,35 +37,50 @@ public class BinaryPage extends Page implements Serializable {
      * the buffer manager to allow the page to reside in the pool if it must be
      * replaced.
      */
-    private int openCount;
 
     public BinaryPage() {
         this.name = Utility.generateUUID();
+        this.lock = new ReentrantLock();
         this.records = new Record[Config.PAGE_SIZE];
         this.nextLocation = 0;
-        this.openCount = 0;
+    }
+
+
+    @Override
+    public void acquireLock() {
+        this.lock.lock();
+    }
+
+    @Override
+    public void releaseLock() {
+        this.lock.unlock();
+    }
+
+    @Override
+    public Record getRecord(int index) {
+        if (!lock.isHeldByCurrentThread()) {
+            RuntimeException e = new LockIsNotAcquiredException("Lock is not acquired on page " + name);
+            e.printStackTrace();
+            throw e;
+        }
+        return records[index];
+    }
+
+    @Override
+    public synchronized void addRecord(Record record) {
+        if (!lock.isHeldByCurrentThread()) {
+            RuntimeException e = new LockIsNotAcquiredException("Lock is not acquired on page " + name);
+            e.printStackTrace();
+            throw e;
+        }
+        if (nextLocation <= records.length) {
+            records[nextLocation++] = record;
+        }
     }
 
     @Override
     public String getName() {
         return name;
-    }
-
-    @Override
-    public Record getRecord(int index) {
-        return records[index];
-    }
-
-    @Override
-    public Record[] getRecords() {
-        return records;
-    }
-
-    @Override
-    public synchronized void addRecord(Record record) {
-        if (nextLocation <= records.length) {
-            records[nextLocation++] = record;
-        }
     }
 
     @Override
@@ -82,41 +90,41 @@ public class BinaryPage extends Page implements Serializable {
 
     @Override
     public int size() {
+        if (!lock.isHeldByCurrentThread()) {
+            RuntimeException e = new LockIsNotAcquiredException("Lock is not acquired on page " + name);
+            e.printStackTrace();
+            throw e;
+        }
         return nextLocation;
     }
 
     @Override
     public boolean isFull() {
+        if (!lock.isHeldByCurrentThread()) {
+            RuntimeException e = new LockIsNotAcquiredException("Lock is not acquired on page " + name);
+            e.printStackTrace();
+            throw e;
+        }
         return size() >= records.length;
     }
 
     @Override
     public boolean isEmpty() {
+        if (!lock.isHeldByCurrentThread()) {
+            RuntimeException e = new LockIsNotAcquiredException("Lock is not acquired on page " + name);
+            e.printStackTrace();
+            throw e;
+        }
         return size() == 0;
     }
 
     @Override
-    public void open() {
-        openCount++;
-        System.out.println("BinaryPage (open): " + "Opened page: " + this.name);
-    }
-
-    @Override
-    public void close() {
-        openCount--;
-        System.out.println("BinaryPage (open): " + "Closed page: " + this.name);
-    }
-
-    @Override
-    public boolean isOpen() {
-        return openCount > 0;
-    }
-
-    @Override
-    public void print() {
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
         for (int i = 0; i < nextLocation; ++i) {
-            System.out.println(records[i]);
+            builder.append(records[i]);
+            builder.append("\n");
         }
+        return builder.toString();
     }
-
 }

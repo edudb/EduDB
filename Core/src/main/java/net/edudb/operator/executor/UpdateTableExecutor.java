@@ -68,11 +68,12 @@ public class UpdateTableExecutor extends PostOrderOperatorExecutor implements Op
 
             Relation relation = getChain().execute((Operator) update.getChild());
 
-            RelationIterator iterator = relation.getIterator();
-            while (iterator.hasNext()) {
-                Record record = iterator.next();
-                if (record.evaluate((BinaryExpressionTree) tree)) {
-                    record.update(data);
+            try (RelationIterator iterator = relation.getIterator()) {
+                while (iterator.hasNext()) {
+                    Record record = iterator.next();
+                    if (record.evaluate((BinaryExpressionTree) tree)) {
+                        record.update(data);
+                    }
                 }
             }
             return relation;

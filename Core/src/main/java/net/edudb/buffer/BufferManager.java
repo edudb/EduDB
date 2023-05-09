@@ -90,17 +90,6 @@ public class BufferManager {
     /**
      * Writes a page to disk and adds it to the buffer.
      *
-     * @param page The page to write.
-     * @deprecated Use {@link #write(String, String, Page)} instead.
-     */
-    @Deprecated
-    public synchronized void write(Page page) {
-        write(Config.getCurrentWorkspace(), Config.getCurrentDatabaseName(), page);
-    }
-
-    /**
-     * Writes a page to disk and adds it to the buffer.
-     *
      * @param workspaceName The name of the workspace to write to.
      * @param databaseName  The name of the database to write to.
      * @param page          The page to write.

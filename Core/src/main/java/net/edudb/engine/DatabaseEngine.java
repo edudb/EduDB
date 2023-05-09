@@ -197,11 +197,12 @@ public class DatabaseEngine {
     public void closeResultSet(String workspaceName, String databaseName, String resultSetId) {
         Map<String, Map<String, RelationIterator>> workspace = openedIterators.get(workspaceName);
         Map<String, RelationIterator> database = workspace.get(databaseName);
-        database.remove(resultSetId);
+        database.remove(resultSetId).close();
     }
 
     public List<Record> getNextRecord(String workspaceName, String databaseName, String resultSetId, int count) {
         RelationIterator iterator = getIterator(workspaceName, databaseName, resultSetId);
+        iterator.acquirePagesLock();
         return iterator.next(count);
     }
 

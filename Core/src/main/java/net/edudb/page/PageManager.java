@@ -45,41 +45,41 @@ public class PageManager implements Pageable, Serializable {
 
     @Override
     public void deletePages() {
+        // todo: acquire a lock on the page
         for (String pageName : pageNames) {
             FileManager.getInstance().deletePage(Config.getCurrentWorkspace(), Config.getCurrentDatabaseName(), pageName);
         }
         pageNames.clear();
     }
 
+    public synchronized String addRecord(Record record) {
+        if (pageNames.isEmpty()) createPage();
+
+        String lastPageName = pageNames.get(pageNames.size() - 1);
+        Page lastPage = readPage(lastPageName);
+        lastPage.acquireLock();
+
+        if (lastPage.isFull()) {
+            lastPage.releaseLock();
+            lastPage = createPage();
+            lastPage.acquireLock();
+        }
+
+        lastPage.addRecord(record);
+        lastPage.releaseLock();
+        return lastPage.getName();
+    }
+
     private synchronized Page createPage() {
         PageFactory pageFactory = new PageFactory();
         Page page = pageFactory.makePage(Config.blockType());
         pageNames.add(page.getName());
-
+        BufferManager.getInstance().write(Config.getCurrentWorkspace(), Config.getCurrentDatabaseName(), page);
         return page;
     }
 
-    public synchronized String addRecord(Record record) {
-        String workspaceName = Config.getCurrentWorkspace();
-        String databaseName = Config.getCurrentDatabaseName();
-        Page page;
-        if (pageNames.isEmpty()) {
-            Page newPage = createPage();
-            BufferManager.getInstance().write(workspaceName, databaseName, newPage);
-        }
-
-        String pageName = pageNames.get(pageNames.size() - 1);
-        page = BufferManager.getInstance().read(workspaceName, databaseName, pageName);
-
-//        page.open();
-        page.addRecord(record);
-        if (page.isFull()) {
-            Page newPage = createPage();
-            BufferManager.getInstance().write(workspaceName, databaseName, newPage);
-        }
-//        page.close();
-        return page.getName();
-
+    private synchronized Page readPage(String pageName) {
+        return BufferManager.getInstance().read(Config.getCurrentWorkspace(), Config.getCurrentDatabaseName(), pageName);
     }
 
     public void print() {

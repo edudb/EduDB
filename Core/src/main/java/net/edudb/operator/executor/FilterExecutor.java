@@ -39,13 +39,14 @@ public class FilterExecutor extends PostOrderOperatorExecutor implements Operato
 
             Relation relation = getChain().execute((Operator) filter.getChild());
 
-            RelationIterator ri = relation.getIterator();
             Relation resultRelation = new VolatileRelation();
 
-            while (ri.hasNext()) {
-                Record r = ri.next();
-                if (r.evaluate((BinaryExpressionTree) tree)) {
-                    resultRelation.addRecord(r);
+            try (RelationIterator ri = relation.getIterator()) {
+                while (ri.hasNext()) {
+                    Record r = ri.next();
+                    if (r.evaluate((BinaryExpressionTree) tree)) {
+                        resultRelation.addRecord(r);
+                    }
                 }
             }
 

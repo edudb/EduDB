@@ -23,31 +23,54 @@ import java.util.List;
  *
  * @author Ahmed Abdul Badie
  */
-public class RelationIterator implements Iterator<Record> {
+public class RelationIterator implements Iterator<Record>, AutoCloseable {
     private String id;
     private final ArrayList<String> pageNames;
-    /**
-     * The current open page.
-     */
     private Page currentPage;
-    /**
-     * The index of the current page in the pageNames ArrayList.
-     */
     private int currentPageIndex;
-    /**
-     * The index of the current record in the page.
-     */
     private int currentIndex;
+    private boolean hasLock;
 
     public RelationIterator(ArrayList<String> pageNames) {
         this.pageNames = pageNames;
-        if (!this.pageNames.isEmpty()) {
-            this.currentPage = BufferManager.getInstance().read(pageNames.get(currentPageIndex++));
-            this.currentPage.open();
-            this.currentIndex = 0;
-        }
         this.id = Utility.generateUUID();
+
+        if (this.pageNames.isEmpty()) return;
+
+        acquirePagesLock();
+
+        this.currentPageIndex = 0;
+        this.currentIndex = 0;
+        this.currentPage = BufferManager.getInstance().read(pageNames.get(currentPageIndex++));
     }
+
+    @Override
+    public void close() {
+        releasePagesLock();
+    }
+
+    public void releasePagesLock() {
+        for (String pageName : pageNames) {
+            Page page = BufferManager.getInstance().read(pageName);
+            page.releaseLock();
+        }
+    }
+
+
+    public void acquirePagesLock() {
+        for (String pageName : pageNames) {
+            Page page = BufferManager.getInstance().read(pageName);
+            page.acquireLock();
+        }
+    }
+
+    public void reset() {
+        if (this.pageNames.isEmpty()) return;
+        this.currentPageIndex = 0;
+        this.currentIndex = 0;
+        this.currentPage = BufferManager.getInstance().read(pageNames.get(currentPageIndex++));
+    }
+
 
     @Override
     public boolean hasNext() {
@@ -66,7 +89,7 @@ public class RelationIterator implements Iterator<Record> {
              * Relation has more pages to iterate through.
              */
             if (currentPageIndex < pageNames.size()) {
-                currentPage = BufferManager.getInstance().read(pageNames.get(currentPageIndex++));
+                this.currentPage = BufferManager.getInstance().read(pageNames.get(currentPageIndex++));
                 this.currentIndex = 0;
             }
         }
@@ -85,7 +108,6 @@ public class RelationIterator implements Iterator<Record> {
         if (currentIndex < currentPage.size()) {
             return true;
         } else {
-            this.currentPage.close();
             return false;
         }
     }
@@ -93,9 +115,6 @@ public class RelationIterator implements Iterator<Record> {
     @Override
     public Record next() {
         if (!hasNext()) {
-            if (this.currentPage != null) {
-                this.currentPage.close();
-            }
             return null;
         }
         return currentPage.getRecord(currentIndex++);
