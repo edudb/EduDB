@@ -166,12 +166,18 @@ public class BufferManager {
     }
 
     public void createDatabase(String workspaceName, String databaseName) {
+        pageBuffer.putIfAbsent(workspaceName, new HashMap<>());
+        replacement.putIfAbsent(workspaceName, new HashMap<>());
+
         pageBuffer.get(workspaceName).putIfAbsent(databaseName, new LinkedHashMap<>());
         replacement.get(workspaceName).putIfAbsent(databaseName,
                 new LRUPageReplacement(pageBuffer.get(workspaceName).get(databaseName)));
     }
 
     public void removeDatabase(String workspaceName, String databaseName) {
+        pageBuffer.putIfAbsent(workspaceName, new HashMap<>());
+        replacement.putIfAbsent(workspaceName, new HashMap<>());
+
         pageBuffer.get(workspaceName).remove(databaseName);
         replacement.get(workspaceName).remove(databaseName);
     }
