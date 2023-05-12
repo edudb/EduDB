@@ -78,6 +78,7 @@ public class Parser {
 
             if (statement.statementType() == SQLStatementType.SQLSelectStatement) {
                 RelationIterator iterator = relation.getIterator();
+                iterator.releasePagesLock(); // so another threads can use these pages
                 DatabaseEngine.getInstance().addResultSet(Config.getCurrentWorkspace(), Config.getCurrentDatabaseName(),
                         iterator);
 

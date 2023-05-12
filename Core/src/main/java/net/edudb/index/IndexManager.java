@@ -106,12 +106,13 @@ public class IndexManager {
         addIndexToMemory(workspace, databaseName, table.getName(), columnName, index);
 
         Relation relation = new VolatileRelation(table);
-        RelationIterator relationIterator = relation.getIterator();
-        while (relationIterator.hasNext()) {
-            String pageName = relationIterator.getCurrentPage().getName();
-            Record currentRecord = relationIterator.next();
-            DataType data = currentRecord.getValue(columnName);
-            index.insert(data, pageName);
+        try (RelationIterator relationIterator = relation.getIterator()) {
+            while (relationIterator.hasNext()) {
+                String pageName = relationIterator.getCurrentPage().getName();
+                Record currentRecord = relationIterator.next();
+                DataType data = currentRecord.getValue(columnName);
+                index.insert(data, pageName);
+            }
         }
     }
 
@@ -122,6 +123,10 @@ public class IndexManager {
     }
 
     public void dropTableIndices(String workspace, String databaseName, String tableName) {
+        if (!indexes.containsKey(workspace) || !indexes.get(workspace).containsKey(databaseName) ||
+                !indexes.get(workspace).get(databaseName).containsKey(tableName)) {
+            return;
+        }
         Map<String, Index<DataType>> tableIndices = indexes.get(workspace).get(databaseName).get(tableName);
         for (Map.Entry<String, Index<DataType>> columnIndices : tableIndices.entrySet()) {
             try {

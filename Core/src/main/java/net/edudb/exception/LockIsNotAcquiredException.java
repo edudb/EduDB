@@ -7,59 +7,11 @@
  * /
  */
 
-package net.edudb.page;
+package net.edudb.exception;
 
-import net.edudb.structure.Record;
+public class LockIsNotAcquiredException extends RuntimeException {
 
-/**
- * A structure that is composed of multiple records.
- *
- * @author Ahmed Abdul Badie
- */
-public abstract class Page {
-    public abstract void acquireLock();
-
-    public abstract void releaseLock();
-
-
-    /**
-     * @param index Index of record to return.
-     * @return The required record.
-     */
-    public abstract Record getRecord(int index);
-
-    /**
-     * Adds a record to the page.
-     *
-     * @param record Record to be added to the page.
-     */
-    public abstract void addRecord(Record record);
-
-
-    /**
-     * @return Name of the page.
-     */
-    public abstract String getName();
-
-
-    /**
-     * @return Number of records the page can hold.
-     */
-    public abstract int capacity();
-
-    /**
-     * @return Number of records in the page.
-     */
-    public abstract int size();
-
-    /**
-     * @return Page is full.
-     */
-    public abstract boolean isFull();
-
-    /**
-     * @return Page has no records.
-     */
-    public abstract boolean isEmpty();
-
+    public LockIsNotAcquiredException(String message) {
+        super(message);
+    }
 }

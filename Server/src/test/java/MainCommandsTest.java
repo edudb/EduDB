@@ -197,7 +197,11 @@ class MainCommandsTest {
 
         assertThat(selectResponse.getResultSetId()).isNotNull();
         String resultSetId = selectResponse.getResultSetId();
+
+        Config.setCurrentWorkspace(WORKSPACE_NAME);
+        Config.setCurrentDatabaseName(DATABASE_NAME);
         List<Record> records = DatabaseEngine.getInstance().getNextRecord(WORKSPACE_NAME, DATABASE_NAME, resultSetId, 100);
+
         assertThat(records).hasSize(1);
 
         validateRecord(records.get(0), TABLE_DATA[0]);
@@ -223,7 +227,11 @@ class MainCommandsTest {
 
         assertThat(selectResponse.getResultSetId()).isNotNull();
         String resultSetId = selectResponse.getResultSetId();
+
+        Config.setCurrentWorkspace(WORKSPACE_NAME);
+        Config.setCurrentDatabaseName(DATABASE_NAME);
         List<Record> records = DatabaseEngine.getInstance().getNextRecord(WORKSPACE_NAME, DATABASE_NAME, resultSetId, 100);
+
         assertThat(records).hasSize(2);
 
         String[] expectedRecord = TABLE_DATA[0];
@@ -252,7 +260,11 @@ class MainCommandsTest {
 
         assertThat(selectResponse.getResultSetId()).isNotNull();
         String resultSetId = selectResponse.getResultSetId();
+
+        Config.setCurrentWorkspace(WORKSPACE_NAME);
+        Config.setCurrentDatabaseName(DATABASE_NAME);
         List<Record> records = DatabaseEngine.getInstance().getNextRecord(WORKSPACE_NAME, DATABASE_NAME, resultSetId, 100);
+
         assertThat(records).hasSize(2);
 
         String[] expectedRecord = TABLE_DATA[2];
@@ -277,7 +289,11 @@ class MainCommandsTest {
 
         assertThat(selectResponse.getResultSetId()).isNotNull();
         String resultSetId = selectResponse.getResultSetId();
+
+        Config.setCurrentWorkspace(WORKSPACE_NAME);
+        Config.setCurrentDatabaseName(DATABASE_NAME);
         List<Record> records = DatabaseEngine.getInstance().getNextRecord(WORKSPACE_NAME, DATABASE_NAME, resultSetId, 100);
+
         assertThat(records).isEmpty();
     }
 
@@ -297,7 +313,11 @@ class MainCommandsTest {
 
         assertThat(selectResponse.getResultSetId()).isNotNull();
         String resultSetId = selectResponse.getResultSetId();
+
+        Config.setCurrentWorkspace(WORKSPACE_NAME);
+        Config.setCurrentDatabaseName(DATABASE_NAME);
         List<Record> records = DatabaseEngine.getInstance().getNextRecord(WORKSPACE_NAME, DATABASE_NAME, resultSetId, 100);
+
         assertThat(records).hasSize(1);
         validateRecord(records.get(0), TABLE_DATA[0]);
     }
@@ -320,7 +340,11 @@ class MainCommandsTest {
 
         assertThat(selectResponse.getResultSetId()).isNotNull();
         String resultSetId = selectResponse.getResultSetId();
+
+        Config.setCurrentWorkspace(WORKSPACE_NAME);
+        Config.setCurrentDatabaseName(DATABASE_NAME);
         List<Record> records = DatabaseEngine.getInstance().getNextRecord(WORKSPACE_NAME, DATABASE_NAME, resultSetId, 100);
+
         assertThat(records).hasSize(1);
         validateRecord(records.get(0), TABLE_DATA[0]);
     }
@@ -413,7 +437,11 @@ class MainCommandsTest {
 
         assertThat(selectResponse.getResultSetId()).isNotNull();
         String resultSetId = selectResponse.getResultSetId();
+
+        Config.setCurrentWorkspace(WORKSPACE_NAME);
+        Config.setCurrentDatabaseName(DATABASE_NAME);
         List<Record> records = DatabaseEngine.getInstance().getNextRecord(WORKSPACE_NAME, DATABASE_NAME, resultSetId, 100);
+
         assertThat(records).hasSize(1);
         validateRecord(records.get(0), TABLE_DATA[0]);
     }
@@ -443,7 +471,11 @@ class MainCommandsTest {
 
         assertThat(selectResponse.getResultSetId()).isNotNull();
         String resultSetId = selectResponse.getResultSetId();
+
+        Config.setCurrentWorkspace(WORKSPACE_NAME);
+        Config.setCurrentDatabaseName(DATABASE_NAME);
         List<Record> records = DatabaseEngine.getInstance().getNextRecord(WORKSPACE_NAME, DATABASE_NAME, resultSetId, 100);
+
         assertThat(records).isEmpty();
     }
 
@@ -451,6 +483,7 @@ class MainCommandsTest {
     @DisplayName("should select with index correctly after partial deletion")
     void testSelectUsingIndexAfterDeletion2() {
         Config.setAbsolutePath(tempDir.toPath()); // you can not use fs with indices tests
+//        Config.setAbsolutePath(null);
         // Create database
         sendCommand(CommandsGenerators.createDatabase(DATABASE_NAME), null);
         // Create table
@@ -472,7 +505,11 @@ class MainCommandsTest {
 
         assertThat(selectResponse.getResultSetId()).isNotNull();
         String resultSetId = selectResponse.getResultSetId();
+
+        Config.setCurrentWorkspace(WORKSPACE_NAME);
+        Config.setCurrentDatabaseName(DATABASE_NAME);
         List<Record> records = DatabaseEngine.getInstance().getNextRecord(WORKSPACE_NAME, DATABASE_NAME, resultSetId, 100);
+
         assertThat(records).hasSize(1);
         validateRecord(records.get(0), TABLE_DATA[2]);
     }
@@ -503,7 +540,11 @@ class MainCommandsTest {
 
         assertThat(selectResponse.getResultSetId()).isNotNull();
         String resultSetId = selectResponse.getResultSetId();
+
+        Config.setCurrentWorkspace(WORKSPACE_NAME);
+        Config.setCurrentDatabaseName(DATABASE_NAME);
         List<Record> records = DatabaseEngine.getInstance().getNextRecord(WORKSPACE_NAME, DATABASE_NAME, resultSetId, 100);
+
         assertThat(records).hasSize(1);
         validateRecord(records.get(0), TABLE_DATA[0]);
     }
