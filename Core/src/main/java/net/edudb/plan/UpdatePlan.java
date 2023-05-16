@@ -9,6 +9,7 @@
 
 package net.edudb.plan;
 
+import adipe.translate.TranslationException;
 import net.edudb.expression.ExpressionTree;
 import net.edudb.operator.FilterOperator;
 import net.edudb.operator.RelationOperator;
@@ -30,7 +31,7 @@ import net.edudb.statistics.Schema;
 public class UpdatePlan extends Plan {
 
     @Override
-    public QueryTree makePlan(SQLStatement sqlStatement) {
+    public QueryTree makePlan(SQLStatement sqlStatement) throws TranslationException {
         SQLUpdateStatement statement = (SQLUpdateStatement) sqlStatement;
 
         if (!Schema.getInstance().checkTableExists(statement.getTableName())) {

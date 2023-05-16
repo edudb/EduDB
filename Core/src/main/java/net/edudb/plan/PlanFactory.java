@@ -9,6 +9,7 @@
 
 package net.edudb.plan;
 
+import adipe.translate.TranslationException;
 import net.edudb.query.QueryTree;
 import net.edudb.statement.SQLStatement;
 
@@ -19,7 +20,7 @@ import net.edudb.statement.SQLStatement;
  */
 public class PlanFactory extends Plan {
     @Override
-    public QueryTree makePlan(SQLStatement statement) {
+    public QueryTree makePlan(SQLStatement statement) throws TranslationException {
         switch (statement.statementType()) {
             case SQLCreateTableStatement:
                 return new CreateTablePlan().makePlan(statement);
@@ -32,8 +33,7 @@ public class PlanFactory extends Plan {
             case SQLUpdateStatement:
                 return new UpdatePlan().makePlan(statement);
             default:
-                System.err.println("Sorry, this statement is not supported.");
-                return null;
+                throw new TranslationException("Sorry, this statement is not supported.");
         }
     }
 }
