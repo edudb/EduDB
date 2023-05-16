@@ -12,6 +12,9 @@ package net.edudb.executors;
 
 import net.edudb.Response;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * Prints EduDB's supported commands.
  *
@@ -19,14 +22,33 @@ import net.edudb.Response;
  */
 public class HelpExecutor implements ConsoleExecutorChain {
     private ConsoleExecutorChain nextChainElement;
+    private final Map<String, String> commands;
 
-    private String[] commands = { // TODO: refactor this
-            "\tclear", "\tCLOSE DATABASE",
-            "\tCOPY table_name FROM 'path' DELIMITER 'delimiter'", "\texit", "\tOPEN DATABASE database_name", "\tLIST DATABASES",
-            "\tSQL commands:", "\t\tCREATE DATABASE database_name", "\t\tCREATE TABLE table_name (column_type_list)",
-            "\t\tDELETE FROM table_name [WHERE condition]", "\t\tDROP DATABASE database_name",
-            "\t\tINSERT INTO table_name VALUES (values)", "\t\tUPDATE table_name SET column_value_list [WHERE condition]"
-    };
+    public HelpExecutor() {
+        commands = new LinkedHashMap<>();
+        addCommand("clear", "Clears the console");
+        addCommand("exit", "Close the client");
+        addCommand("COPY table_name FROM 'path' DELIMITER 'delimiter'", "Copies data from a file to a table");
+        addCommand("OPEN DATABASE database_name", "Opens a database");
+        addCommand("CLOSE DATABASE", "Closes the current database");
+        addCommand("CREATE DATABASE database_name", "Creates a database");
+        addCommand("DROP DATABASE database_name", "Drops a database");
+        addCommand("CREATE USER user_name WITH PASSWORD=\"password\" [AS ADMIN|WORKSPACE_ADMIN|USER] [IN WORKSPACE=\"workspace_name\"]", "Creates a user");
+        addCommand("DROP USER user_name FROM WORKSPACE=\"workspace_name\"", "Drops a user");
+        addCommand("CREATE INDEX ON table_name(column_name)", "Creates a B+ tree index on a column");
+        addCommand("DROP INDEX ON table_name(column_name)", "Drops the index on a column");
+        addCommand("CREATE TABLE table_name (column_type_list)", "Creates a table");
+        addCommand("DROP TABLE table_name", "Drops a table");
+        addCommand("DROP WORKSPACE workspace_name", "Drops a workspace");
+        addCommand("INSERT INTO table_name VALUES (values)", "Inserts a row into a table");
+        addCommand("DELETE FROM table_name [WHERE condition]", "Deletes rows from a table");
+        addCommand("UPDATE table_name SET column_value_list [WHERE condition]", "Updates rows in a table");
+        addCommand("SELECT column_name_list FROM table_name [WHERE condition]", "Selects rows from a table");
+    }
+
+    private void addCommand(String command, String description) {
+        commands.put(command, description);
+    }
 
     @Override
     public void setNextElementInChain(ConsoleExecutorChain chainElement) {
@@ -34,15 +56,15 @@ public class HelpExecutor implements ConsoleExecutorChain {
     }
 
     @Override
-    public Response execute(String string) {
-        if (string.equalsIgnoreCase("help")) {
-            StringBuilder helpText = new StringBuilder("Supported commands:");
-            for (String command : commands) {
-                helpText.append(command).append("\n");
+    public Response execute(String input) {
+        if (input.equalsIgnoreCase("help")) {
+            StringBuilder helpText = new StringBuilder("Supported commands:\n");
+            for (Map.Entry<String, String> entry : commands.entrySet()) {
+                helpText.append("\t").append(entry.getKey()).append("    -    ").append(entry.getValue()).append("\n");
             }
             return new Response(helpText.toString());
         }
-        return nextChainElement.execute(string);
+        return nextChainElement.execute(input);
     }
 
 }
