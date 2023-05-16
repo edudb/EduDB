@@ -66,9 +66,11 @@ public class Parser {
                 return new Response("Unsupported SQL statement", ResponseStatus.ERROR);
             }
 
-            QueryTree plan = planFactory.makePlan(statement);
-            if (plan == null) {
-                return new Response("", ResponseStatus.ERROR);
+            QueryTree plan;
+            try {
+                plan = planFactory.makePlan(statement);
+            } catch (TranslationException e) {
+                return new Response(e.getMessage(), ResponseStatus.ERROR);
             }
 
             SynchronizedTransaction transaction = new SynchronizedTransaction(plan);
