@@ -25,7 +25,7 @@ public class DropIndexExecutor implements ConsoleExecutorChain {
             .then(Bee.BEGIN)
             .then(Bee.fixed("DROP INDEX").caseInsensitive())
             .then(Bee.WHITESPACE.occurAtLeast(1))
-            .then(Bee.fixed("ON").caseInsensitive())
+            .then(Bee.fixed("FROM").caseInsensitive())
             .then(Bee.WHITESPACE.occurAtLeast(1))
             .then(Bee.checked("[a-zA-Z0-9_]+").as("table"))
             .then(Bee.WHITESPACE.occurAtLeast(0))
