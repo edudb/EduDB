@@ -16,20 +16,19 @@ import net.edudb.engine.DatabaseEngine;
 import net.edudb.engine.Utility;
 import net.edudb.engine.authentication.JwtUtil;
 import net.edudb.engine.authentication.UserRole;
-import net.edudb.exception.WorkspaceNotFoundException;
+import net.edudb.exception.WorkspaceAlreadyExistException;
 
 import java.util.regex.Matcher;
 
-public class DropWorkspaceExecutor implements ConsoleExecutorChain {
+public class CreateWorkspaceExecutor implements ConsoleExecutorChain {
     private ConsoleExecutorChain nextElement;
-    private static final String REGEX = "\\A(?i)drop\\s+workspace\\s+(\\w+)\\s*;?\\z";
+    private static final String REGEX = "\\A(?i)create\\s+workspace\\s+(\\w+)\\s*;?\\z";
 
 
     @Override
     public void setNextElementInChain(ConsoleExecutorChain chainElement) {
         this.nextElement = chainElement;
     }
-
 
     @Override
     public Response execute(Request request) {
@@ -40,14 +39,14 @@ public class DropWorkspaceExecutor implements ConsoleExecutorChain {
         }
         UserRole requesterRole = JwtUtil.getUserRole(request.getAuthToken());
         if (requesterRole != UserRole.ADMIN) {
-            return new Response("Only admins can drop workspaces", ResponseStatus.UNAUTHORIZED);
+            return new Response("Only admins can create workspaces", ResponseStatus.UNAUTHORIZED);
         }
 
         String workspaceName = matcher.group(1);
         try {
-            DatabaseEngine.getInstance().dropWorkspace(workspaceName);
-            return new Response(String.format("Workspace %s dropped successfully", workspaceName), ResponseStatus.OK);
-        } catch (WorkspaceNotFoundException e) {
+            DatabaseEngine.getInstance().createWorkspace(workspaceName);
+            return new Response(String.format("Workspace %s created successfully", workspaceName), ResponseStatus.OK);
+        } catch (WorkspaceAlreadyExistException e) {
             System.err.println(e.getMessage());
             return new Response(e.getMessage(), ResponseStatus.ERROR);
         }

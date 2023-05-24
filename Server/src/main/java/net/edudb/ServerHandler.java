@@ -20,7 +20,7 @@ import java.util.concurrent.*;
 
 public class ServerHandler implements RequestHandler {
     private static final int MAX_THREADS_PER_USER = 1;
-    private Map<String, ExecutorService> usersThreadPools; //FIXME: handle the case when a user is deleted or the client is closed
+    private Map<String, ExecutorService> usersThreadPools;
     private ConsoleExecutorChain chain;
 
     public ServerHandler() {
@@ -34,6 +34,7 @@ public class ServerHandler implements RequestHandler {
                 new CreateUserExecutor(),
                 new DropAdminExecutor(),
                 new DropUserExecutor(),
+                new CreateWorkspaceExecutor(),
                 new DropWorkspaceExecutor(),
                 new NoAdminAccess(), // As admins have no workspace, they can't access any database
                 new ListDatabasesExecutor(),
