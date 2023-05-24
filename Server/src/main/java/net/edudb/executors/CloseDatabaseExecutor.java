@@ -56,7 +56,9 @@ public class CloseDatabaseExecutor implements ConsoleExecutorChain {
 
         try {
             DatabaseEngine.getInstance().closeDatabase(workspaceName, databaseName);
-            return new Response(String.format("Database %s closed successfully.", databaseName), ResponseStatus.OK);
+            Response response = new Response("Database " + databaseName + " closed successfully.", true, null);
+            response.setStatus(ResponseStatus.OK);
+            return response;
         } catch (DatabaseNotFoundException | WorkspaceNotFoundException e) {
             e.printStackTrace();
             return new Response(e.getMessage(), ResponseStatus.ERROR);
