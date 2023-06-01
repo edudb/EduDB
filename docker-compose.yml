@@ -2,6 +2,9 @@ version: "2"
 services:
   edudb_master:
     image: edudb_master
+    build:
+      context: .
+      dockerfile: Dockerfile.master
     ports:
       - "8080:8080"
   edudb_meta:
@@ -16,21 +19,21 @@ services:
     build: .
     ports:
       - "9991:9999"
-  edudb2:
-    container_name: edudb2
-    restart: always
-    build: .
-    ports:
-      - "9992:9999"
-  edudb3:
-    container_name: edudb3
-    restart: always
-    build: .
-    ports:
-      - "9993:9999"
-  edudb4:
-    container_name: edudb4
-    restart: always
-    build: .
-    ports:
-      - "9994:9999"
+#  edudb2:
+#    container_name: edudb2
+#    restart: always
+#    build: .
+#    ports:
+#      - "9992:9999"
+#  edudb3:
+#    container_name: edudb3
+#    restart: always
+#    build: .
+#    ports:
+#      - "9993:9999"
+#  edudb4:
+#    container_name: edudb4
+#    restart: always
+#    build: .
+#    ports:
+#      - "9994:9999"
